@@ -3,8 +3,8 @@ import "level.lua"
 import "init.lua"
 
 function startGame()
-    LoadFile("levels/LEVEL01.CGP")
-    -- GameBR("levels/LEVEL01.CGP")
+    LoadFile("levels/LEVEL01.CGPB")
+    -- GameBR("levels/LEVEL01.CGPB")
 end
 
 sucs,err = xpcall(startGame,Error_Handler)

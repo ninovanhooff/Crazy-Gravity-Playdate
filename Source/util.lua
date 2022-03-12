@@ -4,11 +4,8 @@
 --- DateTime: 11/03/2022 16:36
 ---
 
-function loadScript(path)
-    script,err = loadfile(path)
-    if not script then print(err) end
-    script()
-    script = nil
+function stripExtension(path)
+    if path:find('%.CGPB$') then return path:sub(1, -6) else return path end
 end
 
 function boolToNum(bool)
@@ -18,7 +15,7 @@ end
 function printf(...)
     local arg = {...}
     if Debug then
-        print(table.unpack(arg)) -- todo table.unpack if it is a table
+        print(table.unpack(arg))
     end
 end
 

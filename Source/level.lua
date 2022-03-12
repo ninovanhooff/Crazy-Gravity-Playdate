@@ -4,176 +4,43 @@
 --- DateTime: 11/03/2022 16:29
 ---
 
+import "util.lua"
+
 local file = playdate.file
 
-function LoadFile(path)
-    printf("loading "..path)
+function LoadFile(cgpbPath)
+    printf("loading ".. cgpbPath)
+    local jsonPath = stripExtension(cgpbPath) .. ".json"
+    if not file.exists(cgpbPath) then
+        printf("File does not exist: " .. cgpbPath)
+    end
+    if not file.exists(jsonPath) then
+        printf("File does not exist: " .. jsonPath)
+    end
+
     brickT = nil
     specialT = nil
-    TFile = file.open(path, playdate.file.kFileRead)
-    --TFile = file.open(path,PGE_FILE_RDONLY)
+    levelProps = nil
+
+    local jsonFile, err = file.open(jsonPath)
+    local levelData = json.decodeFile(jsonFile)
+    specialT = levelData["specialT"]
+    levelProps = levelData["levelProps"]
+    levelProps.lives = levelProps.lives or 5
+    levelData = nil
+    jsonFile:close()
+
+    TFile = file.open(cgpbPath, playdate.file.kFileRead)
     if not TFile then
-        error("Error opening file "..path)
+        error("Error opening file ".. cgpbPath)
     end
-    local id = TFile:read(3)
-    if id~="CGP" then
+    local id = TFile:read(4)
+    if id~="CGPB" then
         TFile:close()
         error("filetype",id)
     end
     TFile:read(1) --nl
-    local propString = TFile:read(250)
-    _,propEnd = propString:find(".-\n\n")
-    if not propEnd then
-        error("propEnd")
-    end
-    propString,_ = propString:sub(1,propEnd),propString:sub(propEnd+1)
-    -- todo because loading lua from a string doesn't work, temporarily copy
-    -- level 1's props here
 
-    levelProps={["fuel"]=6000,
-                ["tLimit"]=300,
-                ["bg"]=0,
-                ["sizeX"]=198,
-                ["sizeY"]=84,
-    }
-
-    specialT={{["y"]=25,
-               ["amnt"]=0,
-               ["x"]=13,
-               ["pType"]=1,
-               ["sType"]=8,
-               ["h"]=6,
-               ["w"]=16,
-               ["arrows"]=1,
-              },{["direction"]=1,
-                 ["distance"]=20,
-                 ["rate"]=3,
-                 ["balls"]={},["h"]=25,
-                 ["x"]=46,
-                 ["sType"]=12,
-                 ["y"]=3,
-                 ["w"]=3,
-                 ["speed"]=1,
-              },{["direction"]=4,
-                 ["XtoY"]=1,
-                 ["distance"]=16,
-                 ["w"]=20,
-                 ["y"]=34,
-                 ["h"]=12,
-                 ["x"]=82,
-                 ["endStone"]=2,
-                 ["sType"]=14,
-                 ["actW"]=50,
-                 ["actH"]=18,
-                 ["pos"]=124,
-              },{["direction"]=3,
-                 ["XtoY"]=1,
-                 ["distance"]=16,
-                 ["w"]=20,
-                 ["y"]=34,
-                 ["h"]=12,
-                 ["x"]=102,
-                 ["endStone"]=2,
-                 ["sType"]=14,
-                 ["actW"]=50,
-                 ["actH"]=18,
-                 ["pos"]=124,
-              },{["direction"]=2,
-                 ["distance"]=18,
-                 ["rate"]=1,
-                 ["balls"]={},["h"]=23,
-                 ["sType"]=12,
-                 ["speed"]=1,
-                 ["w"]=3,
-                 ["y"]=6,
-                 ["x"]=132,
-              },{["direction"]=4,
-                 ["XtoY"]=2,
-                 ["distance"]=13,
-                 ["w"]=17,
-                 ["y"]=34,
-                 ["h"]=12,
-                 ["x"]=153,
-                 ["endStone"]=2,
-                 ["sType"]=14,
-                 ["actW"]=42,
-                 ["actH"]=18,
-                 ["pos"]=100,
-              },{["direction"]=3,
-                 ["XtoY"]=2,
-                 ["distance"]=13,
-                 ["w"]=17,
-                 ["y"]=34,
-                 ["h"]=12,
-                 ["x"]=170,
-                 ["endStone"]=2,
-                 ["sType"]=14,
-                 ["actW"]=40,
-                 ["actH"]=18,
-                 ["pos"]=100,
-              },{["direction"]=2,
-                 ["distance"]=20,
-                 ["rate"]=1,
-                 ["balls"]={},["h"]=25,
-                 ["sType"]=12,
-                 ["speed"]=4,
-                 ["w"]=3,
-                 ["y"]=49,
-                 ["x"]=143,
-              },{["y"]=65,
-                 ["amnt"]=5,
-                 ["pType"]=3,
-                 ["sType"]=8,
-                 ["x"]=63,
-                 ["w"]=16,
-                 ["h"]=6,
-              },{["pos2"]=20,
-                 ["speedMax"]=1,
-                 ["chngOften"]=2,
-                 ["distance"]=30,
-                 ["w"]=3,
-                 ["speedMin"]=1,
-                 ["y"]=41,
-                 ["x"]=50,
-                 ["fixdGap"]=1,
-                 ["gapSize"]=80,
-                 ["sType"]=13,
-                 ["h"]=33,
-                 ["pos1"]=20,
-                 ["direction"]=2,
-              },{["y"]=70,
-                 ["amnt"]=2,
-                 ["x"]=12,
-                 ["pType"]=2,
-                 ["sType"]=8,
-                 ["h"]=6,
-                 ["w"]=20,
-                 ["type"]=3,
-              },}
-
-
-
-    --print("propString '" .. propString .."'")
-    --
-    --local func, err = load("return function(a,b) return a+b end")
-    --if func then
-    --    local ok, add = pcall(func)
-    --    if ok then
-    --        print(add(2,3))
-    --    else
-    --        print("Execution error:", add)
-    --    end
-    --else
-    --    print("Compilation error:", err)
-    --end
-    --
-
-    --propString = nil
-    --assert(sucs,err)()
-    levelProps.lives = levelProps.lives or 5
-    printf("brickdataPos",propEnd+4)
-    TFile:seek(4+propEnd) -- position to read brick data
-    --TFile:seek(4+propEnd,PGE_FILE_SET)
     brickT = {}
     for i = 1,levelProps.sizeX do
         brickT[i]={}
@@ -194,12 +61,6 @@ function LoadFile(path)
         end
         curColStr = nil
     end
-    TFile:read(1) -- nl
-    --local specialString = TFile:read("*a")
-    --sucs,err = load(specialString)
-    --specialString = nil
-    --assert(sucs,err)()
-    --sucs = nil
     TFile:close()
     TFile = nil
     printf("loaded dim",#brickT,#brickT[1])
