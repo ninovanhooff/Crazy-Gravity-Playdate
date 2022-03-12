@@ -5,7 +5,7 @@
 ---
 
 local sampleplayer = playdate.sound.sampleplayer
-local graphics = playdate.graphics
+local gfx = playdate.graphics
 
 math.randomseed(playdate.getSecondsSinceEpoch())
 pi = 3.141592654
@@ -14,6 +14,8 @@ Sounds = true
 tileSize = 8 -- refactor: probably hardcoded in a lot of places
 outBufSize = 1024
 print("hoi")
+
+interfaceBGClr = gfx.kColorWhite
 
 if Sounds then
     pickup_sound = sampleplayer.new("samples/pickup.wav")
@@ -27,7 +29,7 @@ if Sounds then
     explode_sound = sampleplayer.new("samples/explosion.wav")
 end
 
-sprite = graphics.image.new("images/sprite.png")
+sprite = gfx.image.new("images/sprite_decomposition_burkes.png")
 if not sprite then error("failed to load sprite") end
     --
 --menuFont = font.load("verdana.ttf",10)

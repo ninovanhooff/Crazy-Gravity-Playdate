@@ -24,8 +24,8 @@ function RenderPlatform(item)
     pgeDraw(scrX+32+(item.w-8)*8,pltfrmY+4,26,6,449,barY,26,6)--right end colored bar
     if item.pType==1 then -- home
         if item.arrows==1 then
-            pgeDraw(scrX,scrY,24,32,312,414,24,32,0,150)
-            pgeDraw(scrX+(item.w-3)*8,scrY,24,32,312,446,24,32,0,150)
+            pgeDraw(scrX,scrY,24,32,313,414,24,32,0,150)
+            pgeDraw(scrX+(item.w-3)*8,scrY,24,32,313,446,24,32,0,150)
         end
     elseif item.pType==2 then -- freight
         for i = 1,item.amnt,1 do

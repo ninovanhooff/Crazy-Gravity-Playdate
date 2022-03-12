@@ -2,6 +2,8 @@ import "settings.lua"
 import "drawUtil.lua"
 import "specials.lua"
 
+local gfx = playdate.graphics
+
 function UnitCollision(x,y,w,h,testMode)
 	--printf(x,y,w,h)
 	for i=1,5,2 do
@@ -887,6 +889,12 @@ function RenderGame()
 		end
 	end
 
+	--gfx.setDitherPattern(0.81, gfx.image.kDitherTypeBayer8x8)
+	--gfx.fillRect(0,0,400,240)
+
+	sprite:setInverted(false)
+	gfx.setColor(gfx.kColorBlack)
+
 	for i,item in ipairs(specialT) do -- special blocks
 		scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
 		if item.x+item.w>=camPos[1] and item.x<=camPos[1]+61 and item.y+item.h>=camPos[2] and item.y<camPos[2]+33 then
@@ -930,8 +938,9 @@ function RenderGame()
 	end
 	
 	pgeDraw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3],(planePos[2]-camPos[2])*8+planePos[4]-camPos[4],23,23,planeRot%16*23,391+(boolToNum(planeRot>15)*2-thrust)*23,23,23) -- plane
-	
-	gfx.drawrect(0,256,480,16,interfaceBGClr)
+
+	gfx.setColor(interfaceBGClr)
+	gfx.fillRect(0,256,400,16)
 	
 	--explosion
 	if collision and not Debug then
