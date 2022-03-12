@@ -606,11 +606,11 @@ initSpecial[14]=Init1Way
 initSpecial[15]=InitBarrier
 
 function drawInterfaceBox(x,w)
-	gfx.drawline(x,257,x+w,257,interfaceBoxUpperClr)
-	gfx.drawline(x,257,x,270,interfaceBoxUpperClr)
-	gfx.drawline(x+w,258,x+w,270,interfaceBoxLowerClr)
-	gfx.drawline(x+1,270,x+w,270,interfaceBoxLowerClr)
-	gfx.drawrect(x+1,258,w-1,13,black)
+	gfx.drawline(x,hudY+1,x+w,hudY+1,interfaceBoxUpperClr)
+	gfx.drawline(x,hudY+1,x,hudY+14,interfaceBoxUpperClr)
+	gfx.drawline(x+w,hudY+2,x+w,hudY+14,interfaceBoxLowerClr)
+	gfx.drawline(x+1,hudY+14,x+w,hudY+14,interfaceBoxLowerClr)
+	gfx.drawrect(x+1,hudY+2,w-1,13,black)
 end
 
 function checkCam()
@@ -939,8 +939,8 @@ function RenderGame()
 	
 	pgeDraw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3],(planePos[2]-camPos[2])*8+planePos[4]-camPos[4],23,23,planeRot%16*23,391+(boolToNum(planeRot>15)*2-thrust)*23,23,23) -- plane
 
-	gfx.setColor(interfaceBGClr)
-	gfx.fillRect(0,256,400,16)
+	gfx.setColor(hudBGClr)
+	gfx.fillRect(0,hudY,400,16)
 	
 	--explosion
 	if collision and not Debug then
@@ -949,58 +949,58 @@ function RenderGame()
 	
 	--interface
 	
-	pgeDraw(1,257,28,14,232,314,28,14) -- remain freight stat
+	pgeDraw(1,hudY+1,28,14,232,314,28,14) -- remain freight stat
 	drawInterfaceBox(30,106)
 	local freightPosCount = 0
 	for i,item in ipairs(remainingFreight) do
 		for j=0,math.fmin(item-1,7) do
-			pgeDraw(32+freightPosCount*13,259,12,12,64+i*16,346,16,16)
+			pgeDraw(32+freightPosCount*13,hudY+3,12,12,64+i*16,346,16,16)
 			freightPosCount = freightPosCount + 1
 		end
 	end
 	
 	local planeFreightX = 147
-	pgeDraw(planeFreightX,257,28,14,260,314,28,14) -- planeFreight stat
+	pgeDraw(planeFreightX,hudY+1,28,14,hudY+4,314,28,14) -- planeFreight stat
 	drawInterfaceBox(planeFreightX+29,14*extras[3])
 	for i,item in ipairs(planeFreight) do
-		pgeDraw(planeFreightX+31+(i-1)*13,259,12,12,80+item[1]*16,346,16,16)
+		pgeDraw(planeFreightX+31+(i-1)*13,hudY+3,12,12,80+item[1]*16,346,16,16)
 	end
 	
 	local keysX = 220
-	pgeDraw(keysX,257,28,14,344,314,28,14) -- keys
+	pgeDraw(keysX,hudY+1,28,14,344,314,28,14) -- keys
 	drawInterfaceBox(keysX+30,50)
 	for i=1,4 do
 		if keys[i] then
-			pgeDraw(keysX+32+(i-1)*12,259,12,12,185+(frameCounter % 7)*16,414+(i-1)*16,16,16)
+			pgeDraw(keysX+32+(i-1)*12,hudY+3,12,12,185+(frameCounter % 7)*16,414+(i-1)*16,16,16)
 		end
 	end
 	
 	local fuelX = 300
-	pgeDraw(fuelX+2,257,28,14,316,314,28,14) -- fuel stat
+	pgeDraw(fuelX+2,hudY+1,28,14,316,314,28,14) -- fuel stat
 	drawInterfaceBox(fuelX+32,48)
 	local fuelW = math.round(44*fuel/6000/4)*4
-	pgeDraw(fuelX+34,260,fuelW,9,231,328,fuelW,9)
+	pgeDraw(fuelX+34,hudY+4,fuelW,9,231,328,fuelW,9)
 	
 	for i=0,extras[2]-1 do -- lives
 		pgeDraw(5+i*25,5,23,23,46,414,23,23,0,180)
 	end
 	
 	drawInterfaceBox(382,75) -- Time
-	menuFont:print(384,260,green,TimeString(frameCounter*0.05).."/"..lMin..":"..lSec)
+	menuFont:print(384,hudY+4,green,TimeString(frameCounter*0.05).."/"..lMin..":"..lSec)
 		
 	local warnX = 460
 	
 	if math.abs(vx) > landingTolerance[1] or vy > landingTolerance[2] then --red
-		pgeDraw(warnX,256,16,16,165,461,16,16)
+		pgeDraw(warnX,hudY,16,16,165,461,16,16)
 	elseif math.abs(vx) > landingTolerance[1]-1 or vy > landingTolerance[2] - 1 then --yellow
-		pgeDraw(warnX,256,16,16,149,461,16,16)
+		pgeDraw(warnX,hudY,16,16,149,461,16,16)
 	else -- green
-		pgeDraw(warnX,256,16,16,133,461,16,16)
+		pgeDraw(warnX,hudY,16,16,133,461,16,16)
 	end
 	
 	if Debug then
 		if collision then
-			pgeDraw(470,256,8,8,64,338,8,8)
+			pgeDraw(470,hudY,8,8,64,338,8,8)
 		end
 		--- plane collision
 		local colOffX = (planePos[1]-camPos[1])*8-camPos[3]

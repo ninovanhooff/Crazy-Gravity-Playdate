@@ -15,7 +15,8 @@ tileSize = 8 -- refactor: probably hardcoded in a lot of places
 outBufSize = 1024
 print("hoi")
 
-interfaceBGClr = gfx.kColorWhite
+hudY = 256
+hudBGClr = gfx.kColorWhite
 
 if Sounds then
     pickup_sound = sampleplayer.new("samples/pickup.wav")
