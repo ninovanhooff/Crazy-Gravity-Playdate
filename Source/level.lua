@@ -8,6 +8,11 @@ import "util.lua"
 
 local file = playdate.file
 
+sumT = {0,8,24}
+greySumT = {-1,56,32,0} -- -1:unused
+greyMaxT = {-1,9,8,5}
+
+
 function LoadFile(cgpbPath)
     printf("loading ".. cgpbPath)
     local jsonPath = stripExtension(cgpbPath) .. ".json"
@@ -65,4 +70,41 @@ function LoadFile(cgpbPath)
     TFile = nil
     printf("loaded dim",#brickT,#brickT[1])
     return true
+end
+
+function RenderLineVert(maxJ) -- render column bricks, brute force, fail safe
+    local i=camPos[1]
+    local j = camPos[2]
+    while j<= maxJ do
+        local curBrick = brickT[i][j]
+        if curBrick[1]>2 then
+            if curBrick[1]>=7 then --concrete
+                pgeDraw((i-camPos[1])*8-camPos[3],(j-camPos[2])*8-camPos[4],8*(curBrick[3]-curBrick[4]),8*(curBrick[3]-curBrick[5]),240+(curBrick[2]*curBrick[3]+curBrick[4])*8,greySumT[curBrick[3]]+curBrick[5]*8,8*(curBrick[3]-curBrick[4]),8*(curBrick[3]-curBrick[5]),0,255)
+            elseif curBrick[1]>=3 then --color
+                pgeDraw((i-camPos[1])*8-camPos[3],(j-camPos[2])*8-camPos[4],(curBrick[2]-curBrick[4])*8,(curBrick[3]-curBrick[5])*8,(curBrick[1]-3)*48+sumT[curBrick[2]]+curBrick[4]*8,sumT[curBrick[3]]+curBrick[5]*8,(curBrick[2]-curBrick[4])*8,(curBrick[3]-curBrick[5])*8,0,255)
+            end
+        end
+        j = j + curBrick[3]-curBrick[5]
+        curBrick = nil
+    end
+end
+
+function RenderLineHoriz(maxI) -- render row  bricks, brute force, fail safe
+    i=camPos[1]
+    j = camPos[2]
+    while i<=maxI do
+        curBrick = brickT[i][j]
+        if curBrick[1]>2 then
+            if curBrick[1]>=7 then --concrete
+                pgeDraw((i-camPos[1])*8-camPos[3],(j-camPos[2])*8-camPos[4],8*(curBrick[3]-curBrick[4]),8*(curBrick[3]-curBrick[5]),240+curBrick[2]*curBrick[3]*8,greySumT[curBrick[3]]+curBrick[5]*8,8*(curBrick[3]-curBrick[4]),8*(curBrick[3]-curBrick[5]),0,255)
+                i = i + curBrick[3]-curBrick[4]
+            elseif curBrick[1]>=3 then --color
+                pgeDraw((i-camPos[1])*8-camPos[3],(j-camPos[2])*8-camPos[4],(curBrick[2]-curBrick[4])*8,(curBrick[3]-curBrick[5])*8,(curBrick[1]-3)*48+sumT[curBrick[2]]+curBrick[4]*8,sumT[curBrick[3]]+curBrick[5]*8,(curBrick[2]-curBrick[4])*8,(curBrick[3]-curBrick[5])*8,0,255)
+                i = i + curBrick[2]-curBrick[4]
+            end
+        else
+            i = i + curBrick[2]-curBrick[4]
+        end
+
+    end
 end

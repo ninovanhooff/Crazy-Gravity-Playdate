@@ -5,6 +5,9 @@
 ---
 
 local sampleplayer = playdate.sound.sampleplayer
+local graphics = playdate.graphics
+
+math.randomseed(playdate.getSecondsSinceEpoch())
 pi = 3.141592654
 Debug = true
 Sounds = true
@@ -23,11 +26,13 @@ if Sounds then
     dump_sound = sampleplayer.new("samples/dump.wav")
     explode_sound = sampleplayer.new("samples/explosion.wav")
 end
---
+
+sprite = graphics.image.new("images/sprite.png")
+if not sprite then error("failed to load sprite") end
+    --
 --menuFont = font.load("verdana.ttf",10)
 --if not menuFont then error("failed to load font") end
---sprite = texture.load("sprite.png",PGE_RAM)
---if not sprite then error("failed to load sprite") end
+
 --titleBG = texture.load("titleBG.png")
 --if not titleBG then error("could not load title image") end
 

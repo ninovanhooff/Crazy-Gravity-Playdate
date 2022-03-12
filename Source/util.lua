@@ -52,7 +52,7 @@ function count(tbl)
 end
 
 function loopAnim(frames,skip)
-    return math.floor(math.mod(frameCounter,frames*skip)*(1/skip))
+    return math.floor((frameCounter % frames*skip)*(1/skip))
 end
 
 
