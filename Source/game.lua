@@ -1,6 +1,7 @@
 import "settings.lua"
 import "drawUtil.lua"
 import "specials.lua"
+import "gameView.lua"
 
 local gfx = playdate.graphics
 
@@ -605,14 +606,6 @@ initSpecial[13]=InitRod
 initSpecial[14]=Init1Way
 initSpecial[15]=InitBarrier
 
-function drawInterfaceBox(x,w)
-	gfx.drawline(x,hudY+1,x+w,hudY+1,interfaceBoxUpperClr)
-	gfx.drawline(x,hudY+1,x,hudY+14,interfaceBoxUpperClr)
-	gfx.drawline(x+w,hudY+2,x+w,hudY+14,interfaceBoxLowerClr)
-	gfx.drawline(x+1,hudY+14,x+w,hudY+14,interfaceBoxLowerClr)
-	gfx.drawrect(x+1,hudY+2,w-1,13,black)
-end
-
 function checkCam()
 	if camPos[1]>levelProps.sizeX-59 then
 		camPos[1] = levelProps.sizeX-59
@@ -879,139 +872,6 @@ function DecreaseLife()
 	end
 end
 
-function RenderGame()
-	bgOffX=nil;bgOffY=nil
-	bgOffX = math.floor((camPos[1]*8+camPos[3] % 128)*0.25)
-	bgOffY = math.floor((camPos[2]*8+camPos[4] % 128)*0.25)
-	for i=0,15 do -- bg
-		for j = 0,8 do
-			pgeDraw(i*32-bgOffX,j*32-bgOffY,32,32,levelProps.bg*32,60,32,32,0,255)
-		end
-	end
-
-	--gfx.setDitherPattern(0.81, gfx.image.kDitherTypeBayer8x8)
-	--gfx.fillRect(0,0,400,240)
-
-	sprite:setInverted(false)
-	gfx.setColor(gfx.kColorBlack)
-
-	for i,item in ipairs(specialT) do -- special blocks
-		scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
-		if item.x+item.w>=camPos[1] and item.x<=camPos[1]+61 and item.y+item.h>=camPos[2] and item.y<camPos[2]+33 then
-			specialRenders[item.sType-7](item)
-		end
-	end
-	maxI=nil;maxJ=nil
-	if camPos[3]==0 then 
-		maxI = camPos[1]+59
-	else
-		maxI = camPos[1]+60
-	end
-	if camPos[4]==0 then 
-		maxJ = camPos[2]+31
-	else
-		maxJ = camPos[2]+32
-	end
-	
-	RenderLineHoriz(maxI)
-	RenderLineVert(maxJ)
-	
-	local i = camPos[1]+1
-	while i<=maxI do -- bricks
-		local j = camPos[2]+1
-		while j<=maxJ do
-			local curBrick = brickT[i][j]
-			if not curBrick then printf("curBrick",i,j,camPos[1],camPos[2]) end
-			--if curBrick[1]~=0 then printf(curBrick[2],curBrick[3],curBrick[4],curBrick[5]) end
-			if curBrick[1]>2 and curBrick[4]==0 and curBrick[5]==0 then
-				if curBrick[1]<7 then --colors
-					pgeDraw((i-camPos[1])*8-camPos[3],(j-camPos[2])*8-camPos[4],curBrick[2]*8,curBrick[3]*8,(curBrick[1]-3)*48+sumT[curBrick[2]],sumT[curBrick[3]],curBrick[2]*8,curBrick[3]*8,0,255)
-					--printf("color:",(i-camPos[1])*8,(j-camPos[2])*8,curBrick[2]*8,curBrick[3]*8,(curBrick[1]-3)*48+sumT[curBrick[2]],sumT[curBrick[3]],curBrick[2]*8,curBrick[3]*8)
-				else -- concrete
-					pgeDraw((i-camPos[1])*8-camPos[3],(j-camPos[2])*8-camPos[4],8*curBrick[3],8*curBrick[3],240+curBrick[2]*curBrick[3]*8,greySumT[curBrick[3]],curBrick[3]*8,curBrick[3]*8,0,255)
-				end
-			end
-			j = j + curBrick[3]-curBrick[5]
-			curBrick = nil
-		end
-		i = i + 1
-	end
-	
-	pgeDraw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3],(planePos[2]-camPos[2])*8+planePos[4]-camPos[4],23,23,planeRot%16*23,391+(boolToNum(planeRot>15)*2-thrust)*23,23,23) -- plane
-
-	gfx.setColor(hudBGClr)
-	gfx.fillRect(0,hudY,400,16)
-	
-	--explosion
-	if collision and not Debug then
-		pgeDraw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3]+explodeX,(planePos[2]-camPos[2])*8+planePos[4]-camPos[4]+explodeY,23,23,explodeJ*23,489,23,23)
-	end
-	
-	--interface
-	
-	pgeDraw(1,hudY+1,28,14,232,314,28,14) -- remain freight stat
-	drawInterfaceBox(30,106)
-	local freightPosCount = 0
-	for i,item in ipairs(remainingFreight) do
-		for j=0,math.fmin(item-1,7) do
-			pgeDraw(32+freightPosCount*13,hudY+3,12,12,64+i*16,346,16,16)
-			freightPosCount = freightPosCount + 1
-		end
-	end
-	
-	local planeFreightX = 147
-	pgeDraw(planeFreightX,hudY+1,28,14,hudY+4,314,28,14) -- planeFreight stat
-	drawInterfaceBox(planeFreightX+29,14*extras[3])
-	for i,item in ipairs(planeFreight) do
-		pgeDraw(planeFreightX+31+(i-1)*13,hudY+3,12,12,80+item[1]*16,346,16,16)
-	end
-	
-	local keysX = 220
-	pgeDraw(keysX,hudY+1,28,14,344,314,28,14) -- keys
-	drawInterfaceBox(keysX+30,50)
-	for i=1,4 do
-		if keys[i] then
-			pgeDraw(keysX+32+(i-1)*12,hudY+3,12,12,185+(frameCounter % 7)*16,414+(i-1)*16,16,16)
-		end
-	end
-	
-	local fuelX = 300
-	pgeDraw(fuelX+2,hudY+1,28,14,316,314,28,14) -- fuel stat
-	drawInterfaceBox(fuelX+32,48)
-	local fuelW = math.round(44*fuel/6000/4)*4
-	pgeDraw(fuelX+34,hudY+4,fuelW,9,231,328,fuelW,9)
-	
-	for i=0,extras[2]-1 do -- lives
-		pgeDraw(5+i*25,5,23,23,46,414,23,23,0,180)
-	end
-	
-	drawInterfaceBox(382,75) -- Time
-	menuFont:print(384,hudY+4,green,TimeString(frameCounter*0.05).."/"..lMin..":"..lSec)
-		
-	local warnX = 460
-	
-	if math.abs(vx) > landingTolerance[1] or vy > landingTolerance[2] then --red
-		pgeDraw(warnX,hudY,16,16,165,461,16,16)
-	elseif math.abs(vx) > landingTolerance[1]-1 or vy > landingTolerance[2] - 1 then --yellow
-		pgeDraw(warnX,hudY,16,16,149,461,16,16)
-	else -- green
-		pgeDraw(warnX,hudY,16,16,133,461,16,16)
-	end
-	
-	if Debug then
-		if collision then
-			pgeDraw(470,hudY,8,8,64,338,8,8)
-		end
-		--- plane collision
-		local colOffX = (planePos[1]-camPos[1])*8-camPos[3]
-		local colOffY = (planePos[2]-camPos[2])*8-camPos[4]
-		gfx.drawline(colOffX+colT[1],colOffY+colT[2],colOffX+colT[3],colOffY+colT[4],red)
-		gfx.drawline(colOffX+colT[3],colOffY+colT[4],colOffX+colT[5],colOffY+colT[6],red)
-		gfx.drawline(colOffX+colT[5],colOffY+colT[6],colOffX+colT[1],colOffY+colT[2],red)
-	end
-	
-end
-
 function Benchmark(n)
 	calcTimeStep()
 	benchTimer = timer.create()
@@ -1183,7 +1043,7 @@ end
 
 function RenderVictoryMenu(data)
 	BGRender(true)
-	gfx.drawrect(175,60,125,45+(#data+2)*12-3,menuBGClr)
+	pgeDrawRect(175,60,125,45+(#data+2)*12-3,menuBGClr)
 	for i=0,1 do
 		for j = 0,1 do
 			pgeDraw(172+i*120,55+j*35+j*(#data+2)*12,16,16,5-i*4,464-j*4,23,23)--corner blocks
@@ -1195,21 +1055,21 @@ function RenderVictoryMenu(data)
 	pgeDraw(188,59,104,7,173,80,104,11) -- top rod
 	local menucurX,menucurY
 	
-	menuFont:printcenter(70,black,"Level Complete!")
-	menuFont:printcenter(82,black,"Your time: "..TimeString(frameCounter*0.05))
+	pgeDrawTextcenter(70,black,"Level Complete!")
+	pgeDrawTextcenter(82,black,"Your time: "..TimeString(frameCounter*0.05))
 	for i,item in ipairs(data) do 
-		menuFont:print(189,91+i*12,black,i..".") -- rank
-		menuFont:print(200,91+i*12,black,item[1])
-		menuFont:print(263,91+i*12,black,TimeString(item[2]))
+		pgeDrawText(189,91+i*12,black,i..".") -- rank
+		pgeDrawText(200,91+i*12,black,item[1])
+		pgeDrawText(263,91+i*12,black,TimeString(item[2]))
 	end
 	
 	if newGamePath then
 		pgeDraw(188,85+(#data+2)*12,10,10,84,463,10,10)
-		menuFont:print(197,85+(#data+2)*12,black,"Next")
+		pgeDrawText(197,85+(#data+2)*12,black,"Next")
 	end
 	pgeDraw(223,85+(#data+2)*12,10,10,123,463,10,10)
 	pgeDraw(263,85+(#data+2)*12,10,10,96,463,10,10)
-	menuFont:print(232,85+(#data+2)*12,black,"Restrt")
-	menuFont:print(272,85+(#data+2)*12,black,"Quit")
+	pgeDrawText(232,85+(#data+2)*12,black,"Restrt")
+	pgeDrawText(272,85+(#data+2)*12,black,"Quit")
 	--pgeDraw(187,menucurY,12,11,0,368,20,20) -- cursor
 end

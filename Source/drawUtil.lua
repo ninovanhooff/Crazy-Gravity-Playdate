@@ -4,7 +4,7 @@
 --- DateTime: 12/03/2022 16:10
 ---
 
-local graphics = playdate.graphics
+local gfx = playdate.graphics
 
 function pgeDraw(x, y, width, height, texstartx, texstarty, texW, texH, rotation, alpha)
     printf("WARNING rotation and alpha ignored")
@@ -13,7 +13,21 @@ end
 
 function pgeDraw(x, y, width, height, texstartx, texstarty, texW, texH)
     if width ~= texW or height ~= texH then
-        printf("WARNING ignoring scaling")
+        printf("WARNING ignoring scaling", where())
     end
-    sprite:draw(x, y, graphics.kImageUnflipped, texstartx, texstarty, texW, texH)
+    sprite:draw(x, y, gfx.kImageUnflipped, texstartx, texstarty, texW, texH)
+end
+
+function pgeDrawLine(x1, y1, x2, y2, color)
+    gfx.setColor(color)
+    gfx.drawLine(x1, y1, x2, y2)
+end
+
+function pgeDrawRect(x, y, w, h, color)
+    gfx.setColor(color)
+    gfx.fillRect(x, y, w, h)
+end
+
+function pgeDrawText(x, y, color, text)
+    gfx.drawText(text, x, y)
 end

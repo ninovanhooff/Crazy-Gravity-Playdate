@@ -53,7 +53,7 @@ function RenderPlatform(item)
         pgeDraw(scrX+8,pltfrmY-24,16,16,185+math.mod(frameCounter,7)*16,398+16*item.color,16,16)
     end
     if editorMode then
-        gfx.drawrectoutline(scrX,scrY,item.w*8,32,white)
+        pgeDrawRectoutline(scrX,scrY,item.w*8,32,white)
     end
 end
 
@@ -62,25 +62,25 @@ function RenderBlower(item)
         pgeDraw(scrX,scrY+item.distance*8+16,48,48,320+math.mod(frameCounter,3)*48,142-(item.grating-1)*48,48,48) -- body
         pgeDraw(scrX,scrY+item.distance*8,48,16,380,372+(item.direction-1)*16,48,16)
         if editorMode then
-            gfx.drawrectoutline(scrX,scrY,48,item.distance*8,white)
+            pgeDrawRectoutline(scrX,scrY,48,item.distance*8,white)
         end
     elseif item.direction==2 then
         pgeDraw(scrX,scrY,48,48,320+math.mod(frameCounter,3)*48,142-(item.grating-1)*48,48,48) -- body
         pgeDraw(scrX,scrY+48,48,16,380,372+(item.direction-1)*16,48,16)
         if editorMode then
-            gfx.drawrectoutline(scrX,scrY+64,48,item.distance*8,white)
+            pgeDrawRectoutline(scrX,scrY+64,48,item.distance*8,white)
         end
     elseif item.direction==3 then
         pgeDraw(scrX+item.distance*8+16,scrY,48,48,320+math.mod(frameCounter,3)*48,142-(item.grating-1)*48,48,48) -- body
         pgeDraw(scrX+item.distance*8,scrY,16,48,464+(item.direction-3)*16,94,16,48)
         if editorMode then
-            gfx.drawrectoutline(scrX,scrY,item.distance*8,48,white)
+            pgeDrawRectoutline(scrX,scrY,item.distance*8,48,white)
         end
     elseif item.direction==4 then
         pgeDraw(scrX,scrY,48,48,320+math.mod(frameCounter,3)*48,142-(item.grating-1)*48,48,48) -- body
         pgeDraw(scrX+48,scrY,16,48,464+(item.direction-3)*16,94,16,48)
         if editorMode then
-            gfx.drawrectoutline(scrX+64,scrY,item.distance*8,48,white)
+            pgeDrawRectoutline(scrX+64,scrY,item.distance*8,48,white)
         end
     end
 end
@@ -89,19 +89,19 @@ function RenderMagnet(item)
     if item.direction==1 then
         pgeDraw(scrX,scrY+item.distance*8+16,32,32,0,234,32,32) -- body
         pgeDraw(scrX,scrY+item.distance*8,32,16,0+loopAnim(3,2)*32,282,32,16)
-        if editorMode then gfx.drawrectoutline(scrX,scrY,32,item.distance*8,white) end
+        if editorMode then pgeDrawRectoutline(scrX,scrY,32,item.distance*8,white) end
     elseif item.direction==2 then
         pgeDraw(scrX,scrY,32,32,0,234,32,32) -- body
         pgeDraw(scrX,scrY+32,32,16,0+loopAnim(3,2)*32,266,32,16)
-        if editorMode then gfx.drawrectoutline(scrX,scrY+32+16,32,item.distance*8,white) end
+        if editorMode then pgeDrawRectoutline(scrX,scrY+32+16,32,item.distance*8,white) end
     elseif item.direction==3 then
         pgeDraw(scrX+item.distance*8+16,scrY,32,32,0,234,32,32) -- body
         pgeDraw(scrX+item.distance*8,scrY,16,32,79+loopAnim(3,2)*16,234,16,32)
-        if editorMode then gfx.drawrectoutline(scrX,scrY,item.distance*8,32,white) end
+        if editorMode then pgeDrawRectoutline(scrX,scrY,item.distance*8,32,white) end
     elseif item.direction==4 then
         pgeDraw(scrX,scrY,32,32,0,234,32,32) -- body
         pgeDraw(scrX+32,scrY,16,32,32+loopAnim(3,2)*16,234,16,32)
-        if editorMode then gfx.drawrectoutline(scrX+32+16,scrY,item.distance*8,32,white) end
+        if editorMode then pgeDrawRectoutline(scrX+32+16,scrY,item.distance*8,32,white) end
     end
 end
 
@@ -117,19 +117,19 @@ function RenderRotator(item)
     if item.direction==1 then
         pgeDraw(scrX,scrY+item.distance*8+24,40,40,0+loopAnim(8,2)*40,94+(item.rotates-1)*40,40,40)
         pgeDraw(scrX,scrY+item.distance*8,40,24,320+(item.rotates-1)*80,190,40,24)
-        if editorMode then gfx.drawrectoutline(scrX,scrY,40,item.distance*8,white) end
+        if editorMode then pgeDrawRectoutline(scrX,scrY,40,item.distance*8,white) end
     elseif item.direction==2 then
         pgeDraw(scrX,scrY,40,40,0+loopAnim(8,2)*40,94+(item.rotates-1)*40,40,40) -- body
         pgeDraw(scrX,scrY+40,40,24,363+(item.rotates-1)*80,190,40,24) -- nozzle
-        if editorMode then gfx.drawrectoutline(scrX,scrY+40+24,40,item.distance*8,white) end
+        if editorMode then pgeDrawRectoutline(scrX,scrY+40+24,40,item.distance*8,white) end
     elseif item.direction==3 then
         pgeDraw(scrX+item.distance*8+24,scrY,40,40,0+loopAnim(8,2)*40,94+(item.rotates-1)*40,40,40)
         pgeDraw(scrX+item.distance*8,scrY,24,40,(item.rotates-1)*48,298,24,40)
-        if editorMode then gfx.drawrectoutline(scrX,scrY,item.distance*8,40,white) end
+        if editorMode then pgeDrawRectoutline(scrX,scrY,item.distance*8,40,white) end
     elseif item.direction==4 then
         pgeDraw(scrX,scrY,40,40,0+loopAnim(8,2)*40,94+(item.rotates-1)*40,40,40)
         pgeDraw(scrX+40,scrY,24,40,24+(item.rotates-1)*48,298,24,40)
-        if editorMode then gfx.drawrectoutline(scrX+40+24,scrY,item.distance*8,40,white) end
+        if editorMode then pgeDrawRectoutline(scrX+40+24,scrY,item.distance*8,40,white) end
     end
 end
 
@@ -137,7 +137,7 @@ function RenderCannon(item)
     if item.direction==1 then -- up
 
         if editorMode then
-            gfx.drawrectoutline(scrX,scrY,24,item.distance*8,white)
+            pgeDrawRectoutline(scrX,scrY,24,item.distance*8,white)
         else
             for j,jtem in ipairs(item.balls) do
                 local bOff = (math.floor((frameCounter-jtem[2])%72/3))*8
@@ -149,7 +149,7 @@ function RenderCannon(item)
     elseif item.direction==2 then -- down
 
         if editorMode then
-            gfx.drawrectoutline(scrX,scrY+40,24,item.distance*8,white)
+            pgeDrawRectoutline(scrX,scrY+40,24,item.distance*8,white)
         else
             for j,jtem in ipairs(item.balls) do
                 local bOff = (math.floor((frameCounter-jtem[2])%72/3))*8
@@ -161,7 +161,7 @@ function RenderCannon(item)
     elseif item.direction==3 then -- left
 
         if editorMode then
-            gfx.drawrectoutline(scrX,scrY,item.distance*8,24,white)
+            pgeDrawRectoutline(scrX,scrY,item.distance*8,24,white)
         else
             for j,jtem in ipairs(item.balls) do
                 local bOff = (math.floor((frameCounter-jtem[2])%72/3))*8
@@ -173,7 +173,7 @@ function RenderCannon(item)
     else -- right
 
         if editorMode then
-            gfx.drawrectoutline(scrX+40,scrY,item.distance*8,24,white)
+            pgeDrawRectoutline(scrX+40,scrY,item.distance*8,24,white)
         else
             for j,jtem in ipairs(item.balls) do
                 local bOff = (math.floor((frameCounter-jtem[2])%72/3))*8
@@ -189,7 +189,7 @@ end
 function RenderRod(item)
     if item.direction==2 then -- vertical
         if editorMode then
-            gfx.drawrectoutline(scrX,scrY+24,24,item.distance*8,white)
+            pgeDrawRectoutline(scrX,scrY+24,24,item.distance*8,white)
         end
         pgeDraw(scrX+2,scrY+item.distance*8,20,24,4+loopAnim(2,20)*28,460,20,24) -- bottom
         pgeDraw(scrX+2,scrY,20,24,32-loopAnim(2,20)*28,464,20,24) -- top
@@ -197,7 +197,7 @@ function RenderRod(item)
         pgeDraw(scrX+6,scrY+item.distance*8-item.pos2,12,item.pos2,500,204,12,item.pos2) -- bottom rod
     elseif item.direction==1 then -- horizontal
         if editorMode then
-            gfx.drawrectoutline(scrX+24,scrY,item.distance*8,24,white)
+            pgeDrawRectoutline(scrX+24,scrY,item.distance*8,24,white)
         end
         pgeDraw(scrX,scrY+2,24,20,4+loopAnim(2,20)*28,464,24,20) -- left
         pgeDraw(scrX+item.distance*8,scrY+2,24,20,28-loopAnim(2,20)*28,464,24,20) -- right
@@ -216,7 +216,7 @@ function Render1Way(item)
             pgeDraw(scrX+32,scrY,32,16,128,234,32,16)
         end
         if editorMode then
-            gfx.drawrectoutline(scrX+32+(item.XtoY-2)*(-32+item.actW*8),scrY+item.distance*4+18-item.actH*4-4,item.actW*8,item.actH*8,yellow)
+            pgeDrawRectoutline(scrX+32+(item.XtoY-2)*(-32+item.actW*8),scrY+item.distance*4+18-item.actH*4-4,item.actW*8,item.actH*8,yellow)
         end
     elseif item.direction==2 then -- down
         pgeDraw(scrX,scrY,96,36,256,214,96,36) -- body
@@ -226,7 +226,7 @@ function Render1Way(item)
             pgeDraw(scrX+32,scrY+32+item.distance*8-16,32,16,128,254,32,16)
         end
         if editorMode then
-            gfx.drawrectoutline(scrX+32+(item.XtoY-2)*(-32+item.actW*8),scrY+item.distance*4+18-item.actH*4-4,item.actW*8,item.actH*8,yellow)
+            pgeDrawRectoutline(scrX+32+(item.XtoY-2)*(-32+item.actW*8),scrY+item.distance*4+18-item.actH*4-4,item.actW*8,item.actH*8,yellow)
         end
     elseif item.direction==3 then -- left
         pgeDraw(scrX-4+item.distance*8,scrY,36,96,196,250,36,96) -- body
@@ -236,7 +236,7 @@ function Render1Way(item)
             pgeDraw(scrX,scrY+32,16,32,352,214,16,32)
         end
         if editorMode then
-            gfx.drawrectoutline(scrX+item.distance*4+18-item.actW*4-4,scrY+64-(item.XtoY-1)*32-boolToNum(item.XtoY==1)*item.actH*8,item.actW*8,item.actH*8,yellow)
+            pgeDrawRectoutline(scrX+item.distance*4+18-item.actW*4-4,scrY+64-(item.XtoY-1)*32-boolToNum(item.XtoY==1)*item.actH*8,item.actW*8,item.actH*8,yellow)
         end
     else -- right
         pgeDraw(scrX,scrY,36,96,160,250,36,96) -- body
@@ -246,7 +246,7 @@ function Render1Way(item)
             pgeDraw(scrX+32+item.distance*8-16,scrY+32,16,32,372,214,16,32)
         end
         if editorMode then
-            gfx.drawrectoutline(scrX+item.distance*4+18-item.actW*4-4,scrY+64-(item.XtoY-1)*32-boolToNum(item.XtoY==1)*item.actH*8,item.actW*8,item.actH*8,yellow)
+            pgeDrawRectoutline(scrX+item.distance*4+18-item.actW*4-4,scrY+64-(item.XtoY-1)*32-boolToNum(item.XtoY==1)*item.actH*8,item.actW*8,item.actH*8,yellow)
         end
     end
 end
@@ -261,7 +261,7 @@ function RenderBarrier(item)
             pgeDraw(scrX+8,scrY,32,16,128,234,32,16)
         end
         if editorMode then
-            gfx.drawrectoutline(scrX+24-item.actW*4,scrY+pixDist-4-item.distance*4+8-item.actH*4,item.actW*8,item.actH*8,yellow)
+            pgeDrawRectoutline(scrX+24-item.actW*4,scrY+pixDist-4-item.distance*4+8-item.actH*4,item.actW*8,item.actH*8,yellow)
         end
         colorCoords = {6,item.distance*8+6}
     elseif item.direction==2 then -- down
@@ -271,7 +271,7 @@ function RenderBarrier(item)
             pgeDraw(scrX+8,scrY+32+item.distance*8-16,32,16,128,254,32,16)
         end
         if editorMode then
-            gfx.drawrectoutline(scrX+24-item.actW*4,scrY+36+item.distance*4-8-item.actH*4,item.actW*8,item.actH*8,yellow)
+            pgeDrawRectoutline(scrX+24-item.actW*4,scrY+36+item.distance*4-8-item.actH*4,item.actW*8,item.actH*8,yellow)
         end
         colorCoords = {22,6}
     elseif item.direction==3 then -- left
@@ -281,7 +281,7 @@ function RenderBarrier(item)
             pgeDraw(scrX,scrY+8,16,32,352,214,16,32)
         end
         if editorMode then
-            gfx.drawrectoutline(scrX+pixDist-4-item.distance*4-item.actW*4,scrY+24-item.actH*4,item.actW*8,item.actH*8,yellow)
+            pgeDrawRectoutline(scrX+pixDist-4-item.distance*4-item.actW*4,scrY+24-item.actH*4,item.actW*8,item.actH*8,yellow)
         end
         colorCoords={item.distance*8+6,22}
     else -- right
@@ -291,7 +291,7 @@ function RenderBarrier(item)
             pgeDraw(scrX+32+item.distance*8-16,scrY+8,16,32,372,214,16,32)
         end
         if editorMode then
-            gfx.drawrectoutline(scrX+36+item.distance*4-item.actW*4-8,scrY+24-item.actH*4,item.actW*8,item.actH*8,yellow)
+            pgeDrawRectoutline(scrX+36+item.distance*4-item.actW*4-8,scrY+24-item.actH*4,item.actW*8,item.actH*8,yellow)
         end
         colorCoords = {6,6}
     end

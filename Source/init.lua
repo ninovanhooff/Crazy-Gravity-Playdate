@@ -15,9 +15,6 @@ tileSize = 8 -- refactor: probably hardcoded in a lot of places
 outBufSize = 1024
 print("hoi")
 
-hudY = 256
-hudBGClr = gfx.kColorWhite
-
 if Sounds then
     pickup_sound = sampleplayer.new("samples/pickup.wav")
     landing_sound = sampleplayer.new("samples/landing.wav")
@@ -30,11 +27,11 @@ if Sounds then
     explode_sound = sampleplayer.new("samples/explosion.wav")
 end
 
-sprite = gfx.image.new("images/sprite_decomposition_burkes.png")
+sprite = gfx.image.new("images/sprite_decomposition_burkes.png") -- https://www.gingerbeardman.com/canvas-dither/
 if not sprite then error("failed to load sprite") end
     --
---menuFont = font.load("verdana.ttf",10)
---if not menuFont then error("failed to load font") end
+menuFont = gfx.getFont()
+if not menuFont then error("failed to load font") end
 
 --titleBG = texture.load("titleBG.png")
 --if not titleBG then error("could not load title image") end
