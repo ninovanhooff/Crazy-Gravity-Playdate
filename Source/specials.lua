@@ -50,7 +50,7 @@ function RenderPlatform(item)
     elseif item.pType==4 and item.amnt>0 then-- extras
         pgeDraw(scrX+8,pltfrmY-16,16,16,128+16*item.type,346,16,16)
     elseif item.pType==5 and item.amnt>0 then-- key
-        pgeDraw(scrX+8,pltfrmY-24,16,16,185+math.mod(frameCounter,7)*16,398+16*item.color,16,16)
+        pgeDraw(scrX+8,pltfrmY-24,16,16,185+(frameCounter%7)*16,398+16*item.color,16,16)
     end
     if editorMode then
         pgeDrawRectoutline(scrX,scrY,item.w*8,32,white)
@@ -59,25 +59,25 @@ end
 
 function RenderBlower(item)
     if item.direction==1 then
-        pgeDraw(scrX,scrY+item.distance*8+16,48,48,320+math.mod(frameCounter,3)*48,142-(item.grating-1)*48,48,48) -- body
+        pgeDraw(scrX,scrY+item.distance*8+16,48,48,320+(frameCounter%3)*48,142-(item.grating-1)*48,48,48) -- body
         pgeDraw(scrX,scrY+item.distance*8,48,16,380,372+(item.direction-1)*16,48,16)
         if editorMode then
             pgeDrawRectoutline(scrX,scrY,48,item.distance*8,white)
         end
     elseif item.direction==2 then
-        pgeDraw(scrX,scrY,48,48,320+math.mod(frameCounter,3)*48,142-(item.grating-1)*48,48,48) -- body
+        pgeDraw(scrX,scrY,48,48,320+(frameCounter%3)*48,142-(item.grating-1)*48,48,48) -- body
         pgeDraw(scrX,scrY+48,48,16,380,372+(item.direction-1)*16,48,16)
         if editorMode then
             pgeDrawRectoutline(scrX,scrY+64,48,item.distance*8,white)
         end
     elseif item.direction==3 then
-        pgeDraw(scrX+item.distance*8+16,scrY,48,48,320+math.mod(frameCounter,3)*48,142-(item.grating-1)*48,48,48) -- body
+        pgeDraw(scrX+item.distance*8+16,scrY,48,48,320+(frameCounter%3)*48,142-(item.grating-1)*48,48,48) -- body
         pgeDraw(scrX+item.distance*8,scrY,16,48,464+(item.direction-3)*16,94,16,48)
         if editorMode then
             pgeDrawRectoutline(scrX,scrY,item.distance*8,48,white)
         end
     elseif item.direction==4 then
-        pgeDraw(scrX,scrY,48,48,320+math.mod(frameCounter,3)*48,142-(item.grating-1)*48,48,48) -- body
+        pgeDraw(scrX,scrY,48,48,320+(frameCounter%3)*48,142-(item.grating-1)*48,48,48) -- body
         pgeDraw(scrX+48,scrY,16,48,464+(item.direction-3)*16,94,16,48)
         if editorMode then
             pgeDrawRectoutline(scrX+64,scrY,item.distance*8,48,white)
