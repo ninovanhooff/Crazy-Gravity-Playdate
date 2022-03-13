@@ -91,7 +91,8 @@ function RenderLineVert(maxJ) -- render column bricks, brute force, fail safe
     end
 end
 
-function RenderLineHoriz(maxI) -- render row  bricks, brute force, fail safe
+--- render a row of bricks, brute force, fail safe
+function RenderLineHoriz(maxI)
     i=camPos[1]
     j = camPos[2]
     while i<=maxI do
@@ -124,10 +125,10 @@ function RenderBackground()
 end
 
 function RenderGame()
-    RenderBackground()
-
     sprite:setInverted(false)
     gfx.setColor(gfx.kColorBlack)
+
+    RenderBackground()
 
     for i,item in ipairs(specialT) do -- special blocks
         scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
@@ -136,8 +137,8 @@ function RenderGame()
         end
     end
 
-    maxI=camPos[1]+screenWidthTiles -- need to draw one column extra because of scrolling
-    maxJ=camPos[2]+screenHeightTiles -- no need to draw offscreen, world partially covered by HUD
+    maxI=camPos[1]+screenWidthTiles
+    maxJ=camPos[2]+screenHeightTiles
 
     RenderLineHoriz(maxI)
     RenderLineVert(maxJ)
@@ -163,7 +164,8 @@ function RenderGame()
         i = i + 1
     end
 
-    pgeDraw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3],(planePos[2]-camPos[2])*8+planePos[4]-camPos[4],23,23,planeRot%16*23,391+(boolToNum(planeRot>15)*2-thrust)*23,23,23) -- plane
+    -- plane
+    pgeDraw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3],(planePos[2]-camPos[2])*8+planePos[4]-camPos[4],23,23,planeRot%16*23,391+(boolToNum(planeRot>15)*2-thrust)*23,23,23)
 
     --explosion
     if collision and not Debug then
