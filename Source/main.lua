@@ -2,6 +2,7 @@ import "CoreLibs/utilities/where"
 import "util.lua"
 import "level.lua"
 import "game.lua"
+import "gameViewModel.lua"
 import "init.lua"
 
 local gfx = playdate.graphics
@@ -16,6 +17,8 @@ startGame()
 gfx.setColor(gfx.kColorBlack)
 
 function playdate.update()
+    ProcessInputs()
+    CalcTimeStep()
     RenderGame()
     playdate.drawFPS(0,0)
 end

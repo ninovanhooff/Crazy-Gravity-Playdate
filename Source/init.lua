@@ -12,6 +12,8 @@ pi = 3.141592654
 Debug = true
 Sounds = true
 tileSize = 8 -- refactor: probably hardcoded in a lot of places
+screenWidthTiles = playdate.display.getWidth() / tileSize
+screenHeightTiles = playdate.display.getHeight() / tileSize
 outBufSize = 1024
 print("hoi")
 
