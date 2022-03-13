@@ -4,6 +4,9 @@ import "specials.lua"
 import "gameView.lua"
 
 hudY = 224
+colorT = {"red","green","blue","yellow"}
+sumT = {0,8,24}
+greySumT = {-1,56,32,0} -- -1:unused
 tileSize = 8 -- refactor: probably hardcoded in a lot of places
 gameWidthTiles = math.ceil(screenWidth / tileSize)
 gameHeightTiles = math.ceil(hudY / tileSize)
@@ -199,7 +202,7 @@ function CalcRotator(item,idx)
 				planeRot = planeRot + 1
 			end
 			planeRot = math.fmod(planeRot,23)
-			planeRot = math.random(planeRot,0)
+			--planeRot = math.random(planeRot,0) -- refactor: no clue why this line was here, but it crashes due to invalid range
 		end
 	end
 end
@@ -643,7 +646,6 @@ function ResetPlane()
 	landedTimer,landedAt = 0,-1
 end
 function InitGame(path)
-	kill = nil
 	LoadFile(path)
 	curGamePath = path
 	OptimizeLevel()
