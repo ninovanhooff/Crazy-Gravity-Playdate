@@ -113,9 +113,6 @@ function RenderLineHoriz(maxI) -- render row  bricks, brute force, fail safe
 end
 
 function RenderBackground()
-    gfx.setDitherPattern(0.81, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillRect(0,0,400,240)
-
     local bgTileSize = 32
     local bgOffX = math.floor(((camPos[1]*8+camPos[3]) % 128)*0.25)
     local bgOffY = math.floor(((camPos[2]*8+camPos[4]) % 128)*0.25)
