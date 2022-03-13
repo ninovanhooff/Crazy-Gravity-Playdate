@@ -19,7 +19,7 @@ function ProcessInputs()
             flying = true
             vx = vx + math.cos(-planeRot/12*pi)*(thrustPower+extras[1]*turboPower)
             vy = vy - math.sin(-planeRot/12*pi)*(thrustPower+extras[1]*turboPower)
-            if Sounds and not thrust_sound:isPlaying() then thrust_sound:play() end
+            if Sounds and not thrust_sound:isPlaying() then thrust_sound:play(0) end
         else
             thrust = 0
         end
