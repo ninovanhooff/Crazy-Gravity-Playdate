@@ -187,20 +187,21 @@ function RenderCannon(item)
 end
 
 function RenderRod(item)
+    local skip = 20
     if item.direction==2 then -- vertical
         if editorMode then
             pgeDrawRectoutline(scrX,scrY+24,24,item.distance*8,white)
         end
-        pgeDraw(scrX+2,scrY+item.distance*8,20,24,4+loopAnim(2,20)*28,460,20,24) -- bottom
-        pgeDraw(scrX+2,scrY,20,24,32-loopAnim(2,20)*28,464,20,24) -- top
+        pgeDraw(scrX+2,scrY+item.distance*8,20,24,4+loopAnim(2,skip)*28,460,20,24) -- bottom
+        pgeDraw(scrX+2,scrY,20,24,32-loopAnim(2,skip)*28,464,20,24) -- top
         pgeDraw(scrX+6,scrY+24,12,item.pos1,500,512-item.pos1,12,item.pos1) -- top rod
         pgeDraw(scrX+6,scrY+item.distance*8-item.pos2,12,item.pos2,500,204,12,item.pos2) -- bottom rod
     elseif item.direction==1 then -- horizontal
         if editorMode then
             pgeDrawRectoutline(scrX+24,scrY,item.distance*8,24,white)
         end
-        pgeDraw(scrX,scrY+2,24,20,4+loopAnim(2,20)*28,464,24,20) -- left
-        pgeDraw(scrX+item.distance*8,scrY+2,24,20,28-loopAnim(2,20)*28,464,24,20) -- right
+        pgeDraw(scrX,scrY+2,24,20,4+loopAnim(2,skip)*28,464,24,20) -- left
+        pgeDraw(scrX+item.distance*8,scrY+2,24,20,28-loopAnim(2,skip)*28,464,24,20) -- right
         pgeDraw(scrX+24,scrY+6,item.pos1,12,472-item.pos1,80,item.pos1,12) -- left rod
         pgeDraw(scrX+item.distance*8-item.pos2,scrY+6,item.pos2,12,164,80,item.pos2,12) -- right rod
     end
