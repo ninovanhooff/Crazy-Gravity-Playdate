@@ -3,7 +3,12 @@ import "drawUtil.lua"
 import "specials.lua"
 import "gameView.lua"
 
-local gfx = playdate.graphics
+hudY = 224
+tileSize = 8 -- refactor: probably hardcoded in a lot of places
+gameWidthTiles = math.ceil(screenWidth / tileSize)
+gameHeightTiles = math.ceil(hudY / tileSize)
+local halfWidthTiles = math.ceil(gameWidthTiles*0.5)
+local halfHeightTiles = math.ceil(gameHeightTiles*0.5)
 
 function UnitCollision(x,y,w,h,testMode)
 	--printf(x,y,w,h)
@@ -607,8 +612,8 @@ initSpecial[14]=Init1Way
 initSpecial[15]=InitBarrier
 
 function checkCam()
-	if camPos[1]>levelProps.sizeX-screenWidthTiles then
-		camPos[1] = levelProps.sizeX-screenWidthTiles
+	if camPos[1]>levelProps.sizeX- gameWidthTiles then
+		camPos[1] = levelProps.sizeX- gameWidthTiles
 	end
 	if camPos[2]>levelProps.sizeY-31 then
 		camPos[2] = levelProps.sizeY-31
@@ -694,48 +699,52 @@ end
 
 function CalcGameCam()
 	printf("camBefore",camPos[1].." "..camPos[2].." "..camPos[3].." "..camPos[4])
-	if planePos[1]>camPos[1]+30 then
-		camPos[3] = camPos[3] + planePos[1]-(camPos[1]+30)
-	elseif planePos[1]<camPos[1]+30 then 
-		camPos[3] = camPos[3] - (camPos[1]+30-planePos[1])
+
+	-- horizontal cam position
+	if planePos[1]>camPos[1]+halfWidthTiles then
+		camPos[3] = camPos[3] + planePos[1]-(camPos[1]+halfWidthTiles)
+	elseif planePos[1]<camPos[1]+halfWidthTiles then
+		camPos[3] = camPos[3] - (camPos[1]+halfWidthTiles-planePos[1])
 	end
-	if camPos[3]>7 then
-		local addUnits = math.floor(camPos[3]*0.125)
+	if camPos[3]>tileSize-1 then
+		local addUnits = math.floor(camPos[3]/tileSize)
 		camPos[1] = camPos[1]+addUnits
 		camPos[3] = camPos[3]-addUnits*8
 	elseif camPos[3]<0 then
 		--printf("before",planePos[1],planePos[3])
-		local substUnits = -math.floor(camPos[3]*0.125)
+		local substUnits = -math.floor(camPos[3]/tileSize)
 		camPos[1] = camPos[1]-substUnits
-		camPos[3] = 8+(camPos[3]+(substUnits-1)*8)
+		camPos[3] = tileSize+(camPos[3]+(substUnits-1)*tileSize)
 		--printf("after",planePos[1],planePos[3])
 	end
 	if camPos[1]<1 then
 		camPos[1],camPos[3]=1,0
-	elseif camPos[1]+screenWidthTiles>=levelProps.sizeX then
-		camPos[1],camPos[3] = levelProps.sizeX-screenWidthTiles,0
+	elseif camPos[1]+gameWidthTiles >=levelProps.sizeX then
+		camPos[1],camPos[3] = levelProps.sizeX- gameWidthTiles,0
 	end
-	
-	if planePos[2]>camPos[2]+16 then
-		camPos[4] = camPos[4] + planePos[2]-(camPos[2]+16)
-	elseif planePos[2]<camPos[2]+16 then 
-		camPos[4] = camPos[4] - (camPos[2]+16 - planePos[2])
+
+	-- vertical cam position
+	if planePos[2]>camPos[2]+halfHeightTiles then
+		camPos[4] = camPos[4] + planePos[2]-(camPos[2]+halfHeightTiles)
+	elseif planePos[2]<camPos[2]+halfHeightTiles then
+		camPos[4] = camPos[4] - (camPos[2]+halfHeightTiles - planePos[2])
 	end
 	if camPos[4]>7 then
-		local addUnits = math.floor(camPos[4]*0.125)
+		local addUnits = math.floor(camPos[4]/tileSize)
 		camPos[2] = camPos[2]+addUnits
-		camPos[4] = camPos[4]-addUnits*8
+		camPos[4] = camPos[4]-addUnits*tileSize
 	elseif camPos[4]<0 then
 		--printf("before",planePos[1],planePos[3])
-		local substUnits = -math.floor(camPos[4]*0.125)
+		local substUnits = -math.floor(camPos[4]/tileSize)
 		camPos[2] = camPos[2]-substUnits
-		camPos[4] = 8+(camPos[4]+(substUnits-1)*8)
+		camPos[4] = tileSize+(camPos[4]+(substUnits-1)*tileSize)
 		--printf("after",planePos[1],planePos[3])
 	end
+	local offScreenTileY = gameHeightTiles+1
 	if camPos[2]<1 then
 		camPos[2],camPos[4]=1,0
-	elseif camPos[2]+31>levelProps.sizeY or (camPos[2]+31==levelProps.sizeY and camPos[4]>0) then
-		camPos[2],camPos[4] = levelProps.sizeY-31,0
+	elseif camPos[2]+offScreenTileY>levelProps.sizeY or (camPos[2]+offScreenTileY==levelProps.sizeY and camPos[4]>0) then
+		camPos[2],camPos[4] = levelProps.sizeY-offScreenTileY,0
 	end
 	printf("camAfter",camPos[1].." "..camPos[2].." "..camPos[3].." "..camPos[4])
 end
@@ -917,14 +926,14 @@ function VictoryMenuBR()
 	delay(500*1000)
 	while running() do
 		RenderVictoryMenu(curScores)
-		
+
 		repeat
 			delay(1000*80)
 			controls.update()
 			if pressedany() then
 				break
 			end
-			
+
 		until not running()
 		if pressed(cross) then
 			--load next
@@ -954,15 +963,15 @@ function RenderVictoryMenu(data)
 	pgeDraw(188,98+(#data+2)*12-2,104,7,173,80,104,11) -- bottom rod
 	pgeDraw(188,59,104,7,173,80,104,11) -- top rod
 	local menucurX,menucurY
-	
+
 	pgeDrawTextcenter(70,black,"Level Complete!")
 	pgeDrawTextcenter(82,black,"Your time: "..TimeString(frameCounter*0.05))
-	for i,item in ipairs(data) do 
+	for i,item in ipairs(data) do
 		pgeDrawText(189,91+i*12,black,i..".") -- rank
 		pgeDrawText(200,91+i*12,black,item[1])
 		pgeDrawText(263,91+i*12,black,TimeString(item[2]))
 	end
-	
+
 	if newGamePath then
 		pgeDraw(188,85+(#data+2)*12,10,10,84,463,10,10)
 		pgeDrawText(197,85+(#data+2)*12,black,"Next")

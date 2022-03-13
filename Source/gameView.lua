@@ -4,13 +4,14 @@
 --- DateTime: 12/03/2022 22:55
 ---
 
+import "init.lua"
+
 local gfx = playdate.graphics
 
-hudY = 224
-hudBGClr = gfx.kColorWhite
-interfaceBoxBgClr = gfx.kColorBlack
-interfaceBoxUpperClr = interfaceBoxBgClr --todo dotted line or something
-interfaceBoxLowerClr = interfaceBoxUpperClr
+local hudBGClr = gfx.kColorWhite
+local interfaceBoxBgClr = gfx.kColorBlack
+local interfaceBoxUpperClr = interfaceBoxBgClr --todo dotted line or something
+local interfaceBoxLowerClr = interfaceBoxUpperClr
 
 function drawInterfaceBox(x,w)
     pgeDrawLine(x,hudY+1,x+w,hudY+1,interfaceBoxUpperClr)
@@ -137,8 +138,8 @@ function RenderGame()
         end
     end
 
-    maxI=camPos[1]+screenWidthTiles
-    maxJ=camPos[2]+screenHeightTiles
+    maxI=camPos[1]+ gameWidthTiles
+    maxJ=camPos[2]+ gameHeightTiles
 
     RenderLineHoriz(maxI)
     RenderLineVert(maxJ)
