@@ -32,11 +32,6 @@ function Error_Handler(err)
     return err
 end
 
--- todo should probably remove this. Game should not need to call GC explicitly
-function ForceGarbageCollect()
-
-end
-
 function inspect(tbl)
     for i,item in pairs(tbl) do
         print(i,item)
