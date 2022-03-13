@@ -97,7 +97,6 @@ function RenderLineHoriz(maxI)
     i=camPos[1]
     j = camPos[2]
     while i<=maxI do
-        printf("indexing brickT", i, j)
         curBrick = brickT[i][j]
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
