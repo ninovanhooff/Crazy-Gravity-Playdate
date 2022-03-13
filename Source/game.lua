@@ -108,7 +108,7 @@ function CalcPlatform(item,idx)
 					item.amnt = item.amnt -1
 					if Sounds then pickup_sound:play() end
 				elseif item.pType==3 and fuel<6000 then
-					fuel = math.fmin(6000,fuel+3000)
+					fuel = math.min(6000,fuel+3000)
 					item.amnt = item.amnt -1
 					if Sounds then fuel_sound:play() end
 				elseif item.pType==4 and item.amnt>0 then -- extras
@@ -607,8 +607,8 @@ initSpecial[14]=Init1Way
 initSpecial[15]=InitBarrier
 
 function checkCam()
-	if camPos[1]>levelProps.sizeX-59 then
-		camPos[1] = levelProps.sizeX-59
+	if camPos[1]>levelProps.sizeX-screenWidthTiles then
+		camPos[1] = levelProps.sizeX-screenWidthTiles
 	end
 	if camPos[2]>levelProps.sizeY-31 then
 		camPos[2] = levelProps.sizeY-31
@@ -712,8 +712,8 @@ function CalcGameCam()
 	end
 	if camPos[1]<1 then
 		camPos[1],camPos[3]=1,0
-	elseif camPos[1]+59>=levelProps.sizeX then
-		camPos[1],camPos[3] = levelProps.sizeX-59,0
+	elseif camPos[1]+screenWidthTiles>=levelProps.sizeX then
+		camPos[1],camPos[3] = levelProps.sizeX-screenWidthTiles,0
 	end
 	
 	if planePos[2]>camPos[2]+16 then
@@ -837,6 +837,7 @@ function CalcTimeStep()
 			for j = 0,14,2 do -- one exp(losion) loop
 				explodeJ = j
 				RenderGame()
+				coroutine.yield() -- let system update the screen
 			end
 		end
 		DecreaseLife()
