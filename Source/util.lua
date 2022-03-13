@@ -4,10 +4,6 @@
 --- DateTime: 11/03/2022 16:36
 ---
 
-function stripExtension(path)
-    if path:find('%.CGPB$') then return path:sub(1, -6) else return path end
-end
-
 function boolToNum(bool)
     if bool then return 1 else return 0 end
 end

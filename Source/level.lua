@@ -8,66 +8,17 @@ import "util.lua"
 
 local file = playdate.file
 
-sumT = {0,8,24}
-greySumT = {-1,56,32,0} -- -1:unused
-greyMaxT = {-1,9,8,5}
+function LoadFile(path)
+    printf("loading ".. path)
 
-
-function LoadFile(cgpbPath)
-    printf("loading ".. cgpbPath)
-    local jsonPath = stripExtension(cgpbPath) .. ".json"
-    if not file.exists(cgpbPath) then
-        printf("File does not exist: " .. cgpbPath)
-    end
-    if not file.exists(jsonPath) then
-        printf("File does not exist: " .. jsonPath)
-    end
-
-    brickT = nil
-    specialT = nil
-    levelProps = nil
-
-    local jsonFile, err = file.open(jsonPath)
-    local levelData = json.decodeFile(jsonFile)
-    specialT = levelData["specialT"]
-    levelProps = levelData["levelProps"]
+    local levelT = file.run(path)
+    brickT = levelT["brickT"]
+    specialT = levelT["specialT"]
+    levelProps = levelT["levelProps"]
     levelProps.lives = levelProps.lives or 5
-    levelData = nil
-    jsonFile:close()
 
-    TFile = file.open(cgpbPath, playdate.file.kFileRead)
-    if not TFile then
-        error("Error opening file ".. cgpbPath)
-    end
-    local id = TFile:read(4)
-    if id~="CGPB" then
-        TFile:close()
-        error("filetype",id)
-    end
-    TFile:read(1) --nl
-
-    brickT = {}
-    for i = 1,levelProps.sizeX do
-        brickT[i]={}
-        local curColStr = TFile:readline()
-        for j=1,levelProps.sizeY do
-            local n = (j-1)*5
-            local tile = {curColStr:byte(n+1,n+5)}
-            for k,ktem in ipairs(tile) do
-                tile[k] = ktem-48
-            end
-            brickT[i][j] = tile
-            --tile[1],tile[2],tile[3],tile[4],tile[5] = nil,nil,nil,nil,nil
-            tile = nil
-        end
-
-        if  i%(math.floor(1000/levelProps.sizeY))== 2  then
-            print("Loading...",i/levelProps.sizeX)
-        end
-        curColStr = nil
-    end
-    TFile:close()
-    TFile = nil
     printf("loaded dim",#brickT,#brickT[1])
+
+    levelT = {specialT=specialT, levelProps=levelProps, brickT=brickT}
     return true
 end
