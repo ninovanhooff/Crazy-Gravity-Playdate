@@ -9,7 +9,7 @@ local gfx = playdate.graphics
 
 
 function startGame()
-    InitGame("levels/LEVEL01.CGPB")
+    InitGame("levels/LEVEL03.pdz")
 end
 
 startGame()
