@@ -21,6 +21,8 @@ function drawInterfaceBox(x,w)
 end
 
 function RenderHUD()
+    gfx.setColor(hudBGClr)
+    gfx.fillRect(0,hudY,400,16)
     pgeDraw(1,hudY+1,28,14,232,314,28,14) -- remain freight stat
     drawInterfaceBox(30,106)
     local freightPosCount = 0
@@ -110,18 +112,22 @@ function RenderLineHoriz(maxI) -- render row  bricks, brute force, fail safe
     end
 end
 
-function RenderGame()
-    bgOffX=nil;bgOffY=nil
-    bgOffX = math.floor(((camPos[1]*8+camPos[3]) % 128)*0.25)
-    bgOffY = math.floor(((camPos[2]*8+camPos[4]) % 128)*0.25)
-    for i=0,15 do -- bg
-        for j = 0,8 do
-            pgeDraw(i*32-bgOffX,j*32-bgOffY,32,32,levelProps.bg*32,60,32,32,0,255)
+function RenderBackground()
+    gfx.setDitherPattern(0.81, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(0,0,400,240)
+
+    local bgTileSize = 32
+    local bgOffX = math.floor(((camPos[1]*8+camPos[3]) % 128)*0.25)
+    local bgOffY = math.floor(((camPos[2]*8+camPos[4]) % 128)*0.25)
+    for i=0,math.ceil(screenWidth/bgTileSize) do
+        for j = 0,math.ceil(hudY/bgTileSize) do
+            pgeDraw(i*bgTileSize-bgOffX,j*bgTileSize-bgOffY,bgTileSize,bgTileSize,levelProps.bg*bgTileSize,60,bgTileSize,bgTileSize,0,255)
         end
     end
+end
 
-    --gfx.setDitherPattern(0.81, gfx.image.kDitherTypeBayer8x8)
-    --gfx.fillRect(0,0,400,240)
+function RenderGame()
+    RenderBackground()
 
     sprite:setInverted(false)
     gfx.setColor(gfx.kColorBlack)
@@ -132,17 +138,9 @@ function RenderGame()
             specialRenders[item.sType-7](item)
         end
     end
-    maxI=nil;maxJ=nil
-    if camPos[3]==0 then
-        maxI = camPos[1]+59
-    else
-        maxI = camPos[1]+60
-    end
-    if camPos[4]==0 then
-        maxJ = camPos[2]+31
-    else
-        maxJ = camPos[2]+32
-    end
+
+    maxI=camPos[1]+screenWidthTiles -- need to draw one column extra because of scrolling
+    maxJ=camPos[2]+screenHeightTiles -- no need to draw offscreen, world partially covered by HUD
 
     RenderLineHoriz(maxI)
     RenderLineVert(maxJ)
@@ -169,9 +167,6 @@ function RenderGame()
     end
 
     pgeDraw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3],(planePos[2]-camPos[2])*8+planePos[4]-camPos[4],23,23,planeRot%16*23,391+(boolToNum(planeRot>15)*2-thrust)*23,23,23) -- plane
-
-    gfx.setColor(hudBGClr)
-    gfx.fillRect(0,hudY,400,16)
 
     --explosion
     if collision and not Debug then
