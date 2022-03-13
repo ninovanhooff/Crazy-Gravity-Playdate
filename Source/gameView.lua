@@ -74,8 +74,8 @@ end
 
 function RenderGame()
     bgOffX=nil;bgOffY=nil
-    bgOffX = math.floor((camPos[1]*8+camPos[3] % 128)*0.25)
-    bgOffY = math.floor((camPos[2]*8+camPos[4] % 128)*0.25)
+    bgOffX = math.floor(((camPos[1]*8+camPos[3]) % 128)*0.25)
+    bgOffY = math.floor(((camPos[2]*8+camPos[4]) % 128)*0.25)
     for i=0,15 do -- bg
         for j = 0,8 do
             pgeDraw(i*32-bgOffX,j*32-bgOffY,32,32,levelProps.bg*32,60,32,32,0,255)
