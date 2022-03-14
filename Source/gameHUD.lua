@@ -12,7 +12,7 @@ local font = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
 local hudIcons = gfx.image.new("images/hud_icons.png")
 local hudBgClr = gfx.kColorWhite
 local hudFgClr = gfx.kColorBlack
-local hudPadding = 8 -- distance between items
+local hudPadding = 10 -- distance between items
 local hudGutter = 4 -- distance between item icon and item value
 
 local function drawIcon(x, index)
@@ -29,7 +29,7 @@ function RenderHUD()
     drawIcon(x, 7)
     x = x+16+hudGutter
     font:drawText(extras[2], x, hudY)
-    x = x+16+hudPadding
+    x = x+10+hudPadding
 
     -- fuel
     if fuel > 1500 or frameCounter % 20 > 10 then
