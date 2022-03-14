@@ -5,75 +5,9 @@
 ---
 
 import "init.lua"
+import "gameHUD.lua"
 
 local gfx = playdate.graphics
-
-local hudBGClr = gfx.kColorWhite
-local interfaceBoxBgClr = gfx.kColorBlack
-local interfaceBoxUpperClr = interfaceBoxBgClr --todo dotted line or something
-local interfaceBoxLowerClr = interfaceBoxUpperClr
-
-function drawInterfaceBox(x,w)
-    pgeDrawLine(x,hudY+1,x+w,hudY+1,interfaceBoxUpperClr)
-    pgeDrawLine(x,hudY+1,x,hudY+14,interfaceBoxUpperClr)
-    pgeDrawLine(x+w,hudY+2,x+w,hudY+14,interfaceBoxLowerClr)
-    pgeDrawLine(x+1,hudY+14,x+w,hudY+14,interfaceBoxLowerClr)
-    pgeDrawRect(x+1,hudY+2,w-1,13,interfaceBoxBgClr)
-end
-
-function RenderHUD()
-    gfx.setColor(hudBGClr)
-    gfx.fillRect(0,hudY,400,16)
-    pgeDraw(1,hudY+1,28,14,232,314,28,14) -- remain freight stat
-    drawInterfaceBox(30,106)
-    local freightPosCount = 0
-    for i,item in ipairs(remainingFreight) do
-        for j=0,math.min(item-1,7) do
-            pgeDraw(32+freightPosCount*13,hudY+3,12,12,64+i*16,346,16,16)
-            freightPosCount = freightPosCount + 1
-        end
-    end
-
-    local planeFreightX = 147
-    pgeDraw(planeFreightX,hudY+1,28,14,260,314,28,14) -- planeFreight stat
-    drawInterfaceBox(planeFreightX+29,14*extras[3])
-    for i,item in ipairs(planeFreight) do
-        pgeDraw(planeFreightX+31+(i-1)*13,hudY+3,12,12,80+item[1]*16,346,16,16)
-    end
-
-    local keysX = 220
-    pgeDraw(keysX,hudY+1,28,14,344,314,28,14) -- keys
-    drawInterfaceBox(keysX+30,50)
-    for i=1,4 do
-        if keys[i] then
-            pgeDraw(keysX+32+(i-1)*12,hudY+3,12,12,185+(frameCounter % 7)*16,414+(i-1)*16,16,16)
-        end
-    end
-
-    local fuelX = 300
-    pgeDraw(fuelX+2,hudY+1,28,14,316,314,28,14) -- fuel stat
-    drawInterfaceBox(fuelX+32,48)
-    local fuelW = math.ceil(44*fuel/6000/4)*4 -- todo was round
-    pgeDraw(fuelX+34,hudY+4,fuelW,9,231,328,fuelW,9)
-
-    for i=0,extras[2]-1 do -- lives
-        pgeDraw(5+i*25,5,23,23,46,414,23,23,0,180)
-    end
-
-    drawInterfaceBox(382,75) -- Time
-    --gfx.setImageDrawMode()
-    pgeDrawText(384,hudY+4,green,TimeString(frameCounter*0.05).."/"..lMin..":"..lSec)
-
-    local warnX = 460
-
-    if math.abs(vx) > landingTolerance[1] or vy > landingTolerance[2] then --red
-        pgeDraw(warnX,hudY,16,16,165,461,16,16)
-    elseif math.abs(vx) > landingTolerance[1]-1 or vy > landingTolerance[2] - 1 then --yellow
-        pgeDraw(warnX,hudY,16,16,149,461,16,16)
-    else -- green
-        pgeDraw(warnX,hudY,16,16,133,461,16,16)
-    end
-end
 
 function RenderLineVert(maxJ) -- render column bricks, brute force, fail safe
     local i=camPos[1]
