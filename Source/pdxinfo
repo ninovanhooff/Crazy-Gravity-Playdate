@@ -1,7 +1,7 @@
-name=Template
-author=You, Inc.
-description=A basic game template.
-bundleID=com.yourcompany.TemplateGame
+name=Crazy Gravity
+author=Nino van Hooff
+description=Space Truckin'
+bundleID=com.ninovanhooff.cgpd
 version=1.0
 buildNumber=100
 imagePath=SystemAssets
