@@ -4,6 +4,7 @@ import "level.lua"
 import "game.lua"
 import "gameViewModel.lua"
 import "init.lua"
+import "systemMenu.lua"
 
 local gfx = playdate.graphics
 

@@ -10,8 +10,11 @@ import "bricksView.lua"
 
 local gfx <const> = playdate.graphics
 
+backgroundColor = gfx.kColorBlack
+
+
 function RenderBackground()
-    gfx.clear(gfx.kColorBlack)
+    gfx.clear(backgroundColor)
 end
 
 function RenderGame()

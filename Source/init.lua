@@ -30,7 +30,7 @@ end
 
 sprite = gfx.image.new("images/sprite_atkinson.png") -- https://www.gingerbeardman.com/canvas-dither/
 if not sprite then error("failed to load sprite") end
-    --
+
 menuFont = gfx.getFont()
 if not menuFont then error("failed to load font") end
 
