@@ -11,14 +11,7 @@ import "bricksView.lua"
 local gfx <const> = playdate.graphics
 
 function RenderBackground()
-    local bgTileSize = 32
-    local bgOffX = math.floor(((camPos[1]*8+camPos[3]) % 128)*0.25)
-    local bgOffY = math.floor(((camPos[2]*8+camPos[4]) % 128)*0.25)
-    for i=0,math.ceil(screenWidth/bgTileSize) do
-        for j = 0,math.ceil(hudY/bgTileSize) do
-            pgeDraw(i*bgTileSize-bgOffX,j*bgTileSize-bgOffY,bgTileSize,bgTileSize,levelProps.bg*bgTileSize,60,bgTileSize,bgTileSize,0,255)
-        end
-    end
+    gfx.clear(gfx.kColorBlack)
 end
 
 function RenderGame()
