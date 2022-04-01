@@ -47,11 +47,29 @@ function OptimizeLevel()
 			else -- always for j==1
 				if lastJ~=-1 then
 					for k=j+1,lastJ do
-						--brickT[i][k][4]=lastJ-j
 						brickT[i][k][3]=lastJ-j -- h
-						brickT[i][k][5]=k-(j+1)
+						brickT[i][k][5]=k-(j+1) -- subY
 					end
 					lastJ=-1
+				end
+			end
+		end
+	end
+
+	for j=1,levelProps.sizeY do
+		local lastI = -1
+		for i=levelProps.sizeX,1,-1 do
+			if brickT[i][j][1]<3 and i>1 then -- empty space
+				if lastI==-1 then
+					lastI = i
+				end
+			else -- always for i==1
+				if lastI~=-1 then
+					for k=i+1,lastI do
+						brickT[k][j][2]=lastI-i -- w
+						brickT[k][j][4]=k-(i+1) -- subX
+					end
+					lastI=-1
 				end
 			end
 		end
