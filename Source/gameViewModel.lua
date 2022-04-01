@@ -4,11 +4,18 @@
 --- DateTime: 13/03/2022 00:13
 ---
 
-local pressed = playdate.buttonIsPressed
+local pressed <const> = playdate.buttonIsPressed
+local buttonA <const> = playdate.kButtonA
+local buttonB <const> = playdate.kButtonB
+local buttonUp <const> = playdate.kButtonUp
+local buttonDown <const> = playdate.kButtonDown
+local buttonLeft <const> = playdate.kButtonLeft
+local buttonRight <const> = playdate.kButtonRight
+local thrustSound <const> = thrust_sound
 
 function ProcessInputs()
     -- thrust
-    if pressed("a") or pressed("b") or pressed("up") then
+    if pressed(buttonA) or pressed(buttonB) or pressed(buttonUp) then
         if fuel>0 then
             thrust = 1
             fuel = fuel - burnRate
@@ -19,17 +26,17 @@ function ProcessInputs()
             flying = true
             vx = vx + math.cos(-planeRot/12*pi)*(thrustPower+extras[1]*turboPower)
             vy = vy - math.sin(-planeRot/12*pi)*(thrustPower+extras[1]*turboPower)
-            if Sounds and not thrust_sound:isPlaying() then thrust_sound:play(0) end
+            if Sounds and not thrustSound:isPlaying() then thrustSound:play(0) end
         else
             thrust = 0
         end
     else
         thrust = 0
-        if Sounds then thrust_sound:stop() end
+        if Sounds then thrustSound:stop() end
     end
 
     -- rotation
-    if pressed("down") then
+    if pressed(buttonDown) then
         if planeRot~=18 then
             if planeRot>18 or planeRot<6 then
                 planeRot = planeRot-1
@@ -38,14 +45,14 @@ function ProcessInputs()
             end
         end
         if planeRot<0 then planeRot = 23 end
-    elseif pressed("left") then
+    elseif pressed(buttonLeft) then
         if flying then
             planeRot = planeRot - 1
             if planeRot<0 then
                 planeRot = 23
             end
         end
-    elseif pressed("right") then
+    elseif pressed(buttonRight) then
         if flying then
             planeRot = planeRot + 1
             planeRot = planeRot % 24
