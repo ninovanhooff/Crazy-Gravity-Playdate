@@ -701,7 +701,7 @@ function ResetGame()
 end
 
 function CalcGameCam()
-	printf("camBefore",camPos[1].." "..camPos[2].." "..camPos[3].." "..camPos[4])
+	--printf("camBefore",camPos[1].." "..camPos[2].." "..camPos[3].." "..camPos[4])
 
 	-- horizontal cam position
 	if planePos[1]>camPos[1]+halfWidthTiles then
@@ -749,7 +749,7 @@ function CalcGameCam()
 	elseif camPos[2]+offScreenTileY>levelProps.sizeY or (camPos[2]+offScreenTileY==levelProps.sizeY and camPos[4]>0) then
 		camPos[2],camPos[4] = levelProps.sizeY-offScreenTileY,0
 	end
-	printf("camAfter",camPos[1].." "..camPos[2].." "..camPos[3].." "..camPos[4])
+	--printf("camAfter",camPos[1].." "..camPos[2].." "..camPos[3].." "..camPos[4])
 end
 
 function CalcPlaneColCoords()
@@ -819,14 +819,14 @@ function CalcTimeStep()
 	end
 	
 	CalcGameCam()
-	printf("plane".." "..planePos[1].." "..planePos[2].." "..planePos[3].." "..planePos[4].." "..vx.." "..vy)
+	--printf("plane".." "..planePos[1].." "..planePos[2].." "..planePos[3].." "..planePos[4].." "..vx.." "..vy)
 	
 	-- brick collision
 	collision = false
 	CalcPlaneColCoords()
 	for i=1,5,2 do
 		if brickT[colBT[i]][colBT[i+1]][1]>1 then
-			print("collision",i,colBT[i],colBT[i+1])
+			--print("collision",i,colBT[i],colBT[i+1])
 			collision = true
 		end
 	end
