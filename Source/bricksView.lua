@@ -35,7 +35,7 @@ function BricksView:render()
                     self:renderLineVert(camPos[1]+x, camPos[2], x*tileSize)
                 end
             elseif shiftX > 0 then
-                for x = 0, shiftY, 1 do
+                for x = 0, shiftX, 1 do
                     self:renderLineVert(self.camPosX+self.bufferWidthTiles + x, camPos[2], (self.bufferWidthTiles - shiftX+x) * tileSize)
                 end
             end
@@ -77,10 +77,12 @@ end
 function BricksView:renderLineVert(i,j, drawOffsetX)
     local startJ = j
     while j<= startJ + self.bufferHeightTiles do
-        local curBrick = brickT[i][j]
+        local curBrick = brickT[i]
         if not curBrick then
             break
         end
+        curBrick = curBrick[j]
+
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
                 sprite:draw(
