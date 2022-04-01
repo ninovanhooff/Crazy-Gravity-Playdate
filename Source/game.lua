@@ -96,7 +96,7 @@ function CalcPlatform(item,idx)
 		end
 	elseif not flying then
 		if landedTimer>20 and landedAt==idx then -- 0.9 secs and landed at cur pltfrm
-			printf(item.pType,#planeFreight,"HJ")
+			--printf(item.pType,#planeFreight,"HJ")
 			if item.pType==1 and #planeFreight>0 then -- dump
 				if Sounds then 
 					dump_sound:play()
@@ -697,6 +697,7 @@ function ResetGame()
 	end
 	explodeI = nil
 	editorMode = false
+	bricksView = BricksView()
 end
 
 function CalcGameCam()
