@@ -15,14 +15,13 @@ function RenderBackground()
 end
 
 function RenderGame()
-    sprite:setInverted(false)
     gfx.setColor(gfx.kColorBlack)
 
     RenderBackground()
 
     for i,item in ipairs(specialT) do -- special blocks
         scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
-        if item.x+item.w>=camPos[1] and item.x<=camPos[1]+61 and item.y+item.h>=camPos[2] and item.y<camPos[2]+33 then
+        if item.x+item.w>=camPos[1] and item.x<=camPos[1]+gameWidthTiles+1 and item.y+item.h>=camPos[2] and item.y<camPos[2]+gameHeightTiles+1 then
             specialRenders[item.sType-7](item)
         end
     end
