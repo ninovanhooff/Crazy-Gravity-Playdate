@@ -25,4 +25,4 @@ end
 
 menu:addOptionsMenuItem("fps", {"0","20","30"}, "30", onFrameRateChange)
 menu:addOptionsMenuItem("level", {"01","02","03","04","05","06","07","08", "09", "10"}, "03", onLevelChange)
-menu:addOptionsMenuItem("dither", {"atkinson", "stucki", "burkes"}, "atkinson", onDitherChange)
+menu:addOptionsMenuItem("dither", {"bob", "atkinson", "stucki", "burkes"}, "bob", onDitherChange)

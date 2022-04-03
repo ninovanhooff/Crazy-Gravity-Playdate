@@ -29,7 +29,7 @@ if Sounds then
     explode_sound = sampleplayer.new("sounds/explosion.wav")
 end
 
-sprite = gfx.image.new("images/sprite_atkinson.png") -- https://www.gingerbeardman.com/canvas-dither/
+sprite = gfx.image.new("images/sprite_bob.png") -- https://www.gingerbeardman.com/canvas-dither/
 if not sprite then error("failed to load sprite") end
 
 menuFont = gfx.getFont()
