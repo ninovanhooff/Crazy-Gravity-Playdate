@@ -6,18 +6,6 @@
 
 local gfx = playdate.graphics
 
-function pgeDraw(x, y, width, height, texstartx, texstarty, texW, texH, rotation, alpha)
-    printf("WARNING rotation and alpha ignored")
-    pgeDraw(x, y, width, height, texstartx, texstarty, texW, texH)
-end
-
-function pgeDraw(x, y, width, height, texstartx, texstarty, texW, texH)
-    if width ~= texW or height ~= texH then
-        printf("WARNING ignoring scaling", where())
-    end
-    sprite:draw(x, y, gfx.kImageUnflipped, texstartx, texstarty, texW, texH)
-end
-
 function pgeDrawLine(x1, y1, x2, y2, color)
     gfx.setColor(color)
     gfx.drawLine(x1, y1, x2, y2)

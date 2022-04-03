@@ -7,6 +7,7 @@
 import "CoreLibs/graphics"
 
 local gfx <const> = playdate.graphics
+local unFlipped <const> = gfx.kImageUnflipped
 local font = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
 
 local hudIcons = gfx.image.new("images/hud_icons.png")
@@ -16,7 +17,7 @@ local hudPadding = 10 -- distance between items
 local hudGutter = 4 -- distance between item icon and item value
 
 local function drawIcon(x, index)
-    hudIcons:draw(x,hudY,gfx.kImageUnflipped,index*16,0,16,16)
+    hudIcons:draw(x,hudY,unFlipped,index*16,0,16,16)
 end
 
 function RenderHUD()
@@ -64,30 +65,30 @@ function RenderHUD()
     --local freightPosCount = 0
     --for i,item in ipairs(remainingFreight) do
     --    for j=0,math.min(item-1,7) do
-    --        pgeDraw(32+freightPosCount*13,hudY+3,12,12,64+i*16,346,16,16)
+    --        sprite:draw(32+freightPosCount*13, hudY+3, unFlipped, 64+i*16, 346, 16, 16)
     --        freightPosCount = freightPosCount + 1
     --    end
     --end
     --
     --local planeFreightX = 147
-    --pgeDraw(planeFreightX,hudY+1,28,14,260,314,28,14) -- planeFreight stat
+    --sprite:draw(planeFreightX, hudY+1, unFlipped, 260, 314, 28, 14) -- planeFreight stat
     --drawInterfaceBox(planeFreightX+29,14*extras[3])
     --for i,item in ipairs(planeFreight) do
-    --    pgeDraw(planeFreightX+31+(i-1)*13,hudY+3,12,12,80+item[1]*16,346,16,16)
+    --    sprite:draw(planeFreightX+31+(i-1)*13, hudY+3, unFlipped, 80+item[1]*16, 346, 16, 16)
     --end
     --
     --local keysX = 220
-    --pgeDraw(keysX,hudY+1,28,14,344,314,28,14) -- keys
+    --sprite:draw(keysX, hudY+1, unFlipped, 344, 314, 28, 14) -- keys
     --drawInterfaceBox(keysX+30,50)
     --for i=1,4 do
     --    if keys[i] then
-    --        pgeDraw(keysX+32+(i-1)*12,hudY+3,12,12,185+(frameCounter % 7)*16,414+(i-1)*16,16,16)
+    --        sprite:draw(keysX+32+(i-1)*12, hudY+3, unFlipped, 185+(frameCounter % 7)*16, 414+(i-1)*16, 16, 16)
     --    end
     --end
     --
 
     --for i=0,extras[2]-1 do -- lives
-    --    pgeDraw(5+i*25,5,23,23,46,414,23,23,0,180)
+    --    sprite:draw(5+i*25,5,23, 23, unFlipped, 23, 23, 0, 180)
     --end
     --
     --drawInterfaceBox(382,75) -- Time

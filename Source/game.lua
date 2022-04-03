@@ -3,6 +3,9 @@ import "drawUtil.lua"
 import "specials.lua"
 import "gameView.lua"
 
+local unFlipped <const> = playdate.graphics.kImageUnflipped
+
+
 hudY = 224
 colorT = {"red","green","blue","yellow"}
 sumT = {0,8,24}
@@ -936,7 +939,7 @@ function DecreaseLife()
 		for i=0,10 do -- blink life in and out
 			RenderGame(true)
 			if i%2==0 then
-				pgeDraw(5+(extras[2]-1)*25,5,23,23,46,414,23,23,0,255)
+				sprite:draw(5+(extras[2]-1)*25,5,23, 23, unFlipped, 23, 23, 0, 255)
 			end
 		end
 		
@@ -1023,13 +1026,13 @@ function RenderVictoryMenu(data)
 	pgeDrawRect(175,60,125,45+(#data+2)*12-3,menuBGClr)
 	for i=0,1 do
 		for j = 0,1 do
-			pgeDraw(172+i*120,55+j*35+j*(#data+2)*12,16,16,5-i*4,464-j*4,23,23)--corner blocks
+			sprite:draw(172+i*120, 55+j*35+j*(#data+2)*12, unFlipped, 5-i*4, 464-j*4, 23, 23)--corner blocks
 		end
 	end
-	pgeDraw(298,71,7,14+(#data+2)*12+5,500,213,11,14+(#data+2)*12+5) --right rod
-	pgeDraw(175,71,7,14+(#data+2)*12+5,500,213,11,14+(#data+2)*12+5) --left rod
-	pgeDraw(188,98+(#data+2)*12-2,104,7,173,80,104,11) -- bottom rod
-	pgeDraw(188,59,104,7,173,80,104,11) -- top rod
+	sprite:draw(298, 71, unFlipped, 500, 213, 11, 14+(#data+2)*12+5) --right rod
+	sprite:draw(175, 71, unFlipped, 500, 213, 11, 14+(#data+2)*12+5) --left rod
+	sprite:draw(188, 98+(#data+2)*12-2, unFlipped, 173, 80, 104, 11) -- bottom rod
+	sprite:draw(188, 59, unFlipped, 173, 80, 104, 11) -- top rod
 	local menucurX,menucurY
 
 	pgeDrawTextcenter(70,black,"Level Complete!")
@@ -1041,12 +1044,12 @@ function RenderVictoryMenu(data)
 	end
 
 	if newGamePath then
-		pgeDraw(188,85+(#data+2)*12,10,10,84,463,10,10)
+		sprite:draw(188, 85+(#data+2)*12, unFlipped, 84, 463, 10, 10)
 		pgeDrawText(197,85+(#data+2)*12,black,"Next")
 	end
-	pgeDraw(223,85+(#data+2)*12,10,10,123,463,10,10)
-	pgeDraw(263,85+(#data+2)*12,10,10,96,463,10,10)
+	sprite:draw(223, 85+(#data+2)*12, unFlipped, 123, 463, 10, 10)
+	sprite:draw(263, 85+(#data+2)*12, unFlipped, 96, 463, 10, 10)
 	pgeDrawText(232,85+(#data+2)*12,black,"Restrt")
 	pgeDrawText(272,85+(#data+2)*12,black,"Quit")
-	--pgeDraw(187,menucurY,12,11,0,368,20,20) -- cursor
+	--sprite:draw(187, menucurY, unFlipped, 0, 368, 20, 20) -- cursor
 end

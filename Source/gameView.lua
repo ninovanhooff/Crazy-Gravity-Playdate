@@ -9,6 +9,8 @@ import "gameHUD.lua"
 import "bricksView.lua"
 
 local gfx <const> = playdate.graphics
+local unFlipped <const> = playdate.graphics.kImageUnflipped
+
 
 backgroundColor = gfx.kColorBlack
 
@@ -32,11 +34,11 @@ function RenderGame()
     bricksView:render()
 
     -- plane
-    pgeDraw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3],(planePos[2]-camPos[2])*8+planePos[4]-camPos[4],23,23,planeRot%16*23,391+(boolToNum(planeRot>15)*2-thrust)*23,23,23)
+    sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3], (planePos[2]-camPos[2])*8+planePos[4]-camPos[4], unFlipped, planeRot%16*23, 391+(boolToNum(planeRot>15)*2-thrust)*23, 23, 23)
 
     --explosion
     if collision and not Debug then
-        pgeDraw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3]+explodeX,(planePos[2]-camPos[2])*8+planePos[4]-camPos[4]+explodeY,23,23,explodeJ*23,489,23,23)
+        sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3]+explodeX, (planePos[2]-camPos[2])*8+planePos[4]-camPos[4]+explodeY, unFlipped, explodeJ*23, 489, 23, 23)
     end
 
     RenderHUD()

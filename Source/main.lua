@@ -27,7 +27,7 @@ end
 function playdate.debugDraw()
     if Debug then
         if collision then
-            pgeDraw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3],(planePos[2]-camPos[2])*8+planePos[4]-camPos[4],23,23,8*23,489,23,23)
+            sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3], (planePos[2]-camPos[2])*8+planePos[4]-camPos[4], unFlipped, 8*23, 489, 23, 23)
         end
         --- plane collision
         local colOffX = (planePos[1]-camPos[1])*8-camPos[3]
