@@ -8,19 +8,27 @@ import "init.lua"
 import "gameHUD.lua"
 import "bricksView.lua"
 
+hudY = 224
+tileSize = 8 -- refactor: probably hardcoded in a lot of places
+gameWidthTiles = math.ceil(screenWidth / tileSize)
+gameHeightTiles = math.ceil(hudY / tileSize)
+
+
 local gfx <const> = playdate.graphics
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 
+--- the active game area, excluding the HUD
+local gameClipRect = playdate.geometry.rect.new(0,0, screenWidth, hudY)
+local backgroundColor = gfx.kColorBlack
 
-backgroundColor = gfx.kColorBlack
 
-
-function RenderBackground()
+local function RenderBackground()
     gfx.clear(backgroundColor)
 end
 
 function RenderGame()
     gfx.setColor(gfx.kColorBlack)
+    gfx.setScreenClipRect(gameClipRect)
 
     RenderBackground()
 
@@ -31,7 +39,8 @@ function RenderGame()
         end
     end
 
-    bricksView:render()
+    local tilesRendered = bricksView:render()
+
 
     -- plane
     sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3], (planePos[2]-camPos[2])*8+planePos[4]-camPos[4], unFlipped, planeRot%16*23, 391+(boolToNum(planeRot>15)*2-thrust)*23, 23, 23)
@@ -41,6 +50,9 @@ function RenderGame()
         sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3]+explodeX, (planePos[2]-camPos[2])*8+planePos[4]-camPos[4]+explodeY, unFlipped, explodeJ*23, 489, 23, 23)
     end
 
-    RenderHUD()
-
+    -- HUD
+    gfx.clearClipRect()
+    if tilesRendered <= 80 then
+        RenderHUD()
+    end
 end

@@ -23,6 +23,8 @@ function BricksView:init()
     gfx.unlockFocus()
 end
 
+--- Returns an estimation of the number of tiles that had to be re-rendered,
+--- a measure of computational cost
 function BricksView:render()
     local shiftX, shiftY = camPos[1] - self.camPosX, camPos[2] - self.camPosY
     if shiftX ~= 0 or shiftY ~=0 then
@@ -55,6 +57,8 @@ function BricksView:render()
     self.camPosX = camPos[1]
     self.camPosY = camPos[2]
     self.activeBuffer:draw(-camPos[3], -camPos[4])
+    -- when the camera moves vertically, a row of tiles has to be rendered.
+    return math.abs(shiftY*self.bufferWidthTiles + shiftX*self.bufferHeightTiles)
 end
 
 function BricksView:initBricks()

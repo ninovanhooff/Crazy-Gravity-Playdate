@@ -13,6 +13,7 @@ Debug = false
 Sounds = true
 screenWidth = playdate.display.getWidth()
 screenHeight = playdate.display.getHeight()
+frameRate = 30
 outBufSize = 1024
 print("hoi")
 

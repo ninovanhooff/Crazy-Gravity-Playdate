@@ -57,7 +57,7 @@ function RenderHUD()
 
     drawIcon(x, 4)
     x=x+16+hudGutter
-    local eSec = math.floor(frameCounter*0.05) -- todo
+    local eSec = math.floor(frameCounter/frameRate)
     font:drawText(eSec,x,hudY)
     x=x+32+hudPadding
 
