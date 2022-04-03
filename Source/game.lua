@@ -680,7 +680,7 @@ end
 
 function ResetPlane()
 	planePos = {homeBase.x+math.floor(homeBase.w*0.5-1),homeBase.y+1,0,4} --x,y,subx,suby
-	camPos = {homeBase.x+math.floor(homeBase.w*0.5)-30,homeBase.y+3-16,0,0} --x,y,subx,suby
+	camPos = {homeBase.x+math.floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles,0,0} --x,y,subx,suby
 	checkCam()
 	flying = false
 	vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
@@ -689,6 +689,7 @@ function ResetPlane()
 	fuel = levelProps.fuel
 	landedTimer,landedAt = 0,-1
 end
+
 function InitGame(path)
 	LoadFile(path)
 	curGamePath = path
