@@ -4,14 +4,15 @@
 --- DateTime: 12/03/2022 14:27
 ---
 
--- probably title, min, max, step, default
+-- title, min, max, step, default
+-- to calculate maximum speed etc, use https://www.desmos.com/calculator/x1jxjgr3jh
 gameSettings = {
-    {"gravity",0.1,1,0.01,val=0.1},
-    {"drag",0.1,1.5,0.01,val=0.97},
+    {"gravity",0.1,1,0.01,val=0.12},
+    {"drag",0.1,1.5,0.01,val=0.96},
     {"blowerS",0.1,1,0.05,val=0.10},
     {"magnetS",0.1,1,0.05,val=0.10},
     {"landingTol",0.5,4,0.5,val=3},
-    {"thrustPow",0.1,1,0.1,val=0.5},
+    {"thrustPow",0.2,0.8,0.05,val=0.4},
     {"burnRate",1,10,1,val=5},
     {"Defaults",1,{"yes","no"},val=2}
 }
