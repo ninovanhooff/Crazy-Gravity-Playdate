@@ -13,26 +13,32 @@ local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
 local thrustSound <const> = thrust_sound
 
+local sinThrustT= {}
+for i = 0,23 do
+    sinThrustT[i] = math.sin(-i/12*pi)
+end
+
+local cosThrustT= {}
+for i = 0,23 do
+    cosThrustT[i] = math.cos(-i/12*pi)
+end
+
 function ProcessInputs()
     -- thrust
-    if pressed(buttonA) or pressed(buttonB) or pressed(buttonUp) then
-        if fuel>0 then
-            thrust = 1
-            fuel = fuel - burnRate
-            if not flying then
-                vx = 0
-                vy = 0
-            end
-            flying = true
-            vx = vx + math.cos(-planeRot/12*pi)*(thrustPower+extras[1]*turboPower)
-            vy = vy - math.sin(-planeRot/12*pi)*(thrustPower+extras[1]*turboPower)
-            if Sounds and not thrustSound:isPlaying() then thrustSound:play(0) end
-        else
-            thrust = 0
+    if (pressed(buttonA) or pressed(buttonB) or pressed(buttonUp)) and fuel > 0 then
+        if Sounds and thrust == 0 then thrustSound:play(0) end
+        thrust = 1
+        fuel = fuel - burnRate
+        if not flying then
+            vx = 0
+            vy = 0
         end
-    else
-        thrust = 0
+        flying = true
+        vx = vx + cosThrustT[planeRot]*(thrustPower+extras[1]*turboPower)
+        vy = vy - sinThrustT[planeRot]*(thrustPower+extras[1]*turboPower)
+    elseif thrust == 1 then
         if Sounds then thrustSound:stop() end
+        thrust = 0
     end
 
     -- rotation
@@ -56,7 +62,6 @@ function ProcessInputs()
         if flying then
             planeRot = planeRot + 1
             planeRot = planeRot % 24
-
         end
     end
 end

@@ -24,6 +24,13 @@ function UnitCollision(x,y,w,h,testMode)
 	return false
 end
 
+-- returns true if this rect collides with planePos, dus not take plane sub-pos ([3] and 4]) into
+-- account. When false, it is guaranteed that this rect does not intersect with the plane
+function ApproxRectCollision(x, y, w, h)
+	-- plane size is 3
+	return planePos[1]+2 > x and planePos[1] < x+w  and planePos[2]+2 > y and planePos[2] <y+h
+end
+
 function PixelCollision(x,y,w,h) -- needs work?
 	for i=1,9,2 do
 		--printf("pixelCol",planePos[1]*8+colT[i],x,planePos[2]*8+colT[i+1],y)
@@ -213,15 +220,31 @@ function CalcRotator(item,idx)
 	or (item.direction==2 and UnitCollision(item.x,item.y+8,5,item.distance,true))
 	or (item.direction==3 and UnitCollision(item.x,item.y,item.distance,5,true))
 	or (item.direction==4 and UnitCollision(item.x+8,item.y,item.distance,5,true)) then
-		if frameCounter%2==1 then
+		if frameCounter%3==1 then
 			if item.rotates==1 then -- left
 				planeRot = planeRot - 1
+				if planeRot<0 then
+					planeRot = 23
+				end
 			else
 				planeRot = planeRot + 1
+				planeRot = planeRot % 24
 			end
-			planeRot = math.fmod(planeRot,23)
+			printf(planeRot)
 			--planeRot = math.random(planeRot,0) -- refactor: no clue why this line was here, but it crashes due to invalid range
 		end
+	end
+end
+
+local function planeIntersectsCannon(item)
+	if item.direction==1 then -- up
+		return ApproxRectCollision(item.x,item.y,3,item.distance)
+	elseif item.direction==2 then -- down
+		return ApproxRectCollision(item.x,item.y+5,3,item.distance)
+	elseif item.direction==3 then -- left
+		return ApproxRectCollision(item.x,item.y,item.distance,3)
+	else -- right
+		return ApproxRectCollision(item.x+5,item.y,item.distance,3)
 	end
 end
 
@@ -229,12 +252,15 @@ function CalcCannon(item,idx)
 	if frameCounter%(80-item.rate)==0 then -- add a ball
 		table.insert(item.balls,{0,math.random(0,72)}) -- px position,color offset
 	end
+
+	local shouldCalcBallCollisions = planeIntersectsCannon(item)
+
 	for j,jtem in ipairs(item.balls) do
 		jtem[1] = jtem[1]+item.speed
 		if jtem[1]>(item.distance-1)*8 then
 			table.remove(item.balls,j)--WARNING!!
-		else
-			--collision
+		elseif shouldCalcBallCollisions then
+			-- ball collision
 			if item.direction==1 then
 				PixelCollision(item.x*8+8,(item.y+item.distance)*8-jtem[1],8,8)--+2
 			elseif item.direction==2 then
@@ -770,15 +796,35 @@ function CalcGameCam()
 	--printf("camAfter",camPos[1].." "..camPos[2].." "..camPos[3].." "..camPos[4])
 end
 
+local sinColT= {}
+for i = 0,23 do
+	sinColT[i] = {
+		math.sin(i/12*pi)*10+11,
+		math.sin((i/12+0.75)*pi)*12+11,
+		math.sin((i/12-0.75)*pi)*12+11
+	}
+end
+
+local cosColT= {}
+for i = 0,23 do
+	cosColT[i] = {
+		math.cos(i/12*pi)*10+11,
+		math.cos((i/12+0.75)*pi)*12+11,
+		math.cos((i/12-0.75)*pi)*12+11
+	}
+end
+
 function CalcPlaneColCoords()
 	colT = nil
 	colT = {}
-	colT[1] = (math.cos(-planeRot/12*pi)*10+11+planePos[3]) -- tip x
-	colT[2] = (math.sin(planeRot/12*pi)*10+11+planePos[4]) -- tip y
-	colT[3] = (math.cos((-planeRot/12-0.75)*pi)*12+11+planePos[3]) -- right base x
-	colT[4] = (math.sin((planeRot/12+0.75)*pi)*12+11+planePos[4]) -- right base y
-	colT[5] = (math.cos((-planeRot/12+0.75)*pi)*12+11+planePos[3]) -- left base x
-	colT[6] = (math.sin((planeRot/12-0.75)*pi)*12+11+planePos[4]) -- left base y
+	local sinColTR = sinColT[planeRot]
+	local cosColTR = cosColT[planeRot]
+	colT[1] = cosColTR[1]+planePos[3] -- tip x
+	colT[2] = sinColTR[1]+planePos[4] -- tip y
+	colT[3] = cosColTR[2]+planePos[3] -- right base x
+	colT[4] = sinColTR[2]+planePos[4] -- right base y
+	colT[5] = cosColTR[3]+planePos[3] -- left base x
+	colT[6] = sinColTR[3]+planePos[4] -- left base y
 	colT[7] = (colT[5]+colT[1])*0.5
 	colT[8] = (colT[6]+colT[2])*0.5
 	colT[9] = (colT[3]+colT[1])*0.5

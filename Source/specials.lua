@@ -309,4 +309,13 @@ end
 
 
 
-specialRenders = {RenderPlatform,RenderBlower,RenderMagnet,RenderRotator,RenderCannon,RenderRod,Render1Way,RenderBarrier}
+specialRenders = {
+    RenderPlatform, -- 1
+    RenderBlower, -- 2
+    RenderMagnet, -- 3
+    RenderRotator, -- 4
+    RenderCannon, -- 5
+    RenderRod, -- 6
+    Render1Way, -- 7
+    RenderBarrier -- 8
+}
