@@ -17,15 +17,15 @@ outBufSize = 1024
 print("hoi")
 
 if Sounds then
-    pickup_sound = sampleplayer.new("samples/pickup.wav")
-    landing_sound = sampleplayer.new("samples/landing.wav")
-    dump_sound = sampleplayer.new("samples/dump.wav")
-    thrust_sound = sampleplayer.new("samples/thrust.wav")
-    key_sound = sampleplayer.new("samples/key.wav")
-    extra_sound = sampleplayer.new("samples/extra.wav")
-    fuel_sound = sampleplayer.new("samples/fuel2.wav")
-    dump_sound = sampleplayer.new("samples/dump.wav")
-    explode_sound = sampleplayer.new("samples/explosion.wav")
+    pickup_sound = sampleplayer.new("sounds/pickup.wav")
+    landing_sound = sampleplayer.new("sounds/landing.wav")
+    dump_sound = sampleplayer.new("sounds/dump.wav")
+    thrust_sound = sampleplayer.new("sounds/thrust.wav")
+    key_sound = sampleplayer.new("sounds/key.wav")
+    extra_sound = sampleplayer.new("sounds/extra.wav")
+    fuel_sound = sampleplayer.new("sounds/fuel2.wav")
+    dump_sound = sampleplayer.new("sounds/dump.wav")
+    explode_sound = sampleplayer.new("sounds/explosion.wav")
 end
 
 sprite = gfx.image.new("images/sprite_atkinson.png") -- https://www.gingerbeardman.com/canvas-dither/
