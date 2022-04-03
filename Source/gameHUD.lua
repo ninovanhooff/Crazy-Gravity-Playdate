@@ -17,19 +17,25 @@ local hudPadding = 10 -- distance between items
 local hudGutter = 4 -- distance between item icon and item value
 
 local function drawIcon(x, index)
-    hudIcons:draw(x,hudY,unFlipped,index*16,0,16,16)
+    hudIcons:draw(x,0,unFlipped,index*16,0,16,16)
 end
 
 function RenderHUD()
+    printf("cliprect 1", gfx.getClipRect())
+    gfx.setClipRect(0,0,400,240)
+    printf("cliprect 2", gfx.getClipRect())
+    gfx.setDrawOffset(0,hudY)
+    printf("cliprect 3", gfx.getClipRect())
+    printf("screenCliprect", gfx.getScreenClipRect())
     gfx.setColor(hudBgClr)
-    gfx.fillRect(0,hudY,400,16)
+    gfx.fillRect(0,0,400,16)
     gfx.setColor(hudFgClr)
     local x = hudPadding
 
     -- lives
     drawIcon(x, 7)
     x = x+16+hudGutter
-    font:drawText(extras[2], x, hudY)
+    font:drawText(extras[2], x, 0)
     x = x+10+hudPadding
 
     -- fuel
@@ -37,55 +43,56 @@ function RenderHUD()
         drawIcon(x, 5)
     end
     x = x+16+hudGutter
-    gfx.drawRect(x, hudY+1, 32, 14)
+    gfx.drawRect(x, 1, 32, 14)
     local fuelW = (fuel/6000)*28
-    hudIcons:draw(x+2, hudY+2, gfx.kImageUnflipped,0,16,fuelW,10)
+    hudIcons:draw(x+2, 2, gfx.kImageUnflipped,0,16,fuelW,10)
     x = x+32+hudPadding
 
     -- speed warning
     drawIcon(x, 3)
     x = x+16+hudGutter
-    gfx.drawCircleInRect(x+1,hudY+1, 14,14)
+    gfx.drawCircleInRect(x+1,1, 14,14)
     local speedPattern = gfx.image.kDitherTypeBayer4x4
     local warnX = 1/(landingTolerance[1] / math.abs(vx))
     local warnY = 1/(landingTolerance[2] / vy) -- only downwards movement is dangerous
     local warnAlpha = math.max(warnX, warnY)
     gfx.setDitherPattern(1-warnAlpha, speedPattern) -- invert alpha due to bug in SDK
-    gfx.fillCircleInRect(x+4,hudY+4, 8,8)
+    gfx.fillCircleInRect(x+4,4, 8,8)
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
 
+    -- elapsed seconds
     drawIcon(x, 4)
     x=x+16+hudGutter
     local eSec = math.floor(frameCounter/frameRate)
-    font:drawText(eSec,x,hudY)
+    font:drawText(eSec,x,0)
     x=x+32+hudPadding
+
+    -- keys
+    drawIcon(x, 1)
+    for i=1,4 do
+        if keys[i] then
+            hudIcons:draw(x+ (i+1)%2*8, boolToNum(i>2)*8, unFlipped, 185+(frameCounter % 7)*16, 414+(i-1)*16, 16, 16)
+        end
+    end
 
 
     --local freightPosCount = 0
     --for i,item in ipairs(remainingFreight) do
     --    for j=0,math.min(item-1,7) do
-    --        sprite:draw(32+freightPosCount*13, hudY+3, unFlipped, 64+i*16, 346, 16, 16)
+    --        sprite:draw(32+freightPosCount*13, 3, unFlipped, 64+i*16, 346, 16, 16)
     --        freightPosCount = freightPosCount + 1
     --    end
     --end
     --
     --local planeFreightX = 147
-    --sprite:draw(planeFreightX, hudY+1, unFlipped, 260, 314, 28, 14) -- planeFreight stat
+    --sprite:draw(planeFreightX, 0+1, unFlipped, 260, 314, 28, 14) -- planeFreight stat
     --drawInterfaceBox(planeFreightX+29,14*extras[3])
     --for i,item in ipairs(planeFreight) do
-    --    sprite:draw(planeFreightX+31+(i-1)*13, hudY+3, unFlipped, 80+item[1]*16, 346, 16, 16)
+    --    sprite:draw(planeFreightX+31+(i-1)*13, 3, unFlipped, 80+item[1]*16, 346, 16, 16)
     --end
     --
-    --local keysX = 220
-    --sprite:draw(keysX, hudY+1, unFlipped, 344, 314, 28, 14) -- keys
-    --drawInterfaceBox(keysX+30,50)
-    --for i=1,4 do
-    --    if keys[i] then
-    --        sprite:draw(keysX+32+(i-1)*12, hudY+3, unFlipped, 185+(frameCounter % 7)*16, 414+(i-1)*16, 16, 16)
-    --    end
-    --end
-    --
+
 
     --for i=0,extras[2]-1 do -- lives
     --    sprite:draw(5+i*25,5,23, 23, unFlipped, 23, 23, 0, 180)
@@ -93,6 +100,8 @@ function RenderHUD()
     --
     --drawInterfaceBox(382,75) -- Time
     ----gfx.setImageDrawMode()
-    --pgeDrawText(384,hudY+4,green,TimeString(frameCounter*0.05).."/"..lMin..":"..lSec)
+    --pgeDrawText(384,4,green,TimeString(frameCounter*0.05).."/"..lMin..":"..lSec)
     --
+
+    gfx.setDrawOffset(0,0)
 end

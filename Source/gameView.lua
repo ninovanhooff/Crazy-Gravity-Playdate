@@ -28,7 +28,7 @@ end
 
 function RenderGame()
     gfx.setColor(gfx.kColorBlack)
-    gfx.setScreenClipRect(gameClipRect)
+    --gfx.setClipRect(gameClipRect)
 
     RenderBackground()
 
