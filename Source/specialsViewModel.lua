@@ -35,7 +35,7 @@ function CalcPlatform(item,idx)
             if Sounds then landing_sound:play() end
         end
     elseif not flying then
-        if landedTimer>frameRate and landedAt==idx then -- 0.9 secs and landed at cur pltfrm
+        if landedTimer>frameRate and landedAt==idx then -- 1 secs and landed at cur pltfrm
             --printf(item.pType,#planeFreight,"HJ")
             if item.pType==1 and #planeFreight>0 then -- dump
                 if Sounds then
@@ -196,7 +196,7 @@ function CalcRod(item)
     elseif item.pos1<2 then
         item.d1=1
         item.speed1 = math.random(item.speedMin,item.speedMax)
-    elseif (item.chngOften==1 and math.random(1,250)==62) then
+    elseif (item.chngOften==1 and math.random(1,350)==62) then
         item.d1=-1+math.random(0,2)*2
         item.speed1 = math.random(item.speedMin,item.speedMax)
     end
@@ -212,7 +212,7 @@ function CalcRod(item)
     elseif item.pos2<2 then
         item.d2=1
         item.speed2 = math.random(item.speedMin,item.speedMax)
-    elseif (item.chngOften==1 and math.random(1,250)==62) then
+    elseif (item.chngOften==1 and math.random(1,350)==62) then
         item.d2=-1+math.random(0,2)*2
         item.speed2 = math.random(item.speedMin,item.speedMax)
     end
