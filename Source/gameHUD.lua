@@ -55,11 +55,21 @@ function RenderHUD()
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
 
+    -- elapsed time
     drawIcon(x, 4)
     x=x+16+hudGutter
     local eSec = math.floor(frameCounter/frameRate)
     font:drawText(eSec,x,hudY)
     x=x+32+hudPadding
+
+    -- keys
+    drawIcon(x, 1)
+    x=x+14+hudGutter
+    for i=1,4 do
+        local subX = (i+1)%2*8
+        local subY = boolToNum(i>2)*8
+        hudIcons:draw(x+subX, hudY+subY, unFlipped, 32 +subX, boolToNum(keys[i])*16,8,8)
+    end
 
 
     --local freightPosCount = 0
