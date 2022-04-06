@@ -9,8 +9,8 @@ local gfx <const> = playdate.graphics
 
 local function onFrameRateChange(newFramerate)
     printf("Changing framerate to ", newFramerate)
-    frameRate = newFramerate
-    playdate.display.setRefreshRate(newFramerate)
+    frameRate = tonumber(newFramerate)
+    playdate.display.setRefreshRate(frameRate)
 end
 
 local function onLevelChange(newLevelNumber)
