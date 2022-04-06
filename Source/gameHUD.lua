@@ -9,6 +9,7 @@ import "CoreLibs/graphics"
 local gfx <const> = playdate.graphics
 local unFlipped <const> = gfx.kImageUnflipped
 local font = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
+local monoFont = gfx.font.new("fonts/Rains/font-rains-1x")
 
 local hudIcons = gfx.image.new("images/hud_icons.png")
 local hudBgClr = gfx.kColorWhite
@@ -27,7 +28,7 @@ function RenderHUD()
     local x = hudPadding
 
     -- lives
-    drawIcon(x, 7)
+    drawIcon(x, 6)
     x = x+16+hudGutter
     font:drawText(extras[2], x, hudY)
     x = x+10+hudPadding
@@ -55,21 +56,15 @@ function RenderHUD()
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
 
-    -- elapsed time
-    drawIcon(x, 4)
-    x=x+16+hudGutter
-    local eSec = math.floor(frameCounter/frameRate)
-    font:drawText(eSec,x,hudY)
-    x=x+32+hudPadding
-
     -- keys
     drawIcon(x, 1)
-    x=x+14+hudGutter
+    x=x+12+hudGutter
     for i=1,4 do
         local subX = (i+1)%2*8
         local subY = boolToNum(i>2)*8
         hudIcons:draw(x+subX, hudY+subY, unFlipped, 32 +subX, boolToNum(keys[i])*16,8,8)
     end
+    x = x+16+hudPadding
 
 
     --local freightPosCount = 0
@@ -87,22 +82,18 @@ function RenderHUD()
     --    sprite:draw(planeFreightX+31+(i-1)*13, hudY+3, unFlipped, 80+item[1]*16, 346, 16, 16)
     --end
     --
-    --local keysX = 220
-    --sprite:draw(keysX, hudY+1, unFlipped, 344, 314, 28, 14) -- keys
-    --drawInterfaceBox(keysX+30,50)
-    --for i=1,4 do
-    --    if keys[i] then
-    --        sprite:draw(keysX+32+(i-1)*12, hudY+3, unFlipped, 185+(frameCounter % 7)*16, 414+(i-1)*16, 16, 16)
-    --    end
-    --end
-    --
 
-    --for i=0,extras[2]-1 do -- lives
-    --    sprite:draw(5+i*25,5,23, 23, unFlipped, 23, 23, 0, 180)
-    --end
-    --
-    --drawInterfaceBox(382,75) -- Time
-    ----gfx.setImageDrawMode()
-    --pgeDrawText(384,hudY+4,green,TimeString(frameCounter*0.05).."/"..lMin..":"..lSec)
-    --
+    -- elapsed time
+    local eSec = math.floor(frameCounter/frameRate)
+    local textW = monoFont:getTextWidth(eSec)
+    x = screenWidth - textW - hudPadding
+    monoFont:drawText(eSec,x,hudY+8)
+    x = x - hudGutter - 16
+    drawIcon(x, 4)
+
+    -- remaining time refactor: seems not implemented
+    --drawIcon(x, 0)
+    --x=x+16+hudGutter
+    --font:drawText(lMin*60+lSec,x,hudY)
+    --x=x+32+hudPadding
 end
