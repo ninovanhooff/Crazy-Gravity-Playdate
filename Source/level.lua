@@ -11,6 +11,9 @@ local file = playdate.file
 function LoadFile(path)
     printf("loading ".. path)
 
+    levelT, brickT, specialT, levelProps = nil, nil, nil
+    collectgarbage("collect")
+
     local levelT = file.run(path)
     brickT = levelT["brickT"]
     specialT = levelT["specialT"]
@@ -19,6 +22,5 @@ function LoadFile(path)
 
     printf("loaded dim",#brickT,#brickT[1])
 
-    levelT = {specialT=specialT, levelProps=levelProps, brickT=brickT}
     return true
 end
