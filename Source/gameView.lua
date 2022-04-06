@@ -52,7 +52,7 @@ function RenderGame()
 
     -- HUD
     gfx.clearClipRect()
-    if tilesRendered <= 80 then
+    if tilesRendered <= 80 then -- only render HUD if we have render budget for it
         RenderHUD()
     end
 end

@@ -28,7 +28,7 @@ end
 function BricksView:render()
     local shiftX, shiftY = camPos[1] - self.camPosX, camPos[2] - self.camPosY
     if shiftX ~= 0 or shiftY ~=0 then
-        printf("Render", frameCounter, camPos[1],self.camPosX, shiftX, camPos[2], self.camPosY, shiftY, math.abs(shiftX)+math.abs(shiftY))
+        --printf("Render", frameCounter, camPos[1],self.camPosX, shiftX, camPos[2], self.camPosY, shiftY, math.abs(shiftY*self.bufferWidthTiles + shiftX*self.bufferHeightTiles))
         self.inactiveBuffer:clear(gfx.kColorClear)
         gfx.lockFocus(self.inactiveBuffer)
             self.activeBuffer:draw(-shiftX*tileSize, -shiftY*tileSize)
