@@ -28,7 +28,9 @@ function RenderHUD()
     local x = hudPadding
 
     -- lives
-    drawIcon(x, 6)
+    if extras[2] > 0 or frameCounter % 20 > 10 then
+        drawIcon(x, 6)
+    end
     x = x+16+hudGutter
     font:drawText(extras[2], x, hudY)
     x = x+10+hudPadding
