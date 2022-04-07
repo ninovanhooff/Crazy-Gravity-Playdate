@@ -355,15 +355,7 @@ end
 
 function DecreaseLife()
 	if extras[2]==0 then
-		local result = nil
-		while not result do 
-			result = MenuBR("GAME OVER!",{{"Restart?",1,{"yes","no"},val=1}})
-		end
-		if result[1].val==1 then
-			ResetGame()
-		else
-			kill = 1
-		end
+		kill = 1
 	else
 		for i=0,10 do -- blink life in and out
 			RenderGame(true)

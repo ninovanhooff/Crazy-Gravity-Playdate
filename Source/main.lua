@@ -9,14 +9,22 @@ local gfx = playdate.graphics
 
 
 function startGame()
-    InitGame("levels/LEVEL03.pdz")
+    local levelNumString = string.format("%02d", currentLevel)
+    InitGame("levels/LEVEL" .. levelNumString .. ".pdz")
 end
 
 startGame()
 
-gfx.setColor(gfx.kColorBlack)
-
 function playdate.update()
+    if kill == 1 then
+        printf("Starting next level")
+        kill = 0
+        currentLevel = currentLevel + 1
+        if currentLevel > numLevels then
+            currentLevel = 1
+        end
+        startGame()
+    end
     ProcessInputs()
     CalcTimeStep()
     RenderGame()

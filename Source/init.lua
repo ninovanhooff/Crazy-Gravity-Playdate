@@ -15,6 +15,9 @@ screenWidth = playdate.display.getWidth()
 screenHeight = playdate.display.getHeight()
 frameRate = 30
 outBufSize = 1024
+numLevels = 10
+currentLevel = 1
+kill = 0 -- game ended?
 print("hoi")
 
 if Sounds then
@@ -28,6 +31,8 @@ if Sounds then
     dump_sound = sampleplayer.new("sounds/dump.wav")
     explode_sound = sampleplayer.new("sounds/explosion.wav")
 end
+
+gfx.setColor(gfx.kColorBlack)
 
 sprite = gfx.image.new("images/sprite_bob.png") -- https://www.gingerbeardman.com/canvas-dither/
 if not sprite then error("failed to load sprite") end
