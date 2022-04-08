@@ -24,11 +24,11 @@ function UnitCollision(x,y,w,h,testMode)
 	return false
 end
 
--- returns true if this rect collides with planePos, dus not take plane sub-pos ([3] and 4]) into
+-- returns true if this rect may collide with planePos, does not take plane sub-pos ([3] and 4]) into
 -- account. When false, it is guaranteed that this rect does not intersect with the plane
 function ApproxRectCollision(x, y, w, h)
 	-- plane size is 3
-	return planePos[1]+2 > x and planePos[1] < x+w  and planePos[2]+2 > y and planePos[2] <y+h
+	return planePos[1]+3 > x and planePos[1] < x+w  and planePos[2]+3 > y and planePos[2] <y+h
 end
 
 function PixelCollision(x,y,w,h) -- needs work?
@@ -329,9 +329,7 @@ function CalcTimeStep()
 	end
 	
 	for i,item in ipairs(specialT) do
-		--if item.x+item.w+10>=camPos[1] and item.x-10<=camPos[1]+60 and item.y+item.h+10>=camPos[2] and item.y-10<camPos[2]+32 then -- visible with 10 units margin
-			specialCalcT[item.sType](item,i)
-		--end
+		specialCalcT[item.sType](item,i)
 	end
 	if collision and not Debug then
 		if Sounds then thrust_sound:stop() end

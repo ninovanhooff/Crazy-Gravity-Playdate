@@ -7,6 +7,9 @@
 local barrierSpeed = 2
 
 function CalcPlatform(item,idx)
+    if not ApproxRectCollision(item.x,item.y-3, item.w, item.h) then
+        return -- out of range
+    end
     --platform collision
     if PixelCollision(item.x*8,item.y*8+32,item.w*8,16) and (planeRot~=18 or(vy > landingTolerance[2] or math.abs(vx)> landingTolerance[1]))   then
         collision = true
@@ -20,6 +23,11 @@ function CalcPlatform(item,idx)
                 UnitCollision(item.x+2,item.y,math.floor((item.amnt-1)*0.5)*2,2)
             end
         end
+    end
+
+    -- don't collide on take-off
+    if math.abs(planeRot - 18) <= 3 and vy<0  then
+        collision = false
     end
 
     --landing
