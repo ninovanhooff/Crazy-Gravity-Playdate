@@ -14,7 +14,7 @@ local monoFont = gfx.font.new("fonts/Rains/font-rains-1x")
 local hudIcons = gfx.image.new("images/hud_icons.png")
 local hudBgClr = gfx.kColorWhite
 local hudFgClr = gfx.kColorBlack
-local hudPadding = 10 -- distance between items
+local hudPadding = 8 -- distance between items
 local hudGutter = 4 -- distance between item icon and item value
 
 local function drawIcon(x, index)
@@ -45,6 +45,26 @@ function RenderHUD()
     hudIcons:draw(x+2, hudY+2, gfx.kImageUnflipped,0,16,fuelW,10)
     x = x+32+hudPadding
 
+    -- cargo
+    drawIcon(x,7)
+    x = x+16+hudGutter
+    local containerWidth = extras[3] * 10 + 4
+    gfx.drawRect(x, hudY+1, containerWidth, 14)
+    for i=0,#planeFreight-1 do
+        hudIcons:draw(x+i*10+2, hudY+3, unFlipped, 115, 18,10,10)
+    end
+    x = x+containerWidth+hudPadding-1
+
+    -- keys
+    drawIcon(x, 1)
+    x=x+12+hudGutter
+    for i=1,4 do
+        local subX = (i+1)%2*8
+        local subY = boolToNum(i>2)*9
+        hudIcons:draw(x+subX, hudY+subY, unFlipped, 32 +subX, boolToNum(keys[i])*16,8,8)
+    end
+    x = x+15+hudPadding
+
     -- speed warning
     drawIcon(x, 3)
     x = x+16+hudGutter
@@ -57,17 +77,6 @@ function RenderHUD()
     gfx.fillCircleInRect(x+4,hudY+4, 8,8)
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
-
-    -- keys
-    drawIcon(x, 1)
-    x=x+12+hudGutter
-    for i=1,4 do
-        local subX = (i+1)%2*8
-        local subY = boolToNum(i>2)*8
-        hudIcons:draw(x+subX, hudY+subY, unFlipped, 32 +subX, boolToNum(keys[i])*16,8,8)
-    end
-    x = x+16+hudPadding
-
 
     --local freightPosCount = 0
     --for i,item in ipairs(remainingFreight) do
