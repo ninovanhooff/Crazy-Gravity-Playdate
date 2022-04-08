@@ -17,12 +17,10 @@ local function onLevelChange(newLevelNumber)
     InitGame("levels/LEVEL".. newLevelNumber .. ".pdz")
 end
 
-local function onDitherChange(newDitherName)
-    sprite = gfx.image.new("images/sprite_" .. newDitherName .. ".png") -- https://www.gingerbeardman.com/canvas-dither/
-    if not sprite then error("failed to load sprite") end
-    bricksView = BricksView()
+local function onDebugChange(newDebugValue)
+    Debug = newDebugValue
 end
 
 menu:addOptionsMenuItem("fps", {"0","20","30"}, "30", onFrameRateChange)
 menu:addOptionsMenuItem("level", {"01","02","03","04","05","06","07","08", "09", "10"}, "03", onLevelChange)
-menu:addOptionsMenuItem("dither", {"bob", "atkinson", "stucki", "burkes"}, "bob", onDitherChange)
+menu:addCheckmarkMenuItem("debug", Debug, onDebugChange)
