@@ -52,7 +52,7 @@ function CalcPlatform(item,idx)
                 table.remove(planeFreight,1)
                 if table.sum(remainingFreight)==0 then
                     printf("VICTORY")
-                    VictoryMenuBR()
+                    kill = 1
                 else
                     printf("HUH",table.sum(remainingFreight))
                 end
