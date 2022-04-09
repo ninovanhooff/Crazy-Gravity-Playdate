@@ -8,22 +8,24 @@ import "init.lua"
 import "gameHUD.lua"
 import "bricksView.lua"
 
+local gfx <const> = playdate.graphics
+local unFlipped <const> = playdate.graphics.kImageUnflipped
+
 hudY = 224
 tileSize = 8 -- refactor: probably hardcoded in a lot of places
+gameBgColor = gfx.kColorBlack
 gameWidthTiles = math.ceil(screenWidth / tileSize)
 gameHeightTiles = math.ceil(hudY / tileSize)
 
 
-local gfx <const> = playdate.graphics
-local unFlipped <const> = playdate.graphics.kImageUnflipped
+
 
 --- the active game area, excluding the HUD
 local gameClipRect = playdate.geometry.rect.new(0,0, screenWidth, hudY)
-local backgroundColor = gfx.kColorBlack
 
 
 local function RenderBackground()
-    gfx.clear(backgroundColor)
+    gfx.clear(gameBgColor)
 end
 
 function RenderGame()
@@ -32,15 +34,14 @@ function RenderGame()
 
     RenderBackground()
 
+    local tilesRendered = bricksView:render()
+
     for i,item in ipairs(specialT) do -- special blocks
         scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
         if item.x+item.w>=camPos[1] and item.x<=camPos[1]+gameWidthTiles+1 and item.y+item.h>=camPos[2] and item.y<camPos[2]+gameHeightTiles+1 then
             specialRenders[item.sType-7](item)
         end
     end
-
-    local tilesRendered = bricksView:render()
-
 
     -- plane
     sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3], (planePos[2]-camPos[2])*8+planePos[4]-camPos[4], unFlipped, planeRot%16*23, 391+(boolToNum(planeRot>15)*2-thrust)*23, 23, 23)

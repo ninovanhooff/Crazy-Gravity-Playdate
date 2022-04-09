@@ -7,6 +7,8 @@
 import "CoreLibs/object"
 
 local gfx <const> = playdate.graphics
+local bricksImg <const> = gfx.image.new("images/bricks.png") -- image without transparency
+
 local noFlip <const> = gfx.kImageUnflipped
 
 
@@ -16,7 +18,7 @@ function BricksView:init()
     BricksView.super.init()
     self.bufferWidthTiles = gameWidthTiles + 1
     self.bufferHeightTiles = gameHeightTiles + 1
-    self.activeBuffer = gfx.image.new(self.bufferWidthTiles * tileSize, self.bufferHeightTiles* tileSize)
+    self.activeBuffer = gfx.image.new(self.bufferWidthTiles * tileSize, self.bufferHeightTiles* tileSize, gameBgColor)
     self.inactiveBuffer = self.activeBuffer:copy()
     gfx.lockFocus(self.activeBuffer)
         self:initBricks()
@@ -89,7 +91,7 @@ function BricksView:renderLineVert(i,j, drawOffsetX)
 
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
-                sprite:draw(
+                bricksImg:draw(
                         drawOffsetX, (j-startJ)*8,
                         noFlip,
                         240+(curBrick[2]*curBrick[3]+curBrick[4])*8,
@@ -98,7 +100,7 @@ function BricksView:renderLineVert(i,j, drawOffsetX)
                         8*(curBrick[3]-curBrick[5])
                 )
             elseif curBrick[1]>=3 then --color
-                sprite:draw(
+                bricksImg:draw(
                         drawOffsetX, (j-startJ)*8,
                         noFlip,
                         (curBrick[1]-3)*48+sumT[curBrick[2]]+curBrick[4]*8,
@@ -125,7 +127,7 @@ function BricksView:renderLineHoriz(i,j, drawOffsetY)
 
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
-                sprite:draw(
+                bricksImg:draw(
                         (i -startI) * 8, drawOffsetY,
                         noFlip,
                         240+curBrick[2]*curBrick[3]*8,
@@ -135,7 +137,7 @@ function BricksView:renderLineHoriz(i,j, drawOffsetY)
                 )
                 i = i + curBrick[3]-curBrick[4]
             elseif curBrick[1]>=3 then --color
-                sprite:draw(
+                bricksImg:draw(
                         (i -startI) * 8, drawOffsetY,
                         noFlip,
                         (curBrick[1]-3)*48+sumT[curBrick[2]]+curBrick[4]*8,
