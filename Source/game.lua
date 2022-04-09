@@ -126,7 +126,6 @@ end
 function InitGame(path)
 	LoadFile(path)
 	curGamePath = path
-	OptimizeLevel() --todo remove, bake into level files
 	for i,item in ipairs(specialT) do
 		if item.sType == 8 then --platform
 			if item.pType == 1 then -- home
