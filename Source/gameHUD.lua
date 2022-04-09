@@ -78,22 +78,6 @@ function RenderHUD()
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
 
-    --local freightPosCount = 0
-    --for i,item in ipairs(remainingFreight) do
-    --    for j=0,math.min(item-1,7) do
-    --        sprite:draw(32+freightPosCount*13, hudY+3, unFlipped, 64+i*16, 346, 16, 16)
-    --        freightPosCount = freightPosCount + 1
-    --    end
-    --end
-    --
-    --local planeFreightX = 147
-    --sprite:draw(planeFreightX, hudY+1, unFlipped, 260, 314, 28, 14) -- planeFreight stat
-    --drawInterfaceBox(planeFreightX+29,14*extras[3])
-    --for i,item in ipairs(planeFreight) do
-    --    sprite:draw(planeFreightX+31+(i-1)*13, hudY+3, unFlipped, 80+item[1]*16, 346, 16, 16)
-    --end
-    --
-
     -- elapsed time
     local eSec = math.floor(frameCounter/frameRate)
     local textW = monoFont:getTextWidth(eSec)
