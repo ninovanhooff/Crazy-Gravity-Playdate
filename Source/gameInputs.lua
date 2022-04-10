@@ -5,9 +5,7 @@
 ---
 
 local pressed <const> = playdate.buttonIsPressed
-local buttonA <const> = playdate.kButtonA
-local buttonB <const> = playdate.kButtonB
-local buttonUp <const> = playdate.kButtonUp
+local throttle <const> = playdate.kButtonA | playdate.kButtonB | playdate.kButtonUp
 local buttonDown <const> = playdate.kButtonDown
 local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
@@ -25,7 +23,7 @@ end
 
 function ProcessInputs()
     -- thrust
-    if (pressed(buttonA) or pressed(buttonB) or pressed(buttonUp)) and fuel > 0 then
+    if (pressed(throttle) and fuel > 0) then
         if Sounds and thrust == 0 then thrustSound:play(0) end
         thrust = 1
         fuel = fuel - burnRate
