@@ -8,6 +8,7 @@ import "CoreLibs/object"
 
 local abs <const> = math.abs
 local gfx <const> = playdate.graphics
+local tileSize <const> = tileSize
 local bricksImg <const> = gfx.image.new("images/bricks.png") -- image without transparency
 
 local noFlip <const> = gfx.kImageUnflipped
@@ -29,10 +30,11 @@ end
 --- Returns an estimation of the number of tiles that had to be re-rendered,
 --- a measure of computational cost
 function BricksView:render()
+    local camPos <const> = camPos
     local shiftX, shiftY = camPos[1] - self.camPosX, camPos[2] - self.camPosY
     if shiftX ~= 0 or shiftY ~=0 then
         --printf("Render", frameCounter, camPos[1],self.camPosX, shiftX, camPos[2], self.camPosY, shiftY, math.abs(shiftY*self.bufferWidthTiles + shiftX*self.bufferHeightTiles))
-        self.inactiveBuffer:clear(gfx.kColorClear)
+        self.inactiveBuffer:clear(gameBgColor)
         gfx.lockFocus(self.inactiveBuffer)
             self.activeBuffer:draw(-shiftX*tileSize, -shiftY*tileSize)
             if shiftX < 0 then

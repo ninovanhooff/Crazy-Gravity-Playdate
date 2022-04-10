@@ -11,25 +11,12 @@ import "bricksView.lua"
 local gfx <const> = playdate.graphics
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 
-hudY = 224
-tileSize = 8 -- refactor: probably hardcoded in a lot of places
-gameBgColor = gfx.kColorBlack
-gameWidthTiles = math.ceil(screenWidth / tileSize)
-gameHeightTiles = math.ceil(hudY / tileSize)
-
 --- the active game area, excluding the HUD
 local gameClipRect = playdate.geometry.rect.new(0,0, screenWidth, hudY)
-
-
-local function RenderBackground()
-    gfx.clear(gameBgColor)
-end
 
 function RenderGame()
     gfx.setColor(gfx.kColorBlack)
     gfx.setScreenClipRect(gameClipRect)
-
-    RenderBackground()
 
     local tilesRendered = bricksView:render()
 
