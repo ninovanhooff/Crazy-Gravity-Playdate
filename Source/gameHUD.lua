@@ -6,6 +6,9 @@
 
 import "CoreLibs/graphics"
 
+local floor <const> = math.floor
+local max <const> = math.max
+local abs <const> = math.abs
 local gfx <const> = playdate.graphics
 local unFlipped <const> = gfx.kImageUnflipped
 local font = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
@@ -70,16 +73,16 @@ function RenderHUD()
     x = x+16+hudGutter
     gfx.drawCircleInRect(x+1,hudY+1, 14,14)
     local speedPattern = gfx.image.kDitherTypeBayer4x4
-    local warnX = 1/(landingTolerance[1] / math.abs(vx))
+    local warnX = 1/(landingTolerance[1] / abs(vx))
     local warnY = 1/(landingTolerance[2] / vy) -- only downwards movement is dangerous
-    local warnAlpha = math.max(warnX, warnY)
+    local warnAlpha = max(warnX, warnY)
     gfx.setDitherPattern(1-warnAlpha, speedPattern) -- invert alpha due to bug in SDK
     gfx.fillCircleInRect(x+4,hudY+4, 8,8)
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
 
     -- elapsed time
-    local eSec = math.floor(frameCounter/frameRate)
+    local eSec = floor(frameCounter/frameRate)
     local textW = monoFont:getTextWidth(eSec)
     x = screenWidth - textW - hudPadding
     monoFont:drawText(eSec,x,hudY+8)

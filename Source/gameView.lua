@@ -17,9 +17,6 @@ gameBgColor = gfx.kColorBlack
 gameWidthTiles = math.ceil(screenWidth / tileSize)
 gameHeightTiles = math.ceil(hudY / tileSize)
 
-
-
-
 --- the active game area, excluding the HUD
 local gameClipRect = playdate.geometry.rect.new(0,0, screenWidth, hudY)
 

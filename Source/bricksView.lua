@@ -6,6 +6,7 @@
 
 import "CoreLibs/object"
 
+local abs <const> = math.abs
 local gfx <const> = playdate.graphics
 local bricksImg <const> = gfx.image.new("images/bricks.png") -- image without transparency
 
@@ -60,7 +61,7 @@ function BricksView:render()
     self.camPosY = camPos[2]
     self.activeBuffer:draw(-camPos[3], -camPos[4])
     -- when the camera moves vertically, a row of tiles has to be rendered.
-    return math.abs(shiftY*self.bufferWidthTiles + shiftX*self.bufferHeightTiles)
+    return abs(shiftY*self.bufferWidthTiles + shiftX*self.bufferHeightTiles)
 end
 
 function BricksView:initBricks()

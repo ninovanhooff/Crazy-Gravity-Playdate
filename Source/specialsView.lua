@@ -6,6 +6,8 @@
 
 import "drawUtil.lua"
 local unFlipped <const> = playdate.graphics.kImageUnflipped
+local floor <const> = math.floor
+local fmod <const> = math.fmod
 
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
 
@@ -32,7 +34,7 @@ function RenderPlatform(item)
         for i = 1,item.amnt,1 do
             if i == 1 then
                 sprite:draw(scrX+8, pltfrmY-16, unFlipped, 80+item.type*16, 346, 16, 16)
-            elseif math.fmod(i,2)==0 then -- lower pos
+            elseif fmod(i,2)==0 then -- lower pos
                 sprite:draw(scrX+8*(i+1), pltfrmY-16, unFlipped, 80+item.type*16, 346, 16, 16)
             else
                 sprite:draw(scrX+8*(i-1), scrY, unFlipped, 80+item.type*16, 346, 16, 16)
@@ -42,7 +44,7 @@ function RenderPlatform(item)
         for i = 1,item.amnt,1 do
             if i == 1 then
                 sprite:draw(scrX+8, pltfrmY-16, unFlipped, 64, 346, 16, 16)
-            elseif math.fmod(i,2)==0 then -- lower pos
+            elseif fmod(i,2)==0 then -- lower pos
                 sprite:draw(scrX+8*(i+1), pltfrmY-16, unFlipped, 64, 346, 16, 16)
             else
                 sprite:draw(scrX+8*(i-1), scrY, unFlipped, 64, 346, 16, 16)
@@ -141,7 +143,7 @@ function RenderCannon(item)
             pgeDrawRectoutline(scrX,scrY,24,item.distance*8,white)
         else
             for j,jtem in ipairs(item.balls) do
-                local bOff = (math.floor((frameCounter-jtem[2])%72/3))*8
+                local bOff = (floor((frameCounter-jtem[2])%72/3))*8
                 sprite:draw(scrX+8, scrY+item.distance*8-jtem[1], unFlipped, 240+bOff, 72, 8, 8)
             end
         end
@@ -153,7 +155,7 @@ function RenderCannon(item)
             pgeDrawRectoutline(scrX,scrY+40,24,item.distance*8,white)
         else
             for j,jtem in ipairs(item.balls) do
-                local bOff = (math.floor((frameCounter-jtem[2])%72/3))*8
+                local bOff = (floor((frameCounter-jtem[2])%72/3))*8
                 sprite:draw(scrX+8, scrY+jtem[1]+24, unFlipped, 240+bOff, 72, 8, 8)
             end
         end
@@ -165,7 +167,7 @@ function RenderCannon(item)
             pgeDrawRectoutline(scrX,scrY,item.distance*8,24,white)
         else
             for j,jtem in ipairs(item.balls) do
-                local bOff = (math.floor((frameCounter-jtem[2])%72/3))*8
+                local bOff = (floor((frameCounter-jtem[2])%72/3))*8
                 sprite:draw(scrX+item.distance*8-jtem[1], scrY+8, unFlipped, 240+bOff, 72, 8, 8)
             end
         end
@@ -177,7 +179,7 @@ function RenderCannon(item)
             pgeDrawRectoutline(scrX+40,scrY,item.distance*8,24,white)
         else
             for j,jtem in ipairs(item.balls) do
-                local bOff = (math.floor((frameCounter-jtem[2])%72/3))*8
+                local bOff = (floor((frameCounter-jtem[2])%72/3))*8
                 sprite:draw(scrX+24+jtem[1], scrY+8, unFlipped, 240+bOff, 72, 8, 8)
             end
         end
@@ -301,7 +303,7 @@ function RenderBarrier(item)
         for j,jtem in ipairs(colorT) do
             if item[jtem]==1 then -- required
                 if keys[j] or frameCounter%20<10 then -- have key, else blink
-                    sprite:draw(scrX+colorCoords[1]+(j-1)%2*12, scrY+colorCoords[2]+math.floor(j*0.4)*12, unFlipped, 64+(j-1)*8, 338, 8, 8)
+                    sprite:draw(scrX+colorCoords[1]+(j-1)%2*12, scrY+colorCoords[2]+floor(j*0.4)*12, unFlipped, 64+(j-1)*8, 338, 8, 8)
                 end
             end
         end

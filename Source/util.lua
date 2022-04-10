@@ -4,6 +4,8 @@
 --- DateTime: 11/03/2022 16:36
 ---
 
+local floor <const> = math.floor
+
 function boolToNum(bool)
     if bool then return 1 else return 0 end
 end
@@ -43,7 +45,7 @@ function count(tbl)
 end
 
 function loopAnim(frames,skip)
-    return math.floor((frameCounter % (frames*skip))*(1/skip))
+    return floor((frameCounter % (frames*skip))*(1/skip))
 end
 
 

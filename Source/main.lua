@@ -2,13 +2,17 @@ import "util.lua"
 import "level.lua"
 import "game.lua"
 import "gameViewModel.lua"
+import "gameInputs.lua"
 import "init.lua"
 import "systemMenu.lua"
 
-local gfx = playdate.graphics
+local gfx <const> = playdate.graphics
+local calcTimeStep <const> = CalcTimeStep
+local processInputs <const> = ProcessInputs
+local renderGame <const> = RenderGame
 
 
-function startGame()
+local function startGame()
     local levelNumString = string.format("%02d", currentLevel)
     InitGame("levels/LEVEL" .. levelNumString .. ".pdz")
 end
@@ -25,9 +29,9 @@ function playdate.update()
         end
         startGame()
     end
-    ProcessInputs()
-    CalcTimeStep()
-    RenderGame()
+    processInputs()
+    calcTimeStep()
+    renderGame()
     playdate.drawFPS(0,0)
 end
 

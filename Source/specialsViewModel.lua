@@ -4,35 +4,70 @@
 --- DateTime: 03/04/2022 16:59
 ---
 
+local abs <const> = math.abs
+local floor <const> = math.floor
+local min <const> = math.min
+local random <const> = math.random
+
 local barrierSpeed = 2
+
+local function UnitCollision(x,y,w,h,testMode)
+    --printf(x,y,w,h)
+    for i=1,5,2 do
+        if colBT[i]>=x and colBT[i]<x+w and colBT[i+1]>=y and colBT[i+1]<y+h then
+            if not testMode then collision = true end
+            return true
+        end
+    end
+    return false
+end
+
+-- returns true if this rect may collide with planePos, does not take plane sub-pos ([3] and 4]) into
+-- account. When false, it is guaranteed that this rect does not intersect with the plane
+local function ApproxRectCollision(x, y, w, h)
+    -- plane size is 3
+    return planePos[1]+3 > x and planePos[1] < x+w  and planePos[2]+3 > y and planePos[2] <y+h
+end
+
+local function PixelCollision(x,y,w,h) -- needs work?
+    for i=1,9,2 do
+        --printf("pixelCol",planePos[1]*8+colT[i],x,planePos[2]*8+colT[i+1],y)
+        --printf(planePos[1]*8+colT[i],x,planePos[2]*8+colT[i+1],y)
+        if planePos[1]*8+colT[i]>x and planePos[1]*8+colT[i]<=x+w and planePos[2]*8+colT[i+1]>=y and planePos[2]*8+colT[i+1]<=y+h then -- -1
+            collision = true
+            return true
+        end
+    end
+    return false
+end
 
 function CalcPlatform(item,idx)
     if not ApproxRectCollision(item.x,item.y-3, item.w, item.h) then
         return -- out of range
     end
     --platform collision
-    if PixelCollision(item.x*8,item.y*8+32,item.w*8,16) and (planeRot~=18 or(vy > landingTolerance[2] or math.abs(vx)> landingTolerance[1]))   then
+    if PixelCollision(item.x*8,item.y*8+32,item.w*8,16) and (planeRot~=18 or(vy > landingTolerance[2] or abs(vx)> landingTolerance[1]))   then
         collision = true
         print("platform collide!!")
     end
     -- crate collision
     if item.pType~=1 then -- not landing, pickup
         if item.amnt>0 then -- lower row
-            UnitCollision(item.x+1,item.y+2,2+math.floor(item.amnt*0.5)*2,2)
+            UnitCollision(item.x+1,item.y+2,2+floor(item.amnt*0.5)*2,2)
             if item.amnt>2 then --upper row
-                UnitCollision(item.x+2,item.y,math.floor((item.amnt-1)*0.5)*2,2)
+                UnitCollision(item.x+2,item.y,floor((item.amnt-1)*0.5)*2,2)
             end
         end
     end
 
     -- don't collide on take-off
-    if math.abs(planeRot - 18) <= 3 and vy<0  then
+    if abs(planeRot - 18) <= 3 and vy<0  then
         collision = false
     end
 
     --landing
     if flying and planeRot == 18 then -- upright
-        if planePos[2]==item.y+1 and planePos[1]>=item.x-2 and planePos[1]<item.x+item.w-1 and planePos[4]>=3 and vy>0 and vy <= landingTolerance[2] and math.abs(vx)<= landingTolerance[1] then
+        if planePos[2]==item.y+1 and planePos[1]>=item.x-2 and planePos[1]<item.x+item.w-1 and planePos[4]>=3 and vy>0 and vy <= landingTolerance[2] and abs(vx)<= landingTolerance[1] then
             flying = false
             collision = false
             vx,vy=0,0
@@ -64,7 +99,7 @@ function CalcPlatform(item,idx)
                     item.amnt = item.amnt -1
                     if Sounds then pickup_sound:play() end
                 elseif item.pType==3 and fuel<6000 then
-                    fuel = math.min(6000,fuel+3000)
+                    fuel = min(6000,fuel+3000)
                     item.amnt = item.amnt -1
                     if Sounds then fuel_sound:play() end
                 elseif item.pType==4 and item.amnt>0 then -- extras
@@ -154,7 +189,7 @@ function CalcRotator(item,idx)
                 planeRot = planeRot % 24
             end
             printf(planeRot)
-            --planeRot = math.random(planeRot,0) -- refactor: no clue why this line was here, but it crashes due to invalid range
+            --planeRot = random(planeRot,0) -- refactor: no clue why this line was here, but it crashes due to invalid range
         end
     end
 end
@@ -173,7 +208,7 @@ end
 
 function CalcCannon(item,idx)
     if frameCounter%(80-item.rate)==0 then -- add a ball
-        table.insert(item.balls,{0,math.random(0,72)}) -- px position,color offset
+        table.insert(item.balls,{0,random(0,72)}) -- px position,color offset
     end
 
     local shouldCalcBallCollisions = planeIntersectsCannon(item)
@@ -200,13 +235,13 @@ end
 function CalcRod(item)
     if item.pos1+item.pos2>=item.distance*8-24 then
         item.d1=-1
-        item.speed1 = math.random(item.speedMin,item.speedMax)
+        item.speed1 = random(item.speedMin,item.speedMax)
     elseif item.pos1<2 then
         item.d1=1
-        item.speed1 = math.random(item.speedMin,item.speedMax)
-    elseif (item.chngOften==1 and math.random(1,350)==62) then
-        item.d1=-1+math.random(0,2)*2
-        item.speed1 = math.random(item.speedMin,item.speedMax)
+        item.speed1 = random(item.speedMin,item.speedMax)
+    elseif (item.chngOften==1 and random(1,350)==62) then
+        item.d1=-1+random(0,2)*2
+        item.speed1 = random(item.speedMin,item.speedMax)
     end
     if item.fixdGap == 1 then
         if item.pos2<2 then
@@ -216,13 +251,13 @@ function CalcRod(item)
         item.d2=-item.d1
     elseif item.pos1+item.pos2>=item.distance*8-24 then
         item.d2=-1
-        item.speed2 = math.random(item.speedMin,item.speedMax)
+        item.speed2 = random(item.speedMin,item.speedMax)
     elseif item.pos2<2 then
         item.d2=1
-        item.speed2 = math.random(item.speedMin,item.speedMax)
-    elseif (item.chngOften==1 and math.random(1,350)==62) then
-        item.d2=-1+math.random(0,2)*2
-        item.speed2 = math.random(item.speedMin,item.speedMax)
+        item.speed2 = random(item.speedMin,item.speedMax)
+    elseif (item.chngOften==1 and random(1,350)==62) then
+        item.d2=-1+random(0,2)*2
+        item.speed2 = random(item.speedMin,item.speedMax)
     end
     item.pos1 = item.pos1+item.speed1*item.d1
     item.pos2 = item.pos2+item.speed2*item.d2
@@ -414,12 +449,12 @@ end
 
 function InitRod(item)
     item.d1,item.d2=1,1 -- direction of rods, positive is extending
-    item.speed1 = math.random(item.speedMin,item.speedMax)
+    item.speed1 = random(item.speedMin,item.speedMax)
     if item.fixdGap==1 then
         item.d2,item.speed2=-item.d1,item.speed1
         item.pos2=item.distance*8-item.pos1-item.gapSize-24
     else
-        item.speed2 = math.random(item.speedMin,item.speedMax)
+        item.speed2 = random(item.speedMin,item.speedMax)
     end
     local coords = {};local receiverCoords = {}
     if item.direction==1 then
