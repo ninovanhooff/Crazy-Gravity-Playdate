@@ -27,12 +27,13 @@ function RenderGame()
         end
     end
 
-    -- plane
-    sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3], (planePos[2]-camPos[2])*8+planePos[4]-camPos[4], unFlipped, planeRot%16*23, 391+(boolToNum(planeRot>15)*2-thrust)*23, 23, 23)
-
-    --explosion
-    if collision and not Debug then
-        sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3]+explodeX, (planePos[2]-camPos[2])*8+planePos[4]-camPos[4]+explodeY, unFlipped, explodeJ*23, 489, 23, 23)
+    print(explosion)
+    if explosion then
+        --explosion
+        explosion:render()
+    else
+        -- plane
+        sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3], (planePos[2]-camPos[2])*8+planePos[4]-camPos[4], unFlipped, planeRot%16*23, 391+(boolToNum(planeRot>15)*2-thrust)*23, 23, 23)
     end
 
     -- HUD

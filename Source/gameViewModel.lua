@@ -4,9 +4,10 @@
 --- DateTime: 10/04/2022 12:50
 ---
 
+import "gameExplosion.lua"
+
 local floor <const> = math.floor
 local max <const> = math.max
-local random <const> = math.random
 
 local halfWidthTiles = math.ceil(gameWidthTiles*0.5)
 local halfHeightTiles = math.ceil(gameHeightTiles*0.5)
@@ -104,35 +105,32 @@ local function CalcGameCam()
     --printf("camAfter",camPos[1].." "..camPos[2].." "..camPos[3].." "..camPos[4])
 end
 
-
-function CalcTimeStep()
-    frameCounter = frameCounter + 1
-    if flying then --physics
-        vx = vx*drag -- thrust?
-        vy = (vy+gravity)*drag
-        planePos[3] = planePos[3] + vx
-        planePos[4] = planePos[4] + vy
-        if planePos[3]>7 then
-            local addUnits = floor(planePos[3]*0.125)
-            planePos[1] = planePos[1]+addUnits
-            planePos[3] = planePos[3]-addUnits*8
-        elseif planePos[3]<0 then
-            --printf("before",planePos[1],planePos[3])
-            local substUnits = -floor(planePos[3]*0.125)
-            planePos[1] = planePos[1]-substUnits
-            planePos[3] = 8+(planePos[3]+(substUnits-1)*8)
-            --printf("after",planePos[1],planePos[3])
-        end
-        if planePos[4]>7 then
-            local addUnits = floor(planePos[4]*0.125)
-            planePos[2] = planePos[2]+addUnits
-            planePos[4] = planePos[4]-addUnits*8
-        elseif planePos[4]<0 then
-            local substUnits = -floor(planePos[4]*0.125)
-            planePos[2] = planePos[2]-substUnits
-            planePos[4] = 8+(planePos[4]+(substUnits-1)*8)
-        end
+local function calcPlane()
+    vx = vx*drag -- thrust?
+    vy = (vy+gravity)*drag
+    planePos[3] = planePos[3] + vx
+    planePos[4] = planePos[4] + vy
+    if planePos[3]>7 then
+        local addUnits = floor(planePos[3]*0.125)
+        planePos[1] = planePos[1]+addUnits
+        planePos[3] = planePos[3]-addUnits*8
+    elseif planePos[3]<0 then
+        --printf("before",planePos[1],planePos[3])
+        local substUnits = -floor(planePos[3]*0.125)
+        planePos[1] = planePos[1]-substUnits
+        planePos[3] = 8+(planePos[3]+(substUnits-1)*8)
+        --printf("after",planePos[1],planePos[3])
     end
+    if planePos[4]>7 then
+        local addUnits = floor(planePos[4]*0.125)
+        planePos[2] = planePos[2]+addUnits
+        planePos[4] = planePos[4]-addUnits*8
+    elseif planePos[4]<0 then
+        local substUnits = -floor(planePos[4]*0.125)
+        planePos[2] = planePos[2]-substUnits
+        planePos[4] = 8+(planePos[4]+(substUnits-1)*8)
+    end
+
     if planePos[1]<1 then -- level edges
         planePos[1],planePos[3]=1,1
         vx = 0
@@ -148,6 +146,14 @@ function CalcTimeStep()
     if planePos[2]>levelProps.sizeY-3 then -- level edges
         planePos[2],planePos[4]=levelProps.sizeY-3,7
         vy = 0
+    end
+end
+
+
+function CalcTimeStep()
+    frameCounter = frameCounter + 1
+    if flying then --physics
+        calcPlane()
     end
 
     CalcGameCam()
@@ -166,23 +172,17 @@ function CalcTimeStep()
     for i,item in ipairs(specialT) do
         specialCalcT[item.sType](item,i)
     end
-    if collision and not Debug then
+    if collision and explosion == nil and not Debug then
         if Sounds then thrust_sound:stop() end
+        thrust = 0
+        explosion = GameExplosion()
         print("KABOOM")
-        for i=0,2 do
-            explodeI = i
-            explodeX = random(-5,10)
-            explodeY = random(-5,10)
-            if Sounds then
-                explode_sound:play()
-            end
-            for j = 0,14,2 do -- one exp(losion) loop
-                explodeJ = j
-                RenderGame()
-                coroutine.yield() -- let system update the screen
-            end
+    end
+
+    if explosion then
+        if explosion:update() then
+            DecreaseLife()
         end
-        DecreaseLife()
     end
 end
 
@@ -228,6 +228,7 @@ function InitGame(path)
 end
 
 function ResetGame()
+    explosion = nil
     ResetPlane()
     planeFreight = {} -- type, idx of special where picked up
     remainingFreight = {0,0,0,0} -- amnt for each type

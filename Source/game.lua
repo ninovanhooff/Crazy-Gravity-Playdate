@@ -70,18 +70,6 @@ function ApplyGameSets()
 	blowerStrength,magnetStrength = gameSettings[3].val,gameSettings[4].val
 end
 
-function Benchmark(n)
-	calcTimeStep()
-	benchTimer = timer.create()
-	for i=1,n do
-		CalcTimeStep()
-		RenderGame()
-	end
-	local t = benchTimer:peekdelta()
-	benchTimer = nil
-	return t
-end
-
 function IncrementStringNumber(str)
 	printf("incr",str)
 	num = tonumber(str) +1

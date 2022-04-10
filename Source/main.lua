@@ -29,7 +29,9 @@ function playdate.update()
         end
         startGame()
     end
-    processInputs()
+    if not explosion then
+        processInputs()
+    end
     calcTimeStep()
     renderGame()
     playdate.drawFPS(0,0)
