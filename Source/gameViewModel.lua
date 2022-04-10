@@ -267,13 +267,6 @@ function DecreaseLife()
     if extras[2]==0 then
         kill = 1
     else
-        for i=0,10 do -- blink life in and out
-            RenderGame(true)
-            if i%2==0 then
-                sprite:draw(5+(extras[2]-1)*25,5,23, 23, unFlipped, 23, 23, 0, 255)
-            end
-        end
-
         extras[2] = extras[2]-1
         for i,item in ipairs(planeFreight) do
             specialT[item[2]].amnt = specialT[item[2]].amnt+1 -- replace freight on pltfrms
