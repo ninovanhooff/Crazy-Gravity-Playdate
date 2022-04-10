@@ -27,7 +27,6 @@ function RenderGame()
         end
     end
 
-    print(explosion)
     if explosion then
         --explosion
         explosion:render()

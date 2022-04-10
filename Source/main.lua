@@ -10,6 +10,8 @@ local gfx <const> = playdate.graphics
 local calcTimeStep <const> = CalcTimeStep
 local processInputs <const> = ProcessInputs
 local renderGame <const> = RenderGame
+local planePos <const> = planePos
+local camPos <const> = camPos
 
 
 local function startGame()

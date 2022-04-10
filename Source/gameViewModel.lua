@@ -9,6 +9,10 @@ import "gameExplosion.lua"
 local floor <const> = math.floor
 local max <const> = math.max
 
+local planePos <const> = planePos
+local camPos <const> = camPos
+
+
 local halfWidthTiles = math.ceil(gameWidthTiles*0.5)
 local halfHeightTiles = math.ceil(gameHeightTiles*0.5)
 
@@ -47,7 +51,7 @@ local function CalcPlaneColCoords()
     colT[10] = (colT[4]+colT[2])*0.5
     colBT = nil
     colBT = {}
-    for i=1,5,2 do
+    for i=1,5,2 do -- for every pair of coordinates in colT
         colBT[i]=max(planePos[1]+floor(colT[i]*0.125),1.0)
         colBT[i+1]=max(planePos[2]+floor(colT[i+1]*0.125),1.0)
     end
@@ -177,6 +181,12 @@ function CalcTimeStep()
         thrust = 0
         explosion = GameExplosion()
         print("KABOOM")
+        for i = 1, frameRate*2 do
+            CalcTimeStep()
+            explosion:update()
+            RenderGame()
+            coroutine.yield() -- let system update the screen
+        end
     end
 
     if explosion then
@@ -199,8 +209,8 @@ local function checkCam()
 end
 
 function ResetPlane()
-    planePos = {homeBase.x+floor(homeBase.w*0.5-1),homeBase.y+1,0,4} --x,y,subx,suby
-    camPos = {homeBase.x+floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles,0,0} --x,y,subx,suby
+    planePos[1], planePos[2], planePos[3], planePos[4] = homeBase.x+floor(homeBase.w*0.5-1),homeBase.y+1,0,4 --x,y,subx,suby
+    camPos[1], camPos[2], camPos[3], camPos[4] = homeBase.x+floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles,0,0 --x,y,subx,suby
     checkCam()
     flying = false
     vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.

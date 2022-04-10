@@ -23,6 +23,8 @@ outBufSize = 1024
 numLevels = 10
 currentLevel = 1
 kill = 0 -- game ended?
+planePos = {}
+camPos = {}
 print("hoi")
 
 if Sounds then

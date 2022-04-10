@@ -8,6 +8,9 @@ import "CoreLibs/object"
 
 local random <const> = math.random
 local unFlipped <const> = playdate.graphics.kImageUnflipped
+local tileSize <const> = tileSize
+local planePos <const> = planePos
+local camPos <const> = camPos
 
 class('GameExplosion').extends()
 
@@ -26,6 +29,7 @@ end
 
 function GameExplosion:init()
     GameExplosion.super.init()
+    local planeX, planeY = planePos[1]*tileSize+planePos[3], planePos[2]*tileSize+planePos[4]
     local planeSpriteOffsetX, planeSpriteOffsetY = planeRot%16*23, 391 +(boolToNum(planeRot>15))*46, 23
     self.shards = {}
     for x = 0, shardingDim-1 do
@@ -35,10 +39,10 @@ function GameExplosion:init()
             shardsColumn[y+1] = {
                 -- sprite offset x, sprite offset y,
                 planeSpriteOffsetX + shardSize*x, planeSpriteOffsetY + shardSize*y,
-                -- position offset x, position offset y,
-                shardSize*x, shardSize*y,
+                -- pixelPosition
+                planeX + shardSize*x, planeY + shardSize*y,
                 -- force x, force y
-                x-shardingDim/2,y-shardingDim/2
+                x-shardingDim/2 + vx,y-shardingDim/2 + vy
             }
         end
     end
@@ -62,13 +66,13 @@ function GameExplosion:init()
     --end
 end
 
-local function drawShard(item, planeX, planeY)
-    sprite:draw(planeX+item[3], planeY+item[4], unFlipped, item[1], item[2], shardSize, shardSize)
+local function drawShard(item, camX, camY)
+    sprite:draw(item[3]-camX, item[4]-camY, unFlipped, item[1], item[2], shardSize, shardSize)
 end
 
 function GameExplosion:renderShards()
-    local planeX, planeY = (planePos[1]-camPos[1])*8+planePos[3]-camPos[3], (planePos[2]-camPos[2])*8+planePos[4]-camPos[4]
-    self:forShards(drawShard, planeX, planeY)
+    local camX, camY = camPos[1]*tileSize+camPos[3], camPos[2]*tileSize+camPos[4]
+    self:forShards(drawShard, camX, camY)
     --for _,col in ipairs(self.shards) do
     --    for _,item in ipairs(col) do
     --        sprite:draw(planeX+item[3], planeY+item[4], unFlipped, item[1], item[2], shardSize, shardSize)
@@ -83,12 +87,13 @@ end
 local function updateShard(shard)
     shard[3] = shard[3] + shard[5]
     shard[4] = shard[4] + shard[6]
+    shard[5] = shard[5] * drag
+    shard[6] = (shard[6]+gravity)*drag
 end
 
 --- Updates the explosion
 --- return whether the explosion is done
 function GameExplosion:update()
-    print("update shards")
     self:forShards(updateShard)
     return false
 end
