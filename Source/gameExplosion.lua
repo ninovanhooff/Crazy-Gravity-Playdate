@@ -11,6 +11,8 @@ local unFlipped <const> = playdate.graphics.kImageUnflipped
 local tileSize <const> = tileSize
 local planePos <const> = planePos
 local camPos <const> = camPos
+local duration <const> = frameRate * 2
+local shardDrag
 
 class('GameExplosion').extends()
 
@@ -29,8 +31,10 @@ end
 
 function GameExplosion:init()
     GameExplosion.super.init()
+    shardDrag = (1 + drag) * 0.5
     local planeX, planeY = planePos[1]*tileSize+planePos[3], planePos[2]*tileSize+planePos[4]
     local planeSpriteOffsetX, planeSpriteOffsetY = planeRot%16*23, 391 +(boolToNum(planeRot>15))*46, 23
+    self.timer = 0
     self.shards = {}
     for x = 0, shardingDim-1 do
         local shardsColumn = {}
@@ -42,7 +46,7 @@ function GameExplosion:init()
                 -- pixelPosition
                 planeX + shardSize*x, planeY + shardSize*y,
                 -- force x, force y
-                x-shardingDim/2 + vx,y-shardingDim/2 + vy
+                x-shardingDim/2 + vx*0.8 + random() -0.5 ,y-shardingDim/2 + vy*0.8 +random() - 0.5
             }
         end
     end
@@ -85,17 +89,20 @@ function GameExplosion:renderExplosion()
 end
 
 local function updateShard(shard)
-    shard[3] = shard[3] + shard[5]
-    shard[4] = shard[4] + shard[6]
-    shard[5] = shard[5] * drag
-    shard[6] = (shard[6]+gravity)*drag
+    shard[3] += shard[5]
+    shard[4] += shard[6]
+    shard[5] *= shardDrag
+    shard[6] = (shard[6]+gravity) * shardDrag
+    shard[1] += random(-1,1)
+    shard[2] += random(-1,1)
 end
 
 --- Updates the explosion
 --- return whether the explosion is done
 function GameExplosion:update()
     self:forShards(updateShard)
-    return false
+    self.timer = self.timer + 1
+    return self.timer < duration
 end
 
 function GameExplosion:render()

@@ -181,18 +181,13 @@ function CalcTimeStep()
         thrust = 0
         explosion = GameExplosion()
         print("KABOOM")
-        for i = 1, frameRate*2 do
-            CalcTimeStep()
-            explosion:update()
+        while explosion:update() do
+            calcPlane() -- keep updating plane as a ghost target for camera
+            CalcGameCam()
             RenderGame()
             coroutine.yield() -- let system update the screen
         end
-    end
-
-    if explosion then
-        if explosion:update() then
-            DecreaseLife()
-        end
+        DecreaseLife()
     end
 end
 
@@ -209,6 +204,7 @@ local function checkCam()
 end
 
 function ResetPlane()
+    explosion = nil
     planePos[1], planePos[2], planePos[3], planePos[4] = homeBase.x+floor(homeBase.w*0.5-1),homeBase.y+1,0,4 --x,y,subx,suby
     camPos[1], camPos[2], camPos[3], camPos[4] = homeBase.x+floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles,0,0 --x,y,subx,suby
     checkCam()
@@ -238,7 +234,6 @@ function InitGame(path)
 end
 
 function ResetGame()
-    explosion = nil
     ResetPlane()
     planeFreight = {} -- type, idx of special where picked up
     remainingFreight = {0,0,0,0} -- amnt for each type
