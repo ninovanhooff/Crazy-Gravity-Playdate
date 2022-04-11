@@ -6,6 +6,11 @@
 
 import "CoreLibs/object"
 
+--- the amount of shards to create in both dimensions.
+--- Total shard count is the square of this number
+local shardingDim <const> = 5
+local shardSize <const> = 24 / shardingDim -- plane is 24px in both dimensions
+
 local random <const> = math.random
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local tileSize <const> = tileSize
@@ -16,10 +21,7 @@ local shardDrag
 
 class('GameExplosion').extends()
 
---- the amount of shards to create in both dimensions.
---- Total shard count is the square of this number
-local shardingDim <const> = 6
-local shardSize <const> = 24 / shardingDim -- plane is 24px in both dimensions
+
 
 function GameExplosion:forShards(fun, ...)
     for _,col in ipairs(self.shards) do
