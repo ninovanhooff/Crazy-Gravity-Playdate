@@ -11,11 +11,13 @@ import "CoreLibs/object"
 local shardingDim <const> = 5
 local shardSize <const> = 24 / shardingDim -- plane is 24px in both dimensions
 
+local gfx <const> = playdate.graphics
 local random <const> = math.random
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local tileSize <const> = tileSize
 local planePos <const> = planePos
 local camPos <const> = camPos
+local frameRate <const> = frameRate
 local duration <const> = frameRate * 2
 local shardDrag
 
@@ -125,4 +127,9 @@ end
 function GameExplosion:render()
     renderShards(self)
     renderBlasts(self)
+    -- gradually fade out the game after 1 second of explosion
+    if self.timer > frameRate then
+        gfx.setDitherPattern(1-((self.timer-frameRate)/frameRate), gfx.image.kDitherTypeDiagonalLine) -- invert alpha due to bug in SDK
+        gfx.fillRect(0,0, screenWidth, hudY)
+    end
 end

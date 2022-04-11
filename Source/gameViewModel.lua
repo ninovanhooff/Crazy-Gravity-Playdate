@@ -185,6 +185,7 @@ function CalcTimeStep()
             calcPlane() -- keep updating plane as a ghost target for camera
             CalcGameCam()
             RenderGame()
+            playdate.drawFPS(0,0)
             coroutine.yield() -- let system update the screen
         end
         DecreaseLife()

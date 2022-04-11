@@ -27,17 +27,18 @@ function RenderGame()
         end
     end
 
+    -- HUD
+    gfx.clearClipRect()
+    if tilesRendered <= 80 then -- only render HUD if we have render budget for it
+        RenderHUD()
+    end
+
+    -- Draw explosion over HUD for extra dramatic effect
     if explosion then
         --explosion
         explosion:render()
     else
         -- plane
         sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3], (planePos[2]-camPos[2])*8+planePos[4]-camPos[4], unFlipped, planeRot%16*23, 391+(boolToNum(planeRot>15)*2-thrust)*23, 23, 23)
-    end
-
-    -- HUD
-    gfx.clearClipRect()
-    if tilesRendered <= 80 then -- only render HUD if we have render budget for it
-        RenderHUD()
     end
 end
