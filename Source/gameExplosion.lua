@@ -21,23 +21,22 @@ local shardDrag
 
 class('GameExplosion').extends()
 
-
-
-function GameExplosion:forShards(fun, ...)
-    for _,col in ipairs(self.shards) do
-        for _,item in ipairs(col) do
-            fun(item, ...)
-        end
-    end
+--- return cam position as x,y
+local function getCam()
+    return camPos[1]*tileSize+camPos[3], camPos[2]*tileSize+camPos[4]
 end
 
 function GameExplosion:init()
     GameExplosion.super.init()
     shardDrag = (1 + drag) * 0.5
     local planeX, planeY = planePos[1]*tileSize+planePos[3], planePos[2]*tileSize+planePos[4]
-    local planeSpriteOffsetX, planeSpriteOffsetY = planeRot%16*23, 391 +(boolToNum(planeRot>15))*46, 23
+
+    self.camX, self.camY = getCam()
+    self.blastShards = {}
     self.timer = 0
     self.shards = {}
+
+    local planeSpriteOffsetX, planeSpriteOffsetY = planeRot%16*23, 391 +(boolToNum(planeRot>15))*46, 23
     for x = 0, shardingDim-1 do
         local shardsColumn = {}
         self.shards[x+1] = shardsColumn
@@ -50,47 +49,44 @@ function GameExplosion:init()
                 -- force x, force y
                 x-shardingDim/2 + vx*0.8 + random() -0.5 ,y-shardingDim/2 + vy*0.8 +random() - 0.5
             }
+            if random(1, shardingDim*2) == 1 then
+                table.insert(self.blastShards, shardsColumn[y+1])
+            end
         end
     end
 
-    --self.explodeFrame = 0
-    --
-    --for i=0,2 do
-    --    explodeI = i
-    --    explodeX = random(-5,10)
-    --    explodeY = random(-5,10)
-    --    if Sounds then
-    --        explode_sound:play()
-    --    end
-    --    for j = 0,14,2 do -- one exp(losion) loop
-    --        explodeJ = j
-    --        calcPlane()
-    --        CalcGameCam()
-    --        RenderGame()
-    --        coroutine.yield() -- let system update the screen
-    --    end
-    --end
+    self.blastFrame = 0
 end
 
-local function drawShard(item, camX, camY)
-    sprite:draw(item[3]-camX, item[4]-camY, unFlipped, item[1], item[2], shardSize, shardSize)
+local function forShards(self, fun, ...)
+    for _,col in ipairs(self.shards) do
+        for _,item in ipairs(col) do
+            fun(self, item, ...)
+        end
+    end
 end
 
-function GameExplosion:renderShards()
-    local camX, camY = camPos[1]*tileSize+camPos[3], camPos[2]*tileSize+camPos[4]
-    self:forShards(drawShard, camX, camY)
-    --for _,col in ipairs(self.shards) do
-    --    for _,item in ipairs(col) do
-    --        sprite:draw(planeX+item[3], planeY+item[4], unFlipped, item[1], item[2], shardSize, shardSize)
-    --    end
-    --end
+local function drawShard(self, shard)
+    sprite:draw(shard[3]-self.camX, shard[4]-self.camY, unFlipped, shard[1], shard[2], shardSize, shardSize)
 end
 
-function GameExplosion:renderExplosion()
-    --sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3]+explodeX, (planePos[2]-camPos[2])*8+planePos[4]-camPos[4]+explodeY, unFlipped, explodeJ*23, 489, 23, 23)
+local function renderShards(self)
+    forShards(self, drawShard)
 end
 
-local function updateShard(shard)
+local function renderBlasts(self)
+    for _,item in ipairs(self.blastShards) do
+        sprite:draw(
+                item[3] - self.camX,
+                item[4] - self.camY, unFlipped,
+                self.blastFrame *23, 489,
+                23, 23
+        )
+    end
+
+end
+
+local function updateShard(_, shard)
     shard[3] += shard[5]
     shard[4] += shard[6]
     shard[5] *= shardDrag
@@ -99,15 +95,34 @@ local function updateShard(shard)
     shard[2] += random(-1,1)
 end
 
+local function randomizeBlastShards(self)
+    self.blastShards = {}
+    for _ = 1, shardingDim*0.5 do
+        table.insert(
+            self.blastShards,
+            self.shards[random(1,shardingDim)][random(1,shardingDim)]
+        )
+    end
+end
+
 --- Updates the explosion
 --- return whether the explosion is done
 function GameExplosion:update()
-    self:forShards(updateShard)
+    if self.blastFrame == 0 and Sounds then
+       explode_sound:play()
+   end
+    self.camX, self.camY = getCam()
+    forShards(self, updateShard)
     self.timer = self.timer + 1
+    self.blastFrame += 1
+    if self.blastFrame > 14 then
+        self.blastFrame = 0
+        randomizeBlastShards(self)
+    end
     return self.timer < duration
 end
 
 function GameExplosion:render()
-    self:renderShards()
-    self:renderExplosion()
+    renderShards(self)
+    renderBlasts(self)
 end

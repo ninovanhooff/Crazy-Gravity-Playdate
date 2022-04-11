@@ -206,12 +206,13 @@ end
 function ResetPlane()
     explosion = nil
     planePos[1], planePos[2], planePos[3], planePos[4] = homeBase.x+floor(homeBase.w*0.5-1),homeBase.y+1,0,4 --x,y,subx,suby
-    camPos[1], camPos[2], camPos[3], camPos[4] = homeBase.x+floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles,0,0 --x,y,subx,suby
+    -- when using y = homeBase.y-halfHeightTiles+1, no initial camera movement would occur
+    camPos[1], camPos[2], camPos[3], camPos[4] = homeBase.x+floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles, 0,0 --x,y,subx,suby
     checkCam()
     flying = false
     vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
     CalcPlaneColCoords()
-    explodeI,collision = nil,false
+    collision = false
     fuel = levelProps.fuel
     landedTimer,landedAt = 0,-1
 end
@@ -264,7 +265,6 @@ function ResetGame()
     for i=1,60 do
         CalcTimeStep() -- let cannons fire a few shots, bringing counter to 0
     end
-    explodeI = nil
     editorMode = false
     bricksView = BricksView()
 end
