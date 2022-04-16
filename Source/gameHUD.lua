@@ -69,7 +69,13 @@ function RenderHUD()
     x = x+15+hudPadding
 
     -- speed warning
-    drawIcon(x, 3)
+    if(extras[1] > 0) then -- turbo enabled
+        if frameCounter % 20 > 10 then
+            hudIcons:draw(x, hudY, unFlipped, 48,16 ,16,16)
+        end
+    else
+        drawIcon(x, 3) -- rggular speed icon
+    end
     x = x+16+hudGutter
     gfx.drawCircleInRect(x+1,hudY+1, 14,14)
     local speedPattern = gfx.image.kDitherTypeBayer4x4
