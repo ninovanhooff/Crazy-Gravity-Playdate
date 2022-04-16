@@ -14,7 +14,7 @@ local abs <const> = math.abs
 local gfx <const> = playdate.graphics
 local unFlipped <const> = gfx.kImageUnflipped
 local font = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
-local monoFont = gfx.font.new("fonts/Rains/font-rains-1x")
+local monoFont = gfx.font.new("fonts/Marble Madness")
 
 local hudIcons = gfx.image.new("images/hud_icons.png")
 local hudBgClr = gfx.kColorWhite
