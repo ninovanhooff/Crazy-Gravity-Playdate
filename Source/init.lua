@@ -23,6 +23,7 @@ outBufSize = 1024
 numLevels = 10
 currentLevel = 1
 kill = 0 -- game ended?
+extras = {0,0,0} -- See GameViewModel:ResetGame()
 planePos = {}
 camPos = {}
 print("hoi")

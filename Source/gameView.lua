@@ -11,6 +11,8 @@ import "bricksView.lua"
 local gfx <const> = playdate.graphics
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 
+local gameHUD <const> = gameHUD
+
 --- the active game area, excluding the HUD
 local gameClipRect = playdate.geometry.rect.new(0,0, screenWidth, hudY)
 
@@ -30,7 +32,7 @@ function RenderGame()
     -- HUD
     gfx.clearClipRect()
     if tilesRendered <= 80 then -- only render HUD if we have render budget for it
-        RenderHUD()
+        gameHUD:render()
     end
 
     -- Draw explosion over HUD for extra dramatic effect

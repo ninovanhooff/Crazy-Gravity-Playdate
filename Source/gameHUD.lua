@@ -5,6 +5,8 @@
 ---
 
 import "CoreLibs/graphics"
+import "CoreLibs/object"
+import "CoreLibs/animation"
 
 local floor <const> = math.floor
 local max <const> = math.max
@@ -20,18 +22,30 @@ local hudFgClr = gfx.kColorBlack
 local hudPadding = 8 -- distance between items
 local hudGutter = 4 -- distance between item icon and item value
 
+local hudBlinkers = {}
+for i = 1,#extras+1 do -- all extras +1 for keys
+    hudBlinkers[i] = gfx.animation.blinker.new()
+end
+
+class('GameHUD').extends()
+
+-- no initializer
+
+-- global singleton
+gameHUD = GameHUD()
+
 local function drawIcon(x, index)
     hudIcons:draw(x,hudY,unFlipped,index*16,0,16,16)
 end
 
-function RenderHUD()
+function GameHUD:render()
     gfx.setColor(hudBgClr)
     gfx.fillRect(0,hudY,400,16)
     gfx.setColor(hudFgClr)
     local x = hudPadding
 
     -- lives
-    if extras[2] > 0 or frameCounter % 20 > 10 then
+    if hudBlinkers[2].on then
         drawIcon(x, 6)
     end
     x = x+16+hudGutter
@@ -49,7 +63,9 @@ function RenderHUD()
     x = x+32+hudPadding
 
     -- cargo
-    drawIcon(x,7)
+    if hudBlinkers[3].on then
+        drawIcon(x, 7)
+    end
     x = x+16+hudGutter
     local containerWidth = extras[3] * 10 + 4
     gfx.drawRect(x, hudY+1, containerWidth, 14)
@@ -59,7 +75,9 @@ function RenderHUD()
     x = x+containerWidth+hudPadding-1
 
     -- keys
-    drawIcon(x, 1)
+    if hudBlinkers[4].on then
+        drawIcon(x, 1)
+    end
     x=x+12+hudGutter
     for i=1,4 do
         local subX = (i+1)%2*8
@@ -68,9 +86,9 @@ function RenderHUD()
     end
     x = x+15+hudPadding
 
-    -- speed warning
+    -- turbo -> speed warning
     if(extras[1] > 0) then -- turbo enabled
-        if frameCounter % 20 > 10 then
+        if hudBlinkers[1].on then
             hudIcons:draw(x, hudY, unFlipped, 48,16 ,16,16)
         end
     else
@@ -100,4 +118,11 @@ function RenderHUD()
     --x=x+16+hudGutter
     --font:drawText(lMin*60+lSec,x,hudY)
     --x=x+32+hudPadding
+end
+
+--- Notify the GameHud that the count of one of the stats has changed.
+--- @param itemId number @ 1: turbo, 2: lives, 3:cargo, 4: key
+function GameHUD:onChanged(itemId)
+    printf("#extras", #extras, "extratype", itemId, "#hudBlinkers", hudBlinkers)
+    hudBlinkers[itemId]:start()
 end

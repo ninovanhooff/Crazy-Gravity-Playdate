@@ -1,9 +1,9 @@
 import "util.lua"
 import "level.lua"
+import "init.lua"
 import "game.lua"
 import "gameViewModel.lua"
 import "gameInputs.lua"
-import "init.lua"
 import "systemMenu.lua"
 
 local gfx <const> = playdate.graphics
@@ -12,6 +12,8 @@ local processInputs <const> = ProcessInputs
 local renderGame <const> = RenderGame
 local planePos <const> = planePos
 local camPos <const> = camPos
+local kill = kill
+local updateBlinkers <const> = gfx.animation.blinker.updateAll
 
 
 local function startGame()
@@ -37,6 +39,7 @@ function playdate.update()
     calcTimeStep()
     renderGame()
     playdate.drawFPS(0,0)
+    updateBlinkers()
 end
 
 function playdate.debugDraw()

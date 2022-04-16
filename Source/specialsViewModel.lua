@@ -4,10 +4,13 @@
 --- DateTime: 03/04/2022 16:59
 ---
 
+import "gameHUD.lua"
+
 local abs <const> = math.abs
 local floor <const> = math.floor
 local min <const> = math.min
 local random <const> = math.random
+local gameHUD <const> = gameHUD
 
 local barrierSpeed = 2
 
@@ -98,18 +101,20 @@ function CalcPlatform(item,idx)
                     table.insert(planeFreight,{item.type,landedAt})
                     item.amnt = item.amnt -1
                     if Sounds then pickup_sound:play() end
-                elseif item.pType==3 and fuel<6000 then
+                elseif item.pType==3 and fuel<6000 then -- fuel
                     fuel = min(6000,fuel+3000)
                     item.amnt = item.amnt -1
                     if Sounds then fuel_sound:play() end
                 elseif item.pType==4 and item.amnt>0 then -- extras
                     extras[item.type]=extras[item.type]+1
+                    gameHUD:onChanged(item.type)
                     item.amnt = item.amnt -1
                     if Sounds then extra_sound:play() end
                 elseif item.pType==5 then -- key
                     printf("KEY",item.color)
                     keys[item.color]=true
                     item.amnt = item.amnt -1
+                    gameHUD:onChanged(4)
                     if Sounds then key_sound:play() end
                 end
             end

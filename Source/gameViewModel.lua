@@ -5,12 +5,14 @@
 ---
 
 import "gameExplosion.lua"
+import "gameHUD.lua"
 
 local floor <const> = math.floor
 local max <const> = math.max
 
 local planePos <const> = planePos
 local camPos <const> = camPos
+local gameHUD <const> = gameHUD
 
 
 local halfWidthTiles = math.ceil(gameWidthTiles*0.5)
@@ -275,6 +277,7 @@ function DecreaseLife()
         kill = 1
     else
         extras[2] = extras[2]-1
+        gameHUD:onChanged(2)
         for i,item in ipairs(planeFreight) do
             specialT[item[2]].amnt = specialT[item[2]].amnt+1 -- replace freight on pltfrms
             remainingFreight[item[1]+1] = remainingFreight[item[1]+1] + 1
