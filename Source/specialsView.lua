@@ -8,10 +8,14 @@ import "drawUtil.lua"
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local floor <const> = math.floor
 local fmod <const> = math.fmod
+local gfx <const> = playdate.graphics
+local sprite = sprite
+local editorMode = editorMode
 
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
 
 function RenderPlatform(item)
+    -- generic
     local barY
     if item.pType<5 then
         barY = item.pType*6+264
@@ -25,11 +29,22 @@ function RenderPlatform(item)
         sprite:draw(scrX+j*32, pltfrmY+4, unFlipped, 416, barY, 32, 6)--middle tiling colored bar
     end
     sprite:draw(scrX+32+(item.w-8)*8, pltfrmY+4, unFlipped, 449, barY, 26, 6)--right end colored bar
+
+    -- type-specific
     if item.pType==1 then -- home
         if item.arrows==1 then
             sprite:draw(scrX, scrY, unFlipped, 313,414,24, 32, 0, 150)
             sprite:draw(scrX+(item.w-3)*8, scrY, unFlipped, 313,446,24, 32, 0, 150)
         end
+
+        -- remaining freight indicator
+        if gameBgColor == gfx.kColorBlack then
+            gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+        end
+        sprite:draw(scrX+32, pltfrmY-16, unFlipped, 192, 346, 16, 16)
+        monoFont:drawText(table.sum(remainingFreight)+#planeFreight, scrX+36, pltfrmY - 12)
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
     elseif item.pType==2 then -- freight
         for i = 1,item.amnt,1 do
             if i == 1 then

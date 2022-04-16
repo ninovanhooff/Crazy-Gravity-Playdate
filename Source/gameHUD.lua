@@ -13,8 +13,8 @@ local max <const> = math.max
 local abs <const> = math.abs
 local gfx <const> = playdate.graphics
 local unFlipped <const> = gfx.kImageUnflipped
-local font = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
-local monoFont = gfx.font.new("fonts/Marble Madness")
+local defaultFont = defaultFont
+local monoFont = monoFont
 
 local hudIcons = gfx.image.new("images/hud_icons.png")
 local hudBgClr = gfx.kColorWhite
@@ -49,7 +49,7 @@ function GameHUD:render()
         drawIcon(x, 6)
     end
     x = x+16+hudGutter
-    font:drawText(extras[2], x, hudY)
+    defaultFont:drawText(extras[2], x, hudY)
     x = x+10+hudPadding
 
     -- fuel

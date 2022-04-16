@@ -45,8 +45,8 @@ gfx.setColor(gfx.kColorBlack)
 sprite = gfx.image.new("images/sprite_bob.png") -- https://www.gingerbeardman.com/canvas-dither/
 if not sprite then error("failed to load sprite") end
 
-menuFont = gfx.getFont()
-if not menuFont then error("failed to load font") end
+defaultFont = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
+monoFont = gfx.font.new("fonts/Marble Madness")
 
 --titleBG = texture.load("titleBG.png")
 --if not titleBG then error("could not load title image") end

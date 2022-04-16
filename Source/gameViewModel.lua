@@ -240,6 +240,7 @@ end
 function ResetGame()
     ResetPlane()
     planeFreight = {} -- type, idx of special where picked up
+    deliveredFreight = {0,0,0,0} -- amount for each type
     remainingFreight = {0,0,0,0} -- amnt for each type
     keys = {false,false,false,false} -- have? bool
     for i,item in ipairs(specialT) do
