@@ -9,6 +9,7 @@ local unFlipped <const> = playdate.graphics.kImageUnflipped
 local floor <const> = math.floor
 local fmod <const> = math.fmod
 local gfx <const> = playdate.graphics
+local gameBgColor = gameBgColor
 local sprite = sprite
 local editorMode = editorMode
 
@@ -43,6 +44,15 @@ function RenderPlatform(item)
         end
         sprite:draw(scrX+32, pltfrmY-16, unFlipped, 192, 346, 16, 16)
         monoFont:drawText(table.sum(remainingFreight)+#planeFreight, scrX+36, pltfrmY - 11)
+        if frameCounter < frameRate then
+            local levelNumString = string.format("%02d", currentLevel)
+            dotFont:drawText(
+                    levelNumString,
+                    6 + scrX+item.w/2*tileSize  - dotFont:getTextWidth(levelNumString)*0.5,
+                    scrY - 50
+            )
+        end
+
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
     elseif item.pType==2 then -- freight
