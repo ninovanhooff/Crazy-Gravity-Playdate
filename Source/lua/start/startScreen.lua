@@ -5,6 +5,13 @@
 ---
 
 import "CoreLibs/object"
-import "screen.lua"
+import "../screen.lua"
+import "startView.lua"
 
 class("StartScreen").extends(Screen)
+
+local renderStart <const> = RenderStart
+
+function StartScreen:update()
+    renderStart()
+end

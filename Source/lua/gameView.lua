@@ -10,6 +10,8 @@ import "bricksView.lua"
 
 local gfx <const> = playdate.graphics
 local unFlipped <const> = playdate.graphics.kImageUnflipped
+local planePos <const> = planePos
+local camPos <const> = camPos
 
 local gameHUD <const> = gameHUD
 
