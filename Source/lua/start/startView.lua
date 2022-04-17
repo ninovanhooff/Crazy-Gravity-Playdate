@@ -5,8 +5,41 @@
 ---
 
 local gfx <const> = playdate.graphics
+local buttonHeight <const> = 24
+local buttonRadius <const> = buttonHeight * 0.5
+local buttonTextHalfHeight <const> = defaultFont:getHeight()*0.5
+local startGameHalfTextWidth = defaultFont:getTextWidth("Start Game")*0.5
+local startButtonY <const> = 100
 
-function RenderStart()
+function RenderStart(viewState)
+    gfx.setBackgroundColor(gfx.kColorWhite)
+    gfx.clear()
+
+    --inspect(viewState)
+
+    -- button
+    local startGameFillHeight = viewState.startGameProgress * buttonHeight
     gfx.setLineWidth(3)
-    gfx.drawRoundRect(200,100,100,24,12)
+    gfx.drawRoundRect(200,startButtonY,100,buttonHeight,buttonRadius)
+    gfx.setClipRect(200,100 + buttonHeight - startGameFillHeight,100,buttonHeight)
+    gfx.fillRoundRect(200,startButtonY,100,buttonHeight,buttonRadius)
+    gfx.clearClipRect()
+
+    gfx.pushContext()
+        gfx.setImageDrawMode(playdate.graphics.kDrawModeNXOR)
+        defaultFont:drawText(
+            "Start Game",
+            250 - startGameHalfTextWidth,
+            100+buttonHeight*0.5-buttonTextHalfHeight + 1 -- +3 for baseline tweak
+        )
+    gfx.popContext()
+
+    -- plane
+    sprite:draw(
+        viewState.planeX, viewState.planeY,
+        unFlipped,
+        viewState.planeRot%16*23, 391+(boolToNum(viewState.planeRot>15)*2-viewState.thrust)*23,
+        23, 23
+    )
+
 end

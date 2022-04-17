@@ -11,15 +11,8 @@ local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
 local thrustSound <const> = thrust_sound
 
-local sinThrustT= {}
-for i = 0,23 do
-    sinThrustT[i] = math.sin(-i/12*pi)
-end
-
-local cosThrustT= {}
-for i = 0,23 do
-    cosThrustT[i] = math.cos(-i/12*pi)
-end
+local sinThrustT <const> = sinThrustT
+local cosThrustT <const> = cosThrustT
 
 function ProcessInputs()
     -- thrust

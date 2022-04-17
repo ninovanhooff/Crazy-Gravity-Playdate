@@ -7,11 +7,18 @@
 import "CoreLibs/object"
 import "../screen.lua"
 import "startView.lua"
+import "startViewModel.lua"
 
 class("StartScreen").extends(Screen)
 
 local renderStart <const> = RenderStart
 
+function StartScreen:init()
+    self.viewModel = StartViewModel()
+end
+
 function StartScreen:update()
-    renderStart()
+    renderStart(
+        self.viewModel:calcTimeStep()
+    )
 end

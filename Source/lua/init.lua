@@ -4,6 +4,9 @@
 --- DateTime: 11/03/2022 16:59
 ---
 
+import "settings.lua"
+
+
 local sampleplayer = playdate.sound.sampleplayer
 local gfx = playdate.graphics
 
@@ -26,7 +29,19 @@ kill = 0 -- game ended?
 extras = {0,0,0} -- See GameViewModel:ResetGame()
 planePos = {}
 camPos = {}
+ApplyGameSets()
+
 print("hoi")
+
+sinThrustT= {}
+for i = 0,23 do
+    sinThrustT[i] = math.sin(-i/12*pi)
+end
+
+cosThrustT= {}
+for i = 0,23 do
+    cosThrustT[i] = math.cos(-i/12*pi)
+end
 
 if Sounds then
     pickup_sound = sampleplayer.new("sounds/pickup.wav")
