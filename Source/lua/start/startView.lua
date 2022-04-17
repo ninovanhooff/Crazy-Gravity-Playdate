@@ -5,11 +5,32 @@
 ---
 
 local gfx <const> = playdate.graphics
-local buttonHeight <const> = 24
-local buttonRadius <const> = buttonHeight * 0.5
 local buttonTextHalfHeight <const> = defaultFont:getHeight()*0.5
-local startGameHalfTextWidth = defaultFont:getTextWidth("Start Game")*0.5
-local startButtonY <const> = 100
+
+local function drawButton(button)
+    gfx.pushContext()
+    local text, x, y,w, h,  progress = button.text, button.x, button.y, button.w, button.h, button.progress
+    local fillHeight = progress * h
+    local buttonRadius = h * 0.5
+    local halfw = w * 0.5
+
+    gfx.setLineWidth(3)
+    gfx.drawRoundRect(x, y, w, h, buttonRadius)
+    gfx.setClipRect(x, y + h - fillHeight,w,h)
+    gfx.fillRoundRect(x,y,w,h,buttonRadius)
+    gfx.clearClipRect()
+
+    gfx.pushContext()
+        gfx.setImageDrawMode(playdate.graphics.kDrawModeNXOR)
+        defaultFont:drawText(
+            text,
+            x + halfw - defaultFont:getTextWidth(text)*0.5,
+            y + h*0.5-buttonTextHalfHeight + 1 -- +1 for baseline tweak
+        )
+    gfx.popContext()
+
+    gfx.popContext()
+end
 
 function RenderStart(viewState)
     gfx.setBackgroundColor(gfx.kColorWhite)
@@ -18,21 +39,9 @@ function RenderStart(viewState)
     --inspect(viewState)
 
     -- button
-    local startGameFillHeight = viewState.startGameProgress * buttonHeight
-    gfx.setLineWidth(3)
-    gfx.drawRoundRect(200,startButtonY,100,buttonHeight,buttonRadius)
-    gfx.setClipRect(200,100 + buttonHeight - startGameFillHeight,100,buttonHeight)
-    gfx.fillRoundRect(200,startButtonY,100,buttonHeight,buttonRadius)
-    gfx.clearClipRect()
-
-    gfx.pushContext()
-        gfx.setImageDrawMode(playdate.graphics.kDrawModeNXOR)
-        defaultFont:drawText(
-            "Start Game",
-            250 - startGameHalfTextWidth,
-            100+buttonHeight*0.5-buttonTextHalfHeight + 1 -- +3 for baseline tweak
-        )
-    gfx.popContext()
+    for _, button in pairs(viewState.buttons) do
+        drawButton(button)
+    end
 
     -- plane
     sprite:draw(

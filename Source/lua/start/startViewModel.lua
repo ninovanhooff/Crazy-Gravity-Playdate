@@ -5,17 +5,14 @@
 ---
 
 import "CoreLibs/object"
-import "startViewState.lua"
-
-class("StartViewModel").extends()
 
 local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, end
 buttonTimer.discardOnCompletion = false
 buttonTimer:pause()  -- disable auto start
 
-function StartViewModel:init()
-    self.startViewState = StartViewState()
-end
+local buttonWidth <const> = 100
+local buttonHeight <const> = 24
+
 
 local pressed <const> = playdate.buttonIsPressed
 local throttle <const> = playdate.kButtonA | playdate.kButtonB | playdate.kButtonUp
@@ -29,6 +26,26 @@ local cosThrustT <const> = cosThrustT
 local flying = false
 local planeX, planeY = 100,100
 local vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
+
+local function updateViewState(self)
+    self.viewState.buttonProgress = buttonTimer.value
+    self.viewState.planeRot = planeRot
+    self.viewState.planeX, self.viewState.planeY = planeX, planeY
+    self.viewState.thrust = thrust
+    self.viewState.buttonProgress = buttonTimer.value
+    return self.viewState
+end
+
+class("StartViewModel").extends()
+
+function StartViewModel:init()
+    self.viewState = {}
+    self.viewState.buttons = {
+        {text = "Start Game", x = 200, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.3},
+        {text = "Settings", x = 200, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.4}
+    }
+    updateViewState(self)
+end
 
 local function processInputs()
     -- thrust
@@ -88,23 +105,27 @@ local function approxRectCollision(x, y, w, h)
     return planeX + 24 > x and planeX < x+w  and planeY+24 > y and planeY <y+h
 end
 
-local function calcButtonCollision()
-    if approxRectCollision(200,100,100,24) then
-        buttonTimer:start()
-        printf("button start", buttonTimer.value, buttonTimer.currentTime)
-    else
+local function calcButtonCollision(self)
+    local anyCollision = false
+    for _, button in ipairs(self.viewState.buttons) do
+        if approxRectCollision(button.x,button.y,button.w,button.h) then
+            buttonTimer:start() -- does nothing when already running
+            button.progress = buttonTimer.value
+            anyCollision = true
+        else
+            button.progress = 0
+        end
+    end
+
+    if not anyCollision then
         buttonTimer:reset()
     end
+
 end
 
 function StartViewModel:calcTimeStep()
     processInputs()
     calcPlane()
-    calcButtonCollision()
-    self.startViewState.startGameProgress = buttonTimer.value
-    self.startViewState.planeRot = planeRot
-    self.startViewState.planeX, self.startViewState.planeY = planeX, planeY
-    self.startViewState.thrust = thrust
-    self.startViewState.startGameProgress = buttonTimer.value
-    return self.startViewState
+    calcButtonCollision(self)
+    return updateViewState(self)
 end
