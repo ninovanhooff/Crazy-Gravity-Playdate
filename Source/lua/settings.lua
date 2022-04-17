@@ -16,3 +16,11 @@ gameSettings = {
     {"burnRate",1,10,1,val=5},
     {"Defaults",1,{"yes","no"},val=2}
 }
+
+function ApplyGameSets()
+    burnRate = gameSettings[7].val -- amount of fuel each frame
+    gravity,drag = gameSettings[1].val,gameSettings[2].val --add,mult per frame!!
+    landingTolerance = {gameSettings[5].val*0.5,gameSettings[5].val} -- max vx,vy
+    thrustPower,turboPower = gameSettings[6].val,0.2
+    blowerStrength,magnetStrength = gameSettings[3].val,gameSettings[4].val
+end

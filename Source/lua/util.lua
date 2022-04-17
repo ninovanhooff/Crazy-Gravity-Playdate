@@ -10,6 +10,12 @@ function boolToNum(bool)
     if bool then return 1 else return 0 end
 end
 
+function IncrementStringNumber(str)
+    printf("incr",str)
+    num = tonumber(str) +1
+    return string.format("%0.2d",num)
+end
+
 function printf(...)
     local arg = {...}
     if Debug then
