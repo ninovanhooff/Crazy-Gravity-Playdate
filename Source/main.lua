@@ -1,10 +1,10 @@
-import "util.lua"
-import "level.lua"
-import "init.lua"
-import "game.lua"
-import "gameViewModel.lua"
-import "gameInputs.lua"
-import "systemMenu.lua"
+import "lua/util.lua"
+import "lua/level.lua"
+import "lua/init.lua"
+import "lua/game.lua"
+import "lua/gameViewModel.lua"
+import "lua/gameInputs.lua"
+import "lua/systemMenu.lua"
 
 local gfx <const> = playdate.graphics
 local calcTimeStep <const> = CalcTimeStep

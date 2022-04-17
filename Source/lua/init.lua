@@ -9,7 +9,7 @@ local gfx = playdate.graphics
 
 math.randomseed(playdate.getSecondsSinceEpoch())
 pi = 3.141592654
-Debug = false
+Debug = true
 Sounds = true
 screenWidth = playdate.display.getWidth()
 screenHeight = playdate.display.getHeight()
@@ -21,7 +21,7 @@ gameHeightTiles = math.ceil(hudY / tileSize)
 frameRate = 30
 outBufSize = 1024
 numLevels = 10
-currentLevel = 1
+currentLevel = 3
 kill = 0 -- game ended?
 extras = {0,0,0} -- See GameViewModel:ResetGame()
 planePos = {}
@@ -47,9 +47,9 @@ if not sprite then error("failed to load sprite") end
 
 defaultFont = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
 monoFont = gfx.font.new("fonts/Marble Madness")
+dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
 
---titleBG = texture.load("titleBG.png")
---if not titleBG then error("could not load title image") end
+if not dotFont then error("could not load dotFont") end
 
 if not highScores then
     highScores = {}
