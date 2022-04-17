@@ -28,6 +28,7 @@ currentLevel = 3
 kill = 0 -- game ended?
 extras = {0,0,0} -- See GameViewModel:ResetGame()
 planePos = {}
+planeSize = 24
 camPos = {}
 ApplyGameSets()
 

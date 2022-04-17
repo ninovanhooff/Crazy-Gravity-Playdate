@@ -26,6 +26,7 @@ local cosThrustT <const> = cosThrustT
 local flying = false
 local planeX, planeY = 100,100
 local vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
+local planeSize <const> = planeSize
 
 local function updateViewState(self)
     self.viewState.buttonProgress = buttonTimer.value
@@ -94,8 +95,12 @@ local function calcPlane()
     vy = (vy+gravity)*drag
     planeX = planeX + vx
     planeY = planeY + vy
-    planeX = planeX % screenWidth
-    planeY = planeY % screenHeight
+    if planeX > screenWidth or planeX + planeSize < 0 then
+        planeX = planeX % screenWidth
+    end
+    if planeY > screenHeight or planeY + planeSize < 0 then
+        planeY = planeY % screenHeight
+    end
 end
 
 -- returns true if this rect may collide with planePos, does not take plane sub-pos ([3] and 4]) into
