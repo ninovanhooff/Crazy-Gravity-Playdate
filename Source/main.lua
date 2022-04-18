@@ -10,7 +10,7 @@ local planePos <const> = planePos
 local camPos <const> = camPos
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
 
-local activeScreen = StartScreen()
+local activeScreen = GameScreen()
 
 function playdate.update()
     activeScreen:update()
