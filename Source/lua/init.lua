@@ -42,7 +42,7 @@ end
 
 gfx.setColor(gfx.kColorBlack)
 
-sprite = gfx.image.new("images/sprite_bob.png") -- https://www.gingerbeardman.com/canvas-dither/
+sprite = gfx.image.new("images/sprite_dither.png") -- https://www.gingerbeardman.com/canvas-dither/
 if not sprite then error("failed to load sprite") end
 
 defaultFont = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
