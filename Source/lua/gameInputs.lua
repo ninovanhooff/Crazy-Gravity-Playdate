@@ -4,24 +4,31 @@
 --- DateTime: 13/03/2022 00:13
 ---
 
-local pressed <const> = playdate.buttonIsPressed
+local getButtonState <const> = playdate.getButtonState
+local buttonState = 0
 local throttle <const> = playdate.kButtonA | playdate.kButtonB | playdate.kButtonUp
 local buttonDown <const> = playdate.kButtonDown
 local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
+
+
 local thrustSound <const> = thrust_sound
 
 local sinThrustT= {}
 for i = 0,23 do
     sinThrustT[i] = math.sin(-i/12*pi)
 end
-
 local cosThrustT= {}
 for i = 0,23 do
     cosThrustT[i] = math.cos(-i/12*pi)
 end
 
+local function pressed(buttonMask)
+    return buttonState & buttonMask ~= 0
+end
+
 function ProcessInputs()
+    buttonState = getButtonState()
     -- thrust
     if (pressed(throttle) and fuel > 0) then
         if Sounds and thrust == 0 then thrustSound:play(0) end
