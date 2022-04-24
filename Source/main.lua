@@ -14,7 +14,10 @@ local activeScreen = StartScreen()
 
 function playdate.update()
     gfx.pushContext()
-        activeScreen:update()
+       local nextScreen = activeScreen:update()
+        if nextScreen then
+            activeScreen = nextScreen()
+        end
     gfx.popContext() -- reset any drawing state modifications
     playdate.drawFPS(0,0)
     updateBlinkers()

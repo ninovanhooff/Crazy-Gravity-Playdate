@@ -5,6 +5,7 @@
 ---
 
 import "CoreLibs/object"
+import "../gameScreen.lua"
 
 local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, end
 buttonTimer.discardOnCompletion = false
@@ -33,7 +34,6 @@ local function updateViewState(self)
     self.viewState.planeRot = planeRot
     self.viewState.planeX, self.viewState.planeY = planeX, planeY
     self.viewState.thrust = thrust
-    self.viewState.buttonProgress = buttonTimer.value
     return self.viewState
 end
 
@@ -42,8 +42,12 @@ class("StartViewModel").extends()
 function StartViewModel:init()
     self.viewState = {}
     self.viewState.buttons = {
-        {text = "Start Game", x = 200, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.3},
-        {text = "Settings", x = 200, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.4}
+        {
+            text = "Start Game",
+            x = 200, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.0,
+            onClickScreen = GameScreen
+        },
+        {text = "Settings", x = 200, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.0}
     }
     updateViewState(self)
 end
@@ -110,12 +114,16 @@ local function approxRectCollision(x, y, w, h)
     return planeX + 24 > x and planeX < x+w  and planeY+24 > y and planeY <y+h
 end
 
+--- @return Screen button's onClick function if activated; or nil
 local function calcButtonCollision(self)
     local anyCollision = false
     for _, button in ipairs(self.viewState.buttons) do
         if approxRectCollision(button.x,button.y,button.w,button.h) then
             buttonTimer:start() -- does nothing when already running
             button.progress = buttonTimer.value
+            if button.progress >= 1.0 then
+                return button.onClickScreen
+            end
             anyCollision = true
         else
             button.progress = 0
@@ -131,6 +139,6 @@ end
 function StartViewModel:calcTimeStep()
     processInputs()
     calcPlane()
-    calcButtonCollision(self)
-    return updateViewState(self)
+    local onClick = calcButtonCollision(self)
+    return updateViewState(self), onClick
 end
