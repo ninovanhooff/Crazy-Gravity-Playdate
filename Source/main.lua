@@ -3,14 +3,14 @@ import "lua/util.lua"
 import "lua/level.lua"
 import "lua/init.lua"
 import "lua/gameScreen.lua"
-import "lua/start/startScreen.lua"
+import "lua/level-select/levelSelectScreen.lua"
 import "lua/systemMenu.lua"
 
 local gfx <const> = playdate.graphics
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
 local updateTimers <const> = playdate.timer.updateTimers
 
-local activeScreen = StartScreen()
+local activeScreen = LevelSelectScreen()
 
 function playdate.update()
     gfx.pushContext()

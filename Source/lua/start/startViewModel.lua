@@ -5,7 +5,7 @@
 ---
 
 import "CoreLibs/object"
-import "../gameScreen.lua"
+import "../level-select/levelSelectScreen.lua"
 
 local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, end
 buttonTimer.discardOnCompletion = false
@@ -45,7 +45,7 @@ function StartViewModel:init()
         {
             text = "Start Game",
             x = 200, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.0,
-            onClickScreen = GameScreen
+            onClickScreen = LevelSelectScreen
         },
         {text = "Settings", x = 200, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.0}
     }
