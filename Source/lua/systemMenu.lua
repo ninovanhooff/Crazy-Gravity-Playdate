@@ -15,7 +15,7 @@ end
 
 local function onLevelChange(newLevelNumber)
     currentLevel = tonumber(newLevelNumber)
-    InitGame("levels/LEVEL".. newLevelNumber .. ".pdz")
+    InitGame(levelPath())
 end
 
 local function onDebugChange(newDebugValue)

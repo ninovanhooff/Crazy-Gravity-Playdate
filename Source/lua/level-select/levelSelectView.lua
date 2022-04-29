@@ -8,35 +8,63 @@ import "CoreLibs/object"
 import "CoreLibs/ui"
 
 local gfx <const> = playdate.graphics
+local defaultFont <const> = defaultFont
+local obliqueFont <const> = obliqueFont
+local hudIcons <const> = gfx.image.new("images/hud_icons.png") -- move load to init.lua
+--- size of various content spacing
+local gutter <const> = 4
+local imageSize <const> = 64
+--- x offset of info column
+local infoOffsetX <const> = imageSize + 3*gutter
+local viewModel
 
-local listRect = playdate.geometry.rect.new(220, 20, 160, 210)
-local listView = playdate.ui.gridview.new(0, 10)
-listView:setCellPadding(0, 0, 13, 10)
-listView:setContentInset(24, 24, 13, 11)
+local listRect = playdate.geometry.rect.new(gutter, 0, 196, 240)
+local listView = playdate.ui.gridview.new(0, 72)
+listView:setCellPadding(0, 0, gutter, gutter) -- left, right , top, bottom
+listView:setContentInset(0, 0, 0, 0)
 
 class("LevelSelectView").extends()
-local menuOptions
 
 function listView:drawCell(section, row, column, selected, x, y, width, height)
-    gfx.fillRoundRect(100, 100, 50, 50, 4) -- test rect for debugging
-
+    gfx.setColor(gfx.kColorBlack) -- shape color
+    local vDivider = y + 24
+    local right = x+width
+    local infoX = x + infoOffsetX
     if selected then
-        gfx.fillRoundRect(x, y, width, 20, 4)
-        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+        gfx.fillRoundRect(x, y, width, height, gutter)
+        gfx.setColor(gfx.kColorWhite) -- shape color
     else
-        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        gfx.drawRoundRect(x, y, width, height, gutter)
     end
-    gfx.drawTextInRect(menuOptions[row], x, y+2, width, 100, nil, "...", kTextAlignment.center)
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
+
+    -- image
+    gfx.drawRect(x+gutter, y+gutter, imageSize, imageSize)
+    -- title
+    defaultFont:drawText(viewModel.menuOptions[row], infoX, y+gutter)
+    -- divider
+    gfx.drawLine(infoX, vDivider,right-2*gutter, vDivider)
+
+    -- challenges
+    obliqueFont:drawText("Achievements", infoX, vDivider + gutter)
+    local iconY = vDivider + 20 + gutter
+    --if selected then
+    --    gfx.fillRoundRect(infoX + viewModel.selectedChallenge * 30, iconY, 50, 16, 8)
+    --end
+
+    for i = 0,2 do
+        hudIcons:draw(infoX+i*48,iconY,unFlipped,64+i*16,16,16,16)
+
+    end
 end
 
-function LevelSelectView:init(viewModel)
-    menuOptions = viewModel.menuOptions
-    listView:setNumberOfRows(#menuOptions)
+function LevelSelectView:init(vm)
+    viewModel = vm
+    listView:setNumberOfRows(#vm.menuOptions)
 end
 
-function LevelSelectView:render(viewModel)
+function LevelSelectView:render()
     if listView:getSelectedRow() ~= viewModel.selectedRow then
-        -- if we always set the selectedRow, it will be marked dirty on every frame
         listView:setSelectedRow(viewModel.selectedRow)
         listView:scrollToRow(viewModel.selectedRow)
     end

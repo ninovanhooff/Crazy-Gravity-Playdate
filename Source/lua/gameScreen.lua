@@ -16,17 +16,13 @@ sumT = {0,8,24}
 greySumT = {-1,56,32,0} -- -1:unused
 
 import "CoreLibs/object"
+import "util.lua"
 import "screen.lua"
 
 class("GameScreen").extends(Screen)
 
-local function startGame()
-    local levelNumString = string.format("%02d", currentLevel)
-    InitGame("levels/LEVEL" .. levelNumString .. ".pdz")
-end
-
 function GameScreen:init()
-    startGame()
+    InitGame(levelPath())
 end
 
 function GameScreen:update()

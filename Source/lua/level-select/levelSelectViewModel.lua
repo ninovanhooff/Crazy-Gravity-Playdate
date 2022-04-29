@@ -6,6 +6,7 @@
 
 import "CoreLibs/object"
 import "CoreLibs/timer"
+import "../util.lua"
 
 local keyTimer = nil
 local pressed <const> = playdate.buttonIsPressed
@@ -19,7 +20,11 @@ local buttonB <const> = playdate.kButtonB
 class("LevelSelectViewModel").extends()
 
 function LevelSelectViewModel:init()
-    self.menuOptions = {"Sword", "Shield", "Arrow", "Sling", "Stone", "Longbow", "MorningStar", "Armour", "Dagger", "Rapier", "Skeggox", "War Hammer", "Battering Ram", "Catapult"}
+    self.menuOptions = {}
+    self.selectedChallenge = 0
+    for i = 1,10 do
+        self.menuOptions[i] = "Stage " .. levelNumString(i)
+    end
     self.selectedRow = 1
 end
 
@@ -27,6 +32,7 @@ function LevelSelectViewModel:update()
     if justPressed(buttonDown) then
         local function timerCallback()
             if self.selectedRow < #self.menuOptions then
+                self.selectedChallenge = 0
                 self.selectedRow = self.selectedRow + 1
             end
         end
@@ -34,6 +40,7 @@ function LevelSelectViewModel:update()
     elseif justPressed(buttonUp) then
         local function timerCallback()
             if self.selectedRow > 1 then
+                self.selectedChallenge = 0
                 self.selectedRow = self.selectedRow - 1
             end
         end

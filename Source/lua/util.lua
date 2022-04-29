@@ -10,6 +10,15 @@ function boolToNum(bool)
     if bool then return 1 else return 0 end
 end
 
+function levelNumString(levelNumber)
+    return string.format("%02d", levelNumber)
+end
+
+function levelPath(_levelNumber)
+    local levelNumber = _levelNumber or currentLevel
+    return "levels/LEVEL" .. levelNumString(levelNumber) .. ".pdz"
+end
+
 function IncrementStringNumber(str)
     printf("incr",str)
     num = tonumber(str) +1
