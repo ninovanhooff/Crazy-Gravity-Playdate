@@ -5,7 +5,12 @@
 ---
 
 import "CoreLibs/object"
+import "CoreLibs/timer"
+
+local keyTimer = nil
 local pressed <const> = playdate.buttonIsPressed
+local justPressed <const> = playdate.buttonJustPressed
+local justReleased <const> = playdate.buttonJustReleased
 local buttonDown <const> = playdate.kButtonDown
 local buttonUp <const> = playdate.kButtonUp
 local buttonA <const> = playdate.kButtonA
@@ -19,13 +24,21 @@ function LevelSelectViewModel:init()
 end
 
 function LevelSelectViewModel:update()
-    if pressed(buttonDown) then
-        if self.selectedRow < #self.menuOptions then
-            self.selectedRow = self.selectedRow + 1
+    if justPressed(buttonDown) then
+        local function timerCallback()
+            if self.selectedRow < #self.menuOptions then
+                self.selectedRow = self.selectedRow + 1
+            end
         end
-    elseif pressed(buttonUp) then
-        if self.selectedRow > 1 then
-            self.selectedRow = self.selectedRow - 1
+        keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
+    elseif justPressed(buttonUp) then
+        local function timerCallback()
+            if self.selectedRow > 1 then
+                self.selectedRow = self.selectedRow - 1
+            end
         end
+        keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
+    elseif justReleased(buttonDown | buttonUp) then
+        keyTimer:remove()
     end
 end
