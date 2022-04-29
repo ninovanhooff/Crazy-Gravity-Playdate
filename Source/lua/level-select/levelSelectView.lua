@@ -9,19 +9,18 @@ import "CoreLibs/ui"
 
 local gfx <const> = playdate.graphics
 local defaultFont <const> = defaultFont
-local obliqueFont <const> = obliqueFont
+local monoFont <const> = monoFont
 local hudIcons <const> = gfx.image.new("images/hud_icons.png") -- move load to init.lua
 --- size of various content spacing
 local gutter <const> = 4
-local imageSize <const> = 64
+local imageSize <const> = 58
 --- x offset of info column
 local infoOffsetX <const> = imageSize + 3*gutter
 local viewModel
 
 local listRect = playdate.geometry.rect.new(gutter, 0, 196, 240)
-local listView = playdate.ui.gridview.new(0, 72)
+local listView = playdate.ui.gridview.new(0, imageSize + 2* gutter)
 listView:setCellPadding(0, 0, gutter, gutter) -- left, right , top, bottom
-listView:setContentInset(0, 0, 0, 0)
 
 class("LevelSelectView").extends()
 
@@ -46,8 +45,8 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     gfx.drawLine(infoX, vDivider,right-2*gutter, vDivider)
 
     -- challenges
-    obliqueFont:drawText("Achievements", infoX, vDivider + gutter)
-    local iconY = vDivider + 20 + gutter
+    monoFont:drawText("Achievements", infoX, vDivider + gutter + 1)
+    local iconY = vDivider + 14 + gutter
     --if selected then
     --    gfx.fillRoundRect(infoX + viewModel.selectedChallenge * 30, iconY, 50, 16, 8)
     --end

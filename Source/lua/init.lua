@@ -62,7 +62,6 @@ sprite = gfx.image.new("images/sprite_bob.png") -- https://www.gingerbeardman.co
 if not sprite then error("failed to load sprite") end
 
 defaultFont = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
-obliqueFont = gfx.font.new("fonts/Asheville Sans 12 Oblique/Asheville-Sans-12-Light-Oblique")
 monoFont = gfx.font.new("fonts/Marble Madness")
 dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
 
