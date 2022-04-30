@@ -19,11 +19,30 @@ local buttonUp <const> = playdate.kButtonUp
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
 
+-- Select the first challenge that was not completed
+local function getDefaultChallenge(self)
+    local selectedChallenges = self:selectedOption().challenges
+    local selectedHighScores = highScores[levelPath(self.selectedIdx)]
+    if not selectedChallenges or not selectedHighScores then
+        self.selectedChallenge = 1
+        return 1
+    end
+
+    inspect(selectedChallenges) inspect(selectedHighScores)
+
+    for i, item in ipairs(selectedHighScores) do
+        if item < selectedChallenges[i] then
+            return i
+        end
+    end
+
+    return 1
+end
+
 class("LevelSelectViewModel").extends()
 
 function LevelSelectViewModel:init()
     self.menuOptions = {}
-    self.selectedChallenge = 1
     for i = 1,10 do
         self.menuOptions[i] = {
             title = "Stage " .. levelNumString(i),
@@ -33,22 +52,23 @@ function LevelSelectViewModel:init()
         }
     end
     self.selectedIdx = 1
+    self.selectedChallenge = getDefaultChallenge(self)
 end
 
 function LevelSelectViewModel:update()
     if justPressed(buttonDown) then
         local function timerCallback()
             if self.selectedIdx < #self.menuOptions then
-                self.selectedChallenge = 0
                 self.selectedIdx = self.selectedIdx + 1
+                self.selectedChallenge = getDefaultChallenge(self)
             end
         end
         keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
     elseif justPressed(buttonUp) then
         local function timerCallback()
             if self.selectedIdx > 1 then
-                self.selectedChallenge = 0
                 self.selectedIdx = self.selectedIdx - 1
+                self.selectedChallenge = getDefaultChallenge(self)
             end
         end
         keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
