@@ -21,31 +21,39 @@ class("LevelSelectViewModel").extends()
 
 function LevelSelectViewModel:init()
     self.menuOptions = {}
-    self.selectedChallenge = 0
+    self.selectedChallenge = 1
     for i = 1,10 do
-        self.menuOptions[i] = "Stage " .. levelNumString(i)
+        self.menuOptions[i] = {
+            title = "Stage " .. levelNumString(i),
+            challenges = {97, 1200, 1},
+            scores = {26, 2312, 3} -- fastest completion time, fuel spent, lives lost
+        }
     end
-    self.selectedRow = 1
+    self.selectedIdx = 1
 end
 
 function LevelSelectViewModel:update()
     if justPressed(buttonDown) then
         local function timerCallback()
-            if self.selectedRow < #self.menuOptions then
+            if self.selectedIdx < #self.menuOptions then
                 self.selectedChallenge = 0
-                self.selectedRow = self.selectedRow + 1
+                self.selectedIdx = self.selectedIdx + 1
             end
         end
         keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
     elseif justPressed(buttonUp) then
         local function timerCallback()
-            if self.selectedRow > 1 then
+            if self.selectedIdx > 1 then
                 self.selectedChallenge = 0
-                self.selectedRow = self.selectedRow - 1
+                self.selectedIdx = self.selectedIdx - 1
             end
         end
         keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
     elseif justReleased(buttonDown | buttonUp) then
         keyTimer:remove()
     end
+end
+
+function LevelSelectViewModel:selectedOption()
+    return self.menuOptions[self.selectedIdx]
 end
