@@ -22,16 +22,16 @@ local buttonB <const> = playdate.kButtonB
 -- Select the first challenge that was not completed
 local function getDefaultChallenge(self)
     local selectedChallenges = self:selectedOption().challenges
-    local selectedHighScores = highScores[levelPath(self.selectedIdx)]
-    if not selectedChallenges or not selectedHighScores then
+    local selectedRecords = records[levelPath(self.selectedIdx)]
+    if not selectedChallenges or not selectedRecords then
         self.selectedChallenge = 1
         return 1
     end
 
-    inspect(selectedChallenges) inspect(selectedHighScores)
+    inspect(selectedChallenges) inspect(selectedRecords)
 
-    for i, item in ipairs(selectedHighScores) do
-        if item < selectedChallenges[i] then
+    for i, challenge in ipairs(selectedChallenges) do
+        if challenge < selectedRecords[i] then -- the challenge was not beat
             return i
         end
     end
@@ -48,7 +48,7 @@ function LevelSelectViewModel:init()
             title = "Stage " .. levelNumString(i),
             challenges = challenges[levelPath(i)],
             -- may be nil if level was not completed before
-            scores = highScores[levelPath(i)] -- fastest completion time, fuel spent, lives lost
+            scores = records[levelPath(i)] -- fastest completion time, fuel spent, lives lost
         }
     end
     self.selectedIdx = 1

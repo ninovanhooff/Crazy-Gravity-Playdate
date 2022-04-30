@@ -256,8 +256,8 @@ function ResetGame()
     ApplyGameSets()
     extras = {0,levelProps.lives,1} -- turbo, lives, cargo
     -- time to beat
-    if highScores[curGamePath] then
-        lSec = highScores[curGamePath][1][2] -- {name,time}
+    if records[curGamePath] then
+        lSec = records[curGamePath][1][2] -- {name,time}
     else
         lSec = 5940 -- 99'00
     end

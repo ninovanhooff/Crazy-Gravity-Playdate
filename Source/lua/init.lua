@@ -67,9 +67,9 @@ dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
 
 if not dotFont then error("could not load dotFont") end
 
-highScores = playdate.datastore.read("highScores")
-if not highScores then
-    printf("could not load highscores, saving defaults")
-    highScores = {}
-    playdate.datastore.write(highScores,"highScores")
+records = playdate.datastore.read("records")
+if not records then
+    printf("could not load records, saving defaults")
+    records = {}
+    playdate.datastore.write(records,"records")
 end
