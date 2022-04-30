@@ -7,6 +7,8 @@
 import "CoreLibs/object"
 import "CoreLibs/timer"
 import "../util.lua"
+import "challenges.lua"
+
 
 local keyTimer = nil
 local pressed <const> = playdate.buttonIsPressed
@@ -25,8 +27,9 @@ function LevelSelectViewModel:init()
     for i = 1,10 do
         self.menuOptions[i] = {
             title = "Stage " .. levelNumString(i),
-            challenges = {97, 1200, 1},
-            scores = {26, 2312, 3} -- fastest completion time, fuel spent, lives lost
+            challenges = challenges[levelPath(i)],
+            -- may be nil if level was not completed before
+            scores = highScores[levelPath(i)] -- fastest completion time, fuel spent, lives lost
         }
     end
     self.selectedIdx = 1

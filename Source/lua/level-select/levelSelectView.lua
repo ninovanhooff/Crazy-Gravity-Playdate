@@ -117,14 +117,17 @@ local function renderDetailScreen(info)
     )
     infoY = infoY + 24
 
-    monoFont:drawText("Personal Best", detailRect.x, infoY)
-    infoY = infoY + 12
-
-    for i, item in ipairs(info.scores) do
-        hudIcons:draw(detailRect.x,infoY,unFlipped,48+i*16,0,16,16)
-        monoFont:drawText(item, detailRect.x + 20, infoY + 5)
-        infoY = infoY + 20
+    -- scores
+    if(info.scores) then
+        monoFont:drawText("Personal Best", detailRect.x, infoY)
+        infoY = infoY + 12
+        for i, item in ipairs(info.scores) do
+            hudIcons:draw(detailRect.x,infoY,unFlipped,48+i*16,0,16,16)
+            monoFont:drawText(item, detailRect.x + 20, infoY + 5)
+            infoY = infoY + 20
+        end
     end
+
 
     gfx.popContext()
 end
