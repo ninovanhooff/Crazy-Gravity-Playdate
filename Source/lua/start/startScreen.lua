@@ -21,6 +21,10 @@ function StartScreen:update()
     renderStart(self.viewModel:calcTimeStep())
 end
 
+function StartScreen:pause()
+    self.viewModel:pause()
+end
+
 function StartScreen:resume()
     -- reset state entirely
     self.viewModel = StartViewModel()

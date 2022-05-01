@@ -25,7 +25,6 @@ frameRate = 30
 outBufSize = 1024
 numLevels = 10
 currentLevel = 3
-kill = 0 -- game ended?
 extras = {0,0,0} -- See GameViewModel:ResetGame()
 planePos = {}
 planeSize = 24

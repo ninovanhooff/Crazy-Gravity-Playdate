@@ -150,3 +150,7 @@ function StartViewModel:calcTimeStep()
     calcButtonCollision(self)
     return updateViewState(self)
 end
+
+function StartViewModel:pause()
+    if Sounds then thrustSound:stop() end
+end

@@ -29,6 +29,8 @@ function GameScreen:init(levelPath)
 end
 
 function GameScreen:pause()
+    if Sounds then thrustSound:stop() end
+
     if self.backMenuItem then
         menu:removeMenuItem(self.backMenuItem)
         self.backMenuItem = nil
@@ -40,11 +42,6 @@ function GameScreen:resume()
 end
 
 function GameScreen:update()
-    if kill == 1 then
-        printf("Navigate to level select")
-        kill = 0
-        return LevelSelectScreen()
-    end
     if not explosion then
         processInputs()
     end

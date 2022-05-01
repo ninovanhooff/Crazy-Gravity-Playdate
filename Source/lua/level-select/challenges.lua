@@ -3,10 +3,12 @@
 --- Created by ninovanhooff.
 --- DateTime: 30/04/2022 16:54
 ---
-
 --- Achievement targets.
 --- key = file path
 --- value = {completion time, fuel spent, lives lost}
+--- achievements are unlocked / completed when the user achieves a lower record, ie.
+--- when the challenge is fuel 1200; the achievement is awarded when the user completes the level
+--- with 1199 or less spent fuel
 challenges = {
     ["levels/LEVEL01.pdz"] = {235, 1200, 1},
     ["levels/LEVEL02.pdz"] = {98, 1200, 10},
