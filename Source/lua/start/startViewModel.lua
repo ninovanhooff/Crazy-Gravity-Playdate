@@ -24,9 +24,9 @@ local thrustSound <const> = thrust_sound
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 
-local flying = false
-local planeX, planeY = 100,100
-local vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
+local flying
+local planeX, planeY
+local vx,vy,planeRot,thrust
 local planeSize <const> = planeSize
 
 local function updateViewState(self)
@@ -39,7 +39,14 @@ end
 
 class("StartViewModel").extends()
 
+local function resetPlane()
+    flying = false
+    planeX, planeY = 100,100
+    vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
+end
+
 function StartViewModel:init()
+    resetPlane()
     self.viewState = {}
     self.viewState.buttons = {
         {
@@ -122,7 +129,8 @@ local function calcButtonCollision(self)
             buttonTimer:start() -- does nothing when already running
             button.progress = buttonTimer.value
             if button.progress >= 1.0 then
-                return button.onClickScreen()
+                pushScreen(button.onClickScreen())
+                return
             end
             anyCollision = true
         else
@@ -139,6 +147,6 @@ end
 function StartViewModel:calcTimeStep()
     processInputs()
     calcPlane()
-    local onClick = calcButtonCollision(self)
-    return updateViewState(self), onClick
+    calcButtonCollision(self)
+    return updateViewState(self)
 end

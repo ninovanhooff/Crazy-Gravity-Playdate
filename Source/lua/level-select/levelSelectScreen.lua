@@ -14,7 +14,11 @@ class("LevelSelectScreen").extends(Screen)
 local levelSelectView, levelSelectViewModel
 
 function LevelSelectScreen:init()
+    LevelSelectScreen.super.init(self)
     levelSelectViewModel = LevelSelectViewModel()
+end
+
+function LevelSelectScreen:resume()
     levelSelectView = LevelSelectView(levelSelectViewModel)
 end
 

@@ -24,8 +24,19 @@ import "level-select/levelSelectScreen.lua"
 class("GameScreen").extends(Screen)
 
 function GameScreen:init(levelPath)
-    menu:addMenuItem("Level Select", function() kill = 1 end)
+    GameScreen.super.init(self)
     InitGame(levelPath)
+end
+
+function GameScreen:pause()
+    if self.backMenuItem then
+        menu:removeMenuItem(self.backMenuItem)
+        self.backMenuItem = nil
+    end
+end
+
+function GameScreen:resume()
+    self.backMenuItem = menu:addMenuItem("Level Select", function() popBackStack() end)
 end
 
 function GameScreen:update()

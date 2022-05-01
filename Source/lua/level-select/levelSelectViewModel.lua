@@ -10,7 +10,6 @@ import "../util.lua"
 import "challenges.lua"
 
 
-local keyTimer = nil
 local pressed <const> = playdate.buttonIsPressed
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
@@ -27,8 +26,6 @@ local function getDefaultChallenge(self)
         self.selectedChallenge = 1
         return 1
     end
-
-    inspect(selectedChallenges) inspect(selectedRecords)
 
     for i, challenge in ipairs(selectedChallenges) do
         if challenge < selectedRecords[i] then -- the challenge was not beat
@@ -55,6 +52,14 @@ function LevelSelectViewModel:init()
     self.selectedChallenge = getDefaultChallenge(self)
 end
 
+function LevelSelectViewModel:finish()
+    if self.keyTimer then
+        self.keyTimer:remove()
+    end
+    popBackStack()
+end
+
+--- returns true when finished
 function LevelSelectViewModel:update()
     if justPressed(buttonDown) then
         local function timerCallback()
@@ -63,7 +68,7 @@ function LevelSelectViewModel:update()
                 self.selectedChallenge = getDefaultChallenge(self)
             end
         end
-        keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
+        self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
     elseif justPressed(buttonUp) then
         local function timerCallback()
             if self.selectedIdx > 1 then
@@ -71,11 +76,17 @@ function LevelSelectViewModel:update()
                 self.selectedChallenge = getDefaultChallenge(self)
             end
         end
-        keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
+        self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
     elseif justReleased(buttonDown | buttonUp) then
-        keyTimer:remove()
+        if self.keyTimer then
+            self.keyTimer:remove()
+        end
     elseif justPressed(buttonA) then
-        return GameScreen(levelPath(self.selectedIdx))
+        pushScreen(
+            GameScreen(levelPath(self.selectedIdx))
+        )
+    elseif justPressed(buttonB) then
+        self:finish()
     end
 end
 

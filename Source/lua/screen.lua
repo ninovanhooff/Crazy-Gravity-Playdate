@@ -14,6 +14,18 @@ function Screen:update()
     -- no-op, implemented in subclasses
 end
 
+-- Notify screen that it will be hidden. Might be resumed later.
+function Screen:pause()
+    -- no-op, implemented in subclasses
+end
+
+--- Notify screen that it is visible to the user,
+--- either for the first time or after it was paused
+--- and subsequently brought back to the front of the backstack
+function Screen:resume()
+    -- no-op, implemented in subclasses
+end
+
 function Screen:debugDraw()
     -- no-op, implemented in subclasses
 end

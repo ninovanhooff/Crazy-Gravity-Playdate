@@ -14,13 +14,14 @@ class("StartScreen").extends(Screen)
 local renderStart <const> = RenderStart
 
 function StartScreen:init()
-    self.viewModel = StartViewModel()
+    StartScreen.super.init(self)
 end
 
 function StartScreen:update()
-    local viewState, nextScreen = self.viewModel:calcTimeStep()
-    if nextScreen then
-        return nextScreen
-    end
-    renderStart(viewState)
+    renderStart(self.viewModel:calcTimeStep())
+end
+
+function StartScreen:resume()
+    -- reset state entirely
+    self.viewModel = StartViewModel()
 end
