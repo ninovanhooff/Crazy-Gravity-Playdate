@@ -9,12 +9,14 @@ import "CoreLibs/timer"
 import "../util.lua"
 import "challenges.lua"
 
-
+local numChallenges <const> = numChallenges
 local pressed <const> = playdate.buttonIsPressed
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
 local buttonDown <const> = playdate.kButtonDown
 local buttonUp <const> = playdate.kButtonUp
+local buttonLeft <const> = playdate.kButtonLeft
+local buttonRight <const> = playdate.kButtonRight
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
 
@@ -103,6 +105,10 @@ function LevelSelectViewModel:update()
         if self.keyTimer then
             self.keyTimer:remove()
         end
+    elseif justPressed(buttonLeft) then
+        self.selectedChallenge = clamp(self.selectedChallenge-1, 1, numChallenges)
+    elseif justPressed(buttonRight) then
+        self.selectedChallenge = clamp(self.selectedChallenge+1, 1, numChallenges)
     elseif justPressed(buttonA) then
         pushScreen(
             GameScreen(levelPath(self.selectedIdx))
@@ -110,6 +116,7 @@ function LevelSelectViewModel:update()
     elseif justPressed(buttonB) then
         self:finish()
     end
+    printf(self.selectedChallenge)
 end
 
 function LevelSelectViewModel:selectedOption()

@@ -10,6 +10,10 @@ function boolToNum(bool)
     if bool then return 1 else return 0 end
 end
 
+function clamp(x, min, max)
+    return x < min and min or (x > max and max or x)
+end
+
 function levelNumString(levelNumber)
     return string.format("%02d", levelNumber)
 end

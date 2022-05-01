@@ -21,3 +21,5 @@ challenges = {
     ["levels/LEVEL09.pdz"] = {98, 1200, 1},
     ["levels/LEVEL10.pdz"] = {98, 1200, 1},
 }
+
+numChallenges = 3

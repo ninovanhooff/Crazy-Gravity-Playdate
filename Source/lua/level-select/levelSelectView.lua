@@ -20,7 +20,6 @@ local viewModel
 
 local listRect <const> = playdate.geometry.rect.new(gutter, 0, 192, 240)
 local detailRect <const> = playdate.geometry.rect.new(200+gutter, gutter, 200-gutter*2, 224 - gutter*2)
-local detailCenter <const> = detailRect:centerPoint()
 local listView = playdate.ui.gridview.new(0, imageSize + 2* gutter)
 listView:setCellPadding(0, 0, gutter, gutter) -- left, right , top, bottom
 
@@ -30,6 +29,7 @@ function LevelSelectView:init(vm)
     viewModel = vm
     listView:setNumberOfRows(#vm.menuOptions)
     self.initialRender = true
+    self.lastSelectedChallenge = viewModel.selectedChallenge
 end
 
 local function renderChallengePill(x, y, selected, hudIdx, text)
@@ -160,6 +160,7 @@ local function renderStaticViews()
 end
 
 function LevelSelectView:render()
+    local needsDetailDisplay = self.lastSelectedChallenge ~= viewModel.selectedChallenge
     if self.initialRender then
         renderStaticViews()
         renderDetailScreen(viewModel:selectedOption())
@@ -169,6 +170,10 @@ function LevelSelectView:render()
     if listView:getSelectedRow() ~= viewModel.selectedIdx then
         listView:setSelectedRow(viewModel.selectedIdx)
         listView:scrollToRow(viewModel.selectedIdx)
+        needsDetailDisplay = true
+    end
+
+    if needsDetailDisplay then
         renderDetailScreen(viewModel:selectedOption())
     end
 
@@ -177,5 +182,5 @@ function LevelSelectView:render()
         gfx.clear(gfx.kColorWhite)
         listView:drawInRect(listRect.x, listRect.y, listRect.width, listRect.height)
     end
-
+    self.lastSelectedChallenge = viewModel.selectedChallenge
 end
