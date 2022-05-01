@@ -257,7 +257,7 @@ function ResetGame()
     extras = {0,levelProps.lives,1} -- turbo, lives, cargo
     -- time to beat
     if records[curGamePath] then
-        lSec = records[curGamePath][1][2] -- {name,time}
+        lSec = records[curGamePath][1]
     else
         lSec = 5940 -- 99'00
     end

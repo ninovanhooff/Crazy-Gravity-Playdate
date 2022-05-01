@@ -45,12 +45,14 @@ function RenderPlatform(item)
         sprite:draw(scrX+32, pltfrmY-16, unFlipped, 192, 346, 16, 16)
         monoFont:drawText(table.sum(remainingFreight)+#planeFreight, scrX+36, pltfrmY - 11)
         if frameCounter < frameRate then
-            local levelNumString = string.format("%02d", currentLevel)
-            dotFont:drawText(
-                    levelNumString,
-                    6 + scrX+item.w/2*tileSize  - dotFont:getTextWidth(levelNumString)*0.5,
+            local startText = levelProps["startText"]
+            if startText then
+                dotFont:drawText(
+                    startText,
+                    6 + scrX+item.w/2*tileSize  - dotFont:getTextWidth(startText)*0.5,
                     scrY - 50
-            )
+                )
+            end
         end
 
         gfx.setImageDrawMode(gfx.kDrawModeCopy)

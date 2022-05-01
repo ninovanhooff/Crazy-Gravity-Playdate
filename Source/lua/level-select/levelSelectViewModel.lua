@@ -75,7 +75,7 @@ function LevelSelectViewModel:update()
     elseif justReleased(buttonDown | buttonUp) then
         keyTimer:remove()
     elseif justPressed(buttonA) then
-        return GameScreen()
+        return GameScreen(levelPath(self.selectedIdx))
     end
 end
 

@@ -6,6 +6,7 @@ import "gameView.lua"
 import "gameInputs.lua"
 import "gameViewModel.lua"
 
+local menu <const> = playdate.getSystemMenu()
 local calcTimeStep <const> = CalcTimeStep
 local processInputs <const> = ProcessInputs
 local renderGame <const> = RenderGame
@@ -18,22 +19,20 @@ greySumT = {-1,56,32,0} -- -1:unused
 import "CoreLibs/object"
 import "util.lua"
 import "screen.lua"
+import "level-select/levelSelectScreen.lua"
 
 class("GameScreen").extends(Screen)
 
-function GameScreen:init()
-    InitGame(levelPath())
+function GameScreen:init(levelPath)
+    menu:addMenuItem("Level Select", function() kill = 1 end)
+    InitGame(levelPath)
 end
 
 function GameScreen:update()
     if kill == 1 then
-        printf("Starting next level")
+        printf("Navigate to level select")
         kill = 0
-        currentLevel = currentLevel + 1
-        if currentLevel > numLevels then
-            currentLevel = 1
-        end
-        startGame()
+        return LevelSelectScreen()
     end
     if not explosion then
         processInputs()
