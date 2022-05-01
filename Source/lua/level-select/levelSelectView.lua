@@ -78,6 +78,18 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     end
 end
 
+local function drawTextInRectUnderlined(text, rect, font)
+    local width, height = gfx.drawTextInRect(
+        text,
+        rect.x, rect.y, rect.width, rect.height, -- cannot pass rect directly due to bug in SDK https://devforum.play.date/t/5314
+        nil, nil,
+        kTextAlignment.center, font
+    )
+    local halfWidth, y, centerX = width*0.5 + 12 , rect.y+height, rect:centerPoint().x
+    gfx.drawLine(centerX-halfWidth, y, centerX+halfWidth, y)
+
+end
+
 local function renderDetailScreen(info)
     gfx.pushContext()
     gfx.setClipRect(detailRect)
@@ -86,7 +98,7 @@ local function renderDetailScreen(info)
     local infoY = detailRect.y
 
     -- title
-    defaultFont:drawTextAligned(info.title, detailCenter.x, infoY, kTextAlignment.center)
+    drawTextInRectUnderlined(info.title, detailRect, defaultFont)
     infoY = infoY + 30
 
     -- image
