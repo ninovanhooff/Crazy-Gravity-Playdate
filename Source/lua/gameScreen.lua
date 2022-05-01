@@ -29,7 +29,7 @@ function GameScreen:init(levelPath)
 end
 
 function GameScreen:pause()
-    if Sounds then thrustSound:stop() end
+    if Sounds then thrust_sound:stop() end
 
     if self.backMenuItem then
         menu:removeMenuItem(self.backMenuItem)
