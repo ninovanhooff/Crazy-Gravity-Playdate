@@ -5,11 +5,6 @@
 ---
 
 local gfx = playdate.graphics
-local gameBgColor = gameBgColor
-
-function gameFgColor()
-   return 1 - gameBgColor -- 0 is black, 1 is white. Foreground is the inverse of background
-end
 
 function pgeDrawLine(x1, y1, x2, y2, color)
     gfx.setColor(color)

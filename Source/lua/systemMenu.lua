@@ -5,6 +5,19 @@
 ---
 
 local menu <const> = playdate.getSystemMenu()
+local gfx <const> = playdate.graphics
+
+local function onBackgroundChange(newBG)
+    printf("Changing background to ", newBG)
+    if newBG == "white" then
+        gameBgColor = gfx.kColorWhite
+    elseif newBG == "win95" then
+        gameBgColor = gfx.kColorClear
+    else
+        gameBgColor = gfx.kColorBlack
+    end
+    bricksView = BricksView()
+end
 
 local function onLevelChange(newLevelNumber)
     currentLevel = tonumber(newLevelNumber)
@@ -15,5 +28,6 @@ local function onDebugChange(newDebugValue)
     Debug = newDebugValue
 end
 
+menu:addOptionsMenuItem("BG", {"black","white", "win95"}, "black", onBackgroundChange)
 menu:addOptionsMenuItem("level", {"01","02","03","04","05","06","07","08", "09", "10"}, "03", onLevelChange)
 menu:addCheckmarkMenuItem("debug", Debug, onDebugChange)

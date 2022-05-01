@@ -9,7 +9,6 @@ local unFlipped <const> = playdate.graphics.kImageUnflipped
 local floor <const> = math.floor
 local fmod <const> = math.fmod
 local gfx <const> = playdate.graphics
-local gameBgColor = gameBgColor
 local sprite = sprite
 local editorMode = editorMode
 
