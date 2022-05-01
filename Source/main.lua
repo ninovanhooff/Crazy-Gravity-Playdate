@@ -7,7 +7,6 @@ import "lua/start/StartScreen.lua"
 import "lua/level-select/levelSelectScreen.lua"
 import "lua/systemMenu.lua"
 
-local menu <const> = playdate.getSystemMenu()
 local gfx <const> = playdate.graphics
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
 local updateTimers <const> = playdate.timer.updateTimers
@@ -57,9 +56,7 @@ pushScreen(LevelSelectScreen())
 
 function playdate.update()
     executePendingNavigators()
-    gfx.pushContext()
-       activeScreen:update()
-    gfx.popContext() -- reset any drawing state modifications
+    activeScreen:update()
     playdate.drawFPS(0,0)
     updateBlinkers()
     updateTimers()

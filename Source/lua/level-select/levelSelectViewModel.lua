@@ -116,7 +116,6 @@ function LevelSelectViewModel:update()
     elseif justPressed(buttonB) then
         self:finish()
     end
-    printf(self.selectedChallenge)
 end
 
 function LevelSelectViewModel:selectedOption()
