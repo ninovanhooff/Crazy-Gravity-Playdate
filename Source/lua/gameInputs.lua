@@ -20,6 +20,7 @@ function ProcessInputs()
         if Sounds and thrust == 0 then thrustSound:play(0) end
         thrust = 1
         fuel = fuel - burnRate
+        fuelSpent = fuelSpent + burnRate
         if not flying then
             vx = 0
             vy = 0

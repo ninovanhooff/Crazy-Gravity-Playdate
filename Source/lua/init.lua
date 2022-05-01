@@ -5,6 +5,7 @@
 ---
 
 import "settings.lua"
+import "records.lua"
 
 
 local sampleplayer = playdate.sound.sampleplayer
@@ -65,10 +66,3 @@ monoFont = gfx.font.new("fonts/Marble Madness")
 dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
 
 if not dotFont then error("could not load dotFont") end
-
-records = playdate.datastore.read("records")
-if not records then
-    printf("could not load records, saving defaults")
-    records = {}
-    playdate.datastore.write(records,"records")
-end

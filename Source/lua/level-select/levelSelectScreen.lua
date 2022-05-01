@@ -19,6 +19,7 @@ function LevelSelectScreen:init()
 end
 
 function LevelSelectScreen:resume()
+    levelSelectViewModel:resume()
     levelSelectView = LevelSelectView(levelSelectViewModel)
 end
 

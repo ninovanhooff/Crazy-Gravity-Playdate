@@ -239,6 +239,7 @@ end
 
 function ResetGame()
     ResetPlane()
+    fuelSpent, livesLost = 0,0
     planeFreight = {} -- type, idx of special where picked up
     deliveredFreight = {0,0,0,0} -- amount for each type
     remainingFreight = {0,0,0,0} -- amnt for each type
@@ -274,6 +275,7 @@ function ResetGame()
 end
 
 function DecreaseLife()
+    livesLost = livesLost + 1
     if extras[2]==0 then
         popBackStack()
     else

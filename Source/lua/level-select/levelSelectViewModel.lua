@@ -18,6 +18,8 @@ local buttonUp <const> = playdate.kButtonUp
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
 
+local ceil <const> = math.ceil
+
 -- Select the first challenge that was not completed
 local function getDefaultChallenge(self)
     local selectedChallenges = self:selectedOption().challenges
@@ -43,13 +45,27 @@ function LevelSelectViewModel:init()
     for i = 1,10 do
         self.menuOptions[i] = {
             title = "Stage " .. levelNumString(i),
-            challenges = challenges[levelPath(i)],
-            -- may be nil if level was not completed before
-            scores = records[levelPath(i)] -- fastest completion time, fuel spent, lives lost
+            challenges = challenges[levelPath(i)]
+            -- scores added on resume
         }
     end
     self.selectedIdx = 1
     self.selectedChallenge = getDefaultChallenge(self)
+end
+
+function LevelSelectViewModel:resume()
+    for i = 1,10 do
+        local rawScores = records[levelPath(i)]
+        if rawScores then
+            -- formatting for display
+            self.menuOptions[i].scores = {
+                ceil(rawScores[1]),
+                ceil(rawScores[2]),
+                rawScores[3]
+            }
+        end
+
+    end
 end
 
 function LevelSelectViewModel:finish()

@@ -53,7 +53,7 @@ function popBackStack()
     )
 end
 
-pushScreen(StartScreen())
+pushScreen(LevelSelectScreen())
 
 function playdate.update()
     executePendingNavigators()
