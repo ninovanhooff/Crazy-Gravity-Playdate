@@ -42,7 +42,7 @@ function pushScreen(newScreen)
     )
 end
 
-function popBackStack()
+function popScreen()
     table.insert(
         pendingNavigators,
         function()

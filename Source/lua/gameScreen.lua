@@ -38,7 +38,7 @@ function GameScreen:pause()
 end
 
 function GameScreen:resume()
-    self.backMenuItem = menu:addMenuItem("Level Select", function() popBackStack() end)
+    self.backMenuItem = menu:addMenuItem("Level Select", function() popScreen() end)
 end
 
 function GameScreen:update()

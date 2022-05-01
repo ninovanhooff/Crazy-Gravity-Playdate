@@ -277,7 +277,7 @@ end
 function DecreaseLife()
     livesLost = livesLost + 1
     if extras[2]==0 then
-        popBackStack()
+        popScreen()
     else
         extras[2] = extras[2]-1
         gameHUD:onChanged(2)

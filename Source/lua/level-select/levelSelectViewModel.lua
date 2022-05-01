@@ -80,7 +80,7 @@ function LevelSelectViewModel:finish()
     if self.keyTimer then
         self.keyTimer:remove()
     end
-    popBackStack()
+    popScreen()
 end
 
 --- returns true when finished

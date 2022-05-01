@@ -95,7 +95,7 @@ function CalcPlatform(item,idx)
                         fuelSpent,
                         livesLost
                     })
-                    popBackStack()
+                    popScreen()
                 else
                     printf("HUH",table.sum(remainingFreight))
                 end
