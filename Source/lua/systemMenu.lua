@@ -29,5 +29,5 @@ local function onDebugChange(newDebugValue)
 end
 
 menu:addOptionsMenuItem("BG", {"black","white", "win95"}, "black", onBackgroundChange)
-menu:addOptionsMenuItem("level", {"01","02","03","04","05","06","07","08", "09", "10"}, "03", onLevelChange)
+--menu:addOptionsMenuItem("level", {"01","02","03","04","05","06","07","08", "09", "10"}, "03", onLevelChange)
 menu:addCheckmarkMenuItem("debug", Debug, onDebugChange)

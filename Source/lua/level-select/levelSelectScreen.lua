@@ -25,5 +25,5 @@ end
 
 function LevelSelectScreen:update()
     levelSelectView:render(levelSelectViewModel)
-    return levelSelectViewModel:update()
+    levelSelectViewModel:update()
 end
