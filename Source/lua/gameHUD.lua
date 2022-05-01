@@ -16,7 +16,7 @@ local unFlipped <const> = gfx.kImageUnflipped
 local defaultFont = defaultFont
 local monoFont = monoFont
 
-local hudIcons = gfx.image.new("images/hud_icons.png")
+local hudIcons = sprite -- hudIcons are placed at origin of the sprite
 local hudBgClr = gfx.kColorWhite
 local hudFgClr = gfx.kColorBlack
 local hudPadding = 8 -- distance between items
@@ -46,7 +46,7 @@ function GameHUD:render()
 
     -- lives
     if hudBlinkers[2].on then
-        drawIcon(x, 6)
+        drawIcon(x, 0)
     end
     x = x+16+hudGutter
     defaultFont:drawText(extras[2], x, hudY)
@@ -59,7 +59,9 @@ function GameHUD:render()
     x = x+16+hudGutter
     gfx.drawRect(x, hudY+1, 32, 14)
     local fuelW = (fuel/6000)*28
-    hudIcons:draw(x+2, hudY+2, gfx.kImageUnflipped,0,16,fuelW,10)
+    gfx.setPattern({0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99})
+    gfx.fillRect(x+3, hudY+4, fuelW,8)
+    gfx.setColor(hudFgClr)
     x = x+32+hudPadding
 
     -- cargo
@@ -112,12 +114,6 @@ function GameHUD:render()
     monoFont:drawText(eSec,x,hudY+8)
     x = x - hudGutter - 16
     drawIcon(x, 4)
-
-    -- remaining time refactor: seems not implemented
-    --drawIcon(x, 0)
-    --x=x+16+hudGutter
-    --font:drawText(lMin*60+lSec,x,hudY)
-    --x=x+32+hudPadding
 end
 
 --- Notify the GameHud that the count of one of the stats has changed.

@@ -10,7 +10,7 @@ import "CoreLibs/ui"
 local gfx <const> = playdate.graphics
 local defaultFont <const> = defaultFont
 local monoFont <const> = monoFont
-local hudIcons <const> = gfx.image.new("images/hud_icons.png") -- move load to init.lua
+local hudIcons <const> = sprite -- hud icons are placed at origin of sprite
 --- size of various content spacing
 local gutter <const> = 4
 local imageSize <const> = 58
