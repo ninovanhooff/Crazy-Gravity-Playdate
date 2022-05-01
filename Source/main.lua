@@ -10,7 +10,7 @@ local gfx <const> = playdate.graphics
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
 local updateTimers <const> = playdate.timer.updateTimers
 
-local activeScreen = StartScreen()
+local activeScreen = GameScreen()
 
 function playdate.update()
     gfx.pushContext()
