@@ -55,14 +55,20 @@ end
 
 function LevelSelectViewModel:resume()
     for i = 1,10 do
+        local curOptions = self.menuOptions[i]
         local rawScores = records[levelPath(i)]
+        local achievements = {}
+        curOptions.achievements = achievements
         if rawScores then
             -- formatting for display
-            self.menuOptions[i].scores = {
+            curOptions.scores = {
                 ceil(rawScores[1]),
                 ceil(rawScores[2]),
                 rawScores[3]
             }
+            for j, score in ipairs(rawScores) do
+                achievements[j] = score <= curOptions.challenges[j]
+            end
         end
 
     end

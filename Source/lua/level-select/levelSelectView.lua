@@ -50,6 +50,7 @@ local function renderChallengePill(x, y, selected, hudIdx, text)
 end
 
 function listView:drawCell(section, row, column, selected, x, y, width, height)
+    local curOption = viewModel.menuOptions[row]
     gfx.setColor(gfx.kColorBlack) -- shape color
     local vDivider = y + 24
     local right = x+width
@@ -65,7 +66,7 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     -- image
     gfx.drawRect(x+gutter, y+gutter, imageSize, imageSize)
     -- title
-    defaultFont:drawText(viewModel.menuOptions[row].title, infoX, y+gutter)
+    defaultFont:drawText(curOption.title, infoX, y+gutter)
     -- divider
     gfx.drawLine(infoX, vDivider,right-2*gutter, vDivider)
 
@@ -74,7 +75,11 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     local iconY = vDivider + 14 + gutter
 
     for i = 0,2 do
-        hudIcons:draw(infoX+i*48,iconY,unFlipped,64+i*16,16,16,16)
+        hudIcons:draw(infoX+i*48,iconY,unFlipped,64+i*16,
+            -- shift 16px down when challenge is not achieved
+            boolToNum(not curOption.achievements[i+1])*16,
+            16,16
+        )
     end
 end
 
