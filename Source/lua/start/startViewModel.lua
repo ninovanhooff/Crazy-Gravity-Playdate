@@ -45,7 +45,7 @@ function StartViewModel:init()
         {
             text = "Start Game",
             x = 200, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.0,
-            onClickScreen = LevelSelectScreen
+            onClickScreen = function() return LevelSelectScreen() end
         },
         {text = "Settings", x = 200, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.0}
     }
@@ -122,7 +122,7 @@ local function calcButtonCollision(self)
             buttonTimer:start() -- does nothing when already running
             button.progress = buttonTimer.value
             if button.progress >= 1.0 then
-                return button.onClickScreen
+                return button.onClickScreen()
             end
             anyCollision = true
         else

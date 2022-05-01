@@ -18,9 +18,9 @@ function StartScreen:init()
 end
 
 function StartScreen:update()
-    local viewState, onClick = self.viewModel:calcTimeStep()
-    if onClick then
-        return onClick
+    local viewState, nextScreen = self.viewModel:calcTimeStep()
+    if nextScreen then
+        return nextScreen
     end
     renderStart(viewState)
 end

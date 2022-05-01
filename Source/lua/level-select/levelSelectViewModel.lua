@@ -74,6 +74,8 @@ function LevelSelectViewModel:update()
         keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
     elseif justReleased(buttonDown | buttonUp) then
         keyTimer:remove()
+    elseif justPressed(buttonA) then
+        return GameScreen()
     end
 end
 

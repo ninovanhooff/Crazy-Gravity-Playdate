@@ -15,10 +15,11 @@ local activeScreen = LevelSelectScreen()
 function playdate.update()
     gfx.pushContext()
        local nextScreen = activeScreen:update()
-        if nextScreen then
-            activeScreen = nextScreen()
-        end
     gfx.popContext() -- reset any drawing state modifications
+    if nextScreen then
+        activeScreen = nextScreen
+        gfx.clear(gfx.kColorWhite)
+    end
     playdate.drawFPS(0,0)
     updateBlinkers()
     updateTimers()
