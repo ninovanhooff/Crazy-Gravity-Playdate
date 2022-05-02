@@ -17,16 +17,17 @@ local activeScreen
 
 local function executePendingNavigators()
     if #pendingNavigators > 0 then
-        if activeScreen then
-            printf("Pausing screen", activeScreen)
-            activeScreen:pause()
-        end
         for _, navigator in ipairs(pendingNavigators) do
             navigator()
         end
         pendingNavigators = {}
+        local newPos = find(backStack, activeScreen)
+        if activeScreen and newPos and newPos ~= #backStack then
+            -- the activeScreen was moved from the top of the stack to another position
+            printf("Pausing screen", activeScreen)
+            activeScreen:pause()
+        end
         activeScreen = backStack[#backStack]
-        gfx.clear(gfx.kColorWhite)
         printf("Resuming screen", activeScreen)
         activeScreen:resume()
     end

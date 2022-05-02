@@ -162,6 +162,7 @@ end
 function LevelSelectView:render()
     local needsDetailDisplay = self.lastSelectedChallenge ~= viewModel.selectedChallenge
     if self.initialRender then
+        gfx.clear(gfx.kColorWhite)
         renderStaticViews()
         renderDetailScreen(viewModel:selectedOption())
         self.initialRender = false

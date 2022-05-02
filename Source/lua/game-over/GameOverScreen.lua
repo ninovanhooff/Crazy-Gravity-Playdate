@@ -24,4 +24,5 @@ end
 
 function GameOverScreen:resume()
     gameOverViewModel:resume()
+    gameOverView:resume()
 end

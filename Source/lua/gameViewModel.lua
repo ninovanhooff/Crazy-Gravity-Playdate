@@ -6,6 +6,7 @@
 
 import "gameExplosion.lua"
 import "gameHUD.lua"
+import "game-over/GameOverScreen.lua"
 
 local floor <const> = math.floor
 local max <const> = math.max
@@ -181,8 +182,8 @@ function CalcTimeStep()
     if collision and explosion == nil and not Debug then
         if Sounds then thrust_sound:stop() end
         thrust = 0
-        explosion = GameExplosion()
-        print("KABOOM")
+        explosion = GameExplosion(extras[2]>1) -- disable fade-out on last life lost
+        print("KABOOM", extras[2])
         while explosion:update() do
             calcPlane() -- keep updating plane as a ghost target for camera
             CalcGameCam()
@@ -276,8 +277,9 @@ end
 
 function DecreaseLife()
     livesLost = livesLost + 1
-    if extras[2]==0 then
-        popScreen()
+    if extras[2]==1 then
+        ResetGame() -- reset the game in case the user selects retry
+        pushScreen(GameOverScreen())
     else
         extras[2] = extras[2]-1
         gameHUD:onChanged(2)

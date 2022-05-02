@@ -14,6 +14,28 @@ function clamp(x, min, max)
     return x < min and min or (x > max and max or x)
 end
 
+function isarray(x)
+    return type(x) == "table" and x[1] ~= nil
+end
+
+local getiter = function(x)
+    if isarray(x) then
+        return ipairs
+    elseif type(x) == "table" then
+        return pairs
+    end
+    error("expected table", 3)
+end
+
+--- return index of value in table t; or nil
+function find(t, value)
+    local iter = getiter(t)
+    for k, v in iter(t) do
+        if v == value then return k end
+    end
+    return nil
+end
+
 function levelNumString(levelNumber)
     return string.format("%02d", levelNumber)
 end

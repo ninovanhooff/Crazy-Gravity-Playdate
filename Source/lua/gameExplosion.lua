@@ -28,11 +28,12 @@ local function getCam()
     return camPos[1]*tileSize+camPos[3], camPos[2]*tileSize+camPos[4]
 end
 
-function GameExplosion:init()
+function GameExplosion:init(enableFadeOut)
     GameExplosion.super.init()
     shardDrag = (1 + drag) * 0.5
     local planeX, planeY = planePos[1]*tileSize+planePos[3], planePos[2]*tileSize+planePos[4]
 
+    self.enableFadeOut = enableFadeOut
     self.camX, self.camY = getCam()
     self.blastShards = {}
     self.timer = 0
@@ -128,7 +129,7 @@ function GameExplosion:render()
     renderShards(self)
     renderBlasts(self)
     -- gradually fade out the game after 1 second of explosion
-    if self.timer > frameRate then
+    if self.enableFadeOut and self.timer > frameRate then
         gfx.setDitherPattern(1-((self.timer-frameRate)/frameRate), gfx.image.kDitherTypeDiagonalLine) -- invert alpha due to bug in SDK
         gfx.fillRect(0,0, screenWidth, hudY)
     end
