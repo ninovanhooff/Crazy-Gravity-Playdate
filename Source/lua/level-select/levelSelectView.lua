@@ -160,6 +160,7 @@ local function renderStaticViews()
 end
 
 function LevelSelectView:render()
+    gfx.setColor(gfx.kColorBlack)
     local needsDetailDisplay = self.lastSelectedChallenge ~= viewModel.selectedChallenge
     if self.initialRender then
         gfx.clear(gfx.kColorWhite)
