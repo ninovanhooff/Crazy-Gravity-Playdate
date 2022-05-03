@@ -13,7 +13,7 @@ local gfx = playdate.graphics
 
 math.randomseed(playdate.getSecondsSinceEpoch())
 pi = 3.141592654
-Debug = true
+Debug = false
 Sounds = true
 screenWidth = playdate.display.getWidth()
 screenHeight = playdate.display.getHeight()

@@ -20,9 +20,3 @@ function GameOverViewModel:update()
         popScreen() -- underlying GameScreen
     end
 end
-
-function GameOverViewModel:pause()
-end
-
-function GameOverViewModel:resume()
-end

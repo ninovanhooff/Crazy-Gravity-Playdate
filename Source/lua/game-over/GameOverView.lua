@@ -9,12 +9,6 @@ function GameOverView:init()
 
 end
 
-function GameOverView:resume()
-    -- first render
-    gfx.setDitherPattern(0.2, gfx.image.kDitherTypeScreen) -- invert alpha due to bug in SDK
-    gfx.fillRect(0,0, screenWidth, screenHeight)
-end
-
 function GameOverView:render(viewModel)
     gfx.setClipRect(dialogRect)
     gfx.clear()

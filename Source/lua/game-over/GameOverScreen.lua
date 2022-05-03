@@ -17,12 +17,3 @@ function GameOverScreen:update()
     gameOverView:render(gameOverViewModel)
     gameOverViewModel:update()
 end
-
-function GameOverScreen:pause()
-    gameOverViewModel:pause()
-end
-
-function GameOverScreen:resume()
-    gameOverViewModel:resume()
-    gameOverView:resume()
-end
