@@ -31,17 +31,23 @@ local function buttonDrawFun(selected)
 end
 
 function GameOverView:render(viewModel)
+    -- dialog shadow
+    gfx.setLineWidth(3)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRect(dialogRect:offsetBy(1,1))
+
+    -- clear dialog area
     gfx.setClipRect(dialogRect)
     gfx.clear()
-    gfx.setColor(gfx.kColorBlack)
-    gfx.setStrokeLocation(gfx.kStrokeInside)
-    gfx.drawRect(dialogRect)
-    gfx.setLineWidth(4)
+
+    -- title
     titleFont:drawTextAligned(viewModel.title, dialogRect:centerPoint().x, dialogRect.y+dialogPadding, kTextAlignment.center)
 
+    -- buttons
+    gfx.setStrokeLocation(gfx.kStrokeInside)
     buttonDrawFun(viewModel:isLevelSelectSelected())(levelSelectCenterPoint, buttonRadius)
     buttonDrawFun(viewModel:isRetrySelected())(retryCenterPoint, buttonRadius)
-
+    -- button icons
     gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
     levelSelectIcon:draw(levelSelectCenterPoint.x-16,levelSelectCenterPoint.y-16)
     retryIcon:draw(retryCenterPoint.x-18,retryCenterPoint.y-16)
