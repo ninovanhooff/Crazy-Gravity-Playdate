@@ -7,7 +7,7 @@ local buttonB <const> = playdate.kButtonB
 class("GameOverViewModel").extends()
 
 function GameOverViewModel:init()
-    self.title = "Game Over!"
+    self.title = "GAME OVER!"
 end
 
 function GameOverViewModel:update()
