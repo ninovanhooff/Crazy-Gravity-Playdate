@@ -112,7 +112,7 @@ end
 --- return whether the explosion is done
 function GameExplosion:update()
     if self.blastFrame == 0 and Sounds then
-       explode_sound:play()
+        explode_sound:playAt(0, 1-(self.timer/duration))
    end
     self.camX, self.camY = getCam()
     forShards(self, updateShard)
