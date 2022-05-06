@@ -113,8 +113,9 @@ function LevelSelectViewModel:update()
     elseif justPressed(buttonA) then
         gameHUD.selectedChallenge = self.selectedChallenge
         gameHUD.challengeTarget = self:selectedOption()["challenges"][self.selectedChallenge]
+        currentLevel = self.selectedIdx
         pushScreen(
-            GameScreen(levelPath(self.selectedIdx))
+            GameScreen(levelPath())
         )
     elseif justPressed(buttonB) then
         self:finish()

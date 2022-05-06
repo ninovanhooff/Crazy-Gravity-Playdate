@@ -5,6 +5,7 @@
 ---
 
 import "gameHUD.lua"
+import "game-over/GameOverScreen.lua"
 
 local abs <const> = math.abs
 local floor <const> = math.floor
@@ -95,7 +96,7 @@ function CalcPlatform(item,idx)
                         fuelSpent,
                         livesLost
                     })
-                    popScreen()
+                    pushScreen(GameOverScreen("LEVEL_CLEARED"))
                 else
                     printf("HUH",table.sum(remainingFreight))
                 end

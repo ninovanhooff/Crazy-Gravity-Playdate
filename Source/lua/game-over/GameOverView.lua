@@ -3,16 +3,15 @@ import "CoreLibs/graphics"
 
 
 local gfx <const> = playdate.graphics
-local deSelectedDrawFun <const> = gfx.drawCircleAtPoint
-local selectedDrawFun <const> = gfx.fillCircleAtPoint
+local unFlipped <const> = gfx.kImageUnflipped
+local sprite <const> = sprite
+local deSelectedDrawFun <const> = gfx.drawCircleInRect
+local selectedDrawFun <const> = gfx.fillCircleInRect
 local dialogRect <const> = playdate.geometry.rect.new(80, 50, 240, 140)
-local dialogPadding <const> = 15
-local buttonRadius <const> = 28
-local buttonInsetX, buttonCenterY <const> = 80, dialogRect.bottom - dialogPadding - buttonRadius - 7
-local levelSelectCenterPoint <const> = playdate.geometry.point.new(dialogRect.x + buttonInsetX, buttonCenterY)
-local retryCenterPoint <const> = playdate.geometry.point.new(dialogRect.right - buttonInsetX, buttonCenterY)
-local levelSelectIcon = gfx.image.new("images/menu_icon.png")
-local retryIcon = gfx.image.new("images/retry_arrow.png")
+local dialogCenter <const> = dialogRect:centerPoint()
+local dialogPadding <const> = 14
+local buttonSize <const>, buttonSpacing <const> = 56, 14
+local buttonY = dialogRect.bottom - dialogPadding - buttonSize
 local titleFont = gfx.font.new("fonts/abduction2002bold-20")
 
 
@@ -33,6 +32,7 @@ end
 function GameOverView:render(viewModel)
     -- dialog shadow
     gfx.setLineWidth(3)
+    gfx.setStrokeLocation(gfx.kStrokeOutside)
     gfx.setColor(gfx.kColorBlack)
     gfx.drawRect(dialogRect:offsetBy(1,1))
 
@@ -41,14 +41,17 @@ function GameOverView:render(viewModel)
     gfx.clear()
 
     -- title
-    titleFont:drawTextAligned(viewModel.title, dialogRect:centerPoint().x, dialogRect.y+dialogPadding, kTextAlignment.center)
+    titleFont:drawTextAligned(viewModel.title, dialogCenter.x, dialogRect.y+dialogPadding, kTextAlignment.center)
 
     -- buttons
     gfx.setStrokeLocation(gfx.kStrokeInside)
-    buttonDrawFun(viewModel:isLevelSelectSelected())(levelSelectCenterPoint, buttonRadius)
-    buttonDrawFun(viewModel:isRetrySelected())(retryCenterPoint, buttonRadius)
-    -- button icons
     gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
-    levelSelectIcon:draw(levelSelectCenterPoint.x-16,levelSelectCenterPoint.y-16)
-    retryIcon:draw(retryCenterPoint.x-18,retryCenterPoint.y-16)
+    local totalWidth = viewModel.numButtons*buttonSize + (viewModel.numButtons-1) * buttonSpacing
+    local x = dialogCenter.x - totalWidth/2
+    for i = 0,viewModel.numButtons-1 do
+        buttonDrawFun(viewModel.selectedButtonIdx == i+1)(x,buttonY, buttonSize, buttonSize)
+        sprite:draw(x+12,buttonY + 12, unFlipped, i*32, 32, 32, 32)
+        x = x + buttonSize + buttonSpacing
+    end
+    gfx.setImageDrawMode(gfx.kDrawModeCopy) -- reset drawMode. This would persist for some reason
 end

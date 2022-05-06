@@ -7,9 +7,10 @@ class("GameOverScreen").extends(Screen)
 
 local gameOverView, gameOverViewModel
 
-function GameOverScreen:init()
+--- @param config string one of: GAME_OVER, LEVEL_CLEARED
+function GameOverScreen:init(config)
     GameOverScreen.super.init(self)
-    gameOverViewModel = GameOverViewModel()
+    gameOverViewModel = GameOverViewModel(config)
     gameOverView = GameOverView(gameOverViewModel)
 end
 

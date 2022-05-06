@@ -4,7 +4,7 @@ import "lua/level.lua"
 import "lua/init.lua"
 import "lua/gameScreen.lua"
 import "lua/start/StartScreen.lua"
-import "lua/level-select/levelSelectScreen.lua"
+import "lua/game-over/GameOverScreen.lua"
 import "lua/systemMenu.lua"
 
 local gfx <const> = playdate.graphics
