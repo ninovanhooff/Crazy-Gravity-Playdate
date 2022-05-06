@@ -6,6 +6,7 @@
 
 import "CoreLibs/object"
 import "../level-select/levelSelectScreen.lua"
+import "../settings/SettingsScreen.lua"
 
 local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, end
 buttonTimer.discardOnCompletion = false
@@ -54,7 +55,11 @@ function StartViewModel:init()
             x = 200, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.0,
             onClickScreen = function() return LevelSelectScreen() end
         },
-        {text = "Settings", x = 200, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.0}
+        {
+            text = "Settings",
+            x = 200, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.0,
+            onClickScreen = function() return SettingsScreen()  end
+        }
     }
     updateViewState(self)
 end

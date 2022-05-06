@@ -8,6 +8,7 @@ import "CoreLibs/object"
 import "CoreLibs/timer"
 import "../util.lua"
 import "challenges.lua"
+import "../gameHUD.lua"
 
 local numChallenges <const> = numChallenges
 local pressed <const> = playdate.buttonIsPressed
@@ -110,6 +111,8 @@ function LevelSelectViewModel:update()
     elseif justPressed(buttonRight) then
         self.selectedChallenge = clamp(self.selectedChallenge+1, 1, numChallenges)
     elseif justPressed(buttonA) then
+        gameHUD.selectedChallenge = self.selectedChallenge
+        gameHUD.challengeTarget = self:selectedOption()["challenges"][self.selectedChallenge]
         pushScreen(
             GameScreen(levelPath(self.selectedIdx))
         )

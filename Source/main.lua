@@ -24,11 +24,15 @@ local function executePendingNavigators()
         local newPos = find(backStack, activeScreen)
         if activeScreen and newPos and newPos ~= #backStack then
             -- the activeScreen was moved from the top of the stack to another position
-            printf("Pausing screen", activeScreen)
+            print("Pausing screen", activeScreen)
             activeScreen:pause()
         end
+        if #backStack < 1 then
+            print("ERROR: No active screen, adding Start Screen")
+            table.insert(backStack, StartScreen())
+        end
         activeScreen = backStack[#backStack]
-        printf("Resuming screen", activeScreen)
+        print("Resuming screen", activeScreen)
         activeScreen:resume()
     end
 end
@@ -37,7 +41,7 @@ function pushScreen(newScreen)
     table.insert(
         pendingNavigators,
         function()
-            printf("Adding to backstack", newScreen)
+            print("Adding to backstack", newScreen)
             table.insert(backStack, newScreen)
         end
     )
@@ -47,7 +51,7 @@ function popScreen()
     table.insert(
         pendingNavigators,
         function()
-            printf("Popping off backstack:", activeScreen)
+            print("Popping off backstack:", activeScreen)
             table.remove(backStack)
         end
     )
