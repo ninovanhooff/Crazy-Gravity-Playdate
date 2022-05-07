@@ -2,14 +2,16 @@ import "CoreLibs/object"
 
 --- the amount of shards to create in both dimensions.
 --- Total shard count is the square of this number
-local shardingDim <const> = 5
-local shardSize <const> = 24 / shardingDim -- plane is 24px in both dimensions
+local shardingDim <const> = 9
+local shardSize <const> = 32 / shardingDim -- lock is 32 px in both dimension
 
 local gfx <const> = playdate.graphics
 local random <const> = math.random
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local tileSize <const> = tileSize
-local planePos <const> = planePos
+local planeX, planeY = 20,20
+local planeSpriteOffsetX, planeSpriteOffsetY = 0,64
+local vx, vy = 2,2
 local camPos <const> = camPos
 local frameRate <const> = frameRate
 local duration <const> = frameRate * 2
@@ -19,21 +21,17 @@ class('LockExplosion').extends()
 
 --- return cam position as x,y
 local function getCam()
-    return camPos[1]*tileSize+camPos[3], camPos[2]*tileSize+camPos[4]
+    return 0,0
 end
 
-function LockExplosion:init(scrimHeight)
+function LockExplosion:init()
     LockExplosion.super.init()
     shardDrag = (1 + drag) * 0.5
-    local planeX, planeY = planePos[1]*tileSize+planePos[3], planePos[2]*tileSize+planePos[4]
-
-    self.scrimHeight = scrimHeight
-    self.camX, self.camY = getCam()
+    
     self.blastShards = {}
     self.timer = 0
     self.shards = {}
 
-    local planeSpriteOffsetX, planeSpriteOffsetY = planeRot%16*23, 391 +(boolToNum(planeRot>15))*46, 23
     for x = 0, shardingDim-1 do
         local shardsColumn = {}
         self.shards[x+1] = shardsColumn
@@ -105,8 +103,8 @@ end
 --- Updates the explosion
 --- return whether the explosion is done
 function LockExplosion:update()
-    if self.blastFrame == 0 and Sounds then
-        explode_sound:playAt(0, 1-(self.timer/duration))
+    if self.timer == 0 and Sounds then
+        extra_sound:playAt(0, 1-(self.timer/duration))
    end
     self.camX, self.camY = getCam()
     forShards(self, updateShard)
@@ -116,15 +114,11 @@ function LockExplosion:update()
         self.blastFrame = 0
         randomizeBlastShards(self)
     end
+    print(self.timer, duration)
     return self.timer < duration
 end
 
 function LockExplosion:render()
     renderShards(self)
-    renderBlasts(self)
-    -- gradually fade out the game after 1 second of explosion
-    if self.timer > frameRate then
-        gfx.setDitherPattern(1.2-((self.timer-frameRate)/frameRate), gfx.image.kDitherTypeDiagonalLine) -- invert alpha due to bug in SDK
-        gfx.fillRect(0,0, screenWidth, self.scrimHeight)
-    end
+    --renderBlasts(self)
 end
