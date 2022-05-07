@@ -3,3 +3,6 @@
 /CGP_1.1/
 /cgpd.pdx.zip
 .*autosave.*
+builds
+**/.DS_Store
+Art/*.kra~
