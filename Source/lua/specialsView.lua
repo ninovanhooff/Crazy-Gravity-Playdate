@@ -144,19 +144,19 @@ end]]
 
 function RenderRotator(item)
     if item.direction==1 then
-        sprite:draw(scrX, scrY+item.distance*8+24, unFlipped, 0+loopAnim(8,2)*40, 94+(item.rotates-1)*40, 40, 40)
+        sprite:draw(scrX, scrY+item.distance*8+24, unFlipped, 0+loopAnim(8,2)*40, 96+(item.rotates-1)*40, 40, 40)
         sprite:draw(scrX, scrY+item.distance*8, unFlipped, 320+(item.rotates-1)*80, 190, 40, 24)
         if editorMode then pgeDrawRectoutline(scrX,scrY,40,item.distance*8,white) end
     elseif item.direction==2 then
-        sprite:draw(scrX, scrY, unFlipped, 0+loopAnim(8,2)*40, 94+(item.rotates-1)*40, 40, 40) -- body
+        sprite:draw(scrX, scrY, unFlipped, 0+loopAnim(8,2)*40, 96+(item.rotates-1)*40, 40, 40) -- body
         sprite:draw(scrX, scrY+40, unFlipped, 363+(item.rotates-1)*80, 190, 40, 24) -- nozzle
         if editorMode then pgeDrawRectoutline(scrX,scrY+40+24,40,item.distance*8,white) end
     elseif item.direction==3 then
-        sprite:draw(scrX+item.distance*8+24, scrY, unFlipped, 0+loopAnim(8,2)*40, 94+(item.rotates-1)*40, 40, 40)
+        sprite:draw(scrX+item.distance*8+24, scrY, unFlipped, 0+loopAnim(8,2)*40, 96+(item.rotates-1)*40, 40, 40)
         sprite:draw(scrX+item.distance*8, scrY, unFlipped, (item.rotates-1)*48, 298, 24, 40)
         if editorMode then pgeDrawRectoutline(scrX,scrY,item.distance*8,40,white) end
     elseif item.direction==4 then
-        sprite:draw(scrX, scrY, unFlipped, 0+loopAnim(8,2)*40, 94+(item.rotates-1)*40, 40, 40)
+        sprite:draw(scrX, scrY, unFlipped, 0+loopAnim(8,2)*40, 96+(item.rotates-1)*40, 40, 40)
         sprite:draw(scrX+40, scrY, unFlipped, 24+(item.rotates-1)*48, 298, 24, 40)
         if editorMode then pgeDrawRectoutline(scrX+40+24,scrY,item.distance*8,40,white) end
     end

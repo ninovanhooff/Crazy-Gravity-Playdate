@@ -2,7 +2,7 @@ import "CoreLibs/timer"
 import "lua/util.lua"
 import "lua/level.lua"
 import "lua/init.lua"
-import "lua/start/StartScreen.lua"
+import "lua/level-select/levelSelectScreen.lua"
 import "lua/systemMenu.lua"
 
 local gfx <const> = playdate.graphics
@@ -55,7 +55,7 @@ function popScreen()
     )
 end
 
-pushScreen(StartScreen())
+pushScreen(LevelSelectScreen())
 
 function playdate.update()
     gfx.pushContext() --make sure we start the frame with a clean gfx state.

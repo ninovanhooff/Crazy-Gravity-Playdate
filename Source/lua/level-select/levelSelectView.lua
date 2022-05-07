@@ -14,6 +14,8 @@ local hudIcons <const> = sprite -- hud icons are placed at origin of sprite
 --- size of various content spacing
 local gutter <const> = 4
 local imageSize <const> = 58
+local lockSize <const> = 32
+local lockOffsetPoint <const> = playdate.geometry.point.new(gutter + (imageSize-lockSize)/2, gutter +(imageSize-lockSize)/2)
 --- x offset of info column
 local infoOffsetX <const> = imageSize + 3*gutter
 local viewModel
@@ -65,6 +67,7 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
 
     -- image
     gfx.drawRect(x+gutter, y+gutter, imageSize, imageSize)
+    sprite:draw(x+lockOffsetPoint.x, y+lockOffsetPoint.y, unFlipped, 0, 64, lockSize, lockSize)
     -- title
     defaultFont:drawText(curOption.title, infoX, y+gutter)
     -- divider
