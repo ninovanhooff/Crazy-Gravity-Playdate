@@ -6,6 +6,7 @@
 
 import "gameExplosion.lua"
 import "gameHUD.lua"
+import "game-over/GameOverScreen.lua"
 
 local floor <const> = math.floor
 local max <const> = math.max
@@ -181,8 +182,12 @@ function CalcTimeStep()
     if collision and explosion == nil and not Debug then
         if Sounds then thrust_sound:stop() end
         thrust = 0
-        explosion = GameExplosion()
-        print("KABOOM")
+        local scrimHeight = hudY
+        if extras[2]==1 then
+            scrimHeight = screenHeight
+        end
+        explosion = GameExplosion(scrimHeight) -- disable fade-out on last life lost
+        print("KABOOM", extras[2])
         while explosion:update() do
             calcPlane() -- keep updating plane as a ghost target for camera
             CalcGameCam()
@@ -239,6 +244,7 @@ end
 
 function ResetGame()
     ResetPlane()
+    fuelSpent, livesLost = 0,0
     planeFreight = {} -- type, idx of special where picked up
     deliveredFreight = {0,0,0,0} -- amount for each type
     remainingFreight = {0,0,0,0} -- amnt for each type
@@ -256,8 +262,8 @@ function ResetGame()
     ApplyGameSets()
     extras = {0,levelProps.lives,1} -- turbo, lives, cargo
     -- time to beat
-    if highScores[curGamePath] then
-        lSec = highScores[curGamePath][1][2] -- {name,time}
+    if records[curGamePath] then
+        lSec = records[curGamePath][1]
     else
         lSec = 5940 -- 99'00
     end
@@ -274,8 +280,9 @@ function ResetGame()
 end
 
 function DecreaseLife()
-    if extras[2]==0 then
-        kill = 1
+    livesLost = livesLost + 1
+    if extras[2]==1 then
+        pushScreen(GameOverScreen("GAME_OVER"))
     else
         extras[2] = extras[2]-1
         gameHUD:onChanged(2)

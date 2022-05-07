@@ -5,6 +5,7 @@
 ---
 
 import "gameHUD.lua"
+import "game-over/GameOverScreen.lua"
 
 local abs <const> = math.abs
 local floor <const> = math.floor
@@ -90,7 +91,12 @@ function CalcPlatform(item,idx)
                 table.remove(planeFreight,1)
                 if table.sum(remainingFreight)==0 then
                     printf("VICTORY")
-                    kill = 1
+                    updateRecords(curGamePath, {
+                        frameCounter / frameRate,
+                        fuelSpent,
+                        livesLost
+                    })
+                    pushScreen(GameOverScreen("LEVEL_CLEARED"))
                 else
                     printf("HUH",table.sum(remainingFreight))
                 end

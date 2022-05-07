@@ -9,6 +9,7 @@ import "CoreLibs/object"
 import "CoreLibs/animation"
 
 local floor <const> = math.floor
+local ceil <const> = math.ceil
 local max <const> = math.max
 local abs <const> = math.abs
 local gfx <const> = playdate.graphics
@@ -16,7 +17,7 @@ local unFlipped <const> = gfx.kImageUnflipped
 local defaultFont = defaultFont
 local monoFont = monoFont
 
-local hudIcons = gfx.image.new("images/hud_icons.png")
+local hudIcons = sprite -- hudIcons are placed at origin of the sprite
 local hudBgClr = gfx.kColorWhite
 local hudFgClr = gfx.kColorBlack
 local hudPadding = 8 -- distance between items
@@ -29,13 +30,43 @@ end
 
 class('GameHUD').extends()
 
--- no initializer
+function GameHUD:init()
+    GameHUD.super.init(self)
+    self.selectedChallenge = 1 -- 1: time, 2: fuel, 3: survivor
+end
 
 -- global singleton
-gameHUD = GameHUD()
+if not gameHUD then
+    gameHUD = GameHUD()
+end
 
-local function drawIcon(x, index)
-    hudIcons:draw(x,hudY,unFlipped,index*16,0,16,16)
+local function drawIcon(x, index, srcY)
+    hudIcons:draw(x,hudY,unFlipped,index*16,srcY or 0,16,16)
+end
+
+local function renderChallenge(self)
+    local currentValue, iconIdx = "", 4
+    if self.selectedChallenge == 1 then
+        -- elapsed time
+        currentValue = floor(frameCounter/frameRate)
+        iconIdx = 4
+    elseif self.selectedChallenge == 2 then
+        -- fuel
+        currentValue = ceil(fuelSpent)
+        iconIdx = 5
+    elseif self.selectedChallenge == 3 then
+        -- survivor
+        currentValue = livesLost
+        iconIdx = 6
+    end
+
+    -- render
+    local textW = monoFont:getTextWidth(currentValue)
+    local x = screenWidth - textW - hudPadding
+    monoFont:drawText(currentValue,x,hudY+8)
+    x = x - hudGutter - 16
+    local srcY = boolToNum(self.challengeTarget < currentValue)*16
+    drawIcon(x, iconIdx,srcY)
 end
 
 function GameHUD:render()
@@ -46,7 +77,7 @@ function GameHUD:render()
 
     -- lives
     if hudBlinkers[2].on then
-        drawIcon(x, 6)
+        drawIcon(x, 0)
     end
     x = x+16+hudGutter
     defaultFont:drawText(extras[2], x, hudY)
@@ -59,7 +90,9 @@ function GameHUD:render()
     x = x+16+hudGutter
     gfx.drawRect(x, hudY+1, 32, 14)
     local fuelW = (fuel/6000)*28
-    hudIcons:draw(x+2, hudY+2, gfx.kImageUnflipped,0,16,fuelW,10)
+    gfx.setPattern({0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99})
+    gfx.fillRect(x+3, hudY+4, fuelW,8)
+    gfx.setColor(hudFgClr)
     x = x+32+hudPadding
 
     -- cargo
@@ -105,19 +138,7 @@ function GameHUD:render()
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
 
-    -- elapsed time
-    local eSec = floor(frameCounter/frameRate)
-    local textW = monoFont:getTextWidth(eSec)
-    x = screenWidth - textW - hudPadding
-    monoFont:drawText(eSec,x,hudY+8)
-    x = x - hudGutter - 16
-    drawIcon(x, 4)
-
-    -- remaining time refactor: seems not implemented
-    --drawIcon(x, 0)
-    --x=x+16+hudGutter
-    --font:drawText(lMin*60+lSec,x,hudY)
-    --x=x+32+hudPadding
+    renderChallenge(self)
 end
 
 --- Notify the GameHud that the count of one of the stats has changed.

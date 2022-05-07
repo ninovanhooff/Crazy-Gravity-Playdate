@@ -4,12 +4,16 @@
 --- DateTime: 11/03/2022 16:59
 ---
 
+import "settings.lua"
+import "records.lua"
+
+
 local sampleplayer = playdate.sound.sampleplayer
 local gfx = playdate.graphics
 
 math.randomseed(playdate.getSecondsSinceEpoch())
 pi = 3.141592654
-Debug = true
+Debug = false
 Sounds = true
 screenWidth = playdate.display.getWidth()
 screenHeight = playdate.display.getHeight()
@@ -22,11 +26,23 @@ frameRate = 30
 outBufSize = 1024
 numLevels = 10
 currentLevel = 3
-kill = 0 -- game ended?
 extras = {0,0,0} -- See GameViewModel:ResetGame()
 planePos = {}
+planeSize = 24
 camPos = {}
+ApplyGameSets()
+
 print("hoi")
+
+sinThrustT= {}
+for i = 0,23 do
+    sinThrustT[i] = math.sin(-i/12*pi)
+end
+
+cosThrustT= {}
+for i = 0,23 do
+    cosThrustT[i] = math.cos(-i/12*pi)
+end
 
 if Sounds then
     pickup_sound = sampleplayer.new("sounds/pickup.wav")
@@ -42,7 +58,7 @@ end
 
 gfx.setColor(gfx.kColorBlack)
 
-sprite = gfx.image.new("images/sprite_dither.png") -- https://www.gingerbeardman.com/canvas-dither/
+sprite = gfx.image.new("images/sprite.png") -- https://www.gingerbeardman.com/canvas-dither/
 if not sprite then error("failed to load sprite") end
 
 defaultFont = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
@@ -50,9 +66,3 @@ monoFont = gfx.font.new("fonts/Marble Madness")
 dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
 
 if not dotFont then error("could not load dotFont") end
-
-if not highScores then
-    highScores = {}
-    printf("could not load highscores")
-    -- table.save(highScores,"highScores.lua")
-end

@@ -14,14 +14,8 @@ local buttonRight <const> = playdate.kButtonRight
 
 local thrustSound <const> = thrust_sound
 
-local sinThrustT= {}
-for i = 0,23 do
-    sinThrustT[i] = math.sin(-i/12*pi)
-end
-local cosThrustT= {}
-for i = 0,23 do
-    cosThrustT[i] = math.cos(-i/12*pi)
-end
+local sinThrustT <const> = sinThrustT
+local cosThrustT <const> = cosThrustT
 
 local function pressed(buttonMask)
     return buttonState & buttonMask ~= 0
@@ -34,6 +28,7 @@ function ProcessInputs()
         if Sounds and thrust == 0 then thrustSound:play(0) end
         thrust = 1
         fuel = fuel - burnRate
+        fuelSpent = fuelSpent + burnRate/10
         if not flying then
             vx = 0
             vy = 0
