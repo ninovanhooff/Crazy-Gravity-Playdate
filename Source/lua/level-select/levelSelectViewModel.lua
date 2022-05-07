@@ -8,6 +8,7 @@ import "CoreLibs/object"
 import "CoreLibs/timer"
 import "../util.lua"
 import "challenges.lua"
+import "lua/gameScreen.lua"
 import "../gameHUD.lua"
 
 local numChallenges <const> = numChallenges
