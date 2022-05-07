@@ -10,6 +10,10 @@ function boolToNum(bool)
     if bool then return 1 else return 0 end
 end
 
+function sign(x)
+    return x < 0 and -1 or 1
+end
+
 function clamp(x, min, max)
     return x < min and min or (x > max and max or x)
 end
