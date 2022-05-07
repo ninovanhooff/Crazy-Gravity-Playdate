@@ -8,13 +8,13 @@ local datastoreKey <const> = "records"
 
 records = playdate.datastore.read(datastoreKey)
 if not records then
-    printf("could not load records, saving defaults")
+    print("could not load records, saving defaults")
     records = {}
     playdate.datastore.write(records, datastoreKey)
 end
 
 function updateRecords(levelPath, newRecord)
-    printf("updating records", levelPath)
+    print("updating records", levelPath)
     local entry = records[levelPath]
 
     if not entry then
