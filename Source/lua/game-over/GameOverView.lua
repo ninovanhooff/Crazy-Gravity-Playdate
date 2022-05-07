@@ -32,7 +32,7 @@ end
 function GameOverView:render(viewModel)
     -- dialog shadow
     gfx.setLineWidth(3)
-    gfx.setStrokeLocation(gfx.kStrokeOutside)
+    gfx.setStrokeLocation(gfx.kStrokeCentered)
     gfx.setColor(gfx.kColorBlack)
     gfx.drawRect(dialogRect:offsetBy(1,1))
 
@@ -44,7 +44,6 @@ function GameOverView:render(viewModel)
     titleFont:drawTextAligned(viewModel.title, dialogCenter.x, dialogRect.y+dialogPadding, kTextAlignment.center)
 
     -- buttons
-    gfx.setStrokeLocation(gfx.kStrokeInside)
     gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
     local totalWidth = viewModel.numButtons*buttonSize + (viewModel.numButtons-1) * buttonSpacing
     local x = dialogCenter.x - totalWidth/2
