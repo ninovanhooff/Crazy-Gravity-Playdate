@@ -49,7 +49,8 @@ function LevelSelectViewModel:init()
     for i = 1,10 do
         self.menuOptions[i] = {
             title = "Stage " .. levelNumString(i),
-            challenges = challenges[levelPath(i)]
+            challenges = challenges[levelPath(i)],
+            levelNumber = i,
             -- scores added on resume
         }
     end

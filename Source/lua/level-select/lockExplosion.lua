@@ -105,7 +105,6 @@ function LockExplosion:update()
         forShards(self, updateShard)
     end
     self.timer = self.timer + 1
-    print(self.timer, duration)
     return self.timer < duration
 end
 

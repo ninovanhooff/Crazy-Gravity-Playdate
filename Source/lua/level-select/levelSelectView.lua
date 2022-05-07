@@ -12,6 +12,9 @@ local gfx <const> = playdate.graphics
 local defaultFont <const> = defaultFont
 local monoFont <const> = monoFont
 local hudIcons <const> = sprite -- hud icons are placed at origin of sprite
+local thumbs <const> = gfx.imagetable.new("images/level-thumbs/level-thumbs")
+local banners <const> = gfx.imagetable.new("images/level-banners/level-banners")
+
 --- size of various content spacing
 local gutter <const> = 4
 local imageSize <const> = 58
@@ -69,8 +72,13 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     end
     gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
 
-    -- image
+    -- thumb image
     gfx.drawRect(x+gutter, y+gutter, imageSize, imageSize)
+    if thumbs[row] then
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        thumbs[row]:draw(x + gutter + 1, y + gutter + 1)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    end
     -- sprite:draw(x+lockOffsetPoint.x, y+lockOffsetPoint.y, unFlipped, 0, 64, lockSize, lockSize)
     -- title
     defaultFont:drawText(curOption.title, infoX, y+gutter)
@@ -103,6 +111,7 @@ local function drawTextInRectUnderlined(text, rect, font)
 end
 
 local function renderDetailScreen(info)
+    local levelNumber = info.levelNumber
     gfx.pushContext()
     gfx.setClipRect(detailRect)
     gfx.clear(gfx.kColorWhite)
@@ -113,8 +122,14 @@ local function renderDetailScreen(info)
     drawTextInRectUnderlined(info.title, detailRect, defaultFont)
     infoY = infoY + 30
 
-    -- image
+    -- banner image
     gfx.drawRect(detailRect.x, infoY, detailRect.width, 64)
+    print("draw banner", levelNumber, banners[levelNumber])
+    if banners[levelNumber] then
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        banners[levelNumber]:draw(detailRect.x + 1, infoY + 1)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    end
     infoY = infoY + 70
 
     monoFont:drawText("Challenges", detailRect.x, infoY)
