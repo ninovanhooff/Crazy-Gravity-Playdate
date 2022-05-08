@@ -27,7 +27,7 @@ local ceil <const> = math.ceil
 -- Select the first challenge that was not completed
 local function getDefaultChallenge(self)
     local selectedChallenges = self:selectedOption().challenges
-    local selectedRecords = records[levelPath(self.selectedIdx)]
+    local selectedRecords = records[self.selectedIdx]
     if not selectedChallenges or not selectedRecords then
         self.selectedChallenge = 1
         return 1
@@ -45,10 +45,13 @@ end
 class("LevelSelectViewModel").extends()
 
 function LevelSelectViewModel:init()
+    self.lastUnlocked = numLevelsUnlocked()
+    --- the level for which an unlock animation should be played
+    self.newUnlock = nil
     self.menuOptions = {}
     for i = 1,10 do
         self.menuOptions[i] = {
-            title = "Stage " .. levelNumString(i),
+            title = "Level " .. levelNumString(i),
             challenges = challenges[levelPath(i)],
             levelNumber = i,
             -- scores added on resume
@@ -59,11 +62,14 @@ function LevelSelectViewModel:init()
 end
 
 function LevelSelectViewModel:resume()
+    if self.lastUnlocked ~= numLevelsUnlocked() then
+        self.lastUnlocked = numLevelsUnlocked()
+        self.newUnlock = self.lastUnlocked
+    end
     for i = 1,10 do
         local curOptions = self.menuOptions[i]
-        local rawScores = records[levelPath(i)]
+        local rawScores = records[i]
         local achievements = {}
-        curOptions.achievements = achievements
         if rawScores then
             -- formatting for display
             curOptions.scores = {
@@ -75,8 +81,13 @@ function LevelSelectViewModel:resume()
                 achievements[j] = score <= curOptions.challenges[j]
             end
         end
-
+        curOptions.achievements = achievements
+        curOptions.unlocked = numLevelsUnlocked() >= i
     end
+end
+
+function LevelSelectViewModel:pause()
+    self.newUnlock = nil
 end
 
 function LevelSelectViewModel:finish()

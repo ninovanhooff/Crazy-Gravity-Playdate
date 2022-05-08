@@ -32,13 +32,16 @@ local function shakeCam(self)
     return self.camX, self.camY
 end
 
-function LockExplosion:init()
+function LockExplosion:init(thumbRect)
+    LockExplosion.super.init()
+    self.thumbRect = thumbRect
     -- initial shard velocity and shake velocity
     self.vX, self.vY = 2,2
     self.camX, self.camY = 0,0
 
-    LockExplosion.super.init()
-    self.lockX, self.lockY = 20,20 -- todo param
+    local center = thumbRect:centerPoint()
+
+    self.lockX, self.lockY = center.x -lockSize/2,center.y - lockSize/2
 
     shardDrag = (1 + drag) * 0.55
     
@@ -110,11 +113,18 @@ end
 
 function LockExplosion:render()
     gfx.pushContext()
-    
-    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+
     if self.timer < 0 then
+        -- fully hide the thumb and draw a lock over it
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRect(self.thumbRect)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
         sprite:draw(self.lockX + self.camX, self.lockY + self.camY, unFlipped, spriteOffsetX, spriteOffsetY, lockSize, lockSize)
     else
+        -- reveal the thumb and draw shards over it
+        gfx.setDitherPattern((self.timer/duration)*3, gfx.image.kDitherTypeBayer8x8) -- invert alpha due to bug in SDK
+        gfx.fillRect(self.thumbRect)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
         renderShards(self)
     end
     

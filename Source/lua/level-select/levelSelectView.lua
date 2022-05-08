@@ -9,6 +9,7 @@ import "CoreLibs/ui"
 import "lockExplosion.lua"
 
 local gfx <const> = playdate.graphics
+local rect <const> = playdate.geometry.rect
 local defaultFont <const> = defaultFont
 local monoFont <const> = monoFont
 local hudIcons <const> = sprite -- hud icons are placed at origin of sprite
@@ -17,16 +18,17 @@ local banners <const> = gfx.imagetable.new("images/level-banners/level-banners")
 
 --- size of various content spacing
 local gutter <const> = 4
-local imageSize <const> = 58
+--- includes border, the image is 2px smaller
+local thumbSize <const> = 58
 local lockSize <const> = 32
-local lockOffsetPoint <const> = playdate.geometry.point.new(gutter + (imageSize-lockSize)/2, gutter +(imageSize-lockSize)/2)
+local lockOffsetPoint <const> = playdate.geometry.point.new(gutter + (thumbSize -lockSize)/2, gutter +(thumbSize -lockSize)/2)
 --- x offset of info column
-local infoOffsetX <const> = imageSize + 3*gutter
+local infoOffsetX <const> = thumbSize + 3*gutter
 local viewModel
 
 local listRect <const> = playdate.geometry.rect.new(gutter, 0, 192, 240)
 local detailRect <const> = playdate.geometry.rect.new(200+gutter, gutter, 200-gutter*2, 224 - gutter*2)
-local listView = playdate.ui.gridview.new(0, imageSize + 2* gutter)
+local listView = playdate.ui.gridview.new(0, thumbSize + 2* gutter)
 listView:setCellPadding(0, 0, gutter, gutter) -- left, right , top, bottom
 
 class("LevelSelectView").extends()
@@ -36,8 +38,12 @@ function LevelSelectView:init(vm)
     listView:setNumberOfRows(#vm.menuOptions)
     self.initialRender = true
     self.lastSelectedChallenge = viewModel.selectedChallenge
-    -- todo temp
-    self.lockExplosion = LockExplosion()
+    if vm.newUnlock then
+        local x,y,width, height = listView:getCellBounds(1, vm.newUnlock, 1, listRect.width)
+        self.lockExplosion = LockExplosion(
+            rect.new(x+gutter*2,y+gutter, thumbSize, thumbSize):insetBy(1,1)
+        )
+    end
 
 end
 
@@ -72,14 +78,19 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     end
     gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
 
-    -- thumb image
-    gfx.drawRect(x+gutter, y+gutter, imageSize, imageSize)
-    if thumbs[row] then
+    -- thumb image / lock
+    local unlocked = viewModel.menuOptions[row]["unlocked"]
+    gfx.drawRect(x+gutter, y+gutter, thumbSize, thumbSize)
+    if unlocked and thumbs[row] then
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
         thumbs[row]:draw(x + gutter + 1, y + gutter + 1)
         gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     end
-    -- sprite:draw(x+lockOffsetPoint.x, y+lockOffsetPoint.y, unFlipped, 0, 64, lockSize, lockSize)
+    if not unlocked then
+        -- draw lock
+        sprite:draw(x+lockOffsetPoint.x, y+lockOffsetPoint.y, unFlipped, 0, 64, lockSize, lockSize)
+    end
+
     -- title
     defaultFont:drawText(curOption.title, infoX, y+gutter)
     -- divider

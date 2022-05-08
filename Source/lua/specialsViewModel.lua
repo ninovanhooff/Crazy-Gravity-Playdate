@@ -91,7 +91,7 @@ function CalcPlatform(item,idx)
                 table.remove(planeFreight,1)
                 if table.sum(remainingFreight)==0 then
                     printf("VICTORY")
-                    updateRecords(curGamePath, {
+                    updateRecords(currentLevel, {
                         frameCounter / frameRate,
                         fuelSpent,
                         livesLost

@@ -18,6 +18,10 @@ function LevelSelectScreen:init()
     levelSelectViewModel = LevelSelectViewModel()
 end
 
+function LevelSelectScreen:pause()
+    levelSelectViewModel:pause()
+end
+
 function LevelSelectScreen:resume()
     levelSelectViewModel:resume()
     levelSelectView = LevelSelectView(levelSelectViewModel)

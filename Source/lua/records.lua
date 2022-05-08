@@ -13,12 +13,12 @@ if not records then
     playdate.datastore.write(records, datastoreKey)
 end
 
-function updateRecords(levelPath, newRecord)
-    print("updating records", levelPath)
-    local entry = records[levelPath]
+function updateRecords(levelNumber, newRecord)
+    print("updating records", levelNumber)
+    local entry = records[levelNumber]
 
     if not entry then
-        records[levelPath] = newRecord
+        records[levelNumber] = newRecord
     else
         for i, prevValue in ipairs(entry) do
             if newRecord[i] < prevValue then -- lower is better
@@ -28,4 +28,8 @@ function updateRecords(levelPath, newRecord)
     end
 
     playdate.datastore.write(records, datastoreKey)
+end
+
+function numLevelsUnlocked()
+    return #records + 1 -- first level is available immediately
 end
