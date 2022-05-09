@@ -22,7 +22,7 @@ local function executePendingNavigators()
         local newPos = find(backStack, activeScreen)
         if activeScreen and newPos and newPos ~= #backStack then
             -- the activeScreen was moved from the top of the stack to another position
-            print("Pausing screen", activeScreen)
+            print("Pausing screen", activeScreen.className, activeScreen)
             activeScreen:pause()
         end
         if #backStack < 1 then
@@ -30,7 +30,7 @@ local function executePendingNavigators()
             table.insert(backStack, StartScreen())
         end
         activeScreen = backStack[#backStack]
-        print("Resuming screen", activeScreen)
+        print("Resuming screen", activeScreen.className, activeScreen)
         activeScreen:resume()
     end
 end
@@ -39,7 +39,7 @@ function pushScreen(newScreen)
     table.insert(
         pendingNavigators,
         function()
-            print("Adding to backstack", newScreen)
+            print("Adding to backstack", newScreen.className, newScreen)
             table.insert(backStack, newScreen)
         end
     )
@@ -49,7 +49,7 @@ function popScreen()
     table.insert(
         pendingNavigators,
         function()
-            print("Popping off backstack:", activeScreen)
+            print("Popping off backstack:", activeScreen.className, activeScreen)
             table.remove(backStack)
         end
     )

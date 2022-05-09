@@ -135,7 +135,6 @@ local function renderDetailScreen(info)
 
     -- banner image
     gfx.drawRect(detailRect.x, infoY, detailRect.width, 64)
-    print("draw banner", levelNumber, banners[levelNumber])
     if banners[levelNumber] then
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
         banners[levelNumber]:draw(detailRect.x + 1, infoY + 1)
