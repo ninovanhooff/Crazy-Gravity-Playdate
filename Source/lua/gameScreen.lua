@@ -45,10 +45,10 @@ function GameScreen:resume()
 end
 
 function GameScreen:update()
-    if not explosion then
+    if frameCounter ~= 0 or isThrottleJustPressed() then
         processInputs()
+        calcTimeStep()
     end
-    calcTimeStep()
     renderGame()
 end
 

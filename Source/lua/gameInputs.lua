@@ -4,6 +4,7 @@
 --- DateTime: 13/03/2022 00:13
 ---
 
+local buttonJustPressed <const> = playdate.buttonJustPressed
 local getButtonState <const> = playdate.getButtonState
 local buttonState = 0
 local throttle <const> = playdate.kButtonA | playdate.kButtonB | playdate.kButtonUp
@@ -64,4 +65,8 @@ function ProcessInputs()
             planeRot = planeRot % 24
         end
     end
+end
+
+function isThrottleJustPressed()
+    return buttonJustPressed(throttle)
 end
