@@ -38,9 +38,6 @@ function GameScreen:pause()
 end
 
 function GameScreen:resume()
-    if explosion then
-        ResetGame() -- reset the game in case the user selects retry
-    end
     self.backMenuItem = menu:addMenuItem("Level Select", function() popScreen() end)
 end
 
