@@ -29,6 +29,7 @@ local function quitLevel()
 end
 
 local function retryGame()
+    ResetGame()
     -- back to game
     popScreen()
 end
