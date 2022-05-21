@@ -7,8 +7,8 @@
 local buttonJustPressed <const> = playdate.buttonJustPressed
 local getButtonState <const> = playdate.getButtonState
 local buttonState = 0
-local throttle <const> = playdate.kButtonA | playdate.kButtonB | playdate.kButtonUp
-local buttonDown <const> = playdate.kButtonDown
+local throttle <const> = playdate.kButtonA | playdate.kButtonUp
+local selfRight <const> = playdate.kButtonDown | playdate.kButtonB
 local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
 
@@ -43,7 +43,7 @@ function ProcessInputs()
     end
 
     -- rotation
-    if pressed(buttonDown) then
+    if pressed(selfRight) then
         if planeRot~=18 then
             if planeRot>18 or planeRot<6 then
                 planeRot = planeRot-1
