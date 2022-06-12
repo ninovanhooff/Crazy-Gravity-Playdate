@@ -218,8 +218,9 @@ local function planeIntersectsCannon(item)
 end
 
 function CalcCannon(item,idx)
-    if frameCounter%(80-item.rate)==0 then -- add a ball
+    if frameCounter >= item.nextEmitFrame then -- add a ball
         table.insert(item.balls,{0,random(0,72)}) -- px position,color offset
+        item.nextEmitFrame = item.nextEmitFrame + item.rate
     end
 
     local shouldCalcBallCollisions = planeIntersectsCannon(item)
@@ -432,6 +433,7 @@ function InitRotator(item)
 end
 
 function InitCannon(item)
+    item.nextEmitFrame = 1
     local coords = {};local receiverCoords = {}
     if item.direction==1 then
         coords = {0,item.distance,3,5}

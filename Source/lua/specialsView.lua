@@ -339,7 +339,7 @@ end
 
 
 specialRenders = {
-    RenderPlatform, -- 1
+    RenderPlatform, -- index 1, sType == 8
     RenderBlower, -- 2
     RenderMagnet, -- 3
     RenderRotator, -- 4
