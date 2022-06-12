@@ -10,10 +10,13 @@ import "game-over/GameOverScreen.lua"
 local abs <const> = math.abs
 local floor <const> = math.floor
 local min <const> = math.min
+local max <const> = math.max
 local random <const> = math.random
 local gameHUD <const> = gameHUD
 
-local barrierSpeed = 2
+local barrierSpeed <const> = 2
+-- #frames between rods speed or direction change when chngOften is enabled
+local rodsChangeTimeOut <const> = 60
 
 local function UnitCollision(x,y,w,h,testMode)
     --printf(x,y,w,h)
@@ -248,12 +251,15 @@ function CalcRod(item)
     if item.pos1+item.pos2>=item.distance*8-24 then
         item.d1=-1
         item.speed1 = random(item.speedMin,item.speedMax)
+        item.nextChangeFrame = frameCounter + rodsChangeTimeOut
     elseif item.pos1<2 then
         item.d1=1
         item.speed1 = random(item.speedMin,item.speedMax)
-    elseif (item.chngOften==1 and random(1,350)==62) then
+        item.nextChangeFrame = frameCounter + rodsChangeTimeOut
+    elseif (item.chngOften==1 and frameCounter > item.nextChangeFrame) then
         item.d1=-1+random(0,2)*2
         item.speed1 = random(item.speedMin,item.speedMax)
+        item.nextChangeFrame = frameCounter + rodsChangeTimeOut
     end
     if item.fixdGap == 1 then
         if item.pos2<2 then
@@ -261,15 +267,19 @@ function CalcRod(item)
         end
         item.speed2=item.speed1
         item.d2=-item.d1
+        item.nextChangeFrame = frameCounter + rodsChangeTimeOut
     elseif item.pos1+item.pos2>=item.distance*8-24 then
         item.d2=-1
         item.speed2 = random(item.speedMin,item.speedMax)
+        item.nextChangeFrame = frameCounter + rodsChangeTimeOut
     elseif item.pos2<2 then
         item.d2=1
         item.speed2 = random(item.speedMin,item.speedMax)
-    elseif (item.chngOften==1 and random(1,350)==62) then
+        item.nextChangeFrame = frameCounter + rodsChangeTimeOut
+    elseif (item.chngOften==1 and frameCounter > item.nextChangeFrame) then
         item.d2=-1+random(0,2)*2
         item.speed2 = random(item.speedMin,item.speedMax)
+        item.nextChangeFrame = frameCounter + rodsChangeTimeOut
     end
     item.pos1 = item.pos1+item.speed1*item.d1
     item.pos2 = item.pos2+item.speed2*item.d2
@@ -462,6 +472,9 @@ function InitCannon(item)
 end
 
 function InitRod(item)
+    item.speedMin = max(1, floor(convertSpeed(item.speedMin)))
+    item.speedMax= max(1, floor(convertSpeed(item.speedMax)))
+    item.nextChangeFrame = random(1, rodsChangeTimeOut)
     item.d1,item.d2=1,1 -- direction of rods, positive is extending
     item.speed1 = random(item.speedMin,item.speedMax)
     if item.fixdGap==1 then
