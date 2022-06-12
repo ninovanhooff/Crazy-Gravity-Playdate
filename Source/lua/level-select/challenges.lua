@@ -9,7 +9,12 @@
 --- achievements are unlocked / completed when the user achieves a lower record, ie.
 --- when the challenge is fuel 1200; the achievement is awarded when the user completes the level
 --- with 1199 or less spent fuel
-challenges = {
+
+numChallenges = 3
+
+local defaultChallenges = {235, 1200, 1}
+
+local challenges = {
     ["levels/LEVEL01.pdz"] = {235, 1200, 1},
     ["levels/LEVEL02.pdz"] = {98, 1200, 10},
     ["levels/LEVEL03.pdz"] = {98, 1200, 1},
@@ -22,4 +27,7 @@ challenges = {
     ["levels/LEVEL10.pdz"] = {98, 1200, 1},
 }
 
-numChallenges = 3
+
+function getChallengeForPath(path)
+    return challenges[path] or defaultChallenges
+end

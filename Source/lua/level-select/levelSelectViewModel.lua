@@ -49,10 +49,10 @@ function LevelSelectViewModel:init()
     --- the level for which an unlock animation should be played
     self.newUnlock = nil
     self.menuOptions = {}
-    for i = 1,10 do
+    for i = 1,numLevels do
         self.menuOptions[i] = {
             title = "Level " .. levelNumString(i),
-            challenges = challenges[levelPath(i)],
+            challenges = getChallengeForPath(levelPath(i)),
             levelNumber = i,
             -- scores added on resume
         }
@@ -66,7 +66,7 @@ function LevelSelectViewModel:resume()
         self.lastUnlocked = numLevelsUnlocked()
         self.newUnlock = self.lastUnlocked
     end
-    for i = 1,10 do
+    for i = 1,numLevels do
         local curOptions = self.menuOptions[i]
         local rawScores = records[i]
         local achievements = {}
