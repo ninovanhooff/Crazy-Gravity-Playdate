@@ -41,12 +41,12 @@ function find(t, value)
 end
 
 function levelNumString(levelNumber)
-    return string.format("%02d", levelNumber)
+    return string.format("%03d", levelNumber)
 end
 
 function levelPath(_levelNumber)
     local levelNumber = _levelNumber or currentLevel
-    return "levels/LEVEL" .. levelNumString(levelNumber) .. ".pdz"
+    return "levels/User" .. levelNumString(levelNumber) .. ".pdz"
 end
 
 function IncrementStringNumber(str)
@@ -126,12 +126,9 @@ function pressedany() --pressed or held!!
 end
 
 
---print(pressed(1000),select,cross,triangle)
-
---function dir.listdir(path)
---    print("TODO implement directory listing. https://sdk.play.date/1.9.1/#f-file.listFiles")
---    return false
---end
+function convertSpeed(cgSpeed)
+    return cgSpeed * (20 / frameRate)
+end
 
 function RUS(capt) -- refactor: aRe yoU Sure dialog
     local RUSresult = MenuBR(capt,{{"Answer",1,{"No","Yes"},val=1}})
