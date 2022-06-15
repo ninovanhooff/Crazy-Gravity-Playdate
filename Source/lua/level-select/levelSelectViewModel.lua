@@ -102,7 +102,11 @@ function LevelSelectViewModel:update()
     if justPressed(buttonDown) then
         local function timerCallback()
             if self.selectedIdx < #self.menuOptions then
-                self.selectedIdx = self.selectedIdx + 1
+                if ExtraScrollSpeed and self.selectedIdx + 10 < #self.menuOptions then
+                    self.selectedIdx = self.selectedIdx + 10
+                else
+                    self.selectedIdx = self.selectedIdx + 1
+                end
                 self.selectedChallenge = getDefaultChallenge(self)
             end
         end
@@ -110,7 +114,11 @@ function LevelSelectViewModel:update()
     elseif justPressed(buttonUp) then
         local function timerCallback()
             if self.selectedIdx > 1 then
-                self.selectedIdx = self.selectedIdx - 1
+                if ExtraScrollSpeed and self.selectedIdx - 10 > 1 then
+                    self.selectedIdx = self.selectedIdx - 10
+                else
+                    self.selectedIdx = self.selectedIdx - 1
+                end
                 self.selectedChallenge = getDefaultChallenge(self)
             end
         end

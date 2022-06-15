@@ -72,3 +72,17 @@ function playdate.debugDraw()
         activeScreen:debugDraw()
     end
 end
+
+function playdate.keyPressed(key)
+    print("Pressed " .. key .. " key")
+    if key == "i" then
+        ExtraScrollSpeed = true
+    end
+end
+
+function playdate.keyReleased(key)
+    print("Released " .. key .. " key")
+    if key == "i" then
+        ExtraScrollSpeed = false
+    end
+end
