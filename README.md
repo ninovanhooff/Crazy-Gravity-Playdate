@@ -1,4 +1,4 @@
-# Crazy Gravity Playdate (name tbd)
+# Gravity Express
 
 This game is based on [Crazy Gravity for Playstation Portable](https://www.gamebrew.org/wiki/Crazy_Gravity_Portable_PSP), which in turn
 is based on [the PC version](https://www.xlmsoft.de/crazygravity.php) by Axel Meierhöfer.
