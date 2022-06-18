@@ -447,7 +447,7 @@ end
 function InitCannon(item)
     item.rate = max(1, ceil(convertInterval(item.rate)))
     item.speed = max(1, item.speed - 1)
-    item.nextEmitFrame = 1
+    item.nextEmitFrame = -preCalcFrames
     local coords = {};local receiverCoords = {}
     if item.direction==1 then
         coords = {0,item.distance,3,5}
