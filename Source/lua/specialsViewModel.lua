@@ -94,7 +94,7 @@ function CalcPlatform(item,idx)
                     dump_sound:play()
                 end
                 table.remove(planeFreight,1)
-                if table.sum(remainingFreight)==0 then
+                if table.sum(remainingFreight)==0 and #planeFreight == 0 then
                     printf("VICTORY")
                     updateRecords(currentLevel, {
                         frameCounter / frameRate,
