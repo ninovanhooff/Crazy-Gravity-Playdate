@@ -8,6 +8,7 @@ import "gameHUD.lua"
 import "game-over/GameOverScreen.lua"
 
 local abs <const> = math.abs
+local ceil <const> = math.ceil
 local floor <const> = math.floor
 local min <const> = math.min
 local max <const> = math.max
@@ -444,7 +445,8 @@ function InitRotator(item)
 end
 
 function InitCannon(item)
-    item.rate = convert
+    item.rate = max(1, ceil(convertInterval(item.rate)))
+    item.speed = max(1, item.speed - 1)
     item.nextEmitFrame = 1
     local coords = {};local receiverCoords = {}
     if item.direction==1 then
