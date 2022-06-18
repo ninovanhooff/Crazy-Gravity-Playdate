@@ -125,9 +125,12 @@ function pressedany() --pressed or held!!
     return pressed(cross) or pressed(circle) or pressed(triangle) or pressed(square) or pressed(up) or pressed(down) or pressed(left) or pressed(right) or pressed(ltrigger) or pressed(rtrigger) or pressed(start) or pressed(select)
 end
 
-
 function convertSpeed(cgSpeed)
     return cgSpeed * (20 / frameRate)
+end
+
+function convertInterval(cgInterval)
+    return cgInterval / (20 / frameRate)
 end
 
 function RUS(capt) -- refactor: aRe yoU Sure dialog

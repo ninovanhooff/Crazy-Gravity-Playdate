@@ -8,6 +8,7 @@ import "gameHUD.lua"
 import "game-over/GameOverScreen.lua"
 
 local abs <const> = math.abs
+local ceil <const> = math.ceil
 local floor <const> = math.floor
 local min <const> = math.min
 local max <const> = math.max
@@ -93,7 +94,7 @@ function CalcPlatform(item,idx)
                     dump_sound:play()
                 end
                 table.remove(planeFreight,1)
-                if table.sum(remainingFreight)==0 then
+                if table.sum(remainingFreight)==0 and #planeFreight == 0 then
                     printf("VICTORY")
                     updateRecords(currentLevel, {
                         frameCounter / frameRate,
@@ -140,24 +141,24 @@ function CalcBlower(item,idx)
     if item.direction==1 then --up
         if UnitCollision(item.x,item.y,6,item.distance,true) then
             local mult = item.distance-(item.y+item.distance - planePos[2])
-            vy = vy - (mult/item.distance)*blowerStrength*3
+            vy = vy - (mult/item.distance)*blowerStrength*(1+item.grating)
         end
     elseif item.direction==2 then --down
         if UnitCollision(item.x,item.y+8,6,item.distance,true) then
             printf("blower a",vy,planePos[2],item.y+8)
             local mult = item.distance-(planePos[2] - (item.y+8))
-            vy = vy + (mult/item.distance)*blowerStrength
+            vy = vy + (mult/item.distance)*blowerStrength*(item.grating*0.5)
             printf("blower b",vy,item.y)
         end
     elseif item.direction==3 then --left
         if UnitCollision(item.x,item.y,item.distance,6,true) then
             local mult = item.distance-(item.x+item.distance - planePos[1])
-            vx = vx - (mult/item.distance)*blowerStrength*4
+            vx = vx - (mult/item.distance)*blowerStrength*(1+item.grating)
         end
     elseif item.direction==4 then --right
         if UnitCollision(item.x+8,item.y,item.distance,6,true) then
             local mult = item.distance-(planePos[1] - (item.x+8))
-            vx = vx + (mult/item.distance)*blowerStrength*4
+            vx = vx + (mult/item.distance)*blowerStrength*(1+item.grating)
         end
     end
 end
@@ -166,7 +167,7 @@ function CalcMagnet(item,idx)
     if item.direction==1 then --up
         if UnitCollision(item.x,item.y,4,item.distance,true) then
             local mult = item.distance-(item.y+item.distance - planePos[2])
-            vy = vy + (mult/item.distance)*magnetStrength*3
+            vy = vy + (mult/item.distance)*magnetStrength
         end
     elseif item.direction==2 then --down
         if UnitCollision(item.x,item.y+6,4,item.distance,true) then
@@ -178,12 +179,12 @@ function CalcMagnet(item,idx)
     elseif item.direction==3 then --left
         if UnitCollision(item.x,item.y,item.distance,4,true) then
             local mult = item.distance-(item.x+item.distance - planePos[1])
-            vx = vx + (mult/item.distance)*magnetStrength*4
+            vx = vx + (mult/item.distance)*magnetStrength
         end
     elseif item.direction==4 then --right
         if UnitCollision(item.x+6,item.y,item.distance,4,true) then
             local mult = item.distance-(planePos[1] - (item.x+6))
-            vx = vx - (mult/item.distance)*magnetStrength*4
+            vx = vx - (mult/item.distance)*magnetStrength
         end
     end
 end
@@ -444,7 +445,9 @@ function InitRotator(item)
 end
 
 function InitCannon(item)
-    item.nextEmitFrame = 1
+    item.rate = max(1, ceil(convertInterval(item.rate)))
+    item.speed = max(1, item.speed - 1)
+    item.nextEmitFrame = -preCalcFrames
     local coords = {};local receiverCoords = {}
     if item.direction==1 then
         coords = {0,item.distance,3,5}

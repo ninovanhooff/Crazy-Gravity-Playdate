@@ -257,6 +257,7 @@ function ResetGame()
             end
         elseif item.sType == 12 then -- cannon
             item.balls = {}
+            item.nextEmitFrame = -preCalcFrames
         end
     end
     ApplyGameSets()
@@ -271,7 +272,7 @@ function ResetGame()
     lSec = floor(lSec%60)
     if lMin<10 then lMin = "0"..lMin end
     if lSec<10 then lSec = "0"..lSec end
-    frameCounter = -60
+    frameCounter = -preCalcFrames
     for i=1,60 do
         CalcTimeStep() -- let cannons fire a few shots, bringing counter to 0
     end
