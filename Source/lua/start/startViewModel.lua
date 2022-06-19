@@ -12,6 +12,7 @@ local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, e
 buttonTimer.discardOnCompletion = false
 buttonTimer:pause()  -- disable auto start
 
+local buttonStartAlign <const> = 280
 local buttonWidth <const> = 110
 local buttonHeight <const> = 24
 
@@ -52,22 +53,22 @@ function StartViewModel:init()
     self.viewState.buttons = {
         {
             text = "Campaign",
-            x = 280, y = 50, w = buttonWidth, h = buttonHeight,progress = 0.0,
+            x = buttonStartAlign, y = 50, w = buttonWidth, h = buttonHeight,progress = 0.0,
             onClickScreen = function() return LevelSelectScreen() end
         },
         {
             text = "Quick Start",
-            x = 280, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.0,
+            x = buttonStartAlign, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.0,
             onClickScreen = function() return LevelSelectScreen() end
         },
         {
-            text = "Bonus levels",
-            x = 280, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.0,
+            text = "Bonus Levels",
+            x = buttonStartAlign, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.0,
             onClickScreen = function() return SettingsScreen()  end
         },
         {
             text = "Settings",
-            x = 280, y = 200, w = buttonWidth, h = buttonHeight, progress = 0.0,
+            x = buttonStartAlign, y = 200, w = buttonWidth, h = buttonHeight, progress = 0.0,
             onClickScreen = function() return SettingsScreen()  end
         }
     }
