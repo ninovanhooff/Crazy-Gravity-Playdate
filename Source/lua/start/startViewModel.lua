@@ -12,13 +12,13 @@ local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, e
 buttonTimer.discardOnCompletion = false
 buttonTimer:pause()  -- disable auto start
 
-local buttonWidth <const> = 100
+local buttonWidth <const> = 110
 local buttonHeight <const> = 24
 
 
 local pressed <const> = playdate.buttonIsPressed
-local throttle <const> = playdate.kButtonA | playdate.kButtonB | playdate.kButtonUp
-local buttonDown <const> = playdate.kButtonDown
+local throttle <const> = playdate.kButtonA | playdate.kButtonUp
+local selfRight <const> = playdate.kButtonDown  | playdate.kButtonB
 local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
 local thrustSound <const> = thrust_sound
@@ -51,13 +51,23 @@ function StartViewModel:init()
     self.viewState = {}
     self.viewState.buttons = {
         {
-            text = "Start Game",
-            x = 200, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.0,
+            text = "Campaign",
+            x = 280, y = 50, w = buttonWidth, h = buttonHeight,progress = 0.0,
             onClickScreen = function() return LevelSelectScreen() end
         },
         {
+            text = "Quick Start",
+            x = 280, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.0,
+            onClickScreen = function() return LevelSelectScreen() end
+        },
+        {
+            text = "Bonus levels",
+            x = 280, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.0,
+            onClickScreen = function() return SettingsScreen()  end
+        },
+        {
             text = "Settings",
-            x = 200, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.0,
+            x = 280, y = 200, w = buttonWidth, h = buttonHeight, progress = 0.0,
             onClickScreen = function() return SettingsScreen()  end
         }
     }
@@ -82,7 +92,7 @@ local function processInputs()
     end
 
     -- rotation
-    if pressed(buttonDown) then
+    if pressed(selfRight) then
         if planeRot~=18 then
             if planeRot>18 or planeRot<6 then
                 planeRot = planeRot-1

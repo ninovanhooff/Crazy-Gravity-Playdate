@@ -2,6 +2,7 @@ import "CoreLibs/timer"
 import "lua/util.lua"
 import "lua/level.lua"
 import "lua/init.lua"
+import "lua/start/startScreen.lua"
 import "lua/level-select/levelSelectScreen.lua"
 import "lua/systemMenu.lua"
 
@@ -55,14 +56,14 @@ function popScreen()
     )
 end
 
-pushScreen(LevelSelectScreen())
+pushScreen(StartScreen())
 
 function playdate.update()
     gfx.pushContext() --make sure we start the frame with a clean gfx state.
     executePendingNavigators()
     activeScreen:update()
     -- not popping Context because bug https://devforum.play.date/t/crash-when-using-pushcontext-together-with-coroutine-yield-simulator/5327
-    playdate.drawFPS(0,0)
+    -- playdate.drawFPS(0,0)
     updateBlinkers()
     updateTimers()
 end
