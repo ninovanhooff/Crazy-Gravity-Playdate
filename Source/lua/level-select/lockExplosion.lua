@@ -100,10 +100,10 @@ end
 --- @returns whether the explosion is running
 function LockExplosion:update()
     if self.timer < 0 then -- start delay
-        self.camX, self.camY = shakeCam(self) --todo remove
+        self.camX, self.camY = shakeCam(self)
     else
         if self.timer == 0 and Sounds then
-            extra_sound:playAt(0, 1-(self.timer/duration))
+            unlock_sound:playAt(0, 1-(self.timer/duration))
         end
         forShards(self, updateShard)
     end

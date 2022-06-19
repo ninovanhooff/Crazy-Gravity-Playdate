@@ -120,7 +120,7 @@ function CalcPlatform(item,idx)
                     extras[item.type]=extras[item.type]+1
                     gameHUD:onChanged(item.type)
                     item.amnt = item.amnt -1
-                    if Sounds then extra_sound:play() end
+                    if Sounds then extra_sounds[item.type]:play() end
                 elseif item.pType==5 then -- key
                     printf("KEY",item.color)
                     keys[item.color]=true
