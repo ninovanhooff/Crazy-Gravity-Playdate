@@ -120,7 +120,7 @@ function CalcPlatform(item,idx)
                     extras[item.type]=extras[item.type]+1
                     gameHUD:onChanged(item.type)
                     item.amnt = item.amnt -1
-                    if Sounds then extra_sound:play() end
+                    if Sounds then extra_sounds[item.type]:play() end
                 elseif item.pType==5 then -- key
                     printf("KEY",item.color)
                     keys[item.color]=true
@@ -374,6 +374,16 @@ function CalcBarrier(item)
     end
 end
 
+--- Fill brickT item.x,item.y,w,h with {2,1,1,0,0} (collision occupied)
+--- coords {x offset relative to item, y offset relative to item, width, height}
+local function markOccupied(item, coords)
+    for i=coords[1],coords[1]+coords[3]-1 do
+        for j=coords[2],coords[2]+coords[4]-1 do
+            brickT[item.x+i][item.y+j]= {2, 1, 1, 0, 0}
+        end
+    end
+end
+
 
 specialCalcT = {}
 specialCalcT[8] = CalcPlatform
@@ -400,11 +410,7 @@ function InitBlower(item)
     else
         coords = {0,0,8,6}
     end
-    for i=coords[1],coords[1]+coords[3]-1 do
-        for j=coords[2],coords[2]+coords[4]-1 do
-            brickT[item.x+i][item.y+j][1]=2 -- collision occupied
-        end
-    end
+    markOccupied(item,coords)
 end
 
 function InitMagnet(item)
@@ -418,11 +424,7 @@ function InitMagnet(item)
     else
         coords = {0,0,6,4}
     end
-    for i=coords[1],coords[1]+coords[3]-1 do
-        for j=coords[2],coords[2]+coords[4]-1 do
-            brickT[item.x+i][item.y+j][1]=2 -- collision occupied
-        end
-    end
+    markOccupied(item,coords)
 end
 
 
@@ -437,11 +439,7 @@ function InitRotator(item)
     else
         coords = {0,0,8,5}
     end
-    for i=coords[1],coords[1]+coords[3]-1 do
-        for j=coords[2],coords[2]+coords[4]-1 do
-            brickT[item.x+i][item.y+j][1]=2 -- collision occupied
-        end
-    end
+    markOccupied(item,coords)
 end
 
 function InitCannon(item)
@@ -462,16 +460,8 @@ function InitCannon(item)
         coords = {0,0,5,3}
         receiverCoords = {2+item.distance,0,3,2}
     end
-    for i=coords[1],coords[1]+coords[3]-1 do
-        for j=coords[2],coords[2]+coords[4]-1 do
-            brickT[item.x+i][item.y+j][1]=2 -- collision occupied
-        end
-    end
-    for i=receiverCoords[1],receiverCoords[1]+receiverCoords[3]-1 do -- receiver
-        for j=receiverCoords[2],receiverCoords[2]+receiverCoords[4]-1 do
-            brickT[item.x+i][item.y+j][1]=2 -- collision occupied
-        end
-    end
+    markOccupied(item,coords)
+    markOccupied(item,receiverCoords)
 end
 
 function InitRod(item)
@@ -494,16 +484,8 @@ function InitRod(item)
         coords = {0,0,3,3}
         receiverCoords = {0,item.distance,3,3}
     end
-    for i=coords[1],coords[1]+coords[3]-1 do
-        for j=coords[2],coords[2]+coords[4]-1 do
-            brickT[item.x+i][item.y+j][1]=2 -- collision occupied
-        end
-    end
-    for i=receiverCoords[1],receiverCoords[1]+receiverCoords[3]-1 do -- receiver
-        for j=receiverCoords[2],receiverCoords[2]+receiverCoords[4]-1 do
-            brickT[item.x+i][item.y+j][1]=2 -- collision occupied
-        end
-    end
+    markOccupied(item,coords)
+    markOccupied(item,receiverCoords)
 end
 
 function Init1Way(item)
@@ -511,14 +493,14 @@ function Init1Way(item)
         for i=0,11 do
             for j=0,3 do
                 if not (j>1 and i>3 and i<8) then
-                    brickT[item.x+i][item.y+j+item.distance][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j+item.distance]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
         if item.endStone==1 then
             for i = 4,7 do
                 for j =0,1 do
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
@@ -526,14 +508,14 @@ function Init1Way(item)
         for i=0,11 do
             for j=0,3 do
                 if not (j<2 and i>3 and i<8) then
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
         if item.endStone==1 then
             for i = 4,7 do
                 for j =4+item.distance-2,4+item.distance-1 do
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
@@ -541,14 +523,14 @@ function Init1Way(item)
         for i=0,3 do
             for j=0,11 do
                 if not (i>1 and j>3 and j<8) then
-                    brickT[item.x+i+item.distance][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i+item.distance][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
         if item.endStone==1 then
             for i=0,1 do
                 for j=4,7 do
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
@@ -556,14 +538,14 @@ function Init1Way(item)
         for i=0,3 do
             for j=0,11 do
                 if not (i<2 and j>3 and j<8) then
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
         if item.endStone==1 then
             for i=4+item.distance-2,4+item.distance-1 do
                 for j=4,7 do
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
@@ -575,14 +557,14 @@ function InitBarrier(item)
         for i=0,5 do
             for j=0,3 do
                 if not (j>1 and i>3) then
-                    brickT[item.x+i][item.y+j+item.distance][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j+item.distance]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
         if item.endStone==1 then
             for i = 1,4 do
                 for j =0,1 do
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
@@ -590,14 +572,14 @@ function InitBarrier(item)
         for i=0,5 do
             for j=0,3 do
                 if i>1 and j>1 then
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
         if item.endStone==1 then
             for i = 1,4 do
                 for j =4+item.distance-2,4+item.distance-1 do
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
@@ -605,14 +587,14 @@ function InitBarrier(item)
         for i=0,3 do
             for j=0,5 do
                 if not (i>1 and j<3) then
-                    brickT[item.x+i+item.distance][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i+item.distance][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
         if item.endStone==1 then
             for i=0,1 do
                 for j=0,3 do
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
@@ -620,14 +602,14 @@ function InitBarrier(item)
         for i=0,3 do
             for j=0,5 do
                 if not (i<2 and j>3) then
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end
         if item.endStone==1 then
             for i=4+item.distance-2,4+item.distance-1 do
                 for j=1,4 do
-                    brickT[item.x+i][item.y+j][1]=2 -- collision occupied
+                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
                 end
             end
         end

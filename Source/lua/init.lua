@@ -52,10 +52,15 @@ if Sounds then
     dump_sound = sampleplayer.new("sounds/dump.wav")
     thrust_sound = sampleplayer.new("sounds/thrust.wav")
     key_sound = sampleplayer.new("sounds/key.wav")
-    extra_sound = sampleplayer.new("sounds/extra.wav")
-    fuel_sound = sampleplayer.new("sounds/fuel2.wav")
+    extra_sounds = {
+        sampleplayer.new("sounds/extra_turbo.wav"),
+        sampleplayer.new("sounds/extra_life.wav"),
+        sampleplayer.new("sounds/extra_cargo.wav"),
+    }
+    fuel_sound = sampleplayer.new("sounds/fuel.wav")
     dump_sound = sampleplayer.new("sounds/dump.wav")
     explode_sound = sampleplayer.new("sounds/explosion.wav")
+    unlock_sound = sampleplayer.new("sounds/unlock.wav")
 end
 
 gfx.setColor(gfx.kColorBlack)

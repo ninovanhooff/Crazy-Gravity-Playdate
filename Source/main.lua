@@ -2,6 +2,7 @@ import "CoreLibs/timer"
 import "lua/util.lua"
 import "lua/level.lua"
 import "lua/init.lua"
+import "lua/start/startScreen.lua"
 import "lua/level-select/levelSelectScreen.lua"
 import "lua/systemMenu.lua"
 
