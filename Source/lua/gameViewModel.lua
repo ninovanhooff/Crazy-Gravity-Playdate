@@ -226,6 +226,7 @@ function ResetPlane()
 end
 
 function InitGame(path)
+    print("InitGame", path)
     LoadFile(path)
     curGamePath = path
     for i,item in ipairs(specialT) do
