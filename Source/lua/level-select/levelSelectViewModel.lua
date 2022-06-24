@@ -21,6 +21,10 @@ local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
+local file <const> = playdate.file
+
+local numLevels = 0
+while file.exists(levelPath(numLevels+1)) do numLevels = numLevels + 1 end
 
 local ceil <const> = math.ceil
 
