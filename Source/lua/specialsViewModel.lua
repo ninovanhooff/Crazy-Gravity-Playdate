@@ -259,7 +259,7 @@ function CalcRod(item)
         item.speed1 = random(item.speedMin,item.speedMax)
         item.nextChangeFrame = frameCounter + random(rodsChangeTimeoutMin, rodsChangeTimeoutMax)
     elseif (item.chngOften==1 and frameCounter > item.nextChangeFrame) then
-        item.d1=-1+random(0,2)*2
+        item.d1=-1+random(0,1)*2
         item.speed1 = random(item.speedMin,item.speedMax)
         item.nextChangeFrame = frameCounter + random(rodsChangeTimeoutMin, rodsChangeTimeoutMax)
     end
@@ -279,7 +279,7 @@ function CalcRod(item)
         item.speed2 = random(item.speedMin,item.speedMax)
         item.nextChangeFrame = frameCounter + random(rodsChangeTimeoutMin, rodsChangeTimeoutMax)
     elseif (item.chngOften==1 and frameCounter > item.nextChangeFrame) then
-        item.d2=-1+random(0,2)*2
+        item.d2=-1+random(0,1)*2
         item.speed2 = random(item.speedMin,item.speedMax)
         item.nextChangeFrame = frameCounter + random(rodsChangeTimeoutMin, rodsChangeTimeoutMax)
     end
