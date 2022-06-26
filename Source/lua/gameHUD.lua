@@ -33,6 +33,7 @@ class('GameHUD').extends()
 function GameHUD:init()
     GameHUD.super.init(self)
     self.selectedChallenge = 1 -- 1: time, 2: fuel, 3: survivor
+    self.challengeTarget = 1 -- seconds
 end
 
 -- global singleton
