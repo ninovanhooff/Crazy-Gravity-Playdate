@@ -6,7 +6,22 @@
 
 import "util.lua"
 
-local file = playdate.file
+local file <const> = playdate.file
+local unpack <const> = string.unpack
+
+
+local function setUnpackMeta(format)
+    for x, xtem in ipairs(brickT) do
+        local compressedXtem = { compressed = xtem}
+        local unpackMeta = {
+            __index = function(tbl, idx)
+                return {unpack(format, tbl.compressed[idx])}
+            end
+        }
+
+        brickT[x]= setmetatable(compressedXtem, unpackMeta)
+    end
+end
 
 function LoadFile(path)
     printf("loading ".. path)
@@ -14,11 +29,21 @@ function LoadFile(path)
     levelT, brickT, specialT, levelProps = nil, nil, nil
     collectgarbage("collect")
 
-    local levelT = file.run(path)
-    brickT = levelT["brickT"]
-    specialT = levelT["specialT"]
+    local levelT = file.run(path..".pdz")
     levelProps = levelT["levelProps"]
     levelProps.lives = levelProps.lives or 5
+    specialT = levelT["specialT"]
+    brickT = {}
+
+    local brickFile = file.open(path..".bin")
+    for x = 1, levelProps.sizeX do
+        brickT[x] = {}
+        for y = 1, levelProps.sizeY do
+            brickT[x][y] = brickFile:read(5)
+        end
+    end
+
+    setUnpackMeta(levelProps.packFormat)
 
     printf("loaded dim",#brickT,#brickT[1])
 
