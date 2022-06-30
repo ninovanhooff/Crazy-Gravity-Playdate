@@ -4,8 +4,10 @@ local gfx <const> = playdate.graphics
 local timer <const> = playdate.timer
 local itemHeight <const> = 24
 
--- NOTES Nino
+--- NOTES Nino
 -- KEY_REPEAT and KEY_REPEAT_INITIAL not defined
+-- drawRectSwitch unused
+-- added fixes to show menu on the right side of the screen
 
 local KEY_REPEAT_INITIAL = 300
 local KEY_REPEAT = 200
@@ -68,6 +70,7 @@ function Options:init()
     self:userOptionsInit()
 
     function self.menu.drawCell(menuSelf, section, row, column, selected, x, y, width, height)
+        local right <const> = x + width
         local textPadding = 5
         local val = self:getValue(section, row)
         local label = self:getLabel(section, row)
@@ -90,10 +93,10 @@ function Options:init()
         -- draw switch as glyph
         if val ~= 'n/a' and val ~= nil then
             if type(val) == 'boolean' then
-                Options.drawRoundSwitch(y+textPadding-1, val, selected)
+                Options.drawRoundSwitch(right - 42, y+textPadding-1, val, selected)
             else
                 -- draw value as text
-                local optionWidth = 192 - (labelWidth+textPadding)
+                local optionWidth = right - 8 - (labelWidth+textPadding)
                 gfx.drawTextInRect('*'..val, labelWidth+textPadding, y+textPadding, optionWidth, height, nil, '...', kTextAlignment.right)
             end
         end
@@ -319,7 +322,7 @@ function Options:drawMenu()
 
     local w <const> = 200	--198
     local h <const> = 240
-    local x <const> = 200 - w
+    local x <const> = 200
     local y <const> = 0
 
     gfx.pushContext()
@@ -387,8 +390,7 @@ function Options.drawRectSwitch(y, val, selected)
     gfx.popContext()
 end
 
-function Options.drawRoundSwitch(y, val, selected)
-    local x <const> = 158
+function Options.drawRoundSwitch(x, y, val, selected)
     local y <const> = y+8
 
     local r <const> = 6
