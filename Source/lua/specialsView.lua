@@ -24,11 +24,11 @@ function RenderPlatform(item)
     end
     local pltfrmY = scrY+32
     sprite:draw(scrX, pltfrmY, unFlipped, pltfrmCoordT[(item.w-8)*0.25][1], pltfrmCoordT[(item.w-8)*0.25][2], item.w*8, 16) -- platform
-    sprite:draw(scrX+6, pltfrmY+4, unFlipped, 392, barY, 26, 6)--left end colored bar
+    sprite:draw(scrX+6, pltfrmY+5, unFlipped, 392, barY, 26, 6)--left end colored bar --todo copy to GEEditor code
     for j= 1,(item.w-8)*0.25 do
-        sprite:draw(scrX+j*32, pltfrmY+4, unFlipped, 416, barY, 32, 6)--middle tiling colored bar
+        sprite:draw(scrX+j*32, pltfrmY+5, unFlipped, 416, barY, 32, 6)--middle tiling colored bar
     end
-    sprite:draw(scrX+32+(item.w-8)*8, pltfrmY+4, unFlipped, 449, barY, 26, 6)--right end colored bar
+    sprite:draw(scrX+32+(item.w-8)*8, pltfrmY+5, unFlipped, 450, barY, 25, 6)--right end colored bar
 
     -- type-specific
     if item.pType==1 then -- home
