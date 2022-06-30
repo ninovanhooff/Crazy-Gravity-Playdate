@@ -2,6 +2,7 @@ import "CoreLibs/object"
 import "../screen.lua"
 import "SettingsView.lua"
 import "SettingsViewModel.lua"
+import "Options.lua"
 
 class("SettingsScreen").extends(Screen)
 
@@ -11,10 +12,13 @@ function SettingsScreen:init()
     SettingsScreen.super.init(self)
     settingsViewModel = SettingsViewModel()
     settingsView = SettingsView(settingsViewModel)
+    self.options = Options()
+    self.options:show()
 end
 
 function SettingsScreen:update()
-    settingsView:render(settingsViewModel)
+    --settingsView:render(settingsViewModel)
+    self.options:drawMenu()
     settingsViewModel:update()
 end
 
@@ -24,5 +28,4 @@ end
 
 function SettingsScreen:resume()
     settingsViewModel:resume()
-    settingsView:resume()
 end
