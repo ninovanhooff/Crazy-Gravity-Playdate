@@ -27,23 +27,29 @@ function LoadFile(path)
     printf("loading ".. path)
 
     levelT, brickT, specialT, levelProps = nil, nil, nil
-    collectgarbage("collect")
+    sample("GC", function() collectgarbage("collect")end)
 
-    local levelT = file.run(path..".pdz")
+    local levelT
+    sample("pdz load", function() levelT = file.run(path..".pdz") end, 1)
     levelProps = levelT["levelProps"]
     levelProps.lives = levelProps.lives or 5
     specialT = levelT["specialT"]
     brickT = {}
 
-    local brickFile = file.open(path..".bin")
-    for x = 1, levelProps.sizeX do
-        brickT[x] = {}
-        for y = 1, levelProps.sizeY do
-            brickT[x][y] = brickFile:read(5)
+    sample("bin load", function()
+        local brickFile = file.open(path..".bin")
+        for x = 1, levelProps.sizeX do
+            brickT[x] = {}
+            for y = 1, levelProps.sizeY do
+                brickT[x][y] = brickFile:read(5)
+            end
         end
-    end
+    end, 1)
 
-    setUnpackMeta(levelProps.packFormat)
+    sample("set unpack meta", function()
+        setUnpackMeta(levelProps.packFormat)
+    end, 1)
+
 
     printf("loaded dim",#brickT,#brickT[1])
 

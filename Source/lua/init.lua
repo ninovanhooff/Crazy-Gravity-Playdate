@@ -6,6 +6,7 @@
 
 import "settings.lua"
 import "records.lua"
+import "CoreLibs/utilities/sampler"
 
 
 local sampleplayer = playdate.sound.sampleplayer
