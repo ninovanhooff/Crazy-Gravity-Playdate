@@ -27,7 +27,7 @@ local gameOptions = {
         options = {
             --{name='Tileset', values=TILESETS.names, default=7, preview=true, dirtyRead=true},
             --{name='Background', values=BACKGROUNDS.names, default=11, preview=true, dirtyRead=true},
-            {name='Cursor Mode', key='cursor', values={'free tiles', 'all tiles', 'grid'}, default=2, dirtyRead=true},
+            {name='Debug', key='debug', values=toggleVals, default=2},
             {name='Show Blocked Tiles', key='blocked', values=toggleVals, default=2, dirtyRead=true},
             {name='Show Tile Count', key='remaining', values=toggleVals, default=2, dirtyRead=true},
             {name='Auto Deselect', key='autodeselect', values=toggleVals, default=2},
@@ -212,10 +212,15 @@ function Options:show()
     playdate.inputHandlers.push(self.controls, true)
 end
 
+--- Prevents drawMenu() from drawing anything
+---and saves the values to disk
 function Options:hide()
     self.visible = false
     self:saveUserOptions()
     playdate.inputHandlers.pop()
+
+    print("read debug", self:read("debug"))
+    Debug = self:read("debug")
 end
 
 -- Returns the option at the given section and row, or the currently selected option if no args

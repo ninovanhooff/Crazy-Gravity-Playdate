@@ -13,7 +13,6 @@ function SettingsScreen:init()
     settingsViewModel = SettingsViewModel()
     settingsView = SettingsView(settingsViewModel)
     self.options = Options()
-    self.options:show()
 end
 
 function SettingsScreen:update()
@@ -23,9 +22,11 @@ function SettingsScreen:update()
 end
 
 function SettingsScreen:pause()
+    self.options:hide()
     settingsViewModel:pause()
 end
 
 function SettingsScreen:resume()
+    self.options:show()
     settingsViewModel:resume()
 end
