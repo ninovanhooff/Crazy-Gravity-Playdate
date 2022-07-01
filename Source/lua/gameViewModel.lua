@@ -261,7 +261,6 @@ function ResetGame()
             item.nextEmitFrame = -preCalcFrames
         end
     end
-    ApplyGameSets()
     extras = {0,levelProps.lives,1} -- turbo, lives, cargo
     -- time to beat
     if records[curGamePath] then

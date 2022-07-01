@@ -4,7 +4,7 @@
 --- DateTime: 11/03/2022 16:59
 ---
 
-import "settings.lua"
+import "settings/physicsSettings.lua"
 import "records.lua"
 
 
@@ -31,7 +31,6 @@ extras = {0,0,0} -- See GameViewModel:ResetGame()
 planePos = {}
 planeSize = 24
 camPos = {}
-ApplyGameSets()
 
 print("hoi")
 

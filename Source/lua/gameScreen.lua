@@ -1,4 +1,3 @@
-import "settings.lua"
 import "drawUtil.lua"
 import "specialsView.lua"
 import "specialsViewModel.lua"
