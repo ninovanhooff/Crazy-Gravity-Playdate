@@ -57,6 +57,8 @@ function popScreen()
     )
 end
 
+--pushScreen(LevelSelectScreen())
+--pushScreen(GameScreen("levels/LEVEL03"))
 pushScreen(SettingsScreen())
 
 function playdate.update()
@@ -72,5 +74,15 @@ end
 function playdate.debugDraw()
     if Debug then
         activeScreen:debugDraw()
+    end
+end
+
+function playdate.keyPressed(key)
+    print("Pressed " .. key .. " key")
+    if key == "e" then
+        Debug = false
+    end
+    if key == "r" then
+        Debug = true
     end
 end
