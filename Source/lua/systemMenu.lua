@@ -5,19 +5,6 @@
 ---
 
 local menu <const> = playdate.getSystemMenu()
-local gfx <const> = playdate.graphics
-
-local function onBackgroundChange(newBG)
-    printf("Changing background to ", newBG)
-    if newBG == "white" then
-        gameBgColor = gfx.kColorWhite
-    elseif newBG == "win95" then
-        gameBgColor = gfx.kColorClear
-    else
-        gameBgColor = gfx.kColorBlack
-    end
-    bricksView = BricksView()
-end
 
 local function onDebugChange(newDebugValue)
     Debug = newDebugValue

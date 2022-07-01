@@ -12,7 +12,8 @@ local itemHeight <const> = 24
 local KEY_REPEAT_INITIAL = 300
 local KEY_REPEAT = 200
 
-local toggleVals = {false, true}
+local toggleVals <const> = {false, true}
+local backgroundVals <const> = {"black", "white", "win95"}
 
 local gameOptions = {
     -- name (str): option's display name in menu
@@ -28,7 +29,7 @@ local gameOptions = {
             --{name='Tileset', values=TILESETS.names, default=7, preview=true, dirtyRead=true},
             --{name='Background', values=BACKGROUNDS.names, default=11, preview=true, dirtyRead=true},
             {name='Debug', key='debug', values=toggleVals, default=2},
-            {name='Show Blocked Tiles', key='blocked', values=toggleVals, default=2, dirtyRead=true},
+            {name='Background', key='background', values=backgroundVals, default=1, dirtyRead=true},
             {name='Show Tile Count', key='remaining', values=toggleVals, default=2, dirtyRead=true},
             {name='Auto Deselect', key='autodeselect', values=toggleVals, default=2},
         }
@@ -218,9 +219,28 @@ function Options:hide()
     self.visible = false
     self:saveUserOptions()
     playdate.inputHandlers.pop()
+    self:apply()
+    self:markClean()
+end
 
-    print("read debug", self:read("debug"))
+--- Game code uses many globals to read options. Set them here based on current values
+function Options:apply()
     Debug = self:read("debug")
+    local newBG = backgroundVals[self:read("background")]
+    print("newBg", newBG)
+    if newBG then
+        printf("Changing background to ", newBG)
+        if newBG == "white" then
+            gameBgColor = gfx.kColorWhite
+        elseif newBG == "win95" then
+            gameBgColor = gfx.kColorClear
+        else
+            gameBgColor = gfx.kColorBlack
+        end
+        if bricksView then
+            bricksView = BricksView()
+        end
+    end
 end
 
 -- Returns the option at the given section and row, or the currently selected option if no args
