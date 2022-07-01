@@ -9,7 +9,7 @@ local unFlipped <const> = playdate.graphics.kImageUnflipped
 local floor <const> = math.floor
 local fmod <const> = math.fmod
 local gfx <const> = playdate.graphics
-local sprite = sprite
+local sprite = _G["sprite"] -- make SpecialsVew a class so it can be recreated on style change; or do not include settings in game screen
 local editorMode = editorMode
 
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
@@ -336,6 +336,9 @@ function RenderBarrier(item)
     end
 end
 
+function ReloadSprite()
+    sprite = _G["sprite"]
+end
 
 
 specialRenders = {

@@ -5,6 +5,7 @@
 ---
 
 import "settings/physicsSettings.lua"
+import "settings/options.lua"
 import "records.lua"
 
 
@@ -63,11 +64,10 @@ end
 
 gfx.setColor(gfx.kColorBlack)
 
-sprite = gfx.image.new("images/sprite.png") -- https://www.gingerbeardman.com/canvas-dither/
-if not sprite then error("failed to load sprite") end
-
 defaultFont = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
 monoFont = gfx.font.new("fonts/Marble Madness")
 dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
 
 if not dotFont then error("could not load dotFont") end
+
+Options():apply()

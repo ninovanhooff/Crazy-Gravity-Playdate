@@ -11,7 +11,6 @@ local gfx <const> = playdate.graphics
 local camPos <const> = camPos
 
 local tileSize <const> = tileSize
-local bricksImg <const> = gfx.image.new("images/bricks.png") -- image without transparency
 
 local noFlip <const> = gfx.kImageUnflipped
 

@@ -1,3 +1,5 @@
+import "CoreLibs/object"
+import "CoreLibs/ui"
 class('Options').extends()
 
 local gfx <const> = playdate.graphics
@@ -8,12 +10,16 @@ local itemHeight <const> = 24
 -- KEY_REPEAT and KEY_REPEAT_INITIAL not defined
 -- drawRectSwitch unused
 -- added fixes to show menu on the right side of the screen
+-- added missing imports CoreLibs object and ui
 
 local KEY_REPEAT_INITIAL = 300
 local KEY_REPEAT = 200
 
 local toggleVals <const> = {false, true}
-local backgroundVals <const> = {"black", "white", "win95"}
+local BG_KEY <const> = "background"
+local BG_VALS <const> = { "black", "white", "win95"}
+local STYLE_KEY <const> = "graphicsStyle"
+local STYLE_VALS <const> = { "classic", "playdate"}
 
 local gameOptions = {
     -- name (str): option's display name in menu
@@ -26,12 +32,9 @@ local gameOptions = {
     {
         header = 'Gameplay',
         options = {
-            --{name='Tileset', values=TILESETS.names, default=7, preview=true, dirtyRead=true},
-            --{name='Background', values=BACKGROUNDS.names, default=11, preview=true, dirtyRead=true},
             {name='Debug', key='debug', values=toggleVals, default=2},
-            {name='Background', key='background', values=backgroundVals, default=1, dirtyRead=true},
-            {name='Show Tile Count', key='remaining', values=toggleVals, default=2, dirtyRead=true},
-            {name='Auto Deselect', key='autodeselect', values=toggleVals, default=2},
+            { name='Background', key=BG_KEY, values= BG_VALS, default=1, dirtyRead=true},
+            { name='Style', key=STYLE_KEY, values= STYLE_VALS, default=1, dirtyRead=true},
         }
     },
     {
@@ -226,7 +229,7 @@ end
 --- Game code uses many globals to read options. Set them here based on current values
 function Options:apply()
     Debug = self:read("debug")
-    local newBG = backgroundVals[self:read("background")]
+    local newBG = BG_VALS[self:read(BG_KEY)]
     print("newBg", newBG)
     if newBG then
         printf("Changing background to ", newBG)
@@ -240,6 +243,18 @@ function Options:apply()
         if bricksView then
             bricksView = BricksView()
         end
+    end
+
+    local graphicsStyle = STYLE_VALS[self:read(STYLE_KEY)]
+    if graphicsStyle then
+        sprite = gfx.image.new("images/sprite_" .. graphicsStyle ..".png")
+        if not sprite then error("failed to load sprite for style " .. graphicsStyle) end
+        bricksImg = gfx.image.new("images/bricks_" .. graphicsStyle ..".png")
+        if not bricksImg then error("failed to load bricks image for style " .. graphicsStyle) end
+        if bricksView then
+            bricksView = BricksView()
+        end
+        if ReloadSprite then ReloadSprite() end
     end
 end
 
