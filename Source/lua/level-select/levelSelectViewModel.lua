@@ -24,7 +24,10 @@ local buttonB <const> = playdate.kButtonB
 local file <const> = playdate.file
 
 local numLevels = 0
-while file.exists(levelPath(numLevels+1)) do numLevels = numLevels + 1 end
+while file.exists(levelPath(numLevels+1) .. ".pdz") do numLevels = numLevels + 1 end
+if numLevels == 0 then
+    error("no levels")
+end
 
 local ceil <const> = math.ceil
 

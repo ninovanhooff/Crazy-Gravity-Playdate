@@ -46,7 +46,7 @@ end
 
 function levelPath(_levelNumber)
     local levelNumber = _levelNumber or currentLevel
-    return "levels/LEVEL" .. levelNumString(levelNumber) .. ".pdz"
+    return "levels/LEVEL" .. levelNumString(levelNumber)
 end
 
 function IncrementStringNumber(str)

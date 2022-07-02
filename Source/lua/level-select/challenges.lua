@@ -15,16 +15,16 @@ numChallenges = 3
 local defaultChallenges = {235, 1200, 1}
 
 local challenges = {
-    ["levels/LEVEL01.pdz"] = {235, 1200, 1},
-    ["levels/LEVEL02.pdz"] = {98, 1200, 10},
-    ["levels/LEVEL03.pdz"] = {98, 1200, 1},
-    ["levels/LEVEL04.pdz"] = {98, 1200, 1},
-    ["levels/LEVEL05.pdz"] = {98, 1200, 1},
-    ["levels/LEVEL06.pdz"] = {98, 1200, 1},
-    ["levels/LEVEL07.pdz"] = {98, 1200, 1},
-    ["levels/LEVEL08.pdz"] = {98, 1200, 1},
-    ["levels/LEVEL09.pdz"] = {98, 1200, 1},
-    ["levels/LEVEL10.pdz"] = {98, 1200, 1},
+    ["levels/LEVEL01"] = {235, 1200, 1},
+    ["levels/LEVEL02"] = {98, 1200, 10},
+    ["levels/LEVEL03"] = {98, 1200, 1},
+    ["levels/LEVEL04"] = {98, 1200, 1},
+    ["levels/LEVEL05"] = {98, 1200, 1},
+    ["levels/LEVEL06"] = {98, 1200, 1},
+    ["levels/LEVEL07"] = {98, 1200, 1},
+    ["levels/LEVEL08"] = {98, 1200, 1},
+    ["levels/LEVEL09"] = {98, 1200, 1},
+    ["levels/LEVEL10"] = {98, 1200, 1},
 }
 
 
