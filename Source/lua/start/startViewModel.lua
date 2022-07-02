@@ -9,7 +9,6 @@ import "../level-select/levelSelectScreen.lua"
 import "../settings/SettingsScreen.lua"
 import "../GameScreen.lua"
 
-local floor <const> = math.floor
 local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, end
 buttonTimer.discardOnCompletion = false
 buttonTimer:pause()  -- disable auto start
@@ -17,6 +16,7 @@ buttonTimer:pause()  -- disable auto start
 local buttonStartAlign <const> = 280
 local buttonWidth <const> = 110
 local buttonHeight <const> = 24
+
 
 local pressed <const> = playdate.buttonIsPressed
 local throttle <const> = playdate.kButtonA | playdate.kButtonUp
@@ -120,8 +120,8 @@ end
 local function calcPlane()
     vx = vx*drag
     vy = (vy+gravity)*drag
-    planeX = floor(planeX + vx)
-    planeY = floor(planeY + vy)
+    planeX = planeX + vx
+    planeY = planeY + vy
     if planeX > screenWidth or planeX + planeSize < 0 then
         planeX = planeX % screenWidth
     end
