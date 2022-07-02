@@ -4,6 +4,8 @@ import "SettingsView.lua"
 import "SettingsViewModel.lua"
 import "Options.lua"
 
+local gfx <const> = playdate.graphics
+
 class("SettingsScreen").extends(Screen)
 
 local settingsView, settingsViewModel
@@ -13,10 +15,15 @@ function SettingsScreen:init()
     settingsViewModel = SettingsViewModel()
     settingsView = SettingsView(settingsViewModel)
     self.options = Options()
+    self.scrimDrawn = false
 end
 
 function SettingsScreen:update()
-    --settingsView:render(settingsViewModel)
+    if not self.scrimDrawn then
+        gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer2x2) -- invert alpha due to bug in SDK
+        gfx.fillRect(0,0, screenWidth, screenHeight)
+        self.scrimDrawn = true
+    end
     self.options:drawMenu()
     settingsViewModel:update()
 end
