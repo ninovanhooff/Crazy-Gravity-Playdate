@@ -128,6 +128,8 @@ local function calcPlane()
         planePos[3] = 8+(planePos[3]+(substUnits-1)*8)
         --printf("after",planePos[1],planePos[3])
     end
+    planePos[3] = floor(planePos[3])
+
     if planePos[4]>7 then
         local addUnits = floor(planePos[4]*0.125)
         planePos[2] = planePos[2]+addUnits
@@ -137,6 +139,7 @@ local function calcPlane()
         planePos[2] = planePos[2]-substUnits
         planePos[4] = 8+(planePos[4]+(substUnits-1)*8)
     end
+    planePos[4] = floor(planePos[4])
 
     if planePos[1]<1 then -- level edges
         planePos[1],planePos[3]=1,1
