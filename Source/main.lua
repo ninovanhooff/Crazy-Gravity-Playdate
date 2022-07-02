@@ -57,9 +57,10 @@ function popScreen()
     )
 end
 
---pushScreen(LevelSelectScreen())
---pushScreen(GameScreen("levels/LEVEL03"))
-pushScreen(SettingsScreen())
+pushScreen(StartScreen())
+pushScreen(LevelSelectScreen())
+pushScreen(GameScreen(levelPath(1)))
+--pushScreen(SettingsScreen())
 
 function playdate.update()
     gfx.pushContext() --make sure we start the frame with a clean gfx state.
