@@ -11,12 +11,14 @@ local resourceLoader <const> = ResourceLoader()
 
 --- NOTES Nino
 -- KEY_REPEAT and KEY_REPEAT_INITIAL not defined
--- drawRectSwitch unused
--- added fixes to show menu on the right side of the screen
--- added missing imports CoreLibs object and ui
+-- drawRectSwitch is unused
+-- added fixes to show menu on arbitrary x position
+-- added missing imports CoreLibs/object and ui
 
 local KEY_REPEAT_INITIAL = 300
 local KEY_REPEAT = 200
+
+local displayWidth <const> = playdate.display.getWidth()
 
 local toggleVals <const> = {false, true}
 local STYLE_VALS <const> = { "playdate", "classic"}
@@ -350,10 +352,11 @@ end
 function Options:drawMenu()
     if not self.visible then return end
 
-    local w <const> = 200	--198
+    local w <const> = 200
     local h <const> = 240
-    local x <const> = 200
+    local x <const> = 100
     local y <const> = 0
+    local right <const> = x + w
 
     gfx.pushContext()
 
@@ -365,7 +368,14 @@ function Options:drawMenu()
 
         -- draw divider
         gfx.setColor(gfx.kColorBlack)
-        gfx.fillRect(200,0,2,240)	-- divider
+
+        if x > 0 then
+            gfx.fillRect(x-2,0,2,240)	-- left divider
+        end
+        if right < displayWidth then
+            gfx.fillRect(right,0,2,240)	-- left divider
+        end
+
     end
 
     self.menu:drawInRect(x, y, w, h)
