@@ -10,7 +10,4 @@ local function onDebugChange(newDebugValue)
     Debug = newDebugValue
 end
 
-menu:addMenuItem("Settings", function()
-    pushScreen(SettingsScreen())
-end)
 menu:addCheckmarkMenuItem("Debug", Debug, onDebugChange)

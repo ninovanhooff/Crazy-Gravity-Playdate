@@ -34,10 +34,20 @@ function GameScreen:pause()
         menu:removeMenuItem(self.backMenuItem)
         self.backMenuItem = nil
     end
+    if self.settingsMenuItem then
+        menu:removeMenuItem(self.settingsMenuItem)
+        self.settingsMenuItem = nil
+    end
 end
 
 function GameScreen:resume()
-    self.backMenuItem = menu:addMenuItem("Level Select", function() popScreen() end)
+    self.settingsMenuItem = menu:addMenuItem("Settings", function()
+        pushScreen(SettingsScreen())
+    end)
+    self.backMenuItem = menu:addMenuItem("Level Select", function()
+        popScreen()
+    end)
+
 end
 
 function GameScreen:update()
