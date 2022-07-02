@@ -13,8 +13,6 @@ local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
 
 
-local thrustSound <const> = thrust_sound
-
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 
@@ -26,7 +24,7 @@ function ProcessInputs()
     buttonState = getButtonState()
     -- thrust
     if (pressed(throttle) and fuel > 0) then
-        if Sounds and thrust == 0 then thrustSound:play(0) end
+        if Sounds and thrust == 0 then thrust_sound:play(0) end
         thrust = 1
         if not Debug then
             fuel = fuel - burnRate
@@ -40,7 +38,7 @@ function ProcessInputs()
         vx = vx + cosThrustT[planeRot]*(thrustPower+extras[1]*turboPower)
         vy = vy - sinThrustT[planeRot]*(thrustPower+extras[1]*turboPower)
     elseif thrust == 1 then
-        if Sounds then thrustSound:stop() end
+        if Sounds then thrust_sound:stop() end
         thrust = 0
     end
 

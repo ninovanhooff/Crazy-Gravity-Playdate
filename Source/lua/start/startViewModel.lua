@@ -22,7 +22,6 @@ local throttle <const> = playdate.kButtonA | playdate.kButtonUp
 local selfRight <const> = playdate.kButtonDown  | playdate.kButtonB
 local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
-local thrustSound <const> = thrust_sound
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 
@@ -78,7 +77,7 @@ end
 local function processInputs()
     -- thrust
     if (pressed(throttle)) then
-        if Sounds and thrust == 0 then thrustSound:play(0) end
+        if Sounds and thrust == 0 then thrust_sound:play(0) end
         thrust = 1
         if not flying then
             vx = 0
@@ -88,7 +87,7 @@ local function processInputs()
         vx = vx + cosThrustT[planeRot]*thrustPower
         vy = vy - sinThrustT[planeRot]*thrustPower
     elseif thrust == 1 then
-        if Sounds then thrustSound:stop() end
+        if Sounds then thrust_sound:stop() end
         thrust = 0
     end
 
@@ -168,5 +167,5 @@ function StartViewModel:calcTimeStep()
 end
 
 function StartViewModel:pause()
-    if Sounds then thrustSound:stop() end
+    if Sounds then thrust_sound:stop() end
 end

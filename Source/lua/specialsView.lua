@@ -336,11 +336,6 @@ function RenderBarrier(item)
     end
 end
 
-function ReloadSprite()
-    sprite = _G["sprite"]
-end
-
-
 specialRenders = {
     RenderPlatform, -- index 1, sType == 8
     RenderBlower, -- 2

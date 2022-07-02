@@ -1,10 +1,13 @@
 import "CoreLibs/object"
 import "CoreLibs/ui"
+import "ResourceLoader"
+
 class('Options').extends()
 
 local gfx <const> = playdate.graphics
 local timer <const> = playdate.timer
 local itemHeight <const> = 24
+local resourceLoader <const> = ResourceLoader()
 
 --- NOTES Nino
 -- KEY_REPEAT and KEY_REPEAT_INITIAL not defined
@@ -16,10 +19,13 @@ local KEY_REPEAT_INITIAL = 300
 local KEY_REPEAT = 200
 
 local toggleVals <const> = {false, true}
+local STYLE_VALS <const> = { "playdate", "classic"}
 local BG_KEY <const> = "background"
 local BG_VALS <const> = { "black", "white", "win95"}
-local STYLE_KEY <const> = "graphicsStyle"
-local STYLE_VALS <const> = { "classic", "playdate"}
+local GRAPHICS_STYLE_KEY <const> = "graphicsStyle"
+local AUDIO_STYLE_KEY <const> = "audioStyle"
+local AUDIO_VOLUME_KEY <const> = "audioVolume"
+local AUDIO_VOLUME_VALS <const> = { "off", 10, 20, 30, 40 , 50 , 60 , 70, 80, 90, 100 }
 
 local gameOptions = {
     -- name (str): option's display name in menu
@@ -30,29 +36,18 @@ local gameOptions = {
     -- preview (bool): hide the options menu while the option is changing to more easily preview changes
     -- dirtyRead (bool): if true, a read on this option returns nil if it hasn't changed. useful for event-driven updates
     {
-        header = 'Gameplay',
+        header = 'Graphics',
         options = {
             {name='Debug', key='debug', values=toggleVals, default=2},
-            { name='Background', key=BG_KEY, values= BG_VALS, default=1, dirtyRead=true},
-            { name='Style', key=STYLE_KEY, values= STYLE_VALS, default=1, dirtyRead=true},
+            { name='Background', key=BG_KEY, values= BG_VALS, default=1},
+            { name='Style', key= GRAPHICS_STYLE_KEY, values= STYLE_VALS, default=1}, -- index 11 -> 100(%)
         }
     },
     {
         header = 'Audio',
         options = {
-            {name='Track', values={'silence in D minor', 'broken speakers', 'earmuff sounds'}, default=1, dirtyRead=true},
-            {name='Sound', values=toggleVals, default=2},
-            {name='Music', values=toggleVals, default=2}
-        }
-    },
-    {
-        header = 'Debug',
-        options = {
-            {name='Deal Animation', key='animate', values=toggleVals, default=2},
-            {name='Deal Style', key='dealstyle', values={'all up', 'all down', 'top layer up'}, default=1},
-            {name='Allow Any Matches', key='anymatch', values=toggleVals, default=1},
-            {name='Save on Exit', key='save', values=toggleVals, default=2},
-            -- {name='To Editor', values=toggleVals, default=1}
+            { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
+            { name='Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
         }
     }
 }
@@ -230,32 +225,27 @@ end
 function Options:apply()
     Debug = self:read("debug")
     local newBG = BG_VALS[self:read(BG_KEY)]
-    print("newBg", newBG)
-    if newBG then
-        printf("Changing background to ", newBG)
-        if newBG == "white" then
-            gameBgColor = gfx.kColorWhite
-        elseif newBG == "win95" then
-            gameBgColor = gfx.kColorClear
+    if newBG then --todo only if changed but also on first load
+        resourceLoader:loadBG(newBG)
+    end
+    local graphicsStyle = STYLE_VALS[self:read(GRAPHICS_STYLE_KEY)]
+    if graphicsStyle then
+        resourceLoader:loadGraphicsStyle(graphicsStyle)
+    end
+    local audioStyle = STYLE_VALS[self:read(AUDIO_STYLE_KEY)]
+    if audioStyle then
+        resourceLoader:loadSounds(audioStyle == "classic")
+    end
+    local audioVolume = AUDIO_VOLUME_VALS[self:read(AUDIO_VOLUME_KEY)]
+    if audioVolume then
+        if audioVolume == "off" then
+            audioVolume = 0.0
         else
-            gameBgColor = gfx.kColorBlack
+            audioVolume = audioVolume / 100
         end
-        if bricksView then
-            bricksView = BricksView()
-        end
+        resourceLoader:setSoundVolume(audioVolume)
     end
 
-    local graphicsStyle = STYLE_VALS[self:read(STYLE_KEY)]
-    if graphicsStyle then
-        sprite = gfx.image.new("images/sprite_" .. graphicsStyle ..".png")
-        if not sprite then error("failed to load sprite for style " .. graphicsStyle) end
-        bricksImg = gfx.image.new("images/bricks_" .. graphicsStyle ..".png")
-        if not bricksImg then error("failed to load bricks image for style " .. graphicsStyle) end
-        if bricksView then
-            bricksView = BricksView()
-        end
-        if ReloadSprite then ReloadSprite() end
-    end
 end
 
 -- Returns the option at the given section and row, or the currently selected option if no args
