@@ -7,6 +7,7 @@
 import "CoreLibs/object"
 import "../level-select/levelSelectScreen.lua"
 import "../settings/SettingsScreen.lua"
+import "../GameScreen.lua"
 
 local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, end
 buttonTimer.discardOnCompletion = false
@@ -58,7 +59,7 @@ function StartViewModel:init()
         {
             text = "Quick Start",
             x = buttonStartAlign, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.0,
-            onClickScreen = function() return LevelSelectScreen() end
+            onClickScreen = function() return GameScreen(levelPath(3)) end
         },
         {
             text = "Bonus Levels",
