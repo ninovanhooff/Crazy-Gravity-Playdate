@@ -399,69 +399,10 @@ function InitPlatform(item)
     item.origAmnt = item.amnt
 end
 
-function InitBlower(item)
-    local coords = {}
-    if item.direction==1 then
-        coords = {0,item.distance,6,8}
-    elseif item.direction==2 then
-        coords = {0,0,6,8}
-    elseif item.direction==3 then
-        coords = {item.distance,0,8,6}
-    else
-        coords = {0,0,8,6}
-    end
-    markOccupied(item,coords)
-end
-
-function InitMagnet(item)
-    local coords = {}
-    if item.direction==1 then
-        coords = {0,item.distance,4,6}
-    elseif item.direction==2 then
-        coords = {0,0,4,6}
-    elseif item.direction==3 then
-        coords = {item.distance,0,6,4}
-    else
-        coords = {0,0,6,4}
-    end
-    markOccupied(item,coords)
-end
-
-
-function InitRotator(item)
-    local coords = {}
-    if item.direction==1 then
-        coords = {0,item.distance,5,8}
-    elseif item.direction==2 then
-        coords = {0,0,5,8}
-    elseif item.direction==3 then
-        coords = {item.distance,0,8,5}
-    else
-        coords = {0,0,8,5}
-    end
-    markOccupied(item,coords)
-end
-
 function InitCannon(item)
     item.rate = max(1, ceil(convertInterval(item.rate)))
     item.speed = max(1, item.speed - 1)
     item.nextEmitFrame = -preCalcFrames
-    local coords = {};local receiverCoords = {}
-    if item.direction==1 then
-        coords = {0,item.distance,3,5}
-        receiverCoords = {0,0,2,3}
-    elseif item.direction==2 then
-        coords = {0,0,3,5}
-        receiverCoords = {0,2+item.distance,2,3}
-    elseif item.direction==3 then
-        coords = {item.distance,0,5,3}
-        receiverCoords = {0,0,3,2}
-    else
-        coords = {0,0,5,3}
-        receiverCoords = {2+item.distance,0,3,2}
-    end
-    markOccupied(item,coords)
-    markOccupied(item,receiverCoords)
 end
 
 function InitRod(item)
@@ -476,154 +417,20 @@ function InitRod(item)
     else
         item.speed2 = random(item.speedMin,item.speedMax)
     end
-    local coords = {};local receiverCoords = {}
-    if item.direction==1 then
-        coords = {0,0,3,3}
-        receiverCoords = {0+item.distance,0,3,3}
-    elseif item.direction==2 then -- vert
-        coords = {0,0,3,3}
-        receiverCoords = {0,item.distance,3,3}
-    end
-    markOccupied(item,coords)
-    markOccupied(item,receiverCoords)
-end
-
-function Init1Way(item)
-    if item.direction==1 then
-        for i=0,11 do
-            for j=0,3 do
-                if not (j>1 and i>3 and i<8) then
-                    brickT[item.x+i][item.y+j+item.distance]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-        if item.endStone==1 then
-            for i = 4,7 do
-                for j =0,1 do
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-    elseif item.direction==2 then
-        for i=0,11 do
-            for j=0,3 do
-                if not (j<2 and i>3 and i<8) then
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-        if item.endStone==1 then
-            for i = 4,7 do
-                for j =4+item.distance-2,4+item.distance-1 do
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-    elseif item.direction==3 then
-        for i=0,3 do
-            for j=0,11 do
-                if not (i>1 and j>3 and j<8) then
-                    brickT[item.x+i+item.distance][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-        if item.endStone==1 then
-            for i=0,1 do
-                for j=4,7 do
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-    else -- direction is right
-        for i=0,3 do
-            for j=0,11 do
-                if not (i<2 and j>3 and j<8) then
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-        if item.endStone==1 then
-            for i=4+item.distance-2,4+item.distance-1 do
-                for j=4,7 do
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-    end
 end
 
 function InitBarrier(item)
-    if item.direction==1 then
-        for i=0,5 do
-            for j=0,3 do
-                if not (j>1 and i>3) then
-                    brickT[item.x+i][item.y+j+item.distance]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-        if item.endStone==1 then
-            for i = 1,4 do
-                for j =0,1 do
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-    elseif item.direction==2 then
-        for i=0,5 do
-            for j=0,3 do
-                if i>1 and j>1 then
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-        if item.endStone==1 then
-            for i = 1,4 do
-                for j =4+item.distance-2,4+item.distance-1 do
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-    elseif item.direction==3 then
-        for i=0,3 do
-            for j=0,5 do
-                if not (i>1 and j<3) then
-                    brickT[item.x+i+item.distance][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-        if item.endStone==1 then
-            for i=0,1 do
-                for j=0,3 do
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-    else
-        for i=0,3 do
-            for j=0,5 do
-                if not (i<2 and j>3) then
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-        if item.endStone==1 then
-            for i=4+item.distance-2,4+item.distance-1 do
-                for j=1,4 do
-                    brickT[item.x+i][item.y+j]={2,1,1,0,0} -- collision occupied
-                end
-            end
-        end
-    end
-
     item.activated = false
 end
 
+local function noOp() end
+
 initSpecial = {}
 initSpecial[8]=InitPlatform
-initSpecial[9]=InitBlower
-initSpecial[10]=InitMagnet
-initSpecial[11]=InitRotator
+initSpecial[9]=noOp
+initSpecial[10]=noOp -- magnet
+initSpecial[11]=noOp --rotator
 initSpecial[12]=InitCannon
 initSpecial[13]=InitRod
-initSpecial[14]=Init1Way
+initSpecial[14]=noOp -- 1Way
 initSpecial[15]=InitBarrier
