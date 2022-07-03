@@ -9,6 +9,7 @@ import "gameHUD.lua"
 import "bricksView.lua"
 
 local gfx <const> = playdate.graphics
+local floor <const> = math.floor
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local planePos <const> = planePos
 local camPos <const> = camPos
@@ -43,7 +44,13 @@ function RenderGame()
         explosion:render()
     else
         -- plane
-        sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3], (planePos[2]-camPos[2])*8+planePos[4]-camPos[4], unFlipped, planeRot%16*23, 391+(boolToNum(planeRot>15)*2-thrust)*23, 23, 23)
+        sprite:draw(
+            floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3]),
+            floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4]),
+            unFlipped,
+            planeRot%16*23, 391+(boolToNum(planeRot>15)*2-thrust)*23,
+            23, 23
+        )
     end
 end
 

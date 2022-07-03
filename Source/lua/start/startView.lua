@@ -5,6 +5,7 @@
 ---
 
 local gfx <const> = playdate.graphics
+local floor <const> = math.floor
 local buttonTextHalfHeight <const> = defaultFont:getHeight()*0.5
 
 local function drawButton(button)
@@ -45,7 +46,7 @@ function RenderStart(viewState)
 
     -- plane
     sprite:draw(
-        viewState.planeX, viewState.planeY,
+        floor(viewState.planeX), floor(viewState.planeY),
         unFlipped,
         viewState.planeRot%16*23, 391+(boolToNum(viewState.planeRot>15)*2-viewState.thrust)*23,
         23, 23
