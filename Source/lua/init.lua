@@ -25,8 +25,6 @@ gameBgColor = gfx.kColorBlack
 gameWidthTiles = math.ceil(screenWidth / tileSize)
 gameHeightTiles = math.ceil(hudY / tileSize)
 frameRate = 30
---- the amount of timesteps to calculate before starting the game. Allows cannons to fir a few shots
-preCalcFrames = 60
 outBufSize = 1024
 currentLevel = 3
 extras = {0,0,0} -- See GameViewModel:ResetGame()

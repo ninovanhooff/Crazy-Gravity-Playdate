@@ -225,10 +225,7 @@ function ResetPlane()
     landedTimer,landedAt = 0,-1
 end
 
-function InitGame(path)
-    print("InitGame", path)
-    LoadFile(path)
-    curGamePath = path
+local function initSpecials()
     for i,item in ipairs(specialT) do
         if item.sType == 8 then --platform
             if item.pType == 1 then -- home
@@ -237,9 +234,17 @@ function InitGame(path)
         end
         initSpecial[item.sType](item)
     end
+end
+
+function InitGame(path)
+    print("InitGame", path)
+    LoadFile(path)
+    curGamePath = path
+    sample("init specials", function()  initSpecials()end, 1)
     if not homeBase then
         error("lvl has no base")
     end
+    frameCounter = 0
     ResetGame()
 end
 
@@ -257,8 +262,7 @@ function ResetGame()
                 remainingFreight[item.type+1] = remainingFreight[item.type+1]+item.amnt
             end
         elseif item.sType == 12 then -- cannon
-            item.balls = {}
-            item.nextEmitFrame = -preCalcFrames
+            item.nextEmitFrame = item.nextEmitFrame - frameCounter
         end
     end
     extras = {0,levelProps.lives,1} -- turbo, lives, cargo
@@ -272,10 +276,7 @@ function ResetGame()
     lSec = floor(lSec%60)
     if lMin<10 then lMin = "0"..lMin end
     if lSec<10 then lSec = "0"..lSec end
-    frameCounter = -preCalcFrames
-    for i=1,60 do
-        CalcTimeStep() -- let cannons fire a few shots, bringing counter to 0
-    end
+    frameCounter = 0
     editorMode = false
     bricksView = BricksView()
 end

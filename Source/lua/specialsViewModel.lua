@@ -14,6 +14,7 @@ local min <const> = math.min
 local max <const> = math.max
 local random <const> = math.random
 local gameHUD <const> = gameHUD
+local tileSize <const> = tileSize
 
 local barrierSpeed <const> = 2
 -- #frames between rods speed or direction change when chngOften is enabled
@@ -400,9 +401,15 @@ function InitPlatform(item)
 end
 
 function InitCannon(item)
+    item.balls = {}
     item.rate = max(1, ceil(convertInterval(item.rate)))
     item.speed = max(1, item.speed - 1)
-    item.nextEmitFrame = -preCalcFrames
+    item.nextEmitFrame = item.rate
+    local pos = 0
+    while pos < (item.distance-1)*tileSize do
+        table.insert(item.balls,{pos,random(0,72)}) -- px position,color offset
+        pos = pos + item.speed*item.rate
+    end
 end
 
 function InitRod(item)
