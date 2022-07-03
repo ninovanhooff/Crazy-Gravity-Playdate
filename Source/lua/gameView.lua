@@ -4,7 +4,7 @@
 --- DateTime: 12/03/2022 22:55
 ---
 
-import "init.lua"
+--import "init.lua"
 import "gameHUD.lua"
 import "bricksView.lua"
 
