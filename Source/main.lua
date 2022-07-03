@@ -80,10 +80,10 @@ end
 
 function playdate.keyPressed(key)
     print("Pressed " .. key .. " key")
-    if key == "e" then
+    if key == "r" then
         Debug = false
     end
-    if key == "r" then
+    if key == "e" then
         Debug = true
     end
 end
