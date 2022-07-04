@@ -10,19 +10,6 @@ local file <const> = playdate.file
 local unpack <const> = string.unpack
 
 
-local function setUnpackMeta(format)
-    for x, xtem in ipairs(brickT) do
-        local compressedXtem = { compressed = xtem}
-        local unpackMeta = {
-            __index = function(tbl, idx)
-                return {unpack(format, tbl.compressed[idx])}
-            end
-        }
-
-        brickT[x]= setmetatable(compressedXtem, unpackMeta)
-    end
-end
-
 function LoadFile(path)
     printf("loading ".. path)
 
@@ -35,21 +22,26 @@ function LoadFile(path)
     levelProps.lives = levelProps.lives or 5
     specialT = levelT["specialT"]
     brickT = {}
+    local format = levelProps.packFormat
+    local packSize = string.packsize(format)
+    local packSizeOffset = packSize-1
+
+    local unpackMeta = {
+        __index = function(tbl, idx)
+            -- tbl[1] contains the packed string.
+            -- idx*5-4: each tile entry is 5 bytes long,
+            -- for idx 1 we should start reading at pos 1. So, 1*packSize-packSizeOffset = 1
+            return {unpack(format, tbl["compressed"], idx*packSize-packSizeOffset)}
+        end
+    }
 
     sample("bin load", function()
         local brickFile = file.open(path..".bin")
         for x = 1, levelProps.sizeX do
-            brickT[x] = {}
-            for y = 1, levelProps.sizeY do
-                brickT[x][y] = brickFile:read(5)
-            end
+
+            brickT[x]= setmetatable({compressed = brickFile:read(5*levelProps.sizeY)}, unpackMeta)
         end
     end, 1)
-
-    sample("set unpack meta", function()
-        setUnpackMeta(levelProps.packFormat)
-    end, 1)
-
 
     printf("loaded dim",#brickT,#brickT[1])
 
