@@ -44,7 +44,7 @@ function GameScreen:resume()
     self.settingsMenuItem = menu:addMenuItem("Settings", function()
         pushScreen(SettingsScreen())
     end)
-    self.backMenuItem = menu:addMenuItem("Level Select", function()
+    self.backMenuItem = menu:addMenuItem("Quit level", function()
         popScreen()
     end)
 
