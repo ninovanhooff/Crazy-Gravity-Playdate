@@ -40,9 +40,9 @@ local gameOptions = {
     {
         header = 'Graphics',
         options = {
-            {name='Debug', key='debug', values=toggleVals, default=2},
-            { name='Background', key=BG_KEY, values= BG_VALS, default=1},
+            { name='Debug', key='debug', values=toggleVals, default=1},
             { name='Style', key= GRAPHICS_STYLE_KEY, values= STYLE_VALS, default=1}, -- index 11 -> 100(%)
+            { name='Background', key=BG_KEY, values= BG_VALS, default=1},
         }
     },
     {
