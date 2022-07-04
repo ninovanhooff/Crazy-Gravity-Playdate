@@ -34,6 +34,7 @@ listView:setCellPadding(0, 0, gutter, gutter) -- left, right , top, bottom
 class("LevelSelectView").extends()
 
 function LevelSelectView:init(vm)
+    LevelSelectView.super.init()
     viewModel = vm
     listView:setNumberOfRows(#vm.menuOptions)
     self.initialRender = true

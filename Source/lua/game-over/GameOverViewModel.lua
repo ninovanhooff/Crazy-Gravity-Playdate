@@ -9,6 +9,7 @@ local buttonRight <const> = playdate.kButtonRight
 class("GameOverViewModel").extends()
 
 function GameOverViewModel:init(config)
+    GameOverViewModel.super.init()
     if config == "GAME_OVER" then
         self.title = "GAME OVER!"
         self.selectedButtonIdx = 2

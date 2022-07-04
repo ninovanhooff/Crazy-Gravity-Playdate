@@ -17,10 +17,6 @@ local titleFont = gfx.font.new("fonts/abduction2002bold-20")
 
 class("GameOverView").extends()
 
-function GameOverView:init()
-
-end
-
 local function buttonDrawFun(selected)
     if selected then
         return selectedDrawFun

@@ -13,6 +13,7 @@ local sample <const> = playdate.sound.sample
 class("ResourceLoader").extends()
 
 function ResourceLoader:init()
+    ResourceLoader.super.init()
     self.soundVolume = 1.0
 end
 

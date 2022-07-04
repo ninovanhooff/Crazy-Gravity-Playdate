@@ -52,6 +52,7 @@ end
 class("LevelSelectViewModel").extends()
 
 function LevelSelectViewModel:init()
+    LevelSelectViewModel.super.init()
     self.lastUnlocked = numLevelsUnlocked()
     --- the level for which an unlock animation should be played
     self.newUnlock = nil
