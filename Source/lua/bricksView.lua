@@ -23,6 +23,7 @@ function BricksView:init()
     self.bufferHeightTiles = gameHeightTiles + 1
     self.activeBuffer = gfx.image.new(self.bufferWidthTiles * tileSize, self.bufferHeightTiles* tileSize, gameBgColor)
     self.inactiveBuffer = self.activeBuffer:copy()
+    self.bricksImg = bricksImg
     gfx.lockFocus(self.activeBuffer)
         self:initBricks()
     gfx.unlockFocus()
@@ -94,7 +95,7 @@ function BricksView:renderLineVert(i,j, drawOffsetX)
 
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
-                bricksImg:draw(
+                self.bricksImg:draw(
                         drawOffsetX, (j-startJ)*8,
                         noFlip,
                         240+(curBrick[2]*curBrick[3]+curBrick[4])*8,
@@ -103,7 +104,7 @@ function BricksView:renderLineVert(i,j, drawOffsetX)
                         8*(curBrick[3]-curBrick[5])
                 )
             elseif curBrick[1]>=3 then --color
-                bricksImg:draw(
+                self.bricksImg:draw(
                         drawOffsetX, (j-startJ)*8,
                         noFlip,
                         (curBrick[1]-3)*48+sumT[curBrick[2]]+curBrick[4]*8,
@@ -130,7 +131,7 @@ function BricksView:renderLineHoriz(i,j, drawOffsetY)
 
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
-                bricksImg:draw(
+                self.bricksImg:draw(
                         (i -startI) * 8, drawOffsetY,
                         noFlip,
                         240+curBrick[2]*curBrick[3]*8,
@@ -140,7 +141,7 @@ function BricksView:renderLineHoriz(i,j, drawOffsetY)
                 )
                 i = i + curBrick[3]-curBrick[4]
             elseif curBrick[1]>=3 then --color
-                bricksImg:draw(
+                self.bricksImg:draw(
                         (i -startI) * 8, drawOffsetY,
                         noFlip,
                         (curBrick[1]-3)*48+sumT[curBrick[2]]+curBrick[4]*8,
