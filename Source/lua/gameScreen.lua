@@ -40,6 +40,10 @@ function GameScreen:pause()
     end
 end
 
+function GameScreen:destroy()
+    self:pause()
+end
+
 function GameScreen:resume()
     self.settingsMenuItem = menu:addMenuItem("Settings", function()
         pushScreen(SettingsScreen())

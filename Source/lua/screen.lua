@@ -28,6 +28,12 @@ function Screen:resume()
     -- no-op, implemented in subclasses
 end
 
+--- Called when this screen is popped off the stack. It will never be resumed,
+--- So this is a good place for freeing up RAM, cleanup, etc.
+function Screen:destroy()
+    -- no-op, implemented in subclasses
+end
+
 function Screen:debugDraw()
     -- no-op, implemented in subclasses
 end

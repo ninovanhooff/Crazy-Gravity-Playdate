@@ -53,6 +53,7 @@ function popScreen()
         function()
             print("Popping off backstack:", activeScreen.className, activeScreen)
             table.remove(backStack)
+            activeScreen:destroy()
         end
     )
 end
