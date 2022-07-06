@@ -14,10 +14,10 @@ local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, e
 buttonTimer.discardOnCompletion = false
 buttonTimer:pause()  -- disable auto start
 
-local buttonStartAlign <const> = 235
+local buttonStartAlign <const> = 240
 local buttonStartY <const> = 40
 local buttonSpacingV <const> = 50
-local buttonWidth <const> = 110
+local buttonWidth <const> = 100
 local buttonHeight <const> = 24
 
 
@@ -65,7 +65,7 @@ function StartViewModel:init()
             onClickScreen = function() return GameScreen(levelPath(3)) end
         },
         {
-            text = "Bonus Levels",
+            text = "Bonus",
             x = buttonStartAlign, y = buttonStartY+buttonSpacingV*2, w = buttonWidth, h = buttonHeight, progress = 0.0,
             onClickScreen = function() return BonusContentScreen()  end
         },
