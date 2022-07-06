@@ -58,8 +58,8 @@ function popScreen()
 end
 
 pushScreen(StartScreen())
-pushScreen(LevelSelectScreen())
-pushScreen(GameScreen(levelPath(1)))
+--pushScreen(LevelSelectScreen())
+--pushScreen(GameScreen(levelPath(1)))
 --pushScreen(SettingsScreen())
 
 function playdate.update()
