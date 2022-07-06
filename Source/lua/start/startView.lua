@@ -6,6 +6,7 @@
 
 local gfx <const> = playdate.graphics
 local floor <const> = math.floor
+local bgImg <const> = gfx.image.new("images/start_background.png")
 local buttonTextHalfHeight <const> = defaultFont:getHeight()*0.5
 
 local function drawButton(button)
@@ -15,6 +16,7 @@ local function drawButton(button)
     local buttonRadius = h * 0.5
     local halfw = w * 0.5
 
+    gfx.setColor(gfx.kColorWhite)
     gfx.setLineWidth(3)
     gfx.drawRoundRect(x, y, w, h, buttonRadius)
     gfx.setClipRect(x, y + h - fillHeight,w,h)
@@ -22,7 +24,7 @@ local function drawButton(button)
     gfx.clearClipRect()
 
     gfx.pushContext()
-        gfx.setImageDrawMode(playdate.graphics.kDrawModeNXOR)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
         defaultFont:drawText(
             text,
             x + halfw - defaultFont:getTextWidth(text)*0.5,
@@ -35,7 +37,7 @@ end
 
 function RenderStart(viewState)
     gfx.setBackgroundColor(gfx.kColorWhite)
-    gfx.clear()
+    bgImg:draw(0,0)
 
     --inspect(viewState)
 

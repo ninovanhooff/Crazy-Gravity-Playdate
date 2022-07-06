@@ -6,6 +6,7 @@
 
 import "CoreLibs/object"
 import "../level-select/levelSelectScreen.lua"
+import "../bonus-content/BonusContentScreen.lua"
 import "../settings/SettingsScreen.lua"
 import "../GameScreen.lua"
 
@@ -13,7 +14,9 @@ local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, e
 buttonTimer.discardOnCompletion = false
 buttonTimer:pause()  -- disable auto start
 
-local buttonStartAlign <const> = 280
+local buttonStartAlign <const> = 235
+local buttonStartY <const> = 40
+local buttonSpacingV <const> = 50
 local buttonWidth <const> = 110
 local buttonHeight <const> = 24
 
@@ -53,22 +56,22 @@ function StartViewModel:init()
     self.viewState.buttons = {
         {
             text = "Campaign",
-            x = buttonStartAlign, y = 50, w = buttonWidth, h = buttonHeight,progress = 0.0,
+            x = buttonStartAlign, y = buttonStartY, w = buttonWidth, h = buttonHeight,progress = 0.0,
             onClickScreen = function() return LevelSelectScreen() end
         },
         {
             text = "Quick Start",
-            x = buttonStartAlign, y = 100, w = buttonWidth, h = buttonHeight,progress = 0.0,
+            x = buttonStartAlign, y = buttonStartY+buttonSpacingV, w = buttonWidth, h = buttonHeight,progress = 0.0,
             onClickScreen = function() return GameScreen(levelPath(3)) end
         },
         {
             text = "Bonus Levels",
-            x = buttonStartAlign, y = 150, w = buttonWidth, h = buttonHeight, progress = 0.0,
-            onClickScreen = function() return SettingsScreen()  end
+            x = buttonStartAlign, y = buttonStartY+buttonSpacingV*2, w = buttonWidth, h = buttonHeight, progress = 0.0,
+            onClickScreen = function() return BonusContentScreen()  end
         },
         {
             text = "Settings",
-            x = buttonStartAlign, y = 200, w = buttonWidth, h = buttonHeight, progress = 0.0,
+            x = buttonStartAlign, y = buttonStartY+buttonSpacingV*3, w = buttonWidth, h = buttonHeight, progress = 0.0,
             onClickScreen = function() return SettingsScreen()  end
         }
     }
