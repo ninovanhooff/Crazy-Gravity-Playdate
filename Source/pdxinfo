@@ -1,7 +1,7 @@
 name=Crazy Gravity
 author=Nino van Hooff
 description=Space Truckin'
-bundleID=com.ninovanhooff.cgpd
+bundleID=com.ninovanhooff.gravityexpress
 version=1.0
 buildNumber=100
 imagePath=SystemAssets
