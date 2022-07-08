@@ -23,6 +23,7 @@ local displayWidth <const> = playdate.display.getWidth()
 
 local toggleVals <const> = {false, true}
 local STYLE_VALS <const> = { "playdate", "classic"}
+local DEBUG_KEY <const> = "debug"
 local BG_KEY <const> = "background"
 local BG_VALS <const> = { "black", "white", "win95"}
 local GRAPHICS_STYLE_KEY <const> = "graphicsStyle"
@@ -236,7 +237,7 @@ end
 
 --- Game code uses many globals to read options. Set them here based on current values
 function Options:apply()
-    Debug = self:read("debug")
+    Debug = self:read(DEBUG_KEY)
     local newBG = BG_VALS[self:read(BG_KEY)]
     if newBG then --todo only if changed but also on first load
         resourceLoader:loadBG(newBG)
@@ -258,6 +259,11 @@ function Options:apply()
         end
         resourceLoader:setSoundVolume(audioVolume)
     end
+
+    local inverted = self:read(INVERT_KEY)
+    print("set inverted:", inverted)
+    playdate.display.setInverted(inverted)
+
 
 end
 
