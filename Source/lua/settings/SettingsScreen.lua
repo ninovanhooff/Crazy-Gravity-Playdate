@@ -1,6 +1,5 @@
 import "CoreLibs/object"
 import "../screen.lua"
-import "SettingsView.lua"
 import "SettingsViewModel.lua"
 import "Options.lua"
 
@@ -13,7 +12,6 @@ local settingsView, settingsViewModel
 function SettingsScreen:init()
     SettingsScreen.super.init(self)
     settingsViewModel = SettingsViewModel()
-    settingsView = SettingsView(settingsViewModel)
     self.options = Options()
     self.scrimDrawn = false
 end
