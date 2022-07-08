@@ -132,7 +132,6 @@ function BricksView:renderLineHoriz(i,j, drawOffsetY)
         curBrick = curBrick[j]
 
         local brickPattern = self.brickPatternOverride or curBrick[1]
-        print("hoi", brickPattern)
 
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
