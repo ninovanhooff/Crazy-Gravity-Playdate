@@ -28,7 +28,7 @@ local BG_KEY <const> = "background"
 local BG_VALS <const> = { "black", "white", "win95"}
 local GRAPHICS_STYLE_KEY <const> = "graphicsStyle"
 local PATTERN_KEY <const> = "brisksPattern"
-local PATTERN_VALS <const> = {"lighter", "light", "dark", "darker", "white", "black", "default"}
+local PATTERN_VALS <const> = {"lighter", "light", "dark", "darker", "black", "default"}
 local INVERT_KEY <const> = "invertDisplay"
 local SPEED_KEY <const> = "gameFps"
 local SPEED_VALS <const> = {15, 20, 25, 30}
@@ -50,7 +50,7 @@ local gameOptions = {
             { name='Debug', key='debug', values=toggleVals, default=1},
             { name='Style', key= GRAPHICS_STYLE_KEY, values= STYLE_VALS, default=1}, -- index 11 -> 100(%)
             { name='Background', key=BG_KEY, values= BG_VALS, default=1},
-            { name='Bricks pattern', key=PATTERN_KEY, values= PATTERN_VALS, default=7},
+            { name='Bricks pattern', key=PATTERN_KEY, values= PATTERN_VALS, default=6},
             { name='Invert colors', key=INVERT_KEY, values= toggleVals, default=1},
             { name='Game speed', key=SPEED_KEY, values= SPEED_VALS, default=4},
 
@@ -263,7 +263,18 @@ function Options:apply()
     local inverted = self:read(INVERT_KEY)
     print("set inverted:", inverted)
     playdate.display.setInverted(inverted)
+    local pattern = self:read(PATTERN_KEY)
+    if PATTERN_VALS[pattern] == "default" then
+        brickPatternOverride = nil
+    else
+        brickPatternOverride = pattern+2 -- first brick pattern is 3 ("red"), while first key index = 1
+    end
 
+    print("set brickPatternOverride", brickPatternOverride)
+
+    if bricksView then
+        bricksView = BricksView()
+    end
 
 end
 

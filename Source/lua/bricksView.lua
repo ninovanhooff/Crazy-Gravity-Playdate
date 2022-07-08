@@ -24,6 +24,7 @@ function BricksView:init()
     self.activeBuffer = gfx.image.new(self.bufferWidthTiles * tileSize, self.bufferHeightTiles* tileSize, gameBgColor)
     self.inactiveBuffer = self.activeBuffer:copy()
     self.bricksImg = bricksImg
+    self.brickPatternOverride = brickPatternOverride
     gfx.lockFocus(self.activeBuffer)
         self:initBricks()
     gfx.unlockFocus()
@@ -92,6 +93,7 @@ function BricksView:renderLineVert(i,j, drawOffsetX)
             break
         end
         curBrick = curBrick[j]
+        local brickPattern = self.brickPatternOverride or curBrick[1]
 
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
@@ -107,7 +109,7 @@ function BricksView:renderLineVert(i,j, drawOffsetX)
                 self.bricksImg:draw(
                         drawOffsetX, (j-startJ)*8,
                         noFlip,
-                        (curBrick[1]-3)*48+sumT[curBrick[2]]+curBrick[4]*8,
+                        (brickPattern-3)*48+sumT[curBrick[2]]+curBrick[4]*8,
                         sumT[curBrick[3]]+curBrick[5]*8,
                         (curBrick[2]-curBrick[4])*8,
                         (curBrick[3]-curBrick[5])*8
@@ -129,6 +131,9 @@ function BricksView:renderLineHoriz(i,j, drawOffsetY)
         end
         curBrick = curBrick[j]
 
+        local brickPattern = self.brickPatternOverride or curBrick[1]
+        print("hoi", brickPattern)
+
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
                 self.bricksImg:draw(
@@ -144,7 +149,7 @@ function BricksView:renderLineHoriz(i,j, drawOffsetY)
                 self.bricksImg:draw(
                         (i -startI) * 8, drawOffsetY,
                         noFlip,
-                        (curBrick[1]-3)*48+sumT[curBrick[2]]+curBrick[4]*8,
+                        (brickPattern-3)*48+sumT[curBrick[2]]+curBrick[4]*8,
                         sumT[curBrick[3]]+curBrick[5]*8,
                         (curBrick[2]-curBrick[4])*8,
                         (curBrick[3]-curBrick[5])*8

@@ -26,9 +26,6 @@ function ResourceLoader:loadBG(newBG)
     else
         gameBgColor = gfx.kColorBlack
     end
-    if bricksView then
-        bricksView = BricksView()
-    end
 end
 
 function ResourceLoader:loadGraphicsStyle(graphicsStyle)
@@ -50,10 +47,6 @@ function ResourceLoader:loadGraphicsStyle(graphicsStyle)
         bricksImg, bricksError = gfx.image.new(bricksPath)
     end
     if not bricksImg then error("failed to load bricks image for style " .. graphicsStyle .. ": ".. bricksError) end
-
-    if bricksView then
-        bricksView = BricksView()
-    end
 end
 
 function ResourceLoader:loadSounds(useClassic)
