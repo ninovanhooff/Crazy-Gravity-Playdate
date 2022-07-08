@@ -239,7 +239,7 @@ end
 function Options:apply()
     Debug = self:read(DEBUG_KEY)
     local newBG = BG_VALS[self:read(BG_KEY)]
-    if newBG then --todo only if changed but also on first load
+    if newBG then
         resourceLoader:loadBG(newBG)
     end
     local graphicsStyle = STYLE_VALS[self:read(GRAPHICS_STYLE_KEY)]
@@ -269,8 +269,12 @@ function Options:apply()
     else
         brickPatternOverride = pattern+2 -- first brick pattern is 3 ("red"), while first key index = 1
     end
-
     print("set brickPatternOverride", brickPatternOverride)
+
+    local framerateIdx = self:read(SPEED_KEY)
+    if framerateIdx then
+        playdate.display.setRefreshRate(SPEED_VALS[framerateIdx])
+    end
 
     if bricksView then
         bricksView = BricksView()
