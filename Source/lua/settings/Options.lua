@@ -6,7 +6,7 @@ class('Options').extends()
 
 local gfx <const> = playdate.graphics
 local timer <const> = playdate.timer
-local itemHeight <const> = 24
+local itemHeight <const> = 28
 local resourceLoader <const> = ResourceLoader()
 
 --- NOTES Nino
@@ -92,7 +92,7 @@ function Options:init()
         gfx.pushContext()
         if selected then
             gfx.setColor(gfx.kColorBlack)
-            gfx.fillRoundRect(x, y, width, height+textPadding, 4)
+            gfx.fillRoundRect(x, y, width, height, 4)
             gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         else
             gfx.setImageDrawMode(gfx.kDrawModeCopy)
