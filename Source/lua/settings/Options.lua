@@ -50,7 +50,7 @@ local gameOptions = {
             { name='Debug', key='debug', values=toggleVals, default=1},
             { name='Style', key= GRAPHICS_STYLE_KEY, values= STYLE_VALS, default=1}, -- index 11 -> 100(%)
             { name='Background', key=BG_KEY, values= BG_VALS, default=1},
-            { name='Bricks pattern', key=PATTERN_KEY, values= PATTERN_VALS, default=6},
+            { name='Brick pattern', key=PATTERN_KEY, values= PATTERN_VALS, default=6},
             { name='Invert colors', key=INVERT_KEY, values= toggleVals, default=1},
             { name='Game speed', key=SPEED_KEY, values= SPEED_VALS, default=4},
 
