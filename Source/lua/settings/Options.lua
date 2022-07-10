@@ -72,8 +72,8 @@ local gameOptions = {
         options = {
             { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
             { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
-            { name='Throttle', key= THROTTLE_KEY, values= BUTTON_VALS, default=5},
-            { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default=6},
+            { name='Throttle', key= THROTTLE_KEY, values= BUTTON_VALS, default=7},
+            { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default=10},
         }
     },
     {
