@@ -14,7 +14,7 @@ local max <const> = math.max
 local abs <const> = math.abs
 local gfx <const> = playdate.graphics
 local unFlipped <const> = gfx.kImageUnflipped
-local defaultFont = defaultFont
+local defaultFont = gfx.getFont()
 local monoFont = monoFont
 
 local hudIcons = sprite -- hudIcons are placed at origin of the sprite

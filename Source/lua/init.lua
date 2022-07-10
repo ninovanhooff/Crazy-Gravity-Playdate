@@ -68,11 +68,9 @@ gfx.setColor(gfx.kColorBlack)
 -- https://devforum.play.date/t/using-glyphs-illustrated-in-designing-for-playdate/3678/7
 local originalSystemFont = playdate.graphics.getSystemFont()
 gfx.setFont( originalSystemFont, playdate.graphics.font.kVariantItalic )
-
-defaultFont = gfx.font.new("fonts/Asheville Sans 14 Bold/Asheville-Sans-14-Bold")
+gfx.setFont(playdate.graphics.getSystemFont(playdate.graphics.font.kVariantBold))
 monoFont = gfx.font.new("fonts/Marble Madness")
 dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
-
 if not dotFont then error("could not load dotFont") end
 
 Options():apply()

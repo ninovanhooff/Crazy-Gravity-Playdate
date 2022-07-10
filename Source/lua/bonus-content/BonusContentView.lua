@@ -10,5 +10,5 @@ end
 
 function BonusContentView:render(viewModel)
     gfx.clear()
-    gfx.drawTextInRect(viewModel.displayText, 100, 50, 200, 200, nil, "...", kTextAlignment.left, defaultFont)
+    gfx.drawTextInRect(viewModel.displayText, 100, 50, 200, 200, nil, "...", kTextAlignment.left)
 end

@@ -10,7 +10,7 @@ import "lockExplosion.lua"
 
 local gfx <const> = playdate.graphics
 local rect <const> = playdate.geometry.rect
-local defaultFont <const> = defaultFont
+local defaultFont <const> = gfx.getFont()
 local monoFont <const> = monoFont
 local hudIcons <const> = sprite -- hud icons are placed at origin of sprite
 local thumbs <const> = gfx.imagetable.new("images/level-thumbs/level-thumbs")
@@ -184,11 +184,15 @@ end
 
 local function renderStaticViews()
     gfx.pushContext()
+    local originalSystemFont = playdate.graphics.getSystemFont()
+    gfx.setFont( originalSystemFont, playdate.graphics.font.kVariantItalic )
+    --gfx.setFont(defaultFont)
     gfx.setPattern({0x55, 0xFF, 0x7F, 0xFF, 0x7F, 0xFF, 0x7F, 0xFF})
     gfx.drawLine(200, 0,200, 240)
     gfx.setColor(gfx.kColorBlack) -- clear pattern
     -- draw keymap hint below detail
-    gfx.drawTextInRect("⬅️➡ challenge   Ⓐ start", detailRect.x, detailRect.bottom , detailRect.width, 20, nil, "...", kTextAlignment.center)
+    --gfx.drawTextInRect('*'.."_Ⓐhallo_hee", detailRect.x - 20, detailRect.bottom, detailRect.width, 20, nil, '...', kTextAlignment.right)
+    gfx.drawTextInRect("_⬅️➡_ start   _Ⓐ_ *start*", detailRect.x, detailRect.bottom , detailRect.width, 25, nil, "...", kTextAlignment.center)
     gfx.popContext()
 end
 

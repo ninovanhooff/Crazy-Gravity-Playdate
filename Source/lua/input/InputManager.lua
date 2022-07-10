@@ -26,7 +26,6 @@ end
 -- global Singleton
 if not inputManager then
     inputManager = InputManager()
-    print("mngr global", inputManager)
 end
 
 function InputManager:setButtonMapping(mapping)

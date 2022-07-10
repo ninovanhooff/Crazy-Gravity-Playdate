@@ -5,6 +5,7 @@
 ---
 
 local gfx <const> = playdate.graphics
+local defaultFont <const> = gfx.getFont()
 local floor <const> = math.floor
 local bgImg <const> = gfx.image.new("images/start_background.png")
 local buttonTextHalfHeight <const> = defaultFont:getHeight()*0.5
