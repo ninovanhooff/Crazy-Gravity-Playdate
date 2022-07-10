@@ -110,7 +110,7 @@ end
 function LevelSelectViewModel:update()
     if justPressed(buttonDown) then
         local function timerCallback()
-            if self.selectedIdx < #self.menuOptions then
+            if self.selectedIdx < #self.menuOptions and (numLevelsUnlocked() >= self.selectedIdx + 1 or Debug) then
                 self.selectedIdx = self.selectedIdx + 1
                 self.selectedChallenge = getDefaultChallenge(self)
             end
