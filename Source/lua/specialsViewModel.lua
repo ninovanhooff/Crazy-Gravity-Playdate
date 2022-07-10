@@ -333,6 +333,7 @@ end
 
 function CalcBarrier(item)
     item.activated = false
+    -- gate collision
     if item.direction==1 then --up
         if UnitCollision(item.x+3-item.actW*0.5,item.y+item.distance*0.5-item.actH*0.5,item.actW,item.actH,true) then
             item.activated = true
@@ -354,10 +355,12 @@ function CalcBarrier(item)
             PixelCollision(item.x*8+36,item.y*8+8,item.pos,32)
         end
     end
+
+    -- update gate position
     local mayPass = true
     if item.activated then
         for j,jtem in ipairs(colorT) do
-            if item[jtem]==1 and not keys[j] then -- required but players doesnt have it
+            if item[jtem]==1 and not keys[j] then -- key required but player doesn't have it
                 mayPass = false
             end
         end
@@ -374,17 +377,6 @@ function CalcBarrier(item)
         end
     end
 end
-
---- Fill brickT item.x,item.y,w,h with {2,1,1,0,0} (collision occupied)
---- coords {x offset relative to item, y offset relative to item, width, height}
-local function markOccupied(item, coords)
-    for i=coords[1],coords[1]+coords[3]-1 do
-        for j=coords[2],coords[2]+coords[4]-1 do
-            brickT[item.x+i][item.y+j]= {2, 1, 1, 0, 0}
-        end
-    end
-end
-
 
 specialCalcT = {}
 specialCalcT[8] = CalcPlatform
