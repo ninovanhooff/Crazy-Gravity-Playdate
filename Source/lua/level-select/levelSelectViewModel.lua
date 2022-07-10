@@ -12,7 +12,6 @@ import "lua/gameScreen.lua"
 import "../gameHUD.lua"
 
 local numChallenges <const> = numChallenges
-local pressed <const> = playdate.buttonIsPressed
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
 local buttonDown <const> = playdate.kButtonDown
@@ -65,14 +64,16 @@ function LevelSelectViewModel:init()
             -- scores added on resume
         }
     end
-    self.selectedIdx = 1
+    self.selectedIdx = numLevelsUnlocked()
     self.selectedChallenge = getDefaultChallenge(self)
 end
 
 function LevelSelectViewModel:resume()
-    if self.lastUnlocked ~= numLevelsUnlocked() then
-        self.lastUnlocked = numLevelsUnlocked()
-        self.newUnlock = self.lastUnlocked
+    local numLevelsUnlocked = numLevelsUnlocked()
+    print("numLevelsUnlocked", numLevelsUnlocked)
+    if self.lastUnlocked ~= numLevelsUnlocked then
+        self.lastUnlocked = numLevelsUnlocked
+        self.newUnlock = numLevelsUnlocked
     end
     for i = 1,numLevels do
         local curOptions = self.menuOptions[i]
@@ -90,7 +91,7 @@ function LevelSelectViewModel:resume()
             end
         end
         curOptions.achievements = achievements
-        curOptions.unlocked = numLevelsUnlocked() >= i
+        curOptions.unlocked = numLevelsUnlocked >= i
     end
 end
 
