@@ -4,6 +4,7 @@ import "ResourceLoader"
 
 class('Options').extends()
 
+local playdate <const> = playdate
 local gfx <const> = playdate.graphics
 local timer <const> = playdate.timer
 local itemHeight <const> = 28
@@ -36,6 +37,24 @@ local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
 local AUDIO_VOLUME_VALS <const> = { "off", 10, 20, 30, 40 , 50 , 60 , 70, 80, 90, 100 }
 
+local BUTTON_VALS <const> = {
+    {label="_⬆_️", keys = playdate.kButtonUp},
+    {label="_️⬇_", keys = playdate.kButtonDown},
+    {label="_️⬅_", keys = playdate.kButtonLeft},
+    {label="_️⬇_", keys = playdate.kButtonDown},
+    {label="_➡_", keys = playdate.kButtonRight},
+    {label="_️Ⓐ_", keys = playdate.kButtonA},
+    {label="_Ⓑ_", keys = playdate.kButtonB},
+    {label="_⬆_️,_Ⓐ_", keys = playdate.kButtonUp + playdate.kButtonA},
+    {label="_⬆_️,_Ⓑ_", keys = playdate.kButtonUp + playdate.kButtonB},
+    --"⬆️➡️⬇️⬅️ⒶⒷ",
+}
+
+local TURN_LEFT_KEY <const> = "turnLeftMapping"
+local TURN_RIGHT_KEY <const> = "turnRightMapping"
+local THROTTLE_KEY <const> = "throttleMapping"
+local SELF_RIGHT_KEY <const> = "selfRightMapping"
+
 local gameOptions = {
     -- name (str): option's display name in menu
     -- key (str): indentifier for the option in the userOptions table
@@ -44,6 +63,15 @@ local gameOptions = {
     -- default (num): index of value that should be set as default
     -- preview (bool): hide the options menu while the option is changing to more easily preview changes
     -- dirtyRead (bool): if true, a read on this option returns nil if it hasn't changed. useful for event-driven updates
+    {
+        header = 'Button mapping',
+        options = {
+            { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
+            { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
+            { name='Throttle', key= THROTTLE_KEY, values= BUTTON_VALS, default=5},
+            { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default=6},
+        }
+    },
     {
         header = 'Graphics',
         options = {
@@ -62,7 +90,7 @@ local gameOptions = {
             { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
             { name='Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
         }
-    }
+    },
 }
 
 local editorOptions = {}
@@ -93,10 +121,9 @@ function Options:init()
         if selected then
             gfx.setColor(gfx.kColorBlack)
             gfx.fillRoundRect(x, y, width, height, 4)
-            gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-        else
-            gfx.setImageDrawMode(gfx.kDrawModeCopy)
         end
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+
         -- draw option
         -- gfx.setFont(font)
         local labelWidth, _ = gfx.getTextSize(label)
@@ -110,6 +137,9 @@ function Options:init()
             else
                 -- draw value as text
                 local optionWidth = right - 8 - (labelWidth+textPadding)
+                if type(val) == 'table' then
+                    val = val.label
+                end
                 gfx.drawTextInRect('*'..val, labelWidth+textPadding, y+textPadding, optionWidth, height, nil, '...', kTextAlignment.right)
             end
         end
@@ -124,7 +154,7 @@ function Options:init()
         local text = '*'..self.currentOptions[section].header:upper()..'*'
         gfx.pushContext()
             -- gfx.setImageDrawMode(gfx.kDrawModeCopy)
-            gfx.setFont(font)
+            --gfx.setFont(font)
             gfx.drawTextInRect(text, x+textPadding, y+textPadding, width, height, nil, '...', kTextAlignment.center)
         gfx.popContext()
 
