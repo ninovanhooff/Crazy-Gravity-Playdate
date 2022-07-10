@@ -430,6 +430,7 @@ function InitBarrier(item)
     item.activated = false
 end
 
+--- No Operation, do nothing
 local function noOp() end
 
 initSpecial = {}

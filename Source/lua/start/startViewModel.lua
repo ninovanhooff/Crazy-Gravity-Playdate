@@ -21,11 +21,11 @@ local buttonWidth <const> = 100
 local buttonHeight <const> = 24
 
 
-local pressed <const> = playdate.buttonIsPressed
-local throttle <const> = playdate.kButtonA | playdate.kButtonUp
-local selfRight <const> = playdate.kButtonDown  | playdate.kButtonB
-local buttonLeft <const> = playdate.kButtonLeft
-local buttonRight <const> = playdate.kButtonRight
+local inputManager <const> = inputManager
+local throttle <const> = InputManager.actionThrottle
+local selfRight <const> = InputManager.actionSelfRight
+local left <const> = InputManager.actionLeft
+local right <const> = InputManager.actionRight
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 
@@ -80,7 +80,7 @@ end
 
 local function processInputs()
     -- thrust
-    if (pressed(throttle)) then
+    if (inputManager:isInputPressed(throttle)) then
         if Sounds and thrust == 0 then thrust_sound:play(0) end
         thrust = 1
         if not flying then
@@ -96,7 +96,7 @@ local function processInputs()
     end
 
     -- rotation
-    if pressed(selfRight) then
+    if inputManager:isInputPressed(selfRight) then
         if planeRot~=18 then
             if planeRot>18 or planeRot<6 then
                 planeRot = planeRot-1
@@ -105,14 +105,14 @@ local function processInputs()
             end
         end
         if planeRot<0 then planeRot = 23 end
-    elseif pressed(buttonLeft) then
+    elseif inputManager:isInputPressed(left) then
         if flying then
             planeRot = planeRot - 1
             if planeRot<0 then
                 planeRot = 23
             end
         end
-    elseif pressed(buttonRight) then
+    elseif inputManager:isInputPressed(right) then
         if flying then
             planeRot = planeRot + 1
             planeRot = planeRot % 24

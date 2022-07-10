@@ -17,8 +17,7 @@ InputManager.actionSelfRight = 4
 
 function InputManager:init()
     if inputManager ~= nil then
-        print("WARNING Not creating inputmanager. inputManager already exists")
-        return inputManager
+        error("Not creating inputmanager. inputManager already exists")
     end
     InputManager.super.init()
     self.inputs = {}
@@ -27,6 +26,7 @@ end
 -- global Singleton
 if not inputManager then
     inputManager = InputManager()
+    print("mngr global", inputManager)
 end
 
 function InputManager:setButtonMapping(mapping)
