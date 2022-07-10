@@ -4,6 +4,7 @@
 --- DateTime: 11/03/2022 16:59
 ---
 
+import "input/InputManager.lua"
 import "settings/physicsSettings.lua"
 import "settings/options.lua"
 import "records.lua"

@@ -1,5 +1,6 @@
 import "CoreLibs/object"
 import "CoreLibs/ui"
+import "../input/InputManager.lua"
 import "ResourceLoader"
 
 class('Options').extends()
@@ -41,15 +42,18 @@ local BUTTON_VALS <const> = {
     {label="_⬆_️", keys = playdate.kButtonUp},
     {label="_️⬇_", keys = playdate.kButtonDown},
     {label="_️⬅_", keys = playdate.kButtonLeft},
-    {label="_️⬇_", keys = playdate.kButtonDown},
     {label="_➡_", keys = playdate.kButtonRight},
     {label="_️Ⓐ_", keys = playdate.kButtonA},
     {label="_Ⓑ_", keys = playdate.kButtonB},
-    {label="_⬆_️,_Ⓐ_", keys = playdate.kButtonUp + playdate.kButtonA},
-    {label="_⬆_️,_Ⓑ_", keys = playdate.kButtonUp + playdate.kButtonB},
-    --"⬆️➡️⬇️⬅️ⒶⒷ",
+    {label="_⬆,Ⓐ_", keys = playdate.kButtonUp + playdate.kButtonA},
+    {label="_⬆,Ⓑ_", keys = playdate.kButtonUp + playdate.kButtonB},
+    {label="_️⬇,Ⓐ_", keys = playdate.kButtonDown + playdate.kButtonA},
+    {label="_️⬇,Ⓑ_", keys = playdate.kButtonDown + playdate.kButtonB},
+    {label="_⬅,Ⓐ_", keys = playdate.kButtonLeft + playdate.kButtonA},
+    {label="_⬅,Ⓑ_", keys = playdate.kButtonLeft + playdate.kButtonB},
+    {label="_️➡,Ⓐ_", keys = playdate.kButtonRight + playdate.kButtonA},
+    {label="_️➡,Ⓑ_", keys = playdate.kButtonRight + playdate.kButtonB}
 }
-
 local TURN_LEFT_KEY <const> = "turnLeftMapping"
 local TURN_RIGHT_KEY <const> = "turnRightMapping"
 local THROTTLE_KEY <const> = "throttleMapping"
@@ -265,6 +269,15 @@ function Options:hide()
     self:markClean()
 end
 
+function Options:createButtonMapping()
+    return {
+        [InputManager.actionLeft] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
+        [InputManager.actionRight] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
+        [InputManager.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_KEY)].keys,
+        [InputManager.actionSelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
+    }
+end
+
 --- Game code uses many globals to read options. Set them here based on current values
 function Options:apply()
     Debug = self:read(DEBUG_KEY)
@@ -305,6 +318,8 @@ function Options:apply()
     if framerateIdx then
         playdate.display.setRefreshRate(SPEED_VALS[framerateIdx])
     end
+
+    inputManager:setButtonMapping(self:createButtonMapping())
 
     if bricksView then
         bricksView = BricksView()
