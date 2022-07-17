@@ -68,15 +68,6 @@ local gameOptions = {
     -- preview (bool): hide the options menu while the option is changing to more easily preview changes
     -- dirtyRead (bool): if true, a read on this option returns nil if it hasn't changed. useful for event-driven updates
     {
-        header = 'Button mapping',
-        options = {
-            { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
-            { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
-            { name='Throttle', key= THROTTLE_KEY, values= BUTTON_VALS, default=7},
-            { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default=10},
-        }
-    },
-    {
         header = 'Graphics',
         options = {
             { name='Debug', key='debug', values=toggleVals, default=1},
@@ -93,6 +84,15 @@ local gameOptions = {
         options = {
             { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
             { name='Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
+        }
+    },
+    {
+        header = 'Button mapping',
+        options = {
+            { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
+            { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
+            { name='Throttle', key= THROTTLE_KEY, values= BUTTON_VALS, default=7},
+            { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default=10},
         }
     },
 }
