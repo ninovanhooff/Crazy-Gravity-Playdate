@@ -5,7 +5,6 @@ import "lua/init.lua"
 import "lua/start/startScreen.lua"
 import "lua/level-select/levelSelectScreen.lua"
 import "lua/settings/SettingsScreen.lua"
-import "lua/systemMenu.lua"
 
 local gfx <const> = playdate.graphics
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
