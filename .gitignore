@@ -5,4 +5,5 @@
 .*autosave.*
 builds
 **/.DS_Store
-Art/*.kra~
+**//*.kra~
+**/*.aup3-wal
