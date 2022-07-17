@@ -8,6 +8,7 @@ local gfx <const> = playdate.graphics
 local defaultFont <const> = gfx.getFont()
 local floor <const> = math.floor
 local bgImg <const> = gfx.image.new("images/start_background.png")
+local logoImg <const> = gfx.image.new("images/logo.png")
 local buttonTextHalfHeight <const> = defaultFont:getHeight()*0.5
 
 local function drawButton(button)
@@ -39,6 +40,7 @@ end
 function RenderStart(viewState)
     gfx.setBackgroundColor(gfx.kColorWhite)
     bgImg:draw(0,0)
+    logoImg:draw(6,6)
 
     --inspect(viewState)
 
