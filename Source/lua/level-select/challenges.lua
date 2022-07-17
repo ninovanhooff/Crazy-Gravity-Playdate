@@ -17,14 +17,14 @@ local defaultChallenges = {235, 1200, 1}
 local challenges = {
     ["levels/LEVEL01"] = {235, 1200, 1},
     ["levels/LEVEL02"] = {98, 1200, 10},
-    ["levels/LEVEL03"] = {98, 1200, 1},
+    ["levels/LEVEL03"] = {350, 1200, 1},
     ["levels/LEVEL04"] = {98, 1200, 1},
     ["levels/LEVEL05"] = {98, 1200, 1},
     ["levels/LEVEL06"] = {98, 1200, 1},
-    ["levels/LEVEL07"] = {98, 1200, 1},
-    ["levels/LEVEL08"] = {98, 1200, 1},
-    ["levels/LEVEL09"] = {98, 1200, 1},
-    ["levels/LEVEL10"] = {98, 1200, 1},
+    ["levels/LEVEL07"] = {400, 1200, 1},
+    ["levels/LEVEL08"] = {350, 1200, 1},
+    ["levels/LEVEL09"] = {420, 1200, 1},
+    ["levels/LEVEL10"] = {450, 1200, 1},
 }
 
 
