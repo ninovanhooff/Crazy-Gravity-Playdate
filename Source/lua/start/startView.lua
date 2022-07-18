@@ -13,7 +13,9 @@ local buttonTextHalfHeight <const> = defaultFont:getHeight()*0.5
 
 local function drawButton(button)
     gfx.pushContext()
-    local text, x, y,w, h,  progress = button.text, button.x, button.y, button.w, button.h, button.progress
+    local x,y = button.animator:currentValue():unpack()
+    local w,h = button.w, button.h
+    local text, progress = button.text, button.progress
     local fillHeight = progress * h
     local buttonRadius = h * 0.5
     local halfw = w * 0.5

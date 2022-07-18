@@ -5,15 +5,25 @@
 ---
 
 import "CoreLibs/object"
+import "CoreLibs/animator"
+import "CoreLibs/easing"
 import "../level-select/levelSelectScreen.lua"
 import "../bonus-content/BonusContentScreen.lua"
 import "../settings/SettingsScreen.lua"
 import "../GameScreen.lua"
 
+local animator <const> = playdate.graphics.animator
+local lineSegment <const> = playdate.geometry.lineSegment
+local enterEasing <const> = playdate.easingFunctions.inOutCubic
+local enterDuration <const> = 300
+--- time between start of button enter animations
+local enterButtonTimeGap <const> = 20
+
 local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, end
 buttonTimer.discardOnCompletion = false
 buttonTimer:pause()  -- disable auto start
 
+local screenWidth <const> = screenWidth
 local buttonStartAlign <const> = 240
 local buttonStartY <const> = 40
 local buttonSpacingV <const> = 50
@@ -50,29 +60,44 @@ local function resetPlane()
     vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
 end
 
+--- param buttonIdx: 0-based
+local function createButtonEnterAnimator(buttonIdx)
+    local y = buttonStartY + buttonIdx*buttonSpacingV
+    local segment = lineSegment.new(screenWidth, y, buttonStartAlign, y)
+    return animator.new(enterDuration, segment, enterEasing, enterButtonTimeGap*buttonIdx)
+end
+
 function StartViewModel:init()
     resetPlane()
     self.viewState = {}
     self.viewState.buttons = {
         {
             text = "Campaign",
-            x = buttonStartAlign, y = buttonStartY, w = buttonWidth, h = buttonHeight,progress = 0.0,
-            onClickScreen = function() return LevelSelectScreen() end
+            w = buttonWidth, h = buttonHeight,
+            progress = 0.0,
+            onClickScreen = function() return LevelSelectScreen() end,
+            animator = createButtonEnterAnimator(0)
         },
         {
             text = "Quick Start",
-            x = buttonStartAlign, y = buttonStartY+buttonSpacingV, w = buttonWidth, h = buttonHeight,progress = 0.0,
-            onClickScreen = function() return GameScreen(levelPath(3)) end
+            w = buttonWidth, h = buttonHeight,
+            progress = 0.0,
+            onClickScreen = function() return GameScreen(levelPath(3)) end,
+            animator = createButtonEnterAnimator(1)
         },
         {
             text = "Bonus",
-            x = buttonStartAlign, y = buttonStartY+buttonSpacingV*2, w = buttonWidth, h = buttonHeight, progress = 0.0,
-            onClickScreen = function() return BonusContentScreen()  end
+            w = buttonWidth, h = buttonHeight,
+            progress = 0.0,
+            onClickScreen = function() return BonusContentScreen()  end,
+            animator = createButtonEnterAnimator(2)
         },
         {
             text = "Settings",
-            x = buttonStartAlign, y = buttonStartY+buttonSpacingV*3, w = buttonWidth, h = buttonHeight, progress = 0.0,
-            onClickScreen = function() return SettingsScreen()  end
+            w = buttonWidth, h = buttonHeight,
+            progress = 0.0,
+            onClickScreen = function() return SettingsScreen()  end,
+            animator = createButtonEnterAnimator(3)
         }
     }
     updateViewState(self)
@@ -135,16 +160,17 @@ end
 
 -- returns true if this rect may collide with planePos, does not take plane sub-pos ([3] and 4]) into
 -- account. When false, it is guaranteed that this rect does not intersect with the plane
-local function approxRectCollision(x, y, w, h)
+local function approxRectCollision(button)
+    local x,y = button.animator:currentValue():unpack()
     -- plane size is 24px
-    return planeX + 24 > x and planeX < x+w  and planeY+24 > y and planeY <y+h
+    return planeX + 24 > x and planeX < x+button.w  and planeY+24 > y and planeY <y+button.h
 end
 
 --- @return Screen button's onClick function if activated; or nil
 local function calcButtonCollision(self)
     local anyCollision = false
     for _, button in ipairs(self.viewState.buttons) do
-        if approxRectCollision(button.x,button.y,button.w,button.h) then
+        if approxRectCollision(button) then
             buttonTimer:start() -- does nothing when already running
             button.progress = buttonTimer.value
             if button.progress >= 1.0 then
