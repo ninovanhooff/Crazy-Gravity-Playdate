@@ -56,7 +56,7 @@ class("StartViewModel").extends()
 
 local function resetPlane()
     flying = true -- always true for StartScreen
-    planeX, planeY = -10,130
+    planeX, planeY = -22,130
     vx,vy,planeRot,thrust = 5,-5,21,0 -- thrust only 0 or 1; use thrustPower to adjust.
 end
 
