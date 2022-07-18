@@ -24,6 +24,8 @@ buttonTimer.discardOnCompletion = false
 buttonTimer:pause()  -- disable auto start
 
 local screenWidth <const> = screenWidth
+local logoEndX <const> = 6
+local logoEndY <const> = 6
 local buttonStartAlign <const> = 240
 local buttonStartY <const> = 40
 local buttonSpacingV <const> = 50
@@ -60,6 +62,10 @@ local function resetPlane()
     vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
 end
 
+local function createLogoEnterAnimator()
+    return animator.new(enterDuration, 0, 1, enterEasing)
+end
+
 --- param buttonIdx: 0-based
 local function createButtonEnterAnimator(buttonIdx)
     local y = buttonStartY + buttonIdx*buttonSpacingV
@@ -70,6 +76,7 @@ end
 function StartViewModel:init()
     resetPlane()
     self.viewState = {}
+    self.viewState.logoAnimator = createLogoEnterAnimator()
     self.viewState.buttons = {
         {
             text = "Campaign",

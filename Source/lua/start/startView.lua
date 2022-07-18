@@ -9,6 +9,7 @@ local defaultFont <const> = gfx.getFont()
 local floor <const> = math.floor
 local bgImg <const> = gfx.image.new("images/start_background.png")
 local logoImg <const> = gfx.image.new("images/logo.png")
+local _, logoHeight <const> = logoImg:getSize()
 local buttonTextHalfHeight <const> = defaultFont:getHeight()*0.5
 
 local function drawButton(button)
@@ -42,7 +43,7 @@ end
 function RenderStart(viewState)
     gfx.setBackgroundColor(gfx.kColorWhite)
     bgImg:draw(0,0)
-    logoImg:draw(6,6)
+    logoImg:draw(6, 6 - logoHeight + viewState.logoAnimator:currentValue() * logoHeight)
 
     --inspect(viewState)
 
