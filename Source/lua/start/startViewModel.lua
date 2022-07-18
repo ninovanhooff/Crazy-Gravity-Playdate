@@ -24,8 +24,6 @@ buttonTimer.discardOnCompletion = false
 buttonTimer:pause()  -- disable auto start
 
 local screenWidth <const> = screenWidth
-local logoEndX <const> = 6
-local logoEndY <const> = 6
 local buttonStartAlign <const> = 240
 local buttonStartY <const> = 40
 local buttonSpacingV <const> = 50
@@ -58,8 +56,8 @@ class("StartViewModel").extends()
 
 local function resetPlane()
     flying = true -- always true for StartScreen
-    planeX, planeY = 100,100
-    vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
+    planeX, planeY = -10,100
+    vx,vy,planeRot,thrust = 5,-5,23,0 -- thrust only 0 or 1; use thrustPower to adjust.
 end
 
 local function createLogoEnterAnimator()
@@ -76,6 +74,7 @@ end
 function StartViewModel:init()
     resetPlane()
     self.viewState = {}
+    self.shouldPlayEnterSound = true
     self.viewState.logoAnimator = createLogoEnterAnimator()
     self.viewState.buttons = {
         {
@@ -197,6 +196,10 @@ local function calcButtonCollision(self)
 end
 
 function StartViewModel:calcTimeStep()
+    if self.shouldPlayEnterSound then
+        swish_sound:play(1, -1) -- play once in reverse
+        self.shouldPlayEnterSound = false
+    end
     processInputs()
     calcPlane()
     calcButtonCollision(self)

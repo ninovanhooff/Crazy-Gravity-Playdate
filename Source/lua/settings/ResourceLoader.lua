@@ -56,6 +56,7 @@ function ResourceLoader:loadSounds(useClassic)
     explode_sound = sampleplayer.new("sounds/explosion.wav")
     unlock_sound = sampleplayer.new("sounds/unlock.wav")
     landing_sound = sampleplayer.new("sounds/landing.wav")
+    swish_sound = sampleplayer.new("sounds/hollow-swish-airy-short.wav")
 
     -- style-specific sounds
     if useClassic then
