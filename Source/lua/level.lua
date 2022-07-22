@@ -28,20 +28,18 @@ function LoadFile(path)
 
     local unpackMeta = {
         __index = function(tbl, idx)
-            -- tbl[1] contains the packed string.
+            -- tbl["compressed"] contains the packed string.
             -- idx*5-4: each tile entry is 5 bytes long,
             -- for idx 1 we should start reading at pos 1. So, 1*packSize-packSizeOffset = 1
             return {unpack(format, tbl["compressed"], idx*packSize-packSizeOffset)}
         end
     }
 
-    sample("bin load", function()
-        local brickFile = file.open(path..".bin")
-        for x = 1, levelProps.sizeX do
+    local brickFile = file.open(path..".bin")
+    for x = 1, levelProps.sizeX do
+        brickT[x]= setmetatable({compressed = brickFile:read(5*levelProps.sizeY)}, unpackMeta)
+    end
 
-            brickT[x]= setmetatable({compressed = brickFile:read(5*levelProps.sizeY)}, unpackMeta)
-        end
-    end, 1)
 
     printf("loaded dim",#brickT,#brickT[1])
 
