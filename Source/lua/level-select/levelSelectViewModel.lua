@@ -12,6 +12,7 @@ import "lua/gameScreen.lua"
 import "../gameHUD.lua"
 
 local numChallenges <const> = numChallenges
+local levelNames <const> = levelNames
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
 local buttonDown <const> = playdate.kButtonDown
@@ -58,7 +59,7 @@ function LevelSelectViewModel:init()
     self.menuOptions = {}
     for i = 1,numLevels do
         self.menuOptions[i] = {
-            title = "Level " .. levelNumString(i),
+            title = levelNames[i],
             challenges = getChallengeForPath(levelPath(i)),
             levelNumber = i,
             -- scores added on resume

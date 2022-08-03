@@ -9,3 +9,14 @@ He gave written permission to use the sounds and graphics of the original game.
 ### Level format
 Bundled level files are in lua table format and will be compiled to lua bytecode.
 Available as pdz at runtime, which can be loaded with file.run()
+
+## Credits
+Nino - Programming
+Axel Meierhöfer - Concept (Crazy Gravity)
+Script - Magnum Kramer from Fiverr
+Count Moriarty - Art
+Labeardi - Art
+Fiverr - Sprites
+Fiverr - Audio effects
+Fiverr - jhvoices as CEO
+Choosh - Music

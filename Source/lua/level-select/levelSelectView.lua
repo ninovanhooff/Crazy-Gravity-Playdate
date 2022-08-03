@@ -94,7 +94,7 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     end
 
     -- title
-    defaultFont:drawText(curOption.title, infoX, y+gutter)
+    defaultFont:drawText("Stage " .. levelNumString(curOption.levelNumber), infoX, y+gutter)
     -- divider
     gfx.drawLine(infoX, vDivider,right-2*gutter, vDivider)
 
@@ -132,7 +132,7 @@ local function renderDetailScreen(info)
     local infoY = detailRect.y
 
     -- title
-    drawTextInRectUnderlined(info.title, detailRect, defaultFont)
+    drawTextInRectUnderlined(levelNumString(levelNumber) .. " : " .. info.title, detailRect, defaultFont)
     infoY = infoY + 30
 
     -- banner image

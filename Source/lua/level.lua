@@ -45,3 +45,28 @@ function LoadFile(path)
 
     return true
 end
+
+levelNames = {
+    [1] = "Test Flight",
+    [2] = "Getaway-Gates",
+    [3] = "Rod-a-bout",
+    [4] = "Luxury Raceway",
+    [5] = "Hide+See-key",
+    [6] = "Turbo boost!",
+    [7] = "Grab grab+go!",
+    [8] = "Meditative Test",
+    [9] = "Criss Crossing",
+    [10] = "Mind the curve",
+    [11] = "Last Easy Test",
+    [12] = "Push+Pull",
+    [13] = "Fuel Shortage",
+    [14] = "Lone Station",
+    [15] = "Tight Squeeze",
+    [16] = "Caution Cannon",
+    [17] = "Cannonballers",
+    [18] = "Team Push+Pull",
+    [19] = "A-maze-ing",
+    [20] = "Broadsides",
+    [21] = "Licensed"
+    
+}
