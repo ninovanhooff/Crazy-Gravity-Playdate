@@ -56,9 +56,6 @@ function popScreen()
         end
     )
 end
-local seq,err = playdate.sound.sequence.new("sounds/final_countdown.mid")
-print(seq, err, seq:getLength(), seq:getTrackCount())
-seq:play()
 
 pushScreen(StartScreen())
 --pushScreen(LevelSelectScreen())
