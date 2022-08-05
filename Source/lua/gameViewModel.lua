@@ -4,11 +4,12 @@
 --- DateTime: 10/04/2022 12:50
 ---
 
-import "PidController"
+import "CamController"
 import "gameExplosion.lua"
 import "gameHUD.lua"
 import "game-over/GameOverScreen.lua"
 
+local pi <const> = pi
 local floor <const> = math.floor
 local max <const> = math.max
 local sin <const> = math.sin
@@ -24,28 +25,40 @@ local halfGameWidthPixels <const> = gameWidthPixels * 0.5
 local halfGameHeightPixels <const> = gameHeightTiles * tileSize * 0.5
 local planePos <const> = planePos
 local camPos <const> = camPos
-local camPidX, camPidY
+local camControllerX, camControllerY
 local gameHUD <const> = gameHUD
 
 
 local halfWidthTiles = math.ceil(gameWidthTiles*0.5)
 local halfHeightTiles = math.ceil(gameHeightTiles*0.5)
 
+--- sine component (y-direction) of plane orientation, ie. positive if plane is pointing up, 0 if pointing left and negative when pointing down
+local camRotY <const> = {}
+for i = 0,23 do
+    camRotY[i] = sin(i/12*pi)
+end
+
+--- cosine component (x-direction) of plane orientation, ie. positive if plane is pointing right, 0 if pointing up and negative when pointing left
+local camRotX <const> = {}
+for i = 0,23 do
+    camRotX[i] = cos(i/12*pi)
+end
+
 local sinColT= {}
 for i = 0,23 do
     sinColT[i] = {
-        sin(i/12*pi)*10+11,
-        sin((i/12+0.75)*pi)*12+11,
-        sin((i/12-0.75)*pi)*12+11
+        sin(i/12*pi)*10+11, -- tip x
+        sin((i/12+0.75)*pi)*12+11, -- right base x
+        sin((i/12-0.75)*pi)*12+11 -- left base x
     }
 end
 
 local cosColT= {}
 for i = 0,23 do
     cosColT[i] = {
-        cos(i/12*pi)*10+11,
-        cos((i/12+0.75)*pi)*12+11,
-        cos((i/12-0.75)*pi)*12+11
+        cos(i/12*pi)*10+11, -- tip y
+        cos((i/12+0.75)*pi)*12+11, -- right base y
+        cos((i/12-0.75)*pi)*12+11 -- left base y
     }
 end
 
@@ -53,6 +66,7 @@ local function CalcPlaneColCoords()
     colT = nil
     colT = {}
     local colT = colT
+    -- sin collision table for current rotation
     local sinColTR = sinColT[planeRot]
     local cosColTR = cosColT[planeRot]
     colT[1] = cosColTR[1]+planePos[3] -- tip x
@@ -76,26 +90,40 @@ end
 local function CalcGameCam()
     local cam <const> = camPos
     local plane <const> = planePos
-    local planeX <const> = plane[1] * tileSize + plane[3]
+    local planeX <const> = plane[1] * tileSize + plane[3] + 12 -- offset for plane center position
+    local planeY <const> = plane[2] * tileSize + plane[4] + 12 -- offset for plane center position
     local camBeforeX <const> = cam[1] * tileSize + cam[3]
     local camBeforeY <const> = cam[2] * tileSize + cam[4]
     local camAfterX, camAfterY
 
     -- horizontal cam position
     -- target value for camera is to center the plane on screen, so top-left of camera is plane pos - half screen width in pixels
-    camAfterX = camPidX:update(camBeforeX, planeX-halfGameWidthPixels)
+    -- we offset the target in the direction the plane tip is pointing at
+    local targetX = planeX-halfGameWidthPixels -- + (camRotX[planeRot] * gameWidthPixels * 0.25)
+    camAfterX = camControllerX:update(camBeforeX, targetX)
 
     -- horizontal clamping
+    camAfterX = clamp(camAfterX, tileSize, (levelProps.sizeX- gameWidthTiles + 1) * tileSize)
     camAfterX = roundToNearest(camAfterX,2)
-    camAfterX = clamp(camAfterX, 1, (levelProps.sizeX-1) * tileSize)
     cam[1] = floor(camAfterX / tileSize)
     cam[3] = camAfterX % tileSize
 
     -- vertical cam position
-    camAfterY = camBeforeY -- todo
+    -- target value for camera is to center the plane on screen, so top-left of camera is plane pos - half screen width in pixels
+    -- we offset the target in the direction the plane tip is pointing at
+    local targetY = planeY-halfGameHeightPixels + (camRotY[planeRot] * halfGameHeightPixels * 0.25)
+    camAfterY = camControllerY:update(camBeforeY, targetY)
 
-    dX = camAfterX - camBeforeX
-    printf("camBefore",camBeforeX, camBeforeY, "dxdy", dx, camAfterY - camBeforeY)
+    -- vertical clamping
+    camAfterY = clamp(camAfterY, tileSize, (levelProps.sizeY- gameHeightTiles - 1) * tileSize)
+    camAfterY = roundToNearest(camAfterY,2)
+    cam[2] = floor(camAfterY / tileSize)
+    cam[4] = camAfterY % tileSize
+
+    if Debug then
+        dX = camAfterX - camBeforeX
+        print("camBefore",camBeforeX, camBeforeY, "dxdy", dX, camAfterY - camBeforeY)
+    end
 end
 
 local function calcPlane()
@@ -206,10 +234,11 @@ end
 
 function ResetPlane()
     explosion = nil
-    planePos[1], planePos[2], planePos[3], planePos[4] = homeBase.x+floor(homeBase.w*0.5-1),homeBase.y+1,0,4 --x,y,subx,suby
+    planePos[1], planePos[2], planePos[3], planePos[4] = homeBase.x+floor(homeBase.w*0.5-1)-1,homeBase.y+1,4,4 --x,y,subx,suby
     -- when using y = homeBase.y-halfHeightTiles+1, no initial camera movement would occur
     camPos[1], camPos[2], camPos[3], camPos[4] = homeBase.x+floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles, 0,0 --x,y,subx,suby
-    camPidX = PidController()
+    camControllerX = CamController()
+    camControllerY = CamController()
     checkCam()
     flying = false
     vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.

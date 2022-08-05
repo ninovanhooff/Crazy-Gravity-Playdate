@@ -79,7 +79,7 @@ function RenderGameDebug()
     end
 
     for i, item in ipairs(dXHistory) do
-        gfx.drawPixel(dxOrigin + i, dxOrigin + item)
+        gfx.drawPixel(dxOrigin + i, dxOrigin - item)
     end
 
     gfx.drawLine(dxOrigin, dxOrigin, dxOrigin + dxHistoryMaxLength, dxOrigin)
