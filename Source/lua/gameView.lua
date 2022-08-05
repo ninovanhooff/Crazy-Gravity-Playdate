@@ -78,10 +78,7 @@ function RenderGameDebug()
         table.remove(dXHistory, 1)
     end
 
-    print("hee", #dXHistory)
-
     for i, item in ipairs(dXHistory) do
-        print("dx", i ,item)
         gfx.drawPixel(dxOrigin + i, dxOrigin + item)
     end
 
