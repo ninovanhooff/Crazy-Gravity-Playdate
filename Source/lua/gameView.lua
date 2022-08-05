@@ -57,7 +57,7 @@ end
 local dXHistory = {}
 local dxHistoryMaxLength = 60
 local dxHeight = 12
-local dxOrigin = 100
+local dxOrigin <const> = 100
 
 function RenderGameDebug()
     if collision then

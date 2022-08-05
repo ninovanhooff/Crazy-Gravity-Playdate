@@ -26,6 +26,8 @@ local halfGameHeightPixels <const> = gameHeightTiles * tileSize * 0.5
 local planePos <const> = planePos
 local camPos <const> = camPos
 local camControllerX, camControllerY
+local planeSpeedCamMultiplier <const> = 0.04
+local planeRotationCamMultiplier <const> = 0.1
 local gameHUD <const> = gameHUD
 
 
@@ -99,7 +101,9 @@ local function CalcGameCam()
     -- horizontal cam position
     -- target value for camera is to center the plane on screen, so top-left of camera is plane pos - half screen width in pixels
     -- we offset the target in the direction the plane tip is pointing at
-    local targetX = planeX-halfGameWidthPixels -- + (camRotX[planeRot] * gameWidthPixels * 0.25)
+    local targetX = planeX-halfGameWidthPixels +
+        (camRotX[planeRot] * gameWidthPixels * planeRotationCamMultiplier) +
+        (vx * gameWidthPixels * planeSpeedCamMultiplier)
     camAfterX = camControllerX:update(camBeforeX, targetX)
 
     -- horizontal clamping
@@ -111,7 +115,10 @@ local function CalcGameCam()
     -- vertical cam position
     -- target value for camera is to center the plane on screen, so top-left of camera is plane pos - half screen width in pixels
     -- we offset the target in the direction the plane tip is pointing at
-    local targetY = planeY-halfGameHeightPixels + (camRotY[planeRot] * halfGameHeightPixels * 0.25)
+
+    local targetY = planeY-halfGameHeightPixels +
+        (camRotY[planeRot] * gameHeightPixels * planeRotationCamMultiplier) +
+        (vy * gameHeightPixels * planeSpeedCamMultiplier)
     camAfterY = camControllerY:update(camBeforeY, targetY)
 
     -- vertical clamping
