@@ -4,15 +4,27 @@
 --- DateTime: 10/04/2022 12:50
 ---
 
+import "PidController"
 import "gameExplosion.lua"
 import "gameHUD.lua"
 import "game-over/GameOverScreen.lua"
 
 local floor <const> = math.floor
 local max <const> = math.max
+local sin <const> = math.sin
+local cos <const> = math.cos
+local roundToNearest <const> = roundToNearest
 
+local tileSize <const> = tileSize
+local gameWidthTiles <const> = gameWidthTiles
+local gameHeightTiles <const> = gameHeightTiles
+local gameWidthPixels <const> = screenWidth
+local gameHeightPixels <const> = gameHeightTiles * tileSize
+local halfGameWidthPixels <const> = gameWidthPixels * 0.5
+local halfGameHeightPixels <const> = gameHeightTiles * tileSize * 0.5
 local planePos <const> = planePos
 local camPos <const> = camPos
+local camPidX, camPidY
 local gameHUD <const> = gameHUD
 
 
@@ -22,24 +34,25 @@ local halfHeightTiles = math.ceil(gameHeightTiles*0.5)
 local sinColT= {}
 for i = 0,23 do
     sinColT[i] = {
-        math.sin(i/12*pi)*10+11,
-        math.sin((i/12+0.75)*pi)*12+11,
-        math.sin((i/12-0.75)*pi)*12+11
+        sin(i/12*pi)*10+11,
+        sin((i/12+0.75)*pi)*12+11,
+        sin((i/12-0.75)*pi)*12+11
     }
 end
 
 local cosColT= {}
 for i = 0,23 do
     cosColT[i] = {
-        math.cos(i/12*pi)*10+11,
-        math.cos((i/12+0.75)*pi)*12+11,
-        math.cos((i/12-0.75)*pi)*12+11
+        cos(i/12*pi)*10+11,
+        cos((i/12+0.75)*pi)*12+11,
+        cos((i/12-0.75)*pi)*12+11
     }
 end
 
 local function CalcPlaneColCoords()
     colT = nil
     colT = {}
+    local colT = colT
     local sinColTR = sinColT[planeRot]
     local cosColTR = cosColT[planeRot]
     colT[1] = cosColTR[1]+planePos[3] -- tip x
@@ -61,55 +74,28 @@ local function CalcPlaneColCoords()
 end
 
 local function CalcGameCam()
-    --printf("camBefore",camPos[1].." "..camPos[2].." "..camPos[3].." "..camPos[4])
+    local cam <const> = camPos
+    local plane <const> = planePos
+    local planeX <const> = plane[1] * tileSize + plane[3]
+    local camBeforeX <const> = cam[1] * tileSize + cam[3]
+    local camBeforeY <const> = cam[2] * tileSize + cam[4]
+    local camAfterX, camAfterY
 
     -- horizontal cam position
-    if planePos[1]>camPos[1]+halfWidthTiles then
-        camPos[3] = camPos[3] + planePos[1]-(camPos[1]+halfWidthTiles)
-    elseif planePos[1]<camPos[1]+halfWidthTiles then
-        camPos[3] = camPos[3] - (camPos[1]+halfWidthTiles-planePos[1])
-    end
-    if camPos[3]>tileSize-1 then
-        local addUnits = floor(camPos[3]/tileSize)
-        camPos[1] = camPos[1]+addUnits
-        camPos[3] = camPos[3]-addUnits*8
-    elseif camPos[3]<0 then
-        --printf("before",planePos[1],planePos[3])
-        local substUnits = -floor(camPos[3]/tileSize)
-        camPos[1] = camPos[1]-substUnits
-        camPos[3] = tileSize+(camPos[3]+(substUnits-1)*tileSize)
-        --printf("after",planePos[1],planePos[3])
-    end
-    if camPos[1]<1 then
-        camPos[1],camPos[3]=1,0
-    elseif camPos[1]+gameWidthTiles >=levelProps.sizeX then
-        camPos[1],camPos[3] = levelProps.sizeX- gameWidthTiles,0
-    end
+    -- target value for camera is to center the plane on screen, so top-left of camera is plane pos - half screen width in pixels
+    camAfterX = camPidX:update(camBeforeX, planeX-halfGameWidthPixels)
+
+    -- horizontal clamping
+    camAfterX = roundToNearest(camAfterX,2)
+    camAfterX = clamp(camAfterX, 1, (levelProps.sizeX-1) * tileSize)
+    cam[1] = floor(camAfterX / tileSize)
+    cam[3] = camAfterX % tileSize
 
     -- vertical cam position
-    if planePos[2]>camPos[2]+halfHeightTiles then
-        camPos[4] = camPos[4] + planePos[2]-(camPos[2]+halfHeightTiles)
-    elseif planePos[2]<camPos[2]+halfHeightTiles then
-        camPos[4] = camPos[4] - (camPos[2]+halfHeightTiles - planePos[2])
-    end
-    if camPos[4]>7 then
-        local addUnits = floor(camPos[4]/tileSize)
-        camPos[2] = camPos[2]+addUnits
-        camPos[4] = camPos[4]-addUnits*tileSize
-    elseif camPos[4]<0 then
-        --printf("before",planePos[1],planePos[3])
-        local substUnits = -floor(camPos[4]/tileSize)
-        camPos[2] = camPos[2]-substUnits
-        camPos[4] = tileSize+(camPos[4]+(substUnits-1)*tileSize)
-        --printf("after",planePos[1],planePos[3])
-    end
-    local offScreenTileY = gameHeightTiles+1
-    if camPos[2]<1 then
-        camPos[2],camPos[4]=1,0
-    elseif camPos[2]+offScreenTileY>levelProps.sizeY or (camPos[2]+offScreenTileY==levelProps.sizeY and camPos[4]>0) then
-        camPos[2],camPos[4] = levelProps.sizeY-offScreenTileY,0
-    end
-    --printf("camAfter",camPos[1].." "..camPos[2].." "..camPos[3].." "..camPos[4])
+    camAfterY = camBeforeY -- todo
+
+    dX = camAfterX - camBeforeX
+    printf("camBefore",camBeforeX, camBeforeY, "dxdy", dx, camAfterY - camBeforeY)
 end
 
 local function calcPlane()
@@ -223,6 +209,7 @@ function ResetPlane()
     planePos[1], planePos[2], planePos[3], planePos[4] = homeBase.x+floor(homeBase.w*0.5-1),homeBase.y+1,0,4 --x,y,subx,suby
     -- when using y = homeBase.y-halfHeightTiles+1, no initial camera movement would occur
     camPos[1], camPos[2], camPos[3], camPos[4] = homeBase.x+floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles, 0,0 --x,y,subx,suby
+    camPidX = PidController()
     checkCam()
     flying = false
     vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.

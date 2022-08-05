@@ -14,6 +14,12 @@ function sign(x)
     return x < 0 and -1 or 1
 end
 
+--- round to the nearest multiple of mult
+--- ie to nearest 2: 1 -> 0, 2.1 -> 2, 2.6 -> 2, 3.1 -> 4, -1.1 -> -2
+function roundToNearest(num, mult)
+    return floor(num / mult + 0.5) * mult
+end
+
 function clamp(x, min, max)
     return x < min and min or (x > max and max or x)
 end

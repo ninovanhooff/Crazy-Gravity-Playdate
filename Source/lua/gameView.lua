@@ -54,6 +54,11 @@ function RenderGame()
     end
 end
 
+local dXHistory = {}
+local dxHistoryMaxLength = 60
+local dxHeight = 12
+local dxOrigin = 100
+
 function RenderGameDebug()
     if collision then
         sprite:draw((planePos[1]-camPos[1])*8+planePos[3]-camPos[3], (planePos[2]-camPos[2])*8+planePos[4]-camPos[4], unFlipped, 8*23, 489, 23, 23)
@@ -64,4 +69,22 @@ function RenderGameDebug()
     gfx.drawLine(colOffX+colT[1],colOffY+colT[2],colOffX+colT[3],colOffY+colT[4])
     gfx.drawLine(colOffX+colT[3],colOffY+colT[4],colOffX+colT[5],colOffY+colT[6])
     gfx.drawLine(colOffX+colT[5],colOffY+colT[6],colOffX+colT[1],colOffY+colT[2])
+
+    if dX then
+        table.insert(dXHistory, dX)
+    end
+
+    if #dXHistory > dxHistoryMaxLength then
+        table.remove(dXHistory, 1)
+    end
+
+    print("hee", #dXHistory)
+
+    for i, item in ipairs(dXHistory) do
+        print("dx", i ,item)
+        gfx.drawPixel(dxOrigin + i, dxOrigin + item)
+    end
+
+    gfx.drawLine(dxOrigin, dxOrigin, dxOrigin + dxHistoryMaxLength, dxOrigin)
+    gfx.drawLine(dxOrigin, dxOrigin - dxHeight, dxOrigin, dxOrigin + dxHeight)
 end

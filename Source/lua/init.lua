@@ -3,18 +3,22 @@
 --- Created by ninovanhooff.
 --- DateTime: 11/03/2022 16:59
 ---
+Debug = true -- no commit
+
 
 import "input/InputManager.lua"
 import "settings/physicsSettings.lua"
 import "settings/options.lua"
 import "records.lua"
 import "CoreLibs/utilities/sampler"
+if Debug then
+    import "unittests.lua"
+end
 
 local gfx = playdate.graphics
 
 math.randomseed(playdate.getSecondsSinceEpoch())
 pi = 3.141592654
-Debug = false
 Sounds = true
 screenWidth = playdate.display.getWidth()
 screenHeight = playdate.display.getHeight()
