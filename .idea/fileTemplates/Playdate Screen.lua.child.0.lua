@@ -5,7 +5,7 @@ local gfx <const> = playdate.graphics
 class("${NAME}View").extends()
 
 function ${NAME}View:init()
-
+    ${NAME}View.super.init(self)
 end
 
 function ${NAME}View:render(viewModel)

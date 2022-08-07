@@ -6,6 +6,7 @@ local buttonB <const> = playdate.kButtonB
 class("${NAME}ViewModel").extends()
 
 function ${NAME}ViewModel:init()
+    ${NAME}ViewModel.super.init(self)
     self.displayText = "Hello, this is ${NAME} screen"
 end
 
