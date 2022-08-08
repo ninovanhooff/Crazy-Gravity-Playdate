@@ -7,11 +7,13 @@
 class('CamController').extends()
 
 local abs <const> = math.abs
-local maxHistoryLength <const> = 8
-local integralThreshold <const> = maxHistoryLength * 25
 local speedStep <const> = 2
 
-function CamController:init()
+function CamController:init(maxHistoryLength, integralThreshold)
+    self.maxHistoryLength = maxHistoryLength
+    self.integralThreshold = integralThreshold
+
+    self.lastTarget = nil
     self.speed = 0
     self.history = {}
     self.errorIntegral = 0
@@ -20,16 +22,32 @@ end
 --- returns new value based on value and target
 function CamController:update(value, target)
     local error = target - value
+    local result = value
     table.insert(self.history, error)
     self.errorIntegral = self.errorIntegral + error
-    if #self.history > maxHistoryLength then
+    if #self.history > self.maxHistoryLength then
         self.errorIntegral = self.errorIntegral - table.remove(self.history, 1)
     end
 
-    if abs(self.errorIntegral) > integralThreshold then
+    if self.speed == 0 and self.lastTarget and self.lastTarget == target then
+        if abs(error) > speedStep then
+            -- crawl mode, useful when target is stationary. otherwise, camera could come to a stop way off center
+            self.lastTarget = target
+            result = result + sign(error) * speedStep
+        end
+    elseif abs(self.errorIntegral) > self.integralThreshold then
         self.speed = self.speed + sign(self.errorIntegral) * speedStep
         self.errorIntegral = 0
+        result = result + self.speed
+    else
+        result = result + self.speed
     end
 
-    return value + self.speed
+    if abs(target - result) > speedStep then
+        -- push towards zero error, prevents off-target equilibrium
+        result = result + sign(target - result) * speedStep
+    end
+
+    self.lastTarget = target
+    return result
 end

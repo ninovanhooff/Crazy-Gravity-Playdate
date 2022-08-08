@@ -69,7 +69,26 @@ function RenderGameDebug()
     gfx.drawLine(colOffX+colT[1],colOffY+colT[2],colOffX+colT[3],colOffY+colT[4])
     gfx.drawLine(colOffX+colT[3],colOffY+colT[4],colOffX+colT[5],colOffY+colT[6])
     gfx.drawLine(colOffX+colT[5],colOffY+colT[6],colOffX+colT[1],colOffY+colT[2])
+    
+    
+    -- Camera debug
+    local gameWidthPixels <const> = screenWidth
+    local gameHeightPixels <const> = gameHeightTiles * tileSize
+    local halfGameWidthPixels <const> = gameWidthPixels * 0.5
+    local halfGameHeightPixels <const> = gameHeightTiles * tileSize * 0.5
+    local crossHairSize = 10
+    -- game center crosshair
+    --gfx.setDitherPattern(0.5, gfx.image.kDitherTypeDiagonalLine) -- invert alpha due to bug in SDK
+    gfx.drawLine(halfGameWidthPixels - crossHairSize, halfGameHeightPixels, halfGameWidthPixels + crossHairSize, halfGameHeightPixels)
+    gfx.drawLine(halfGameWidthPixels, halfGameHeightPixels - crossHairSize, halfGameWidthPixels, halfGameHeightPixels + crossHairSize)
+    --gfx.setColor(gfx.kColorWhite)
 
+    -- target crosshair
+    local targetX, targetY = (TargetX or 0) + halfGameWidthPixels, (TargetY or 0) + halfGameHeightPixels
+    gfx.drawLine(targetX - crossHairSize, targetY - crossHairSize, targetX + crossHairSize, targetY + crossHairSize)
+    gfx.drawLine(targetX - crossHairSize, targetY + crossHairSize, targetX + crossHairSize, targetY - crossHairSize)
+    
+    
     if dX then
         table.insert(dXHistory, dX)
     end

@@ -19,7 +19,7 @@
 --}
 
 burnRate = 5 -- amount of fuel each frame
-gravity,drag = 0.12, 0.96 --add,mult per frame!!
+gravity,drag = 0.167, 0.96 --add,mult per frame!!
 landingTolerance = {1.25,2.5} -- max vx,vy
-thrustPower,turboPower = 0.4,0.2
+thrustPower,turboPower = 0.5,0.2
 blowerStrength,magnetStrength = 0.10,0.10

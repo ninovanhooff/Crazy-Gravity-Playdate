@@ -26,8 +26,9 @@ local halfGameHeightPixels <const> = gameHeightTiles * tileSize * 0.5
 local planePos <const> = planePos
 local camPos <const> = camPos
 local camControllerX, camControllerY
-local planeSpeedCamMultiplier <const> = 0.04
-local planeRotationCamMultiplier <const> = 0.1
+local planeSpeedXCamMultiplier <const> = 0.05
+local planeSpeedYCamMultiplier <const> = 0.03
+local planeRotationCamMultiplier <const> = 0.05
 local gameHUD <const> = gameHUD
 
 
@@ -101,9 +102,9 @@ local function CalcGameCam()
     -- horizontal cam position
     -- target value for camera is to center the plane on screen, so top-left of camera is plane pos - half screen width in pixels
     -- we offset the target in the direction the plane tip is pointing at
-    local targetX = planeX-halfGameWidthPixels +
-        (camRotX[planeRot] * gameWidthPixels * planeRotationCamMultiplier) +
-        (vx * gameWidthPixels * planeSpeedCamMultiplier)
+    local targetX = planeX-halfGameWidthPixels
+        + (camRotX[planeRot] * gameWidthPixels * planeRotationCamMultiplier)
+        + (vx * gameWidthPixels * planeSpeedXCamMultiplier)
     camAfterX = camControllerX:update(camBeforeX, targetX)
 
     -- horizontal clamping
@@ -116,9 +117,9 @@ local function CalcGameCam()
     -- target value for camera is to center the plane on screen, so top-left of camera is plane pos - half screen width in pixels
     -- we offset the target in the direction the plane tip is pointing at
 
-    local targetY = planeY-halfGameHeightPixels +
-        (camRotY[planeRot] * gameHeightPixels * planeRotationCamMultiplier) +
-        (vy * gameHeightPixels * planeSpeedCamMultiplier)
+    local targetY = planeY-halfGameHeightPixels
+        + (camRotY[planeRot] * gameHeightPixels * planeRotationCamMultiplier)
+        + (vy * gameHeightPixels * planeSpeedYCamMultiplier)
     camAfterY = camControllerY:update(camBeforeY, targetY)
 
     -- vertical clamping
@@ -129,7 +130,8 @@ local function CalcGameCam()
 
     if Debug then
         dX = camAfterX - camBeforeX
-        print("camBefore",camBeforeX, camBeforeY, "dxdy", dX, camAfterY - camBeforeY)
+        TargetX, TargetY = targetX - camAfterX, targetY - camAfterY
+        --print("camBefore",camBeforeX, camBeforeY, "dxdy", dX, camAfterY - camBeforeY, "TargetX", TargetX, "TargetY", TargetY)
     end
 end
 
@@ -244,8 +246,8 @@ function ResetPlane()
     planePos[1], planePos[2], planePos[3], planePos[4] = homeBase.x+floor(homeBase.w*0.5-1)-1,homeBase.y+1,4,4 --x,y,subx,suby
     -- when using y = homeBase.y-halfHeightTiles+1, no initial camera movement would occur
     camPos[1], camPos[2], camPos[3], camPos[4] = homeBase.x+floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles, 0,0 --x,y,subx,suby
-    camControllerX = CamController()
-    camControllerY = CamController()
+    camControllerX = CamController(8, 8 * 25)
+    camControllerY = CamController(8, 8 * 25)
     checkCam()
     flying = false
     vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
