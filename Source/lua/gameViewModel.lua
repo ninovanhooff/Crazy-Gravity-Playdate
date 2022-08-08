@@ -247,7 +247,7 @@ function ResetPlane()
     -- when using y = homeBase.y-halfHeightTiles+1, no initial camera movement would occur
     camPos[1], camPos[2], camPos[3], camPos[4] = homeBase.x+floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles, 0,0 --x,y,subx,suby
     camControllerX = CamController(8, 8 * 25)
-    camControllerY = CamController(8, 8 * 25)
+    camControllerY = CamController(8, 8 * 17)
     checkCam()
     flying = false
     vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
