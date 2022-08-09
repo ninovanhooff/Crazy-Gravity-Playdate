@@ -268,10 +268,12 @@ local function initSpecials()
     end
 end
 
-function InitGame(path)
+function InitGame(path, selectedChallenge)
     print("InitGame", path)
     LoadFile(path)
     curGamePath = path
+    gameHUD.selectedChallenge = selectedChallenge
+    gameHUD.challengeTarget = getChallengesForPath(path)[selectedChallenge]
     sample("init specials", function()  initSpecials()end, 1)
     if not homeBase then
         error("lvl has no base")
@@ -298,16 +300,6 @@ function ResetGame()
         end
     end
     extras = {0,levelProps.lives,1} -- turbo, lives, cargo
-    -- time to beat
-    if records[curGamePath] then
-        lSec = records[curGamePath][1]
-    else
-        lSec = 5940 -- 99'00
-    end
-    lMin = floor(lSec/60)
-    lSec = floor(lSec%60)
-    if lMin<10 then lMin = "0"..lMin end
-    if lSec<10 then lSec = "0"..lSec end
     frameCounter = 0
     editorMode = false
     bricksView = BricksView()

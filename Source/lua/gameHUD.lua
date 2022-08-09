@@ -45,7 +45,7 @@ local function drawIcon(x, index, srcY)
     hudIcons:draw(x,hudY,unFlipped,index*16,srcY or 0,16,16)
 end
 
-local function renderChallenge(self)
+function GameHUD:challengeViewState()
     local currentValue, iconIdx = "", 4
     if self.selectedChallenge == 1 then
         -- elapsed time
@@ -60,20 +60,34 @@ local function renderChallenge(self)
         currentValue = livesLost
         iconIdx = 6
     end
-
-    -- render
-    local textW = monoFont:getTextWidth(currentValue)
-    local x = screenWidth - textW - hudPadding
-    monoFont:drawText(currentValue,x,hudY+8)
-    x = x - hudGutter - 16
-    local srcY = boolToNum(self.challengeTarget < currentValue)*16
-    drawIcon(x, iconIdx,srcY)
+    return currentValue, iconIdx
 end
 
 function GameHUD:render()
     gfx.setColor(hudBgClr)
     gfx.fillRect(0,hudY,400,16)
     gfx.setColor(hudFgClr)
+    if frameCounter == 0 then
+        self:renderStart()
+    else
+        self:renderDefault()
+    end
+end
+
+--- Render HUD for frame 0, with challenge centered
+function GameHUD:renderStart()
+    local font = defaultFont
+    local _, iconIdx = self:challengeViewState()
+    -- render
+    local textW = font:getTextWidth(self.challengeTarget)
+    local totalWidth = textW + hudGutter + 16
+    local x = (screenWidth - totalWidth)/2
+    drawIcon(x, iconIdx,0)
+    x = x + hudGutter + 16
+    font:drawText(self.challengeTarget,x,hudY)
+end
+
+function GameHUD:renderDefault()
     local x = hudPadding
 
     -- lives
@@ -139,7 +153,15 @@ function GameHUD:render()
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
 
-    renderChallenge(self)
+    -- challenge
+    local currentValue, iconIdx = self:challengeViewState()
+    -- render
+    local textW = monoFont:getTextWidth(currentValue)
+    x = screenWidth - textW - hudPadding
+    monoFont:drawText(currentValue,x,hudY+8)
+    x = x - hudGutter - 16
+    local srcY = boolToNum(self.challengeTarget < currentValue)*16
+    drawIcon(x, iconIdx,srcY)
 end
 
 --- Notify the GameHud that the count of one of the stats has changed.

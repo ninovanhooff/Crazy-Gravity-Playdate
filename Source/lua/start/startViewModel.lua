@@ -71,7 +71,7 @@ local function quickStartScreen()
     gameHUD.selectedChallenge = challengeIdx
     gameHUD.challengeTarget = getChallengesForPath(levelPath)[challengeIdx]
     currentLevel = selectLevelNum
-    return GameScreen(levelPath)
+    return GameScreen(levelPath, challengeIdx)
 end
 
 --- param buttonIdx: 0-based

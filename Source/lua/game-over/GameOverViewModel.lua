@@ -37,7 +37,7 @@ end
 
 local function nextLevel()
     currentLevel = currentLevel + 1
-    InitGame(levelPath())
+    InitGame(levelPath(), firstUnCompletedChallenge(currentLevel) or 1)
     popScreen()
 end
 

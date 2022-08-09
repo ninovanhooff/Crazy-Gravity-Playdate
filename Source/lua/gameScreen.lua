@@ -22,9 +22,9 @@ import "level-select/levelSelectScreen.lua"
 
 class("GameScreen").extends(Screen)
 
-function GameScreen:init(levelPath)
+function GameScreen:init(levelPath, challengeIdx)
     GameScreen.super.init(self)
-    InitGame(levelPath)
+    InitGame(levelPath, challengeIdx)
 end
 
 function GameScreen:pause()
