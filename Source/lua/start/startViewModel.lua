@@ -64,6 +64,16 @@ local function createLogoEnterAnimator()
     return animator.new(enterDuration, 0, 1, enterEasing)
 end
 
+--- create a GameScreen for the level and challenge the player is most likely to want to play next
+local function quickStartScreen()
+    local selectLevelNum, challengeIdx = nextUnfinishedLevel()
+    local levelPath = levelPath(selectLevelNum)
+    gameHUD.selectedChallenge = challengeIdx
+    gameHUD.challengeTarget = getChallengesForPath(levelPath)[challengeIdx]
+    currentLevel = selectLevelNum
+    return GameScreen(levelPath)
+end
+
 --- param buttonIdx: 0-based
 local function createButtonEnterAnimator(buttonIdx)
     local y = buttonStartY + buttonIdx*buttonSpacingV
@@ -88,7 +98,7 @@ function StartViewModel:init()
             text = "Quick Start",
             w = buttonWidth, h = buttonHeight,
             progress = 0.0,
-            onClickScreen = function() return GameScreen(levelPath(3)) end,
+            onClickScreen = quickStartScreen,
             animator = createButtonEnterAnimator(1)
         },
         {

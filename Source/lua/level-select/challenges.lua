@@ -28,6 +28,6 @@ local challenges = {
 }
 
 
-function getChallengeForPath(path)
+function getChallengesForPath(path)
     return challenges[path] or defaultChallenges
 end

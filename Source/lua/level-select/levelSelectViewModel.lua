@@ -21,33 +21,8 @@ local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
-local file <const> = playdate.file
-
-local numLevels = 0
-while file.exists(levelPath(numLevels+1) .. ".pdz") do numLevels = numLevels + 1 end
-if numLevels == 0 then
-    error("no levels")
-end
 
 local ceil <const> = math.ceil
-
--- Select the first challenge that was not completed
-local function getDefaultChallenge(self)
-    local selectedChallenges = self:selectedOption().challenges
-    local selectedRecords = records[self.selectedIdx]
-    if not selectedChallenges or not selectedRecords then
-        self.selectedChallenge = 1
-        return 1
-    end
-
-    for i, challenge in ipairs(selectedChallenges) do
-        if challenge < selectedRecords[i] then -- the challenge was not beat
-            return i
-        end
-    end
-
-    return 1
-end
 
 class("LevelSelectViewModel").extends()
 
@@ -60,13 +35,13 @@ function LevelSelectViewModel:init()
     for i = 1,numLevels do
         self.menuOptions[i] = {
             title = levelNames[i],
-            challenges = getChallengeForPath(levelPath(i)),
+            challenges = getChallengesForPath(levelPath(i)),
             levelNumber = i,
             -- scores added on resume
         }
     end
     self.selectedIdx = numLevelsUnlocked()
-    self.selectedChallenge = getDefaultChallenge(self)
+    self.selectedChallenge = firstUnCompletedChallenge(self.selectedIdx) or 1
 end
 
 function LevelSelectViewModel:resume()
@@ -113,7 +88,7 @@ function LevelSelectViewModel:update()
         local function timerCallback()
             if self.selectedIdx < #self.menuOptions and (numLevelsUnlocked() >= self.selectedIdx + 1 or Debug) then
                 self.selectedIdx = self.selectedIdx + 1
-                self.selectedChallenge = getDefaultChallenge(self)
+                self.selectedChallenge = firstUnCompletedChallenge(self.selectedIdx) or 1
             end
         end
         self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
@@ -121,7 +96,7 @@ function LevelSelectViewModel:update()
         local function timerCallback()
             if self.selectedIdx > 1 then
                 self.selectedIdx = self.selectedIdx - 1
-                self.selectedChallenge = getDefaultChallenge(self)
+                self.selectedChallenge = firstUnCompletedChallenge(self.selectedIdx) or 1
             end
         end
         self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)

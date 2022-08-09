@@ -31,5 +31,5 @@ function updateRecords(levelNumber, newRecord)
 end
 
 function numLevelsUnlocked()
-    return #records + 1 -- first level is available immediately
+    return math.min(#records + 1, numLevels) -- first level is available immediately
 end

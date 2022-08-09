@@ -10,6 +10,7 @@ import "input/InputManager.lua"
 import "settings/physicsSettings.lua"
 import "settings/options.lua"
 import "records.lua"
+import "levelSuggestion.lua"
 import "CoreLibs/utilities/sampler"
 if Debug then
     import "unittests.lua"
