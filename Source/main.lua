@@ -59,15 +59,9 @@ function popScreen()
 end
 
 pushScreen(StartScreen())
---pushScreen(LevelSelectScreen())
+pushScreen(LevelSelectScreen())
 --pushScreen(GameScreen(levelPath(1)))
 --pushScreen(SettingsScreen())
-pushScreen(VideoPlayerScreen(
-    "video/orientation",
-    function()
-        return VideoPlayerScreen("video/congratulations")
-    end
-))
 
 function playdate.update()
     gfx.pushContext() --make sure we start the frame with a clean gfx state.

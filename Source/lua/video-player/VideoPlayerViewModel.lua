@@ -1,6 +1,7 @@
 import "CoreLibs/object"
 
 local justPressed <const> = playdate.buttonJustPressed
+local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
 
 class("VideoPlayerViewModel").extends()
@@ -20,6 +21,10 @@ function VideoPlayerViewModel:onVideoFinished()
 end
 
 function VideoPlayerViewModel:update()
+    if justPressed(buttonA) then
+        -- skip video
+        self:onVideoFinished()
+    end
     if justPressed(buttonB) then
         popScreen()
     end

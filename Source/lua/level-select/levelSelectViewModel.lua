@@ -8,7 +8,7 @@ import "CoreLibs/object"
 import "CoreLibs/timer"
 import "../util.lua"
 import "challenges.lua"
-import "lua/gameScreen.lua"
+import "../video-player/VideoPlayerScreen.lua"
 import "../gameHUD.lua"
 
 local numChallenges <const> = numChallenges
@@ -137,9 +137,20 @@ function LevelSelectViewModel:update()
         gameHUD.selectedChallenge = self.selectedChallenge
         gameHUD.challengeTarget = self:selectedOption()["challenges"][self.selectedChallenge]
         currentLevel = self.selectedIdx
-        pushScreen(
-            GameScreen(levelPath())
-        )
+        -- start orientation video
+        if self.selectedIdx == 1 then
+            pushScreen(VideoPlayerScreen(
+                "video/orientation",
+                function()
+                    return GameScreen(levelPath())
+                end
+            ))
+        else
+            pushScreen(
+                GameScreen(levelPath())
+            )
+        end
+
     elseif justPressed(buttonB) then
         self:finish()
     end
