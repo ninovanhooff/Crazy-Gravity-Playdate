@@ -33,7 +33,6 @@ function VideoPlayerView:resume()
 end
 
 function VideoPlayerView:pause()
-    print("pausing")
     self.audio:stop()
     playdate.setAutoLockDisabled(false)
 end
