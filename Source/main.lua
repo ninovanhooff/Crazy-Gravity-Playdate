@@ -5,6 +5,7 @@ import "lua/init.lua"
 import "lua/start/startScreen.lua"
 import "lua/level-select/levelSelectScreen.lua"
 import "lua/settings/SettingsScreen.lua"
+import "lua/video-player/VideoPlayerScreen.lua"
 
 local gfx <const> = playdate.graphics
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
@@ -58,7 +59,7 @@ function popScreen()
 end
 
 pushScreen(StartScreen())
---pushScreen(LevelSelectScreen())
+pushScreen(LevelSelectScreen())
 --pushScreen(GameScreen(levelPath(1)))
 --pushScreen(SettingsScreen())
 

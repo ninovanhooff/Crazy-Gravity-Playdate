@@ -13,10 +13,10 @@ Available as pdz at runtime, which can be loaded with file.run()
 ## Credits
 Nino - Programming
 Axel Meierhöfer - Concept (Crazy Gravity)
+Bonjo - Logo and device mockups
 Script - Magnum Kramer from Fiverr
 Count Moriarty - Art
 Labeardi - Art
 Fiverr - Sprites
 Fiverr - Audio effects
-Fiverr - jhvoices as CEO
-Choosh - Music
+Fiverr - Jodi Hutton as CEO
