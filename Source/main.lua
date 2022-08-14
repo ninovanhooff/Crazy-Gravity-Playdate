@@ -60,7 +60,7 @@ end
 
 pushScreen(StartScreen())
 pushScreen(LevelSelectScreen())
---pushScreen(GameScreen(levelPath(1)))
+--pushScreen(GameScreen(levelPath(1), 1))
 --pushScreen(SettingsScreen())
 
 function playdate.update()
