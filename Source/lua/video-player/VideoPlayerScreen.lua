@@ -5,29 +5,28 @@ import "VideoPlayerViewModel.lua"
 
 class("VideoPlayerScreen").extends(Screen)
 
-local videoPlayerView, videoPlayerViewModel
 
-function VideoPlayerScreen:init()
+function VideoPlayerScreen:init(basePath, nextScreenFun)
     VideoPlayerScreen.super.init(self)
-    videoPlayerViewModel = VideoPlayerViewModel()
-    videoPlayerView = VideoPlayerView(videoPlayerViewModel)
+    self.videoPlayerViewModel = VideoPlayerViewModel(basePath, nextScreenFun)
+    self.videoPlayerView = VideoPlayerView(self.videoPlayerViewModel)
 end
 
 function VideoPlayerScreen:update()
-    videoPlayerView:render(videoPlayerViewModel)
-    videoPlayerViewModel:update()
+    self.videoPlayerViewModel:update()
+    self.videoPlayerView:render(self.videoPlayerViewModel)
 end
 
 function VideoPlayerScreen:pause()
-    videoPlayerViewModel:pause()
-    videoPlayerView:pause()
+    self.videoPlayerViewModel:pause()
+    self.videoPlayerView:pause()
 end
 
 function VideoPlayerScreen:destroy()
-    videoPlayerView:destroy()
+    self.videoPlayerView:destroy()
 end
 
 function VideoPlayerScreen:resume()
-    videoPlayerViewModel:resume()
-    videoPlayerView:resume()
+    self.videoPlayerViewModel:resume()
+    self.videoPlayerView:resume()
 end

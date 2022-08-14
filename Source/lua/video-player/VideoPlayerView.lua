@@ -4,42 +4,37 @@ local gfx <const> = playdate.graphics
 
 class("VideoPlayerView").extends()
 
-local disp = playdate.display
 local snd = playdate.sound
 
-local baseName <const> = 'video/posterize_bayer2_bright'
-local video = gfx.video.new(baseName)
-local width, height = video:getSize()
-local framerate = video:getFrameRate()
-print("video size", width, height, "frameRate", framerate, "frameCount", video:getFrameCount())
-video:getContext()
-video:renderFrame(0)
-
-local lastframe = 0
-
-local audio, loaderr = snd.sampleplayer.new(baseName)
-print("audio", audio)
-
-if audio ~= nil then
-    audio:play(0)
-else
-    print("loaderr", loaderr)
-end
-
-function VideoPlayerView:init()
+function VideoPlayerView:init(viewModel)
     VideoPlayerView.super.init(self)
+
+    print("Loading video", viewModel.basePath)
+    self.video = gfx.video.new(viewModel.basePath)
+    local width, height = self.video:getSize()
+    self.framerate = self.video:getFrameRate()
+    self.frameCount = self.video:getFrameCount()
+    print("video size", width, height, "frameRate", self.framerate, "frameCount", self.frameCount)
+
+    self.audio, self.loaderr = snd.sampleplayer.new(viewModel.basePath)
+    if self.audio == nil then
+        print("loaderr", self.loaderr)
+    end
+    print("audio", audio)
+    self.lastframe = 0
     self.offsetX = (400-width)/2
 end
 
 function VideoPlayerView:resume()
-    disp.setRefreshRate(25)
     playdate.setAutoLockDisabled(true)
+    if self.audio ~= nil then
+        self.audio:play()
+    end
 end
 
 function VideoPlayerView:pause()
     print("pausing")
-    audio:stop()
-    disp.setRefreshRate(30)
+    self.audio:stop()
     playdate.setAutoLockDisabled(false)
 end
 
@@ -48,11 +43,15 @@ function VideoPlayerView:destroy()
 end
 
 function VideoPlayerView:render(viewModel)
-    local frame = math.floor(audio:getOffset() * video:getFrameRate())
+    local frame = math.floor(self.audio:getOffset() * self.framerate)
 
     if frame ~= lastframe then
-        video:renderFrame(frame)
-        lastframe = frame
-        video:getContext():draw(self.offsetX,0)
+        self.video:renderFrame(frame)
+        self.lastframe = frame
+        self.video:getContext():draw(self.offsetX,0)
+    end
+
+    if frame >= self.frameCount then
+        viewModel:onVideoFinished()
     end
 end
