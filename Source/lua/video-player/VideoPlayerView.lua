@@ -1,6 +1,7 @@
 import "CoreLibs/object"
 
 local gfx <const> = playdate.graphics
+local cardIcon <const> = gfx.image.new("images/card_info_icon")
 local subtitleBox <const> = playdate.geometry.rect.new(0, 212, 400, 28)
 local subtitleRect <const> = playdate.geometry.rect.new(8, 218, 384, 28)
 
@@ -27,9 +28,12 @@ function VideoPlayerView:init(viewModel)
     self.lastframe = 0
     self.offsetX = (400-width)/2
 
-    self.subtitles, self.loaderr = json.decodeFile(basePath .. ".json")
+    self.metadata, self.loaderr = json.decodeFile(basePath .. ".json")
     if self.loaderr then
         print(self.loaderr)
+    else
+        self.cards = self.metadata.cards
+        self.subtitles = self.metadata.subtitles
     end
     printTable(self.subtitles)
 end
@@ -57,6 +61,17 @@ function VideoPlayerView:render(viewModel)
         self.video:renderFrame(frame)
         self.lastframe = frame
         self.video:getContext():draw(self.offsetX,0)
+
+        local cardText = self:getCurrentCardText()
+        if cardText then
+            gfx.setColor(gfx.kColorWhite)
+            local width = monoFont:getTextWidth(cardText) + 28
+            gfx.fillRect(396-width, 4, width, 16)
+            monoFont:drawText(cardText, 396 - width + 4, 8)
+            gfx.setColor(gfx.kColorBlack)
+            cardIcon:draw(378,4)
+        end
+
         local subtitle = self:getCurrentSubtitle()
         if subtitle then
             gfx.setColor(gfx.kColorBlack)
@@ -68,6 +83,21 @@ function VideoPlayerView:render(viewModel)
 
     if frame >= self.frameCount then
         viewModel:onVideoFinished()
+    end
+end
+
+--- returns the subtitle at the current audio offset, or nil
+function VideoPlayerView:getCurrentCardText()
+    if not self.cards then
+        return nil
+    end
+
+    local currentTime = self.audio:getOffset()
+
+    for _,item in ipairs(self.cards) do
+        if item.start < currentTime and item["end"] > currentTime then
+            return item.text
+        end
     end
 end
 

@@ -12,6 +12,8 @@ import "settings/options.lua"
 import "records.lua"
 import "levelSuggestion.lua"
 import "CoreLibs/utilities/sampler"
+import "CoreLibs/graphics"
+
 if Debug then
     import "unittests.lua"
 end
