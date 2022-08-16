@@ -71,7 +71,7 @@ function VideoPlayerView:render(viewModel)
             gfx.setColor(gfx.kColorWhite)
             local width = monoFont:getTextWidth(cardText) + 28
             gfx.fillRect(396-width, 4, width, 16)
-            monoFont:drawText(cardText, 396 - width + 4, 8)
+            monoFont:drawText(cardText, 396 - width + 4, 5)
             gfx.setColor(gfx.kColorBlack)
             cardIcon:draw(378,4)
         end
