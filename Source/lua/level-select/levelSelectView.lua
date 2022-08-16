@@ -61,7 +61,7 @@ local function renderChallengePill(x, y, selected, hudIdx, text)
     end
     gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
     hudIcons:draw(x + 8,y+1,unFlipped,hudIdx*16,0,16,16)
-    monoFont:drawText(text, x+28, y+6)
+    monoFont:drawText(text, x+28, y+3)
     gfx.popContext()
     return w
 end
@@ -99,7 +99,7 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     gfx.drawLine(infoX, vDivider,right-2*gutter, vDivider)
 
     -- challenges
-    monoFont:drawText("Achievements", infoX, vDivider + gutter + 1)
+    monoFont:drawText("Achievements", infoX, vDivider + gutter  - 2)
     local iconY = vDivider + 14 + gutter
 
     for i = 0,2 do
@@ -142,10 +142,10 @@ local function renderDetailScreen(info)
         banners[levelNumber]:draw(detailRect.x + 1, infoY + 1)
         gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     end
-    infoY = infoY + 70
+    infoY = infoY + 67
 
     monoFont:drawText("Challenges", detailRect.x, infoY)
-    infoY = infoY + 12
+    infoY = infoY + 15
     -- challenges
     local challengeX = detailRect.x
     -- time
@@ -171,10 +171,10 @@ local function renderDetailScreen(info)
     -- scores
     if(info.scores) then
         monoFont:drawText("Personal Best", detailRect.x, infoY)
-        infoY = infoY + 12
+        infoY = infoY + 15
         for i, item in ipairs(info.scores) do
             hudIcons:draw(detailRect.x,infoY,unFlipped,48+i*16,0,16,16)
-            monoFont:drawText(item, detailRect.x + 20, infoY + 5)
+            monoFont:drawText(item, detailRect.x + 20, infoY + 2)
             infoY = infoY + 20
         end
     end

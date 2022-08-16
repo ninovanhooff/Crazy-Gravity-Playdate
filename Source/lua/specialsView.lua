@@ -42,7 +42,7 @@ function RenderPlatform(item)
             gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         end
         sprite:draw(scrX+32, pltfrmY-16, unFlipped, 192, 346, 16, 16)
-        monoFont:drawText(table.sum(remainingFreight)+#planeFreight, scrX+36, pltfrmY - 11)
+        monoFont:drawText(table.sum(remainingFreight)+#planeFreight, scrX+36, pltfrmY - 14)
         if frameCounter < frameRate then
             local startText = levelProps["startText"]
             if startText then

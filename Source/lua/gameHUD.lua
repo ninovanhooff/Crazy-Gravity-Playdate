@@ -157,7 +157,7 @@ function GameHUD:renderDefault()
     -- render
     local textW = monoFont:getTextWidth(currentValue)
     x = screenWidth - textW - hudPadding
-    monoFont:drawText(currentValue,x,hudY+8)
+    monoFont:drawText(currentValue,x,hudY+2)
     x = x - hudGutter - 16
     local srcY = boolToNum(self.challengeTarget < currentValue)*16
     drawIcon(x, iconIdx,srcY)

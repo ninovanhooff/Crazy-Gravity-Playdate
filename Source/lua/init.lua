@@ -57,7 +57,7 @@ gfx.setColor(gfx.kColorBlack)
 local originalSystemFont = playdate.graphics.getSystemFont()
 gfx.setFont( originalSystemFont, playdate.graphics.font.kVariantItalic )
 gfx.setFont(playdate.graphics.getSystemFont(playdate.graphics.font.kVariantBold))
-monoFont = gfx.font.new("fonts/Marble Madness")
+monoFont = gfx.font.new("fonts/Roobert/Roobert-9-Mono-Condensed")
 dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
 if not dotFont then error("could not load dotFont") end
 

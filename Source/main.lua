@@ -60,7 +60,7 @@ end
 
 pushScreen(StartScreen())
 pushScreen(LevelSelectScreen())
-pushScreen(VideoPlayerScreen("video/orientation"))
+--pushScreen(VideoPlayerScreen("video/orientation"))
 --pushScreen(SettingsScreen())
 
 function playdate.update()
