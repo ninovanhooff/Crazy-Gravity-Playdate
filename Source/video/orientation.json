@@ -1,3 +1,5 @@
-﻿{ "cards": [{"start":12,"end":14,"text":"Conditions apply"}],
+﻿{
+  "chyrons": [{"start": 0, "end": 3, "title": "Stephanie Shipwell", "subtitle": "CEO Gravity Express"}],
+  "cards": [{"start":12,"end":14,"text":"Conditions apply"}],
   "subtitles" : [{"start":1.09,"end":5.6,"text":"Welcome to Gravity Express, foolhardy pilot."},{"start":5.6,"end":8.034,"text":"To receive your license, you must complete our"},{"start":8.034,"end":12.034,"text":"\"Totally safe pilot orientation obstacle course\" ®"},{"start":14.94,"end":17.034,"text":"In case you're wondering why we use"},{"start":17.034,"end":19.6,"text":"lethal obstacles  in our training..."},{"start":19.6,"end":22.034,"text":"clients won't pay extra for your funeral,"},{"start":22.034,"end":24.434,"text":"...nor will Gravity Express."},{"start":24.434,"end":26.9,"text":"Remember our company slogan:"},{"start":26.9,"end":30.04,"text":"\"You can die on your own time\""},{"start":30.04,"end":30.867,"text":"Good luck!"},{"start":30.867,"end":34.36,"text":"I hope you will become a valued employee and not"},{"start":34.36,"end":35.39,"text":"smoking wreckage."}]
 }

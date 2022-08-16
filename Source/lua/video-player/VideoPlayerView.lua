@@ -34,8 +34,9 @@ function VideoPlayerView:init(viewModel)
     else
         self.cards = self.metadata.cards
         self.subtitles = self.metadata.subtitles
+        self.chyrons = self.metadata.chyrons
     end
-    printTable(self.subtitles)
+    printTable(self.chyrons)
 end
 
 function VideoPlayerView:resume()
@@ -62,8 +63,11 @@ function VideoPlayerView:render(viewModel)
         self.lastframe = frame
         self.video:getContext():draw(self.offsetX,0)
 
-        local cardText = self:getCurrentCardText()
-        if cardText then
+        self:renderChyron()
+
+        local card = self:getCurrentMetaData(self.cards)
+        if card then
+            local cardText = card.text
             gfx.setColor(gfx.kColorWhite)
             local width = monoFont:getTextWidth(cardText) + 28
             gfx.fillRect(396-width, 4, width, 16)
@@ -72,12 +76,12 @@ function VideoPlayerView:render(viewModel)
             cardIcon:draw(378,4)
         end
 
-        local subtitle = self:getCurrentSubtitle()
+        local subtitle = self:getCurrentMetaData(self.subtitles)
         if subtitle then
             gfx.setColor(gfx.kColorBlack)
             gfx.fillRect(subtitleBox)
             gfx.setImageDrawMode(gfx.kDrawModeInverted)
-            gfx.drawTextInRect(subtitle, subtitleRect, nil, "...", kTextAlignment.center)
+            gfx.drawTextInRect(subtitle.text, subtitleRect, nil, "...", kTextAlignment.center)
         end
     end
 
@@ -86,32 +90,64 @@ function VideoPlayerView:render(viewModel)
     end
 end
 
---- returns the subtitle at the current audio offset, or nil
-function VideoPlayerView:getCurrentCardText()
-    if not self.cards then
-        return nil
+local chyronTop <const> = 175
+local chyronLeft <const> = 20
+local chyronSlant <const> = 16
+local chyronHeight <const> = 18
+--- The words on the screen that identify speakers, locations, or story subjects
+function VideoPlayerView:renderChyron()
+    local chyron = self:getCurrentMetaData(self.chyrons)
+    if not chyron then
+        return
     end
 
-    local currentTime = self.audio:getOffset()
+    local title = chyron.title
+    local subtitle = chyron.subtitle
 
-    for _,item in ipairs(self.cards) do
-        if item.start < currentTime and item["end"] > currentTime then
-            return item.text
-        end
-    end
+    local titleWidth = gfx.getFont():getTextWidth(title)
+    local titlePoly = playdate.geometry.polygon.new(
+        chyronLeft, chyronTop,
+        chyronLeft + titleWidth + chyronSlant, chyronTop,
+        chyronLeft + titleWidth, chyronTop + chyronHeight,
+        chyronLeft - chyronSlant, chyronTop + chyronHeight,
+        chyronLeft, chyronTop
+    )
+
+    local subtitleWidth = monoFont:getTextWidth(subtitle)
+    local subtitleTop = chyronTop + chyronHeight - 3
+    local subtitleLeft = chyronLeft
+    local subtitlePoly = playdate.geometry.polygon.new(
+        subtitleLeft, subtitleTop,
+        subtitleLeft + subtitleWidth + chyronSlant, subtitleTop,
+        subtitleLeft + subtitleWidth, subtitleTop + chyronHeight,
+        subtitleLeft - chyronSlant, subtitleTop + chyronHeight,
+        subtitleLeft, subtitleTop
+    )
+
+
+    gfx.fillPolygon(subtitlePoly)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.drawPolygon(subtitlePoly)
+
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillPolygon(titlePoly)
+    gfx.setColor(gfx.kColorBlack)
+
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
+    gfx.drawText(title, chyronLeft, chyronTop)
+    monoFont:drawText(subtitle, subtitleLeft, subtitleTop+4)
 end
 
---- returns the subtitle at the current audio offset, or nil
-function VideoPlayerView:getCurrentSubtitle()
-    if not self.subtitles then
+function VideoPlayerView:getCurrentMetaData(metaData)
+    if not metaData then
         return nil
     end
 
     local currentTime = self.audio:getOffset()
 
-    for _,item in ipairs(self.subtitles) do
-        if item.start < currentTime and item["end"] > currentTime then
-            return item.text
+    for _,item in ipairs(metaData) do
+        if item.start <= currentTime and item["end"] >= currentTime then
+            return item
         end
     end
 end
