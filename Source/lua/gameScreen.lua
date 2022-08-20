@@ -38,6 +38,10 @@ function GameScreen:pause()
         menu:removeMenuItem(self.settingsMenuItem)
         self.settingsMenuItem = nil
     end
+    if self.restartMenuItem then
+        menu:removeMenuItem(self.restartMenuItem)
+        self.restartMenuItem = nil
+    end
 end
 
 function GameScreen:destroy()
@@ -50,6 +54,9 @@ function GameScreen:resume()
     end)
     self.backMenuItem = menu:addMenuItem("Quit level", function()
         popScreen()
+    end)
+    self.restartMenuItem = menu:addMenuItem("Restart level", function()
+        ResetGame()
     end)
 
 end
