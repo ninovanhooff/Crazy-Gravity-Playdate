@@ -109,7 +109,6 @@ local function CalcGameCam()
 
     -- horizontal clamping
     camAfterX = clamp(camAfterX, tileSize, (levelProps.sizeX- gameWidthTiles + 1) * tileSize)
-    camAfterX = roundToNearest(camAfterX,2)
     cam[1] = floor(camAfterX / tileSize)
     cam[3] = camAfterX % tileSize
 
@@ -124,7 +123,6 @@ local function CalcGameCam()
 
     -- vertical clamping
     camAfterY = clamp(camAfterY, tileSize, (levelProps.sizeY- gameHeightTiles - 1) * tileSize)
-    camAfterY = roundToNearest(camAfterY,2)
     cam[2] = floor(camAfterY / tileSize)
     cam[4] = camAfterY % tileSize
 
