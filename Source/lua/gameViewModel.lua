@@ -128,6 +128,7 @@ local function CalcGameCam()
 
     if Debug then
         dX = camAfterX - camBeforeX
+        dY = camAfterY - camBeforeY
         TargetX, TargetY = targetX - camAfterX, targetY - camAfterY
         --print("camBefore",camBeforeX, camBeforeY, "dxdy", dX, camAfterY - camBeforeY, "TargetX", TargetX, "TargetY", TargetY)
     end

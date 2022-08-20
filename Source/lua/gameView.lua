@@ -54,10 +54,10 @@ function RenderGame()
     end
 end
 
-local dXHistory = {}
-local dxHistoryMaxLength = 60
-local dxHeight = 12
-local dxOrigin <const> = 100
+local dXHistory, dYHistory = {}, {}
+local dxHistoryMaxLength, dyHistoryMaxLength = 60, 60
+local dxHeight, dyHeight = 12, 12
+local dxOrigin <const>, dyOrigin <const> = 70, 100
 
 function RenderGameDebug()
     if collision then
@@ -97,10 +97,32 @@ function RenderGameDebug()
         table.remove(dXHistory, 1)
     end
 
+    if dY then
+        table.insert(dYHistory, dY)
+    end
+
+    if #dYHistory > dyHistoryMaxLength then
+        table.remove(dYHistory, 1)
+    end
+
+    -- render dx graph
     for i, item in ipairs(dXHistory) do
         gfx.drawPixel(dxOrigin + i, dxOrigin - item)
     end
 
+    local oldDrawMode = gfx.getImageDrawMode()
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
+    gfx.drawText("dX", dxOrigin - 25, dxOrigin)
+    gfx.drawText("dY", dyOrigin - 25, dyOrigin)
+    gfx.setImageDrawMode(oldDrawMode) --text color
     gfx.drawLine(dxOrigin, dxOrigin, dxOrigin + dxHistoryMaxLength, dxOrigin)
     gfx.drawLine(dxOrigin, dxOrigin - dxHeight, dxOrigin, dxOrigin + dxHeight)
+
+    -- render dy graph
+    for i, item in ipairs(dYHistory) do
+        gfx.drawPixel(dyOrigin + i, dyOrigin + item)
+    end
+
+    gfx.drawLine(dyOrigin, dyOrigin, dyOrigin + dyHistoryMaxLength, dyOrigin)
+    gfx.drawLine(dyOrigin, dyOrigin - dyHeight, dyOrigin, dyOrigin + dyHeight)
 end
