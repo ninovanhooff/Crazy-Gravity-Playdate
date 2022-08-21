@@ -43,10 +43,10 @@ function CamController:update(value, target)
         result = result + self.speed
     end
 
-    if abs(target - result) > speedStep then
-        -- push towards zero error, prevents off-target equilibrium
-        result = result + sign(target - result) * speedStep
-    end
+    --if abs(target - result) > speedStep then
+    --    -- push towards zero error, prevents off-target equilibrium
+    --    result = result + sign(target - result) * speedStep
+    --end
 
     self.lastTarget = target
     return result
