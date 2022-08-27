@@ -1,3 +1,6 @@
 [submodule "Source/levels"]
 	path = Source/levels
 	url = git@github.com:ninovanhooff/gravity-express-levels.git
+[submodule "Source/libs/master-player"]
+	path = Source/libs/master-player
+	url = git@github.com:ninovanhooff/master-player.git
