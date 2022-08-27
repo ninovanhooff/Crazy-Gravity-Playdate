@@ -3,15 +3,13 @@
 --- Created by ninovanhooff.
 --- DateTime: 11/03/2022 16:59
 ---
-Debug = true -- no commit
 
-
+import "CoreLibs/utilities/sampler"
 import "input/InputManager.lua"
 import "settings/physicsSettings.lua"
 import "settings/options.lua"
 import "records.lua"
 import "levelSuggestion.lua"
-import "CoreLibs/utilities/sampler"
 import "CoreLibs/graphics"
 
 if Debug then

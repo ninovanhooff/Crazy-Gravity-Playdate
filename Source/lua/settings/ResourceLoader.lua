@@ -3,12 +3,12 @@
 --- Created by ninovanhooff.
 --- DateTime: 02/07/2022 11:11
 ---
-
+import "CoreLibs/utilities/sampler"
 import "CoreLibs/object"
+import "../MusicManager.lua"
 
 local gfx <const> = playdate.graphics
 local sampleplayer <const> = playdate.sound.sampleplayer
-local sample <const> = playdate.sound.sample
 
 class("ResourceLoader").extends()
 
@@ -62,7 +62,7 @@ function ResourceLoader:loadSounds(useClassic)
     if useClassic then
         pickup_sound = sampleplayer.new("sounds/classic/pickup.wav")
         key_sound = sampleplayer.new("sounds/classic/key.wav")
-        local extras_player = sampleplayer.new(sample.new("sounds/classic/extra.wav"))
+        local extras_player = sampleplayer.new(playdate.sound.sample.new("sounds/classic/extra.wav"))
         extra_sounds = {
             extras_player, extras_player, extras_player
         }
@@ -80,6 +80,12 @@ function ResourceLoader:loadSounds(useClassic)
         fuel_sound = sampleplayer.new("sounds/fuel.wav")
     end
     self:setSoundVolume(self.soundVolume)
+end
+
+function ResourceLoader:loadMusic(track)
+    print("---MUSIC", track)
+    sample("loading new track", function()  musicManager:play(track) end, 1)
+    print("---END MUSIC")
 end
 
 local function setVolume(self, volume, ...)

@@ -33,10 +33,12 @@ local PATTERN_KEY <const> = "brickPattern"
 local PATTERN_VALS <const> = {"lighter", "light", "dark", "darker", "white", "default"}
 local INVERT_KEY <const> = "invertDisplay"
 local SPEED_KEY <const> = "gameFps"
-local SPEED_VALS <const> = {15, 20, 25, 30}
+local SPEED_VALS <const> = {15, 20, 25, 30, 0}
 local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
 local AUDIO_VOLUME_VALS <const> = { "off", 10, 20, 30, 40 , 50 , 60 , 70, 80, 90, 100 }
+local MUSIC_TRACK_KEY <const> = "musicTrack"
+local MUSIC_TRACK_VALS <const> = {"MIDI2", "MIDI7", "MIDI24", "MP3", "FADPCM", "SADPCM", "NONE"}
 
 local BUTTON_VALS <const> = {
     {label="_⬆_️", keys = playdate.kButtonUp},
@@ -84,6 +86,7 @@ local gameOptions = {
         options = {
             { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
             { name='Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
+            { name='Music', key= MUSIC_TRACK_KEY, values= MUSIC_TRACK_VALS, default=2},
         }
     },
     {
@@ -302,6 +305,8 @@ function Options:apply()
         end
         resourceLoader:setSoundVolume(audioVolume)
     end
+    local musicTrack = MUSIC_TRACK_VALS[self:read(MUSIC_TRACK_KEY)]
+    resourceLoader:loadMusic(musicTrack)
 
     local inverted = self:read(INVERT_KEY)
     print("set inverted:", inverted)
