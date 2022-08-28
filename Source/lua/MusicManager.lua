@@ -27,12 +27,6 @@ function MusicManager:play(track)
         self.player = MasterPlayer("music/E1M8.mid")
     elseif track == "MIDI7" then
         self.player = MasterPlayer("music/E1M9.mid")
-    elseif track == "MP3" then
-        self.player = playdate.sound.fileplayer.new("music/realmaybe_countdown_joint_64.mp3")
-    elseif track == "FADPCM" then
-        self.player, err = playdate.sound.fileplayer.new("music/scifi_adpcm")
-    elseif track == "SADPCM" then
-        self.player, err = playdate.sound.sampleplayer.new("music/realmaybe_adpcm")
     end
 
     if self.player then

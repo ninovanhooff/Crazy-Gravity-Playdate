@@ -38,7 +38,7 @@ local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
 local AUDIO_VOLUME_VALS <const> = { "off", 10, 20, 30, 40 , 50 , 60 , 70, 80, 90, 100 }
 local MUSIC_TRACK_KEY <const> = "musicTrack"
-local MUSIC_TRACK_VALS <const> = {"MIDI2", "MIDI7", "MIDI24", "MP3", "FADPCM", "SADPCM", "NONE"}
+local MUSIC_TRACK_VALS <const> = {"MIDI2", "MIDI7", "MIDI24", "NONE"}
 local MUSIC_VOLUME_KEY <const> = "musicVolume"
 
 local BUTTON_VALS <const> = {
