@@ -22,7 +22,7 @@ function MusicManager:play(track)
     self:stop()
 
     if track == "MIDI2" then
-        self.player = MasterPlayer("music/Portal - Still Alive.mid")
+        self.player = MasterPlayer("music/skrillex.mid")
     elseif track == "MIDI24" then
         self.player = MasterPlayer("music/E1M8.mid")
     elseif track == "MIDI7" then
