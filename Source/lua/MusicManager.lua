@@ -11,6 +11,7 @@ class("MusicManager").extends()
 
 function MusicManager:init()
     MusicManager.super.init()
+    self.volume = 1.0
 end
 
 if not musicManager then
@@ -18,10 +19,7 @@ if not musicManager then
 end
 
 function MusicManager:play(track)
-    if self.player then
-        self.player:stop()
-        self.player = nil
-    end
+    self:stop()
 
     if track == "MIDI2" then
         self.player = MasterPlayer("music/Portal - Still Alive.mid")
@@ -38,6 +36,22 @@ function MusicManager:play(track)
     end
 
     if self.player then
+        self.player:setVolume(self.volume)
         self.player:play()
+    end
+end
+
+function MusicManager:stop()
+    if self.player then
+        self.player:stop()
+        self.player = nil
+    end
+end
+
+-- range 0.0 - 1.0
+function MusicManager:setVolume(vol)
+    self.volume = vol
+    if self.player then
+        self.player:setVolume(vol)
     end
 end

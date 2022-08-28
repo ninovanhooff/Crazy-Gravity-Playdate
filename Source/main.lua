@@ -60,8 +60,7 @@ end
 
 pushScreen(StartScreen())
 pushScreen(LevelSelectScreen())
---pushScreen(VideoPlayerScreen("video/orientation"))
---pushScreen(SettingsScreen())
+pushScreen(GameScreen(levelPath(1), 1))
 
 function playdate.update()
     gfx.pushContext() --make sure we start the frame with a clean gfx state.

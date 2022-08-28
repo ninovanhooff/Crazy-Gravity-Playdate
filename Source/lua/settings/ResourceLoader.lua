@@ -104,3 +104,12 @@ function ResourceLoader:setSoundVolume(volume)
             key_sound, extra_sounds[1], extra_sounds[2], extra_sounds[3], fuel_sound, dump_sound)
     end
 end
+
+--- volume range 0.0-1.0. If 0.0, volume is not adjusted, but music is stopped
+function ResourceLoader:setMusicVolume(volume)
+    if volume == 0.0 then
+        musicManager:stop()
+    else
+        musicManager:setVolume(volume)
+    end
+end
