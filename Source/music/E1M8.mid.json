@@ -2,38 +2,72 @@
 	 {
 		"attack":0,
 		"decay":0.15000000596046,
-		"isMuted":false,
+		"isMuted":true,
 		"isSolo":false,
+		"notes": [
+		],
 		"release":0,
 		"sustain":0.20000000298023,
-		"synth":4,
-		"volume":0.20000001788139
+		"synth":2,
+		"volume":0.20000000298023
 	},
 	 {
 		"attack":0,
-		"decay":0.20000000298023,
+		"decay":0.20000006258488,
 		"isMuted":false,
 		"isSolo":false,
+		"notes": [
+			40,
+			52,
+			54,
+			55,
+			59
+		],
 		"release":0.40000000596046,
 		"sustain":0.30000001192093,
 		"synth":4,
-		"volume":0.10000001639128
+		"volume":0.10000000149012
 	},
 	 {
 		"attack":0,
-		"decay":0.30000001192093,
+		"decay":0.30000007152557,
 		"isMuted":false,
 		"isSolo":false,
+		"notes": [
+			24,
+			26,
+			28,
+			30,
+			31,
+			33,
+			35,
+			36,
+			40,
+			42,
+			43,
+			45,
+			47
+		],
 		"release":0.20000000298023,
 		"sustain":0.30000001192093,
 		"synth":7,
-		"volume":0.70000004768372
+		"volume":0.69999998807907
 	},
 	 {
 		"attack":0,
 		"decay":0.15000000596046,
 		"isMuted":false,
 		"isSolo":false,
+		"notes": [
+			36,
+			38,
+			40,
+			42,
+			43,
+			45,
+			47,
+			48
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":4,
@@ -44,6 +78,16 @@
 		"decay":0.15000000596046,
 		"isMuted":false,
 		"isSolo":false,
+		"notes": [
+			36,
+			38,
+			40,
+			42,
+			43,
+			45,
+			47,
+			48
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":4,
@@ -54,59 +98,125 @@
 		"decay":0.15000000596046,
 		"isMuted":false,
 		"isSolo":false,
+		"notes": [
+			24,
+			26,
+			28,
+			30,
+			31,
+			35,
+			36,
+			38,
+			40,
+			47,
+			52
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":4,
 		"volume":0.40000000596046
 	},
 	 {
-		"attack":0.30000001192093,
+		"attack":1.4901161193848e-08,
 		"decay":0.15000000596046,
 		"isMuted":false,
 		"isSolo":false,
-		"release":0.90000003576279,
-		"sustain":0.80000007152557,
-		"synth":7,
-		"volume":0.20000001788139
+		"notes": [
+			48,
+			50,
+			52,
+			59,
+			60,
+			62,
+			64,
+			66
+		],
+		"release":0.89999997615814,
+		"sustain":0.80000001192093,
+		"synth":"ChoirAh",
+		"volume":0.20000000298023
 	},
 	 {
-		"attack":0.20000000298023,
-		"decay":0.44999998807907,
+		"attack":0,
+		"decay":0.44900000095367,
 		"isMuted":false,
 		"isSolo":false,
+		"notes": [
+			64,
+			66,
+			67,
+			69,
+			71,
+			72,
+			76,
+			78
+		],
+		"release":0.80000001192093,
+		"sustain":1,
+		"synth":"ChoirAh",
+		"volume":0.20000000298023
+	},
+	 {
+		"attack":0,
+		"decay":0.15000000596046,
+		"isMuted":false,
+		"isSolo":false,
+		"notes": [
+			62,
+			64,
+			66,
+			67,
+			69
+		],
 		"release":0.80000007152557,
 		"sustain":0.20000000298023,
-		"synth":7,
-		"volume":0.20000000298023
+		"synth":"ChoirAh",
+		"volume":0.40000000596046
 	},
 	 {
 		"attack":0,
-		"decay":0.15000000596046,
+		"decay":0.54900002479553,
 		"isMuted":false,
 		"isSolo":false,
-		"release":0,
+		"notes": [
+			48,
+			50,
+			52,
+			54,
+			55,
+			57,
+			59,
+			60,
+			62,
+			64,
+			66
+		],
+		"release":0.19999994337559,
 		"sustain":0.20000000298023,
 		"synth":7,
-		"volume":0.20000000298023
+		"volume":0.40000000596046
 	},
 	 {
 		"attack":0,
-		"decay":0.44999998807907,
+		"decay":0.55000001192093,
 		"isMuted":false,
 		"isSolo":false,
-		"release":0.40000000596046,
-		"sustain":0.60000002384186,
-		"synth":7,
-		"volume":0.60000002384186
-	},
-	 {
-		"attack":0,
-		"decay":0.15000000596046,
-		"isMuted":false,
-		"isSolo":false,
-		"release":0,
+		"notes": [
+			48,
+			50,
+			52,
+			54,
+			55,
+			57,
+			59,
+			60,
+			62,
+			64,
+			66
+		],
+		"release":0.20000000298023,
 		"sustain":0.20000000298023,
-		"synth":4,
+		"synth":7,
 		"volume":0.40000000596046
 	},
 	 {
@@ -114,6 +224,11 @@
 		"decay":0.15000000596046,
 		"isMuted":false,
 		"isSolo":false,
+		"notes": [
+			36,
+			38,
+			40
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":4,
@@ -124,6 +239,12 @@
 		"decay":0.15000000596046,
 		"isMuted":false,
 		"isSolo":false,
+		"notes": [
+			62,
+			66,
+			67,
+			76
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":4,
@@ -134,26 +255,41 @@
 		"decay":0.15000000596046,
 		"isMuted":false,
 		"isSolo":false,
+		"notes": [
+			66,
+			67,
+			69
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":4,
 		"volume":0.20000000298023
 	},
 	 {
-		"attack":0.20000000298023,
-		"decay":0.34999999403954,
+		"attack":0,
+		"decay":0.34900000691414,
 		"isMuted":false,
 		"isSolo":false,
-		"release":0.60000002384186,
-		"sustain":0.20000001788139,
+		"notes": [
+			66,
+			67
+		],
+		"release":0,
+		"sustain":0.20000000298023,
 		"synth":7,
 		"volume":0.40000000596046
 	},
 	 {
-		"attack":0.10000000149012,
+		"attack":0,
 		"decay":0.25,
 		"isMuted":false,
 		"isSolo":false,
+		"notes": [
+			59,
+			64,
+			66,
+			67
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":1,
@@ -161,41 +297,65 @@
 	},
 	 {
 		"attack":0,
-		"decay":0.15000000596046,
+		"decay":0.5009999871254,
 		"isMuted":false,
 		"isSolo":false,
-		"release":0,
-		"sustain":0.20000000298023,
+		"notes": [
+			36
+		],
+		"release":0.90000003576279,
+		"sustain":0.70000004768372,
 		"synth":"drums",
 		"volume":0.20000000298023
 	},
 	 {
 		"attack":0,
-		"decay":0.15000000596046,
+		"decay":0.44999998807907,
 		"isMuted":false,
 		"isSolo":false,
-		"release":0,
-		"sustain":0.20000000298023,
+		"notes": [
+			40
+		],
+		"release":0.70000004768372,
+		"sustain":0.5,
 		"synth":"drums",
-		"volume":0.5
+		"volume":0.20000000298023
 	},
 	 {
 		"attack":0,
-		"decay":0.15000000596046,
+		"decay":0.8500000834465,
 		"isMuted":false,
 		"isSolo":false,
-		"release":0,
-		"sustain":0.20000000298023,
+		"notes": [
+			41,
+			43,
+			45,
+			47,
+			48
+		],
+		"release":1,
+		"sustain":0.5,
 		"synth":"drums",
-		"volume":0.40000000596046
+		"volume":0.20000000298023
 	},
 	 {
 		"attack":0,
-		"decay":0.15000000596046,
+		"decay":0.95000010728836,
 		"isMuted":false,
 		"isSolo":false,
-		"release":0,
-		"sustain":0.20000000298023,
+		"notes": [
+			42,
+			46,
+			49,
+			51,
+			52,
+			53,
+			55,
+			57,
+			59
+		],
+		"release":0.99999994039536,
+		"sustain":0.80000007152557,
 		"synth":"drums",
 		"volume":0.20000000298023
 	},
@@ -204,6 +364,8 @@
 		"decay":0.15000000596046,
 		"isMuted":true,
 		"isSolo":false,
+		"notes": [
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":4,
@@ -214,6 +376,8 @@
 		"decay":0.15000000596046,
 		"isMuted":true,
 		"isSolo":false,
+		"notes": [
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":4,
@@ -224,6 +388,8 @@
 		"decay":0.15000000596046,
 		"isMuted":true,
 		"isSolo":false,
+		"notes": [
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":4,
@@ -234,6 +400,8 @@
 		"decay":0.15000000596046,
 		"isMuted":true,
 		"isSolo":false,
+		"notes": [
+		],
 		"release":0,
 		"sustain":0.20000000298023,
 		"synth":4,
