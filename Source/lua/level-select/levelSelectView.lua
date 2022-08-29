@@ -193,7 +193,7 @@ local function renderStaticViews()
     gfx.setColor(gfx.kColorBlack) -- clear pattern
     -- draw keymap hint below detail
     --gfx.drawTextInRect('*'.."_Ⓐhallo_hee", detailRect.x - 20, detailRect.bottom, detailRect.width, 20, nil, '...', kTextAlignment.right)
-    gfx.drawTextInRect("_⬅️➡_ start   _Ⓐ_ *start*", detailRect.x, detailRect.bottom , detailRect.width, 25, nil, "...", kTextAlignment.center)
+    gfx.drawTextInRect("_⬅️➡_ challenge   _Ⓐ_ *start*", detailRect.x, detailRect.bottom , detailRect.width, 25, nil, "...", kTextAlignment.center)
     gfx.popContext()
 end
 
