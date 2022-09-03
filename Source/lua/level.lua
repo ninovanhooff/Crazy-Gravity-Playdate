@@ -57,7 +57,7 @@ levelNames = {
     [8] = "Meditative Test",
     [9] = "Criss Crossing",
     [10] = "Mind the curve",
-    [11] = "Last Easy Test",
+    [11] = "Before the storm",
     [12] = "Push+Pull",
     [13] = "Fuel Shortage",
     [14] = "Lone Station",
@@ -67,6 +67,6 @@ levelNames = {
     [18] = "Team Push+Pull",
     [19] = "A-maze-ing",
     [20] = "Broadsides",
-    [21] = "Licensed"
+    [21] = "Final Countdown"
     
 }
