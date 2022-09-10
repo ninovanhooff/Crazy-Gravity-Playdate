@@ -47,5 +47,7 @@ end
 
 function EndGameView:render(viewModel)
     renderGame(viewModel)
-    controlRoomBG:draw(viewModel.controlRoomAnimator:currentValue(),0)
+    if viewModel.controlRoomAnimator then
+        controlRoomBG:draw(viewModel.controlRoomAnimator:currentValue(),0)
+    end
 end
