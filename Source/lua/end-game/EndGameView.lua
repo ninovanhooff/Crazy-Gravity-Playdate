@@ -1,6 +1,7 @@
 import "CoreLibs/object"
 
 local gfx <const> = playdate.graphics
+local renderGame <const> = RenderGame
 
 class("EndGameView").extends()
 
@@ -9,5 +10,5 @@ function EndGameView:init()
 end
 
 function EndGameView:render(viewModel)
-    gfx.drawText(viewModel.displayText, 100, 100)
+    renderGame()
 end

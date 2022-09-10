@@ -1,4 +1,5 @@
 import "CoreLibs/timer"
+import "lua/enum.lua"
 import "lua/util.lua"
 import "lua/level.lua"
 import "lua/init.lua"
