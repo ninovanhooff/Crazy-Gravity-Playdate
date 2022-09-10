@@ -9,10 +9,9 @@ local calcTimeStep <const> = CalcTimeStep
 local tileSize <const> = tileSize
 local PlatformId <const> = "endGamePlatform"
 local BarrierId <const> = "endGameBarrier"
-local panSpeed <const> = 2
 local targetPlanePosX <const> = 200
-local loadPlaneDurationMs <const> = 5000
-
+local loadPlaneDurationMs <const> = 1700
+local returnPlatformDurationMs <const> = loadPlaneDurationMs
 
 local states = enum({"LoadPlane", "ReturnPlatform", "LiftOff"})
 
@@ -54,20 +53,21 @@ function EndGameViewModel:LoadPlaneUpdate()
 end
 
 function EndGameViewModel:ReturnPlatformUpdate()
-    local platform = self.platform
-    if platform.x < self.origPlatformX then
-        self.platform.x = self.platform.x + panSpeed /tileSize
+
+    if not self.returnPlatformAnimator then
+        self.returnPlatformAnimator = gfx.animator.new(
+            returnPlatformDurationMs,
+            self.platform.x,
+            self.origPlatformX
+        )
     end
-    if self.overriddenBarrierPos and self.overriddenBarrierPos < self.closedBarrierPos then
-        self.overriddenBarrierPos = self.overriddenBarrierPos + 2
+    self.platform.x = self.returnPlatformAnimator:currentValue()
+
+    if self.platform.x > self.barrier.x then
+        self.barrier.actW = 1 -- starts closing the barrier because the plane is now outside activation zone
     end
-    if not self.overriddenBarrierPos and self.platform.x > self.barrier.x then
-        self.overriddenBarrierPos = 0
-    end
-    if self.overriddenBarrierPos then
-        self.barrier.pos = self.overriddenBarrierPos
-    end
-    if self.platform.x == self.origPlatformX then
+
+    if self.returnPlatformAnimator:ended() then
         self.state = states.LiftOff
     end
 end
