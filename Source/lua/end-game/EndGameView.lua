@@ -5,7 +5,7 @@ local floor <const> = math.floor
 
 local controlRoomBG = gfx.image.new("images/launch_control_room")
 local rocketShip = gfx.image.new("images/rocket_ship")
-local rocketShipX <const> = 140
+local rocketShipX <const> = 182
 local tileSize <const> = tileSize
 
 

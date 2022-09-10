@@ -21,7 +21,7 @@ function EndGameViewModel:init()
 
     self.planePosX = planePos[1]*tileSize + planePos[3]
     self.planePosY = planePos[2]*tileSize + planePos[4]
-    self.rocketShipY = 208*tileSize
+    self.rocketShipY = 216.5*tileSize
 
     self.platform = lume.match(specialT, function(item) return item.id == PlatformId end)
     self.barrier = lume.match(specialT, function(item) return item.id == BarrierId end)
