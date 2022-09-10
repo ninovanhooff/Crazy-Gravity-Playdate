@@ -12,7 +12,7 @@ local BarrierId <const> = "endGameBarrier"
 local panSpeed <const> = 2
 local targetPlanePosX <const> = 200
 
-local states = enum({"LoadPlane", "ReturnPlatform"})
+local states = enum({"LoadPlane", "ReturnPlatform", "LiftOff"})
 
 class("EndGameViewModel").extends()
 
@@ -47,8 +47,6 @@ function EndGameViewModel:LoadPlaneUpdate()
     if not self.planeAnimator:ended() then
         self.planePosX = floor(self.planeAnimator:currentValue())
         self.platform.x = (self.planePosX + self.platformOffsetX)/tileSize
-        planePos[1] = floor(self.planePosX / tileSize)
-        planePos[3] = self.planePosX % tileSize
     else
         self.state = states.ReturnPlatform
     end
@@ -68,16 +66,28 @@ function EndGameViewModel:ReturnPlatformUpdate()
     if self.overriddenBarrierPos then
         self.barrier.pos = self.overriddenBarrierPos
     end
+    if self.platform.x == self.origPlatformX then
+        self.state = states.LiftOff
+    end
+end
+
+function EndGameViewModel:LiftOffUpdate()
+    self.planePosY = self.planePosY * 0.999
 end
 
 local stateUpdaters = {
     [states.LoadPlane] = EndGameViewModel.LoadPlaneUpdate,
-    [states.ReturnPlatform] = EndGameViewModel.ReturnPlatformUpdate
+    [states.ReturnPlatform] = EndGameViewModel.ReturnPlatformUpdate,
+    [states.LiftOff] = EndGameViewModel.LiftOffUpdate,
 }
 
 function EndGameViewModel:update()
     calcTimeStep()
     stateUpdaters[self.state](self)
+    planePos[1] = floor(self.planePosX / tileSize)
+    planePos[2] = floor(self.planePosY / tileSize)
+    planePos[3] = self.planePosX % tileSize
+    planePos[4] = self.planePosY % tileSize
 
 
     if justPressed(buttonB) then
