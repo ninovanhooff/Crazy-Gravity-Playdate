@@ -11,6 +11,8 @@ local PlatformId <const> = "endGamePlatform"
 local BarrierId <const> = "endGameBarrier"
 local panSpeed <const> = 2
 local targetPlanePosX <const> = 200
+local loadPlaneDurationMs <const> = 5000
+
 
 local states = enum({"LoadPlane", "ReturnPlatform", "LiftOff"})
 
@@ -28,10 +30,9 @@ function EndGameViewModel:init()
     self.origPlatformX = self.platform.x
     self.closedBarrierPos = self.barrier.pos
     self.platformOffsetX = self.platform.x*tileSize - self.planePosX
-    self.loadPlaneDurationMs = 5000
 
-    self.planeAnimator = gfx.animator.new(self.loadPlaneDurationMs, self.planePosX, targetPlanePosX)
-    self.controlRoomAnimator = gfx.animator.new(self.loadPlaneDurationMs, -600, 0)
+    self.planeAnimator = gfx.animator.new(loadPlaneDurationMs, self.planePosX, targetPlanePosX)
+    self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -600, 0)
 
     self.state = states.LoadPlane
 end
