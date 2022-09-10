@@ -30,12 +30,25 @@ function EndGameViewModel:init()
     self.closedBarrierPos = self.barrier.pos
     self.platformOffsetX = self.platform.x*tileSize - self.planePosX
 
-    self.planeAnimator = gfx.animator.new(loadPlaneDurationMs, self.planePosX, targetPlanePosX)
-    self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -600, 0)
-
     self.liftOffSpeed = 0.1
 
-    self.state = states.LoadPlane
+    self:setState(states.LoadPlane)
+end
+
+function EndGameViewModel:initState(state)
+    if state == states.LoadPlane then
+        self.planeAnimator = gfx.animator.new(loadPlaneDurationMs, self.planePosX, targetPlanePosX)
+        self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -600, 0)
+    elseif state == states.LiftOff then
+        self.camOverrideY = camPos[2]*tileSize+camPos[4]
+    elseif state == states.OpenAirlock then
+        self.camOverrideY = 4 * tileSize
+    end
+    end
+
+function EndGameViewModel:setState(state)
+    self:initState(state)
+    self.state = state
 end
 
 function EndGameViewModel:pause()
@@ -55,7 +68,7 @@ function EndGameViewModel:LoadPlaneUpdate()
         self.planePosX = floor(self.planeAnimator:currentValue())
         self.platform.x = (self.planePosX + self.platformOffsetX)/tileSize
     else
-        self.state = states.ReturnPlatform
+        self:setState(states.ReturnPlatform)
     end
 end
 
@@ -75,8 +88,7 @@ function EndGameViewModel:ReturnPlatformUpdate()
     end
 
     if self.returnPlatformAnimator:ended() then
-        self.state = states.LiftOff
-        self.camOverrideY = camPos[2]*tileSize+camPos[4]
+        self:setState(states.LiftOff)
     end
 end
 
@@ -87,8 +99,7 @@ function EndGameViewModel:LiftOffUpdate()
         self.camOverrideY = self.camOverrideY - 4
     end
     if self.planePosY < 100 * tileSize then
-        self.state = states.OpenAirlock
-        self.camOverrideY = 1 * tileSize
+        self:setState(states.OpenAirlock)
     end
 end
 
