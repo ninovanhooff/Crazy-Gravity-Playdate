@@ -20,7 +20,7 @@ local function renderGame(viewModel)
     -- rocket ship
     rocketShip:draw(
         rocketShipX-camPos[1]*tileSize-camPos[3],
-        viewModel.rocketShipY-camPos[2]*tileSize-camPos[4]
+        floor(viewModel.planePosY - 8*tileSize - camPos[2]*tileSize-camPos[4])
     )
 
     -- specials

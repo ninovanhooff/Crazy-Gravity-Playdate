@@ -1,4 +1,5 @@
 import "CoreLibs/object"
+import "FlyToCreditsScreen"
 
 local gfx <const> = playdate.graphics
 local justPressed <const> = playdate.buttonJustPressed
@@ -13,7 +14,7 @@ local targetPlanePosX <const> = 200
 local loadPlaneDurationMs <const> = 1700
 local returnPlatformDurationMs <const> = loadPlaneDurationMs
 
-local states = enum({"LoadPlane", "ReturnPlatform", "LiftOff"})
+local states = enum({"LoadPlane", "ReturnPlatform", "LiftOff", "OpenAirlock"})
 
 class("EndGameViewModel").extends()
 
@@ -22,7 +23,6 @@ function EndGameViewModel:init()
 
     self.planePosX = planePos[1]*tileSize + planePos[3]
     self.planePosY = planePos[2]*tileSize + planePos[4]
-    self.rocketShipY = 216.5*tileSize
 
     self.platform = lume.match(specialT, function(item) return item.id == PlatformId end)
     self.barrier = lume.match(specialT, function(item) return item.id == BarrierId end)
@@ -33,6 +33,8 @@ function EndGameViewModel:init()
     self.planeAnimator = gfx.animator.new(loadPlaneDurationMs, self.planePosX, targetPlanePosX)
     self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -600, 0)
 
+    self.liftOffSpeed = 0.1
+
     self.state = states.LoadPlane
 end
 
@@ -41,6 +43,11 @@ end
 
 function EndGameViewModel:resume()
     self.platform.arrows = false
+end
+
+function EndGameViewModel:onEnded()
+    popScreen() -- pop self
+    pushScreen(FlyToCreditsScreen())
 end
 
 function EndGameViewModel:LoadPlaneUpdate()
@@ -69,17 +76,33 @@ function EndGameViewModel:ReturnPlatformUpdate()
 
     if self.returnPlatformAnimator:ended() then
         self.state = states.LiftOff
+        self.camOverrideY = camPos[2]*tileSize+camPos[4]
     end
 end
 
 function EndGameViewModel:LiftOffUpdate()
-    self.planePosY = self.planePosY * 0.999
+    self.planePosY = self.planePosY - self.liftOffSpeed
+    self.liftOffSpeed = self.liftOffSpeed * 1.01 -- accelerate
+    if self.liftOffSpeed > 1.5 then
+        self.camOverrideY = self.camOverrideY - 4
+    end
+    if self.planePosY < 100 * tileSize then
+        self.state = states.OpenAirlock
+        self.camOverrideY = 1 * tileSize
+    end
+end
+
+function EndGameViewModel:OpenAirlockUpdate()
+    if self.planePosY < 0 then
+        self:onEnded()
+    end
 end
 
 local stateUpdaters = {
     [states.LoadPlane] = EndGameViewModel.LoadPlaneUpdate,
     [states.ReturnPlatform] = EndGameViewModel.ReturnPlatformUpdate,
     [states.LiftOff] = EndGameViewModel.LiftOffUpdate,
+    [states.OpenAirlock] = EndGameViewModel.OpenAirlockUpdate,
 }
 
 function EndGameViewModel:update()
@@ -90,8 +113,8 @@ function EndGameViewModel:update()
     planePos[3] = self.planePosX % tileSize
     planePos[4] = self.planePosY % tileSize
 
-
-    if justPressed(buttonB) then
-        popScreen()
+    if self.camOverrideY then
+        camPos[2] = floor(self.camOverrideY / tileSize)
+        camPos[4] = self.camOverrideY % tileSize
     end
 end
