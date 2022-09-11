@@ -5,6 +5,10 @@ local floor <const> = math.floor
 
 local controlRoomBG = gfx.image.new("images/launch_control_room")
 local rocketShip = gfx.image.new("images/rocket_ship")
+local airlockCrank <const> = gfx.imagetable.new("images/airlock-crank/airlock-crank")
+if #airlockCrank < 1 then
+    error("no crank frames")
+end
 local rocketShipX <const> = 182
 local tileSize <const> = tileSize
 
@@ -41,13 +45,15 @@ local function renderGame(viewModel)
     )
 end
 
-function EndGameView:init()
+function EndGameView:init(viewModel)
     EndGameView.super.init(self)
+    viewModel.numCrankFrames = #airlockCrank
 end
 
 function EndGameView:render(viewModel)
     renderGame(viewModel)
     if viewModel.controlRoomAnimator then
         controlRoomBG:draw(viewModel.controlRoomAnimator:currentValue(),0)
+        airlockCrank:getImage(viewModel.crankFrame + 1):draw(265,180)
     end
 end
