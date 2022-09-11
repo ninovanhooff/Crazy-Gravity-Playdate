@@ -7,6 +7,7 @@
 import "CoreLibs/object"
 import "CoreLibs/animator"
 import "CoreLibs/easing"
+import "../common/PlanePhysicsViewModel.lua"
 import "../level-select/levelSelectScreen.lua"
 import "../bonus-content/BonusContentScreen.lua"
 import "../settings/SettingsScreen.lua"
@@ -30,34 +31,20 @@ local buttonSpacingV <const> = 50
 local buttonWidth <const> = 100
 local buttonHeight <const> = 24
 
-
-local inputManager <const> = inputManager
-local throttle <const> = InputManager.actionThrottle
-local selfRight <const> = InputManager.actionSelfRight
-local left <const> = InputManager.actionLeft
-local right <const> = InputManager.actionRight
-local sinThrustT <const> = sinThrustT
-local cosThrustT <const> = cosThrustT
-
-local flying
-local planeX, planeY
-local vx,vy,planeRot,thrust
-local planeSize <const> = planeSize
-
 local function updateViewState(self)
     self.viewState.buttonProgress = buttonTimer.value
-    self.viewState.planeRot = planeRot
-    self.viewState.planeX, self.viewState.planeY = planeX, planeY
-    self.viewState.thrust = thrust
+    self.viewState.planeRot = self.planeRot
+    self.viewState.planeX, self.viewState.planeY = self.planeX, self.planeY
+    self.viewState.thrust = self.thrust
     return self.viewState
 end
 
-class("StartViewModel").extends()
+class("StartViewModel").extends(PlanePhysicsViewModel)
 
-local function resetPlane()
-    flying = true -- always true for StartScreen
-    planeX, planeY = -22,130
-    vx,vy,planeRot,thrust = 5,-5,21,0 -- thrust only 0 or 1; use thrustPower to adjust.
+function StartViewModel:resetPlane()
+    self.flying = true -- always true for StartScreen
+    self.planeX, self.planeY = -22,130
+    self.vx,self.vy,self.planeRot,self.thrust = 5,-5,21,0 -- thrust only 0 or 1; use thrustPower to adjust.
 end
 
 local function createLogoEnterAnimator()
@@ -82,7 +69,8 @@ local function createButtonEnterAnimator(buttonIdx)
 end
 
 function StartViewModel:init()
-    resetPlane()
+    StartViewModel.super.init(self)
+    self:resetPlane()
     self.viewState = {}
     self.shouldPlayEnterSound = true
     self.viewState.logoAnimator = createLogoEnterAnimator()
@@ -119,74 +107,19 @@ function StartViewModel:init()
     updateViewState(self)
 end
 
-local function processInputs()
-    -- thrust
-    if (inputManager:isInputPressed(throttle)) then
-        if Sounds and thrust == 0 then thrust_sound:play(0) end
-        thrust = 1
-        if not flying then
-            vx = 0
-            vy = 0
-        end
-        flying = true
-        vx = vx + cosThrustT[planeRot]*thrustPower
-        vy = vy - sinThrustT[planeRot]*thrustPower
-    elseif thrust == 1 then
-        if Sounds then thrust_sound:stop() end
-        thrust = 0
-    end
-
-    -- rotation
-    if inputManager:isInputPressed(selfRight) then
-        if planeRot~=18 then
-            if planeRot>18 or planeRot<6 then
-                planeRot = planeRot-1
-            else
-                planeRot = planeRot+1
-            end
-        end
-        if planeRot<0 then planeRot = 23 end
-    elseif inputManager:isInputPressed(left) then
-        if flying then
-            planeRot = planeRot - 1
-            if planeRot<0 then
-                planeRot = 23
-            end
-        end
-    elseif inputManager:isInputPressed(right) then
-        if flying then
-            planeRot = planeRot + 1
-            planeRot = planeRot % 24
-        end
-    end
-end
-
-local function calcPlane()
-    vx = vx*drag
-    vy = (vy+gravity)*drag
-    planeX = planeX + vx
-    planeY = planeY + vy
-    if planeX > screenWidth or planeX + planeSize < 0 then
-        planeX = planeX % screenWidth
-    end
-    if planeY > screenHeight or planeY + planeSize < 0 then
-        planeY = planeY % screenHeight
-    end
-end
-
 -- returns true if this rect may collide with planePos, does not take plane sub-pos ([3] and 4]) into
 -- account. When false, it is guaranteed that this rect does not intersect with the plane
-local function approxRectCollision(button)
+function StartViewModel:approxRectCollision(button)
     local x,y = button.animator:currentValue():unpack()
     -- plane size is 24px
-    return planeX + 24 > x and planeX < x+button.w  and planeY+24 > y and planeY <y+button.h
+    return self.planeX + 24 > x and self.planeX < x+button.w  and self.planeY+24 > y and self.planeY <y+button.h
 end
 
 --- @return Screen button's onClick function if activated; or nil
-local function calcButtonCollision(self)
+function StartViewModel:calcButtonCollision()
     local anyCollision = false
     for _, button in ipairs(self.viewState.buttons) do
-        if approxRectCollision(button) then
+        if self:approxRectCollision(button) then
             buttonTimer:start() -- does nothing when already running
             button.progress = buttonTimer.value
             if button.progress >= 1.0 then
@@ -210,9 +143,9 @@ function StartViewModel:calcTimeStep()
         swish_sound:play() -- play once in reverse
         self.shouldPlayEnterSound = false
     end
-    processInputs()
-    calcPlane()
-    calcButtonCollision(self)
+    self:processInputs()
+    self:calcPlane()
+    self:calcButtonCollision()
     return updateViewState(self)
 end
 

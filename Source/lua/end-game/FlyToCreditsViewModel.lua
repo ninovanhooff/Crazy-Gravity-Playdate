@@ -3,6 +3,8 @@ import "../credits/CreditsScreen.lua"
 
 local justPressed <const> = playdate.buttonJustPressed
 local buttonB <const> = playdate.kButtonB
+local tileSize <const> = tileSize
+local planeOffset <const> = 8 * tileSize
 
 class("FlyToCreditsViewModel").extends()
 
@@ -16,8 +18,7 @@ function FlyToCreditsViewModel:init()
 end
 
 function FlyToCreditsViewModel:update()
-    self.rocketShipY = self.rocketShipY - 4
-    if self.rocketShipY < -self.rocketShipHeight then
+    if self.planeY < -self.rocketShipHeight then
         if self.bgType == FlyToCreditsViewModel.bgTypes.surface then
             self.bgType = FlyToCreditsViewModel.bgTypes.asteroids
             self:resetRocketShip()
@@ -29,10 +30,22 @@ function FlyToCreditsViewModel:update()
             pushScreen(CreditsScreen())
         end
     end
+
+    if self.bgType == FlyToCreditsViewModel.bgTypes.surface then
+        self.planeY = self.planeY - 4
+    else
+        self.planeY = self.planeY - 3
+    end
+    if self.bgType == FlyToCreditsViewModel.bgTypes.stars then
+        self.rocketShipY = self.rocketShipY - 1
+    else
+        self.rocketShipY = self.planeY - planeOffset
+    end
 end
 
 function FlyToCreditsViewModel:resetRocketShip()
     self.rocketShipY = screenHeight
+    self.planeY = self.rocketShipY + planeOffset
 end
 
 function FlyToCreditsViewModel:pause()
