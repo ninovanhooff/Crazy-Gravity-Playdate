@@ -18,7 +18,7 @@ end
 
 function CreditsView:render(viewModel)
     gfx.clear(gfx.kColorBlack)
-    self.creditsImage:draw(0,viewModel.creditsY)
+    self.creditsImage:draw(0,floor(viewModel.creditsY))
 
     -- plane
     sprite:draw(
