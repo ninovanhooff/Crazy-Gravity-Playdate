@@ -9,13 +9,6 @@ local endGameView, endGameViewModel
 
 function EndGameScreen:init()
     EndGameScreen.super.init(self)
-    -- setup start of EndGame scene
-    keys = {true,true,true,true} -- have? bool
-    camPos[1] = 35
-    camPos[2] = 210
-    planePos[1] = 59
-    planePos[2] = 224
-    planeRot = 18
     endGameViewModel = EndGameViewModel()
     endGameView = EndGameView(endGameViewModel)
 end

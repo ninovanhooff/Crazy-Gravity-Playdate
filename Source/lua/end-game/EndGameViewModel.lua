@@ -24,17 +24,24 @@ class("EndGameViewModel").extends()
 function EndGameViewModel:init()
     EndGameViewModel.super.init(self)
 
+    -- setup start of EndGame scene
+    keys = {true,true,true,true} -- have? bool
+    camPos[1] = 35
+    camPos[2] = 210
+    planePos[1] = 59
+    planePos[2] = 224
+    planeRot = 18
     self.planePosX = planePos[1]*tileSize + planePos[3]
     self.planePosY = planePos[2]*tileSize + planePos[4]
 
     local findSpecial = function(targetId)
         return lume.match(specialT, function(item) return item.id == targetId end)
     end
-
     self.platform = findSpecial(PlatformId)
     self.barrier = findSpecial(BarrierId)
     self.airlockL = findSpecial(AirlockLId)
     self.airlockR = findSpecial(AirlockRId)
+
     self.airLockROverridePos = 9*tileSize
     self.crankFrame = 0 -- 0-based
     self.numCrankFrames = 0 -- set by View
@@ -43,12 +50,9 @@ function EndGameViewModel:init()
     self.closedBarrierPos = self.barrier.pos
     self.platformOffsetX = self.platform.x*tileSize - self.planePosX
 
-    self.liftOffSpeed = 0.1
+    self.liftOffSpeed = 0.2
 
     self:setState(states.LoadPlane)
-    self:setState(states.OpenAirlock)
-    self.planePosX = 200
-    camPos[1] = 1
 end
 
 function EndGameViewModel:initState(state)
@@ -115,10 +119,14 @@ end
 function EndGameViewModel:LiftOffUpdate()
     self.planePosY = self.planePosY - self.liftOffSpeed
     self.liftOffSpeed = self.liftOffSpeed * 1.01 -- accelerate
-    if self.liftOffSpeed > 1.5 then
-        self.camOverrideY = self.camOverrideY - 4
+    print(self.liftOffSpeed)
+    if self.liftOffSpeed > 0.8 then
+        if not self.liftOffCamSpeed then
+            self.liftOffCamSpeed = 2
+        end
+        self.camOverrideY = self.camOverrideY - self.liftOffCamSpeed
     end
-    if self.planePosY < 100 * tileSize then
+    if self.planePosY < 120 * tileSize then
         self:setState(states.OpenAirlock)
     end
 end
