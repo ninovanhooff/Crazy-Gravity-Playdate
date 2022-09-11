@@ -2,6 +2,7 @@ import "CoreLibs/object"
 
 local gfx <const> = playdate.graphics
 local asteroidSurface = gfx.image.new("images/asteroid_surface")
+local startBG = gfx.image.new("images/start_background")
 local rocketShip = gfx.image.new("images/rocket_ship")
 
 
@@ -22,6 +23,12 @@ function FlyToCreditsView:init(viewModel)
 end
 
 function FlyToCreditsView:render(viewModel)
-    asteroidSurface:draw(0,0)
+    if viewModel.bgType == FlyToCreditsViewModel.bgTypes.asteroid then
+        asteroidSurface:draw(0,0)
+    elseif viewModel.bgType == FlyToCreditsViewModel.bgTypes.deepSpace then
+        startBG:draw(0,0)
+    else
+        error("bgType not implemented in View:", viewModel.bgType)
+    end
     rocketShip:draw(88, viewModel.rocketShipY)
 end

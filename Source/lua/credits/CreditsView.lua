@@ -9,5 +9,6 @@ function CreditsView:init()
 end
 
 function CreditsView:render(viewModel)
+    gfx.clear()
     gfx.drawText(viewModel.displayText, 100, 100)
 end
