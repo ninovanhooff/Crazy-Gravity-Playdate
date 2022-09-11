@@ -23,10 +23,12 @@ function FlyToCreditsView:init(viewModel)
 end
 
 function FlyToCreditsView:render(viewModel)
-    if viewModel.bgType == FlyToCreditsViewModel.bgTypes.asteroid then
+    if viewModel.bgType == FlyToCreditsViewModel.bgTypes.surface then
         asteroidSurface:draw(0,0)
-    elseif viewModel.bgType == FlyToCreditsViewModel.bgTypes.deepSpace then
+    elseif viewModel.bgType == FlyToCreditsViewModel.bgTypes.asteroids then
         startBG:draw(0,0)
+    elseif viewModel.bgType == FlyToCreditsViewModel.bgTypes.stars then
+        gfx.clear(gfx.kColorBlack)
     else
         error("bgType not implemented in View:", viewModel.bgType)
     end

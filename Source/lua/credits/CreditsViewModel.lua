@@ -7,7 +7,6 @@ class("CreditsViewModel").extends()
 
 function CreditsViewModel:init()
     CreditsViewModel.super.init(self)
-    self.displayText = "Hello, this is Credits screen"
 end
 
 function CreditsViewModel:update()

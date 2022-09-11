@@ -6,20 +6,23 @@ local buttonB <const> = playdate.kButtonB
 
 class("FlyToCreditsViewModel").extends()
 
-FlyToCreditsViewModel.bgTypes = enum({"asteroid", "deepSpace"})
+FlyToCreditsViewModel.bgTypes = enum({"surface", "asteroids", "stars"})
 
 function FlyToCreditsViewModel:init()
     FlyToCreditsViewModel.super.init(self)
     self:resetRocketShip()
     self.rocketShipHeight = 0 -- set by View
-    self.bgType = FlyToCreditsViewModel.bgTypes.asteroid
+    self.bgType = FlyToCreditsViewModel.bgTypes.surface
 end
 
 function FlyToCreditsViewModel:update()
     self.rocketShipY = self.rocketShipY - 4
     if self.rocketShipY < -self.rocketShipHeight then
-        if self.bgType == FlyToCreditsViewModel.bgTypes.asteroid then
-            self.bgType = FlyToCreditsViewModel.bgTypes.deepSpace
+        if self.bgType == FlyToCreditsViewModel.bgTypes.surface then
+            self.bgType = FlyToCreditsViewModel.bgTypes.asteroids
+            self:resetRocketShip()
+        elseif self.bgType == FlyToCreditsViewModel.bgTypes.asteroids then
+            self.bgType = FlyToCreditsViewModel.bgTypes.stars
             self:resetRocketShip()
         else
             popScreen()

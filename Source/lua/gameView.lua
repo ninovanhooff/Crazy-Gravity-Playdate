@@ -111,7 +111,7 @@ function RenderGameDebug()
     end
 
     local oldDrawMode = gfx.getImageDrawMode()
-    gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
+
     gfx.drawText("dX", dxOrigin - 25, dxOrigin)
     gfx.drawText("dY", dyOrigin - 25, dyOrigin)
     gfx.setImageDrawMode(oldDrawMode) --text color

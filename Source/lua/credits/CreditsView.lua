@@ -9,6 +9,7 @@ function CreditsView:init()
 end
 
 function CreditsView:render(viewModel)
-    gfx.clear()
-    gfx.drawText(viewModel.displayText, 100, 100)
+    gfx.clear(gfx.kColorBlack)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
 end
