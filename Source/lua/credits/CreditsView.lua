@@ -1,5 +1,6 @@
 import "CoreLibs/object"
 
+local floor <const> = math.floor
 local gfx <const> = playdate.graphics
 local unFlipped <const> = gfx.kImageUnflipped
 local logoImg <const> = gfx.image.new("images/logo.png")
@@ -18,6 +19,14 @@ end
 function CreditsView:render(viewModel)
     gfx.clear(gfx.kColorBlack)
     self.creditsImage:draw(0,viewModel.creditsY)
+
+    -- plane
+    sprite:draw(
+        floor(viewModel.planeX), floor(viewModel.planeY),
+        unFlipped,
+        viewModel.planeRot%16*23, 391+(boolToNum(viewModel.planeRot>15)*2-viewModel.thrust)*23,
+        23, 23
+    )
 end
 
 function CreditsView:drawTextCentered(text, y, underline)
