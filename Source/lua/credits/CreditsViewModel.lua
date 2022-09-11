@@ -9,6 +9,7 @@ class("CreditsViewModel").extends(PlanePhysicsViewModel)
 
 function CreditsViewModel:init()
     CreditsViewModel.super.init(self)
+    self.planeX, self.planeY = 106, screenHeight - 10
     self.creditsY = 0
 end
 
