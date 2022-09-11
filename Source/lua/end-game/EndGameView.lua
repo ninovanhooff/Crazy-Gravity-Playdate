@@ -53,7 +53,8 @@ end
 function EndGameView:render(viewModel)
     renderGame(viewModel)
     if viewModel.controlRoomAnimator then
-        controlRoomBG:draw(viewModel.controlRoomAnimator:currentValue(),0)
-        airlockCrank:getImage(viewModel.crankFrame + 1):draw(265,180)
+        local controlRoomX = viewModel.controlRoomAnimator:currentValue()
+        controlRoomBG:draw(controlRoomX,0)
+        airlockCrank:getImage(viewModel.crankFrame + 1):draw(controlRoomX + 265,180)
     end
 end

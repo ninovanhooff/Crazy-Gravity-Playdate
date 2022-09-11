@@ -14,7 +14,7 @@ local BarrierId <const> = "endGameBarrier"
 local AirlockLId <const> = "endGameAirlockL"
 local AirlockRId <const> = "endGameAirlockR"
 local targetPlanePosX <const> = 200
-local loadPlaneDurationMs <const> = 1700
+local loadPlaneDurationMs <const> = 5000
 local returnPlatformDurationMs <const> = loadPlaneDurationMs
 
 local states = enum({"LoadPlane", "ReturnPlatform", "LiftOff", "OpenAirlock", "FlyAway"})
@@ -119,7 +119,6 @@ end
 function EndGameViewModel:LiftOffUpdate()
     self.planePosY = self.planePosY - self.liftOffSpeed
     self.liftOffSpeed = self.liftOffSpeed * 1.01 -- accelerate
-    print(self.liftOffSpeed)
     if self.liftOffSpeed > 0.8 then
         if not self.liftOffCamSpeed then
             self.liftOffCamSpeed = 2
