@@ -6,8 +6,9 @@ local unFlipped <const> = gfx.kImageUnflipped
 local logoImg <const> = gfx.image.new("images/logo.png")
 local logoWidth, logoHeight <const> = logoImg:getSize()
 local screenCenterX = screenWidth/2
-local lineSpacing <const> = 8
-local sectionSpacing <const> = lineSpacing*2
+local lineSpacing <const> = 2
+local imageSpacing <const> = 8
+local sectionSpacing <const> = 16
 
 class("CreditsView").extends()
 
@@ -40,7 +41,7 @@ function CreditsView:drawTextCentered(text, y, underline)
         local origColor = gfx.getColor()
         gfx.setColor(gfx.kColorWhite)
         gfx.drawLine(screenCenterX - halfUnderLineWidth, y + textHeight, screenCenterX + halfUnderLineWidth, y+textHeight)
-        textHeight = textHeight + 4
+        textHeight = textHeight + 8
         gfx.setColor(origColor)
     end
     return textHeight
@@ -55,23 +56,25 @@ function CreditsView:createCreditsImage()
 
     local y = 0
 
-    y = y + self:drawTextCentered("Thanks for playing", y) + lineSpacing
+    y = y + self:drawTextCentered("Thanks for playing", y) + imageSpacing
     logoImg:draw(screenCenterX - logoWidth/2, y)
-    y = y + logoHeight + lineSpacing
+    y = y + logoHeight + imageSpacing
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
     y = y + self:drawTextCentered("A game by Nino van Hooff", y) + sectionSpacing
 
-    y = y + self:drawTextCentered("Based on", y) + lineSpacing
+    y = y + self:drawTextCentered("Based on", y) + imageSpacing
     sprite:draw(
         screenCenterX - 30,y,
         unFlipped,
         432, 0,
         60,60
     )
-    y = y + 60 + lineSpacing
+    y = y + 60 + imageSpacing
     y = y + self:drawTextCentered("by Axel Meierhofer", y) + sectionSpacing
 
-    y = y + self:drawTextCentered("Programming", y, true)
+    y = y + self:drawTextCentered("Programming", y, true) + lineSpacing
+    y = y + self:drawTextCentered("Nino van Hooff", y) + lineSpacing
+    y = y + self:drawTextCentered("Settings by Matt Septhon", y) + lineSpacing
 
 
 
