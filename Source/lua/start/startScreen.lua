@@ -13,8 +13,10 @@ class("StartScreen").extends(Screen)
 
 local renderStart <const> = RenderStart
 
-function StartScreen:init()
+function StartScreen:init(planeX, planeY)
     StartScreen.super.init(self)
+    self.initialPlaneX = planeX
+    self.initialPlaneY = planeY
 end
 
 function StartScreen:update()
@@ -27,5 +29,5 @@ end
 
 function StartScreen:resume()
     -- reset state entirely
-    self.viewModel = StartViewModel()
+    self.viewModel = StartViewModel(self.initialPlaneX, self.initialPlaneY)
 end

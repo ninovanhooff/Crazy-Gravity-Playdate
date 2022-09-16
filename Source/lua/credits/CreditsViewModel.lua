@@ -1,10 +1,5 @@
 import "CoreLibs/object"
-
-local justPressed <const> = playdate.buttonJustPressed
-local buttonB <const> = playdate.kButtonB
-local halfScreenHeight <const> = screenHeight/2
-local tileSize <const> = tileSize
-local floor <const> = math.floor
+import "lua/start/startScreen.lua"
 
 class("CreditsViewModel").extends()
 
@@ -37,7 +32,6 @@ end
 function CreditsViewModel:update()
     ProcessInputs()
     CalcTimeStep()
-    print(vy)
     if self.initialMoveUp then
         setCamPosTopLeft()
         if vy > 0 then
@@ -47,6 +41,16 @@ function CreditsViewModel:update()
             drag = 0.9662
             self.initialMoveUp = false
         end
+    end
+    print(camPos[2],  camPos[4])
+    if camPos[2] == levelProps.sizeY - screenHeight/tileSize then
+        local planePos <const> = planePos
+        local planeX = planePos[1] * tileSize + planePos[3]
+        -- subtract 1x tileSize to compensate for 1-based cam pos
+        local planeY = planePos[2] * tileSize + planePos[4] - tileSize
+        -- restart the game
+        clearNavigationStack()
+        pushScreen(StartScreen(planeX, planeY))
     end
 end
 

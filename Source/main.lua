@@ -48,13 +48,25 @@ function pushScreen(newScreen)
     )
 end
 
+local function popScreenImmediately()
+    print("Popping off backstack:", activeScreen.className, activeScreen)
+    table.remove(backStack)
+    activeScreen:destroy()
+end
+
 function popScreen()
+    table.insert(pendingNavigators, popScreenImmediately)
+end
+
+function clearNavigationStack()
     table.insert(
         pendingNavigators,
         function()
-            print("Popping off backstack:", activeScreen.className, activeScreen)
-            table.remove(backStack)
-            activeScreen:destroy()
+            print("Clearing navigationStack", activeScreen.className, activeScreen)
+            while #backStack > 0 do
+                activeScreen = backStack[#backStack]
+                popScreenImmediately()
+            end
         end
     )
 end

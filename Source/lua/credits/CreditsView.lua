@@ -5,6 +5,7 @@ local gfx <const> = playdate.graphics
 local gameHeightPixels <const> = gameHeightTiles * tileSize
 local unFlipped <const> = gfx.kImageUnflipped
 local logoImg <const> = gfx.image.new("images/logo.png")
+local startBGImg <const> = gfx.image.new("images/start_background")
 local logoWidth, logoHeight <const> = logoImg:getSize()
 local screenCenterX = screenWidth/2
 local lineSpacing <const> = 2
@@ -84,6 +85,10 @@ function CreditsView:createCreditsImage()
     gfx.setColor(gfx.kColorWhite)
     gfx.drawLine(1,height-1, screenWidth, height-1) -- debug line indicating end of image
 
+    -- position bottom of startScreen above hudY,
+    -- subtract 1x tileSize to compensate for 1-based cam pos
+    startBGImg:draw(0, height - screenHeight - tileSize)
+
 
     local x,y = screenCenterX, 300
 
@@ -109,9 +114,9 @@ function CreditsView:createCreditsImage()
 
     y = y + self:drawTextCentered("Art", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Count Moriarty", y) + lineSpacing
-    y = y + self:drawTextCentered("Benjamin de Jager", y) + lineSpacing
     y = y + self:drawTextCentered("Casey Gatti", y) + lineSpacing
-    y = y + self:drawTextCentered("PixelWitch", y) + lineSpacing
+    y = y + self:drawTextCentered("Benjamin de Jager", y) + lineSpacing
+    y = y + self:drawTextCentered("PixelWitch", y) + sectionSpacing
 
     y = y + self:drawTextCentered("Audio", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Arjan Terpstra", y) + lineSpacing

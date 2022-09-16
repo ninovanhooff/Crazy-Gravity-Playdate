@@ -41,10 +41,14 @@ end
 
 class("StartViewModel").extends(PlanePhysicsViewModel)
 
-function StartViewModel:resetPlane()
+function StartViewModel:resetPlane(initialPlaneX, initialPlaneY)
     self.flying = true -- always true for StartScreen
-    self.planeX, self.planeY = -22,130
-    self.vx,self.vy,self.planeRot,self.thrust = 5,-5,21,0 -- thrust only 0 or 1; use thrustPower to adjust.
+    self.planeX, self.planeY = initialPlaneX or -22, initialPlaneY or 130
+    if not initialPlaneX and not initialPlaneY then
+        self.vx,self.vy,self.planeRot,self.thrust = 5,-5,21,0 -- thrust only 0 or 1; use thrustPower to adjust.
+    else
+        self.vx,self.vy,self.planeRot,self.thrust = vx,vy,planeRot,thrust
+    end
 end
 
 local function createLogoEnterAnimator()
@@ -68,9 +72,9 @@ local function createButtonEnterAnimator(buttonIdx)
     return animator.new(enterDuration, segment, enterEasing, enterButtonTimeGap*buttonIdx)
 end
 
-function StartViewModel:init()
+function StartViewModel:init(initialPlaneX, initialPlaneY)
     StartViewModel.super.init(self)
-    self:resetPlane()
+    self:resetPlane(initialPlaneX, initialPlaneY)
     self.viewState = {}
     self.shouldPlayEnterSound = true
     self.viewState.logoAnimator = createLogoEnterAnimator()
