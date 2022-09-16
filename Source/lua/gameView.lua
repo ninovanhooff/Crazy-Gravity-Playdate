@@ -19,7 +19,7 @@ local gameHUD <const> = gameHUD
 --- the active game area, excluding the HUD
 local gameClipRect = playdate.geometry.rect.new(0,0, screenWidth, hudY)
 
-function RenderGame()
+function RenderGame(disableHUD)
     gfx.setColor(gfx.kColorBlack)
     gfx.setScreenClipRect(gameClipRect)
 
@@ -34,7 +34,7 @@ function RenderGame()
 
     -- HUD
     gfx.clearClipRect()
-    if tilesRendered <= 80 then -- only render HUD if we have render budget for it
+    if tilesRendered <= 80 and not disableHUD then -- only render HUD if we have render budget for it
         gameHUD:render()
     end
 
@@ -73,7 +73,6 @@ function RenderGameDebug()
     
     -- Camera debug
     local gameWidthPixels <const> = screenWidth
-    local gameHeightPixels <const> = gameHeightTiles * tileSize
     local halfGameWidthPixels <const> = gameWidthPixels * 0.5
     local halfGameHeightPixels <const> = gameHeightTiles * tileSize * 0.5
     local crossHairSize = 10

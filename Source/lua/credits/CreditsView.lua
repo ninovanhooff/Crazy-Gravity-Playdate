@@ -2,6 +2,7 @@ import "CoreLibs/object"
 
 local floor <const> = math.floor
 local gfx <const> = playdate.graphics
+local gameHeightPixels <const> = gameHeightTiles * tileSize
 local unFlipped <const> = gfx.kImageUnflipped
 local logoImg <const> = gfx.image.new("images/logo.png")
 local logoWidth, logoHeight <const> = logoImg:getSize()
@@ -23,17 +24,12 @@ function CreditsView:render(viewModel)
     gfx.clear(gfx.kColorBlack)
     local creditsY = -((camPos[2]-1)*tileSize) - camPos[4]
 
+
+    --- the active game area, excluding the HUD
+    gfx.setScreenClipRect(0,0, screenWidth, hudY)
     self.creditsImage:draw(0,creditsY)
-
-    RenderGame()
-
-    ---- plane
-    --sprite:draw(
-    --    floor(viewModel.planeX), floor(viewModel.planeY),
-    --    unFlipped,
-    --    viewModel.planeRot%16*23, 391+(boolToNum(viewModel.planeRot>15)*2-viewModel.thrust)*23,
-    --    23, 23
-    --)
+    -- disable HUD, for a more serene experience
+    RenderGame(true)
 end
 
 function CreditsView:drawTextCentered(text, y, x, underline)
@@ -113,15 +109,13 @@ function CreditsView:createCreditsImage()
 
     y = y + self:drawTextCentered("Art", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Count Moriarty", y) + lineSpacing
+    y = y + self:drawTextCentered("Benjamin de Jager", y) + lineSpacing
     y = y + self:drawTextCentered("Casey Gatti", y) + lineSpacing
     y = y + self:drawTextCentered("PixelWitch", y) + lineSpacing
-    y = y + self:drawTextCentered("Labeardi", y) + sectionSpacing
 
     y = y + self:drawTextCentered("Audio", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered("Count Moriarty", y) + lineSpacing
-    y = y + self:drawTextCentered("Casey Gatti", y) + lineSpacing
-    y = y + self:drawTextCentered("PixelWitch", y) + lineSpacing
-    y = y + self:drawTextCentered("Labeardi", y) + sectionSpacing
+    y = y + self:drawTextCentered("Arjan Terpstra", y) + lineSpacing
+    y = y + self:drawTextCentered("Freesound.org", y) + sectionSpacing
 
     y = y + self:drawTextCentered("Script", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Magnum Kramer", y) + sectionSpacing
@@ -133,11 +127,8 @@ function CreditsView:createCreditsImage()
     y = y + self:drawTextCentered("Thanks", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Matt Septhon", y) + lineSpacing
     y = y + self:drawTextCentered("Choosh", y) + lineSpacing
-    y = y + self:drawTextCentered("James Daniels", y) + sectionSpacing
-
-
-
-
+    y = y + self:drawTextCentered("James Daniels", y) + lineSpacing
+    y = y + self:drawTextCentered("Labeardi", y) + sectionSpacing
 
 
     gfx.popContext()
