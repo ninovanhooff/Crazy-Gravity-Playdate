@@ -1,6 +1,8 @@
 import "CoreLibs/object"
 import "lua/start/startScreen.lua"
 
+local tileSize <const> = tileSize
+
 class("CreditsViewModel").extends()
 
 local function setCamPosTopLeft()
@@ -42,12 +44,13 @@ function CreditsViewModel:update()
             self.initialMoveUp = false
         end
     end
+    local camPos = camPos
     print(camPos[2],  camPos[4])
-    if camPos[2] == levelProps.sizeY - screenHeight/tileSize then
+    if camPos[2] >= levelProps.sizeY - screenHeight/tileSize then
         local planePos <const> = planePos
-        local planeX = planePos[1] * tileSize + planePos[3]
+        local planeX = (planePos[1] - camPos[1]) * tileSize + planePos[3] - camPos[3]
         -- subtract 1x tileSize to compensate for 1-based cam pos
-        local planeY = planePos[2] * tileSize + planePos[4] - tileSize
+        local planeY = (planePos[2] - camPos[2])* tileSize + planePos[4] - camPos[4]
         -- restart the game
         clearNavigationStack()
         pushScreen(StartScreen(planeX, planeY))
@@ -58,6 +61,7 @@ function CreditsViewModel:pause()
 end
 
 function CreditsViewModel:resume()
+    swish_sound_reverse:play()
 end
 
 function CreditsViewModel:destroy()

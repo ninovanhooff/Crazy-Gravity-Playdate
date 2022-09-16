@@ -22,6 +22,14 @@ function FlyToCreditsView:render(viewModel)
         startBG:draw(0,0)
     elseif viewModel.bgType == FlyToCreditsViewModel.bgTypes.stars then
         gfx.clear(gfx.kColorBlack)
+        gfx.setColor(gfx.kColorWhite)
+        -- draw stars
+        local random <const>  = math.random
+        local screenWidth <const> = screenWidth
+        local screenHeight <const> = screenHeight
+        for _ = 1, 10 do
+            gfx.drawPixel(random(1, screenWidth), random(1, screenHeight))
+        end
     else
         error("bgType not implemented in View:", viewModel.bgType)
     end

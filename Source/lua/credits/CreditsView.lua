@@ -78,12 +78,19 @@ function CreditsView:drawTextCentered(text, y, x, underline)
 end
 
 function CreditsView:createCreditsImage()
-    local height = levelProps.sizeY * tileSize
+    local screenWidth <const> = screenWidth
+    local height <const> = levelProps.sizeY * tileSize
     self.creditsImage = gfx.image.new(screenWidth,height)
     gfx.pushContext(self.creditsImage)
 
     gfx.setColor(gfx.kColorWhite)
     gfx.drawLine(1,height-1, screenWidth, height-1) -- debug line indicating end of image
+
+    -- draw stars
+    local random <const>  = math.random
+    for _ = 1, 500 do
+        gfx.drawPixel(random(1, screenWidth), random(1, height))
+    end
 
     -- position bottom of startScreen above hudY,
     -- subtract 1x tileSize to compensate for 1-based cam pos

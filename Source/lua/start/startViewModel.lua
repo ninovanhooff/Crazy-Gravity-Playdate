@@ -144,7 +144,7 @@ end
 
 function StartViewModel:calcTimeStep()
     if self.shouldPlayEnterSound then
-        swish_sound:play() -- play once in reverse
+        swish_sound_reverse:play() -- play once
         self.shouldPlayEnterSound = false
     end
     self:processInputs()

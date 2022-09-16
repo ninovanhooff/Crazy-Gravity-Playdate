@@ -15,6 +15,8 @@ function FlyToCreditsViewModel:init()
     self:resetRocketShip()
     self.rocketShipHeight = 0 -- set by View
     self.bgType = FlyToCreditsViewModel.bgTypes.surface
+    self.swish_sound = playdate.sound.sampleplayer.new("sounds/hollow-swish-airy-short.wav")
+
 end
 
 function FlyToCreditsViewModel:update()
@@ -23,8 +25,10 @@ function FlyToCreditsViewModel:update()
             self.bgType = FlyToCreditsViewModel.bgTypes.asteroids
             self:resetRocketShip()
         elseif self.bgType == FlyToCreditsViewModel.bgTypes.asteroids then
+            -- enter hyperspace
             self.bgType = FlyToCreditsViewModel.bgTypes.stars
             self:resetRocketShip()
+            self.swish_sound:play()
         else
             popScreen()
             pushScreen(CreditsScreen())
