@@ -2,7 +2,7 @@ import "CoreLibs/object"
 
 local floor <const> = math.floor
 local gfx <const> = playdate.graphics
-local gameHeightPixels <const> = gameHeightTiles * tileSize
+local tileSize <const> = tileSize
 local unFlipped <const> = gfx.kImageUnflipped
 local logoImg <const> = gfx.image.new("images/logo.png")
 local startBGImg <const> = gfx.image.new("images/start_background")
@@ -122,7 +122,7 @@ function CreditsView:createCreditsImage()
     y = y + self:drawTextCentered("Art", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Count Moriarty", y) + lineSpacing
     y = y + self:drawTextCentered("Casey Gatti", y) + lineSpacing
-    y = y + self:drawTextCentered("Benjamin de Jager", y) + lineSpacing
+    y = y + self:drawTextCentered("Mike Brown", y) + lineSpacing
     y = y + self:drawTextCentered("PixelWitch", y) + sectionSpacing
 
     y = y + self:drawTextCentered("Audio", y, screenCenterX, true) + lineSpacing
@@ -140,6 +140,7 @@ function CreditsView:createCreditsImage()
     y = y + self:drawTextCentered("Matt Septhon", y) + lineSpacing
     y = y + self:drawTextCentered("Choosh", y) + lineSpacing
     y = y + self:drawTextCentered("James Daniels", y) + lineSpacing
+    y = y + self:drawTextCentered("Richard Lems", y) + lineSpacing
     y = y + self:drawTextCentered("Labeardi", y) + sectionSpacing
 
 
