@@ -34,8 +34,18 @@ function RenderGame(disableHUD)
 
     -- HUD
     gfx.clearClipRect()
-    if tilesRendered <= 80 and not disableHUD then -- only render HUD if we have render budget for it
+    if tilesRendered <= 80 and not disableHUD then
+        -- only render HUD if we have render budget for it
+        -- todo only update changed HUD parts (or only challenge target based on tilesRendered)
         gameHUD:render()
+    end
+
+    if tilesRendered <= 50 and not disableHUD then
+        -- Garbage Collect in frames which are not CPU-intensive
+        playdate.setCollectsGarbage(true)
+    else
+        -- save time on GC
+        playdate.setCollectsGarbage(false)
     end
 
     -- Draw explosion over HUD for extra dramatic effect

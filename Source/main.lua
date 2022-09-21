@@ -16,6 +16,9 @@ local pendingNavigators = {}
 local backStack = {}
 local activeScreen
 
+-- note: GC might still be turned off temporarily in BricksView
+playdate.setMinimumGCTime(2)
+
 local function executePendingNavigators()
     if #pendingNavigators > 0 then
         for _, navigator in ipairs(pendingNavigators) do
@@ -34,6 +37,7 @@ local function executePendingNavigators()
         end
         activeScreen = backStack[#backStack]
         print("Resuming screen", activeScreen.className, activeScreen)
+        playdate.setCollectsGarbage(true) -- prevent permanently disabled GC
         activeScreen:resume()
     end
 end

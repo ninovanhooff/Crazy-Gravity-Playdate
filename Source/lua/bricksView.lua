@@ -8,11 +8,10 @@ import "CoreLibs/object"
 
 local abs <const> = math.abs
 local gfx <const> = playdate.graphics
-local camPos <const> = camPos
 
+local camPos <const> = camPos
 local tileSize <const> = tileSize
 
-local noFlip <const> = gfx.kImageUnflipped
 
 
 class('BricksView').extends()
@@ -86,6 +85,12 @@ end
 --- render column bricks, brute force, fail safe
 --- Starts drawing at 1,1 so use a drawOffset to position the result
 function BricksView:renderLineVert(i,j, drawOffsetX)
+    local sumT <const> = sumT
+    local greySumT <const> = greySumT
+    local noFlip <const> = gfx.kImageUnflipped
+    local brickPatternOverride <const> = self.brickPatternOverride
+    local bricksImg <const> = self.bricksImg
+    local brickT <const> = brickT
     local startJ = j
     while j<= startJ + self.bufferHeightTiles do
         local curBrick = brickT[i]
@@ -93,11 +98,11 @@ function BricksView:renderLineVert(i,j, drawOffsetX)
             break
         end
         curBrick = curBrick[j]
-        local brickPattern = self.brickPatternOverride or curBrick[1]
+        local brickPattern = brickPatternOverride or curBrick[1]
 
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
-                self.bricksImg:draw(
+                bricksImg:draw(
                         drawOffsetX, (j-startJ)*8,
                         noFlip,
                         240+(curBrick[2]*curBrick[3]+curBrick[4])*8,
@@ -106,7 +111,7 @@ function BricksView:renderLineVert(i,j, drawOffsetX)
                         8*(curBrick[3]-curBrick[5])
                 )
             elseif curBrick[1]>=3 then --color
-                self.bricksImg:draw(
+                bricksImg:draw(
                         drawOffsetX, (j-startJ)*8,
                         noFlip,
                         (brickPattern-3)*48+sumT[curBrick[2]]+curBrick[4]*8,
@@ -123,6 +128,12 @@ end
 
 --- render a row of bricks, brute force, fail safe
 function BricksView:renderLineHoriz(i,j, drawOffsetY)
+    local sumT <const> = sumT
+    local greySumT <const> = greySumT
+    local noFlip <const> = gfx.kImageUnflipped
+    local brickPatternOverride <const> = self.brickPatternOverride
+    local bricksImg <const> = self.bricksImg
+    local brickT <const> = brickT
     local startI = i
     while i<=startI+self.bufferWidthTiles do
         local curBrick = brickT[i]
@@ -131,11 +142,11 @@ function BricksView:renderLineHoriz(i,j, drawOffsetY)
         end
         curBrick = curBrick[j]
 
-        local brickPattern = self.brickPatternOverride or curBrick[1]
+        local brickPattern = brickPatternOverride or curBrick[1]
 
         if curBrick[1]>2 then
             if curBrick[1]>=7 then --concrete
-                self.bricksImg:draw(
+                bricksImg:draw(
                         (i -startI) * 8, drawOffsetY,
                         noFlip,
                         240+curBrick[2]*curBrick[3]*8,
@@ -145,7 +156,7 @@ function BricksView:renderLineHoriz(i,j, drawOffsetY)
                 )
                 i = i + curBrick[3]-curBrick[4]
             elseif curBrick[1]>=3 then --color
-                self.bricksImg:draw(
+                bricksImg:draw(
                         (i -startI) * 8, drawOffsetY,
                         noFlip,
                         (brickPattern-3)*48+sumT[curBrick[2]]+curBrick[4]*8,
