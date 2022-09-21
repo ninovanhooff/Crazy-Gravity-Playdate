@@ -16,12 +16,11 @@ local left <const> = InputManager.actionLeft
 local right <const> = InputManager.actionRight
 
 
+--- counter for the current rotation timeout. positive is clockwise timeout, negative is ccw timeout
+local rotationTimeout = 0
+
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
-
-local function pressed(buttonMask)
-    return buttonState & buttonMask ~= 0
-end
 
 function ProcessInputs()
     buttonState = getButtonState()
@@ -55,18 +54,35 @@ function ProcessInputs()
             end
         end
         if planeRot<0 then planeRot = 23 end
+        rotationTimeout = 0
     elseif inputManager:isInputPressed(left) then
-        if flying then
+        if rotationTimeout > 0 then
+            -- cancel clockwise rotation timeout
+            rotationTimeout = 0
+        end
+        if flying and rotationTimeout == 0 then
             planeRot = planeRot - 1
             if planeRot<0 then
                 planeRot = 23
             end
+            rotationTimeout = -rotationDelay -- negative for left rotation
+        else
+            rotationTimeout = rotationTimeout + 1
         end
     elseif inputManager:isInputPressed(right) then
-        if flying then
+        if rotationTimeout < 0 then
+            -- cancel counter-clockwise rotation timeout
+            rotationTimeout = 0
+        end
+        if flying and rotationTimeout == 0 then
             planeRot = planeRot + 1
             planeRot = planeRot % 24
+            rotationTimeout = rotationDelay
+        else
+            rotationTimeout = rotationTimeout - 1
         end
+    else
+        rotationTimeout = 0
     end
 end
 

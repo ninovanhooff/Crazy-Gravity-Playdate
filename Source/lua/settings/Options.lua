@@ -34,6 +34,12 @@ local PATTERN_VALS <const> = {"lighter", "light", "dark", "darker", "white", "de
 local INVERT_KEY <const> = "invertDisplay"
 local SPEED_KEY <const> = "gameFps"
 local SPEED_VALS <const> = {15, 20, 25, 30, 0}
+local ROTATION_DELAY_KEY <const> = "rotationDelay"
+local ROTATION_DELAY_VALS <const> = {
+    {label="Slow", value = 2},
+    {label="Medium", value = 1},
+    {label="Fast", value = 0}
+ }
 local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
 local AUDIO_VOLUME_VALS <const> = { "off", 10, 20, 30, 40 , 50 , 60 , 70, 80, 90, 100 }
@@ -71,15 +77,20 @@ local gameOptions = {
     -- preview (bool): hide the options menu while the option is changing to more easily preview changes
     -- dirtyRead (bool): if true, a read on this option returns nil if it hasn't changed. useful for event-driven updates
     {
-        header = 'Graphics',
+        header = 'Gameplay',
         options = {
             { name='Debug', key='debug', values=toggleVals, default=1},
-            { name='Style', key= GRAPHICS_STYLE_KEY, values= STYLE_VALS, default=1}, -- index 11 -> 100(%)
+            { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=2},
+            { name='Game speed', key=SPEED_KEY, values= SPEED_VALS, default=4},
+        }
+    },
+    {
+        header = 'Graphics',
+        options = {
+            { name='Style', key= GRAPHICS_STYLE_KEY, values= STYLE_VALS, default=1},
             { name='Background', key=BG_KEY, values= BG_VALS, default=1},
             { name='Brick pattern', key=PATTERN_KEY, values= PATTERN_VALS, default=6},
             { name='Invert colors', key=INVERT_KEY, values= toggleVals, default=1},
-            { name='Game speed', key=SPEED_KEY, values= SPEED_VALS, default=4},
-
         }
     },
     {
@@ -335,6 +346,10 @@ function Options:apply()
     if framerateIdx then
         playdate.display.setRefreshRate(SPEED_VALS[framerateIdx])
     end
+
+    --- number of frames to disable rotation after each rotation step.
+    --- ie. 2 means after each frame with rotation, 2 frames follow without rotation in the same direction
+    rotationDelay = ROTATION_DELAY_VALS[self:read(ROTATION_DELAY_KEY)].value
 
     inputManager:setButtonMapping(self:createButtonMapping())
 

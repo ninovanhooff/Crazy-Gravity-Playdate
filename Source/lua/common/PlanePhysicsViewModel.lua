@@ -24,6 +24,8 @@ function PlanePhysicsViewModel:init()
     self.flying = true -- always true for StartScreen
     self.planeX, self.planeY = 100,100
     self.vx,self.vy,self.planeRot,self.thrust = 0,0,18,0
+    --- counter for the current rotation timeout. positive is clockwise timeout, negative is ccw timeout
+    self.rotationTimeout = 0
 end
 
 function PlanePhysicsViewModel:calcPlane()
@@ -66,17 +68,34 @@ function PlanePhysicsViewModel:processInputs()
             end
         end
         if self.planeRot<0 then self.planeRot = 23 end
+        self.rotationTimeout = 0
     elseif inputManager:isInputPressed(left) then
-        if self.flying then
+        if self.rotationTimeout > 0 then
+            -- cancel clockwise rotation timeout
+            self.rotationTimeout = 0
+        end
+        if self.flying  and self.rotationTimeout == 0 then
             self.planeRot = self.planeRot - 1
             if self.planeRot<0 then
                 self.planeRot = 23
             end
+            self.rotationTimeout = -rotationDelay -- negative for left rotation
+        else
+            self.rotationTimeout = self.rotationTimeout + 1
         end
     elseif inputManager:isInputPressed(right) then
-        if self.flying then
+        if self.rotationTimeout < 0 then
+            -- cancel counter-clockwise rotation timeout
+            self.rotationTimeout = 0
+        end
+        if self.flying and self.rotationTimeout == 0 then
             self.planeRot = self.planeRot + 1
             self.planeRot = self.planeRot % 24
+            self.rotationTimeout = rotationDelay
+        else
+            self.rotationTimeout = self.rotationTimeout - 1
         end
+    else
+        self.rotationTimeout = 0
     end
 end

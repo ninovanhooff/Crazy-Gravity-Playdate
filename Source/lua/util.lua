@@ -101,7 +101,6 @@ end
 
 
 function deepcopy(object)
-    -- todo, is there a playdate equivalent?
     local lookup_table = {}
     local function _copy(object)
         if type(object) ~= "table" then
