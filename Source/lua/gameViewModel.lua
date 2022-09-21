@@ -14,7 +14,6 @@ local floor <const> = math.floor
 local max <const> = math.max
 local sin <const> = math.sin
 local cos <const> = math.cos
-local roundToNearest <const> = roundToNearest
 
 local tileSize <const> = tileSize
 local gameWidthTiles <const> = gameWidthTiles
@@ -30,7 +29,6 @@ local planeSpeedXCamMultiplier <const> = 0.05
 local planeSpeedYCamMultiplier <const> = 0.03
 local planeRotationCamMultiplier <const> = 0.05
 local gameHUD <const> = gameHUD
-
 
 local halfWidthTiles = math.ceil(gameWidthTiles*0.5)
 local halfHeightTiles = math.ceil(gameHeightTiles*0.5)
@@ -187,7 +185,8 @@ local function playBlockingGameExplosion()
     end
     explosion = GameExplosion(scrimHeight) -- disable fade-out on last life lost
     print("KABOOM", extras[2])
-    while explosion:update() do
+    -- explosion might be nilled when ResetGame is called while explosion is running
+    while explosion and explosion:update() do
         calcPlane() -- keep updating plane as a ghost target for camera
         CalcGameCam()
         for i,item in ipairs(specialT) do
@@ -224,7 +223,10 @@ function CalcTimeStep()
     end
     if collision and explosion == nil and not Debug then
         playBlockingGameExplosion()
-        DecreaseLife()
+        -- explosion might be nilled if game was reset via system menu
+        if explosion then
+            DecreaseLife()
+        end
     end
 end
 
