@@ -12,7 +12,7 @@ end
 
 function CreditsViewModel:init()
     CreditsViewModel.super.init(self)
-    InitGame("levels/temp",1)
+    InitGame("levels/CREDITS",1)
     planePos[1] = 13
     planePos[2] = 28
     planePos[3] = 2
