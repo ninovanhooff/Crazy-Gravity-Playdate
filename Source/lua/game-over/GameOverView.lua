@@ -39,12 +39,20 @@ function GameOverView:render(viewModel)
     titleFont:drawTextAligned(viewModel.title, dialogCenter.x, dialogRect.y+dialogPadding, kTextAlignment.center)
 
     -- buttons
-    gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
-    local totalWidth = viewModel.numButtons*buttonSize + (viewModel.numButtons-1) * buttonSpacing
+    local buttonOffsetsX = viewModel.buttonSourceOffsetsX
+    local numButtons = #buttonOffsetsX
+    local totalWidth = numButtons*buttonSize + (numButtons-1) * buttonSpacing
     local x = dialogCenter.x - totalWidth/2
-    for i = 0,viewModel.numButtons-1 do
-        buttonDrawFun(viewModel.selectedButtonIdx == i+1)(x,buttonY, buttonSize, buttonSize)
-        sprite:draw(x+12,buttonY + 12, unFlipped, i*32, 32, 32, 32)
+    local selected
+    for i = 0,numButtons-1 do
+        selected = viewModel.selectedButtonIdx == i+1
+        buttonDrawFun(selected)(x,buttonY, buttonSize, buttonSize)
+        if selected then
+            gfx.setImageDrawMode(gfx.kDrawModeInverted)
+        else
+            gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        end
+        sprite:draw(x+4,buttonY+4, unFlipped, buttonOffsetsX[i+1], 0, 48, 48)
         x = x + buttonSize + buttonSpacing
     end
     gfx.setImageDrawMode(gfx.kDrawModeCopy) -- reset drawMode. This would persist for some reason

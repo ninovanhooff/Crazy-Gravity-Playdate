@@ -16,11 +16,17 @@ function GameOverViewModel:init(config)
     if config == "GAME_OVER" then
         self.title = "GAME OVER!"
         self.selectedButtonIdx = 2
-        self.numButtons = 2
+        self.buttonSourceOffsetsX = {192, 240}
     elseif config == "LEVEL_CLEARED" then
         self.title = "WELL DONE!"
         self.selectedButtonIdx = 3
-        self.numButtons = 3
+        if currentLevel == numLevels then
+            -- last button is start endgame button
+            self.buttonSourceOffsetsX = {192, 240, 336}
+        else
+            -- last button is next level button
+            self.buttonSourceOffsetsX = {192, 240, 288}
+        end
     else
         error("Unknown Dialog config " .. config)
     end
@@ -73,5 +79,5 @@ function GameOverViewModel:update()
         quitLevel()
     end
 
-    self.selectedButtonIdx = clamp(self.selectedButtonIdx, 1, 3)
+    self.selectedButtonIdx = clamp(self.selectedButtonIdx, 1, #self.buttonSourceOffsetsX)
 end
