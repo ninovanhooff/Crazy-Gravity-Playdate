@@ -102,6 +102,8 @@ function CalcPlatform(item,idx)
                         fuelSpent,
                         livesLost
                     })
+                    RenderGame()
+                    playdate.wait(500) -- Show player that there is no more remaining freight
                     pushScreen(GameOverScreen("LEVEL_CLEARED"))
                 else
                     printf("HUH",table.sum(remainingFreight))

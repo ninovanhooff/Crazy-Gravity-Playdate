@@ -38,11 +38,16 @@ function RenderPlatform(item)
         end
 
         -- remaining freight indicator
-        if gameBgColor == gfx.kColorBlack then
-            gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+        local indicatorCount = table.sum(remainingFreight)+#planeFreight
+        if indicatorCount > 0 then
+            if gameBgColor == gfx.kColorBlack then
+                gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+            end
+            sprite:draw(scrX+32, pltfrmY-16, unFlipped, 192, 346, 16, 16)
+            monoFont:drawText(indicatorCount, scrX+36, pltfrmY - 14)
         end
-        sprite:draw(scrX+32, pltfrmY-16, unFlipped, 192, 346, 16, 16)
-        monoFont:drawText(table.sum(remainingFreight)+#planeFreight, scrX+36, pltfrmY - 14)
+
+        -- startText
         if frameCounter < frameRate then
             local startText = levelNumString(currentLevel)
             if startText then
