@@ -1,4 +1,7 @@
 import "CoreLibs/object"
+import "../video-player/VideoPlayerScreen.lua"
+import "../end-game/EndGameScreen.lua"
+
 
 local justPressed <const> = playdate.buttonJustPressed
 local buttonA <const> = playdate.kButtonA
@@ -36,9 +39,21 @@ local function retryGame()
 end
 
 local function nextLevel()
-    currentLevel = currentLevel + 1
-    InitGame(levelPath(), firstUnCompletedChallenge(currentLevel) or 1)
-    popScreen()
+    if currentLevel < numLevels then
+        InitGame(currentLevel + 1, firstUnCompletedChallenge(currentLevel) or 1)
+        popScreen()
+
+    else
+        -- initiate endgame
+        clearNavigationStack()
+        pushScreen(VideoPlayerScreen(
+            "video/congratulations",
+            function()
+                return EndGameScreen()
+            end
+        ))
+    end
+
 end
 
 function GameOverViewModel:update()

@@ -50,6 +50,11 @@ function EndGameView:init(viewModel)
     viewModel.numCrankFrames = #airlockCrank
 end
 
+function EndGameView:resume()
+    gfx.clear(gameBgColor)
+end
+
+
 function EndGameView:render(viewModel)
     renderGame(viewModel)
     if viewModel.controlRoomAnimator then

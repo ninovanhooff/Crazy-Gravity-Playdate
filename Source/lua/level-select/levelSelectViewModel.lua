@@ -115,12 +115,12 @@ function LevelSelectViewModel:update()
             pushScreen(VideoPlayerScreen(
                 "video/orientation",
                 function()
-                    return GameScreen(levelPath(), self.selectedChallenge)
+                    return GameScreen(currentLevel, self.selectedChallenge)
                 end
             ))
         else
             pushScreen(
-                GameScreen(levelPath(), self.selectedChallenge)
+                GameScreen(currentLevel, self.selectedChallenge)
             )
         end
     elseif justPressed(buttonB) then

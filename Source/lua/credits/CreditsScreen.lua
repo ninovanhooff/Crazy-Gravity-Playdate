@@ -33,6 +33,6 @@ function CreditsScreen:destroy()
     gameBgColor = self.origBgColor
 end
 
-function GameScreen:debugDraw()
+function CreditsScreen:debugDraw()
     RenderGameDebug()
 end

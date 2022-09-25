@@ -269,7 +269,13 @@ local function initSpecials()
     end
 end
 
-function InitGame(path, selectedChallenge)
+function InitGame(_pathOrLevelNumber, selectedChallenge)
+    if type(_pathOrLevelNumber) == "string" then
+        path = _pathOrLevelNumber
+    elseif type(_pathOrLevelNumber) == "number" then
+        currentLevel = _pathOrLevelNumber
+        path = levelPath()
+    end
     print("InitGame", path)
     LoadFile(path)
     curGamePath = path

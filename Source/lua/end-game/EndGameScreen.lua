@@ -24,4 +24,5 @@ end
 
 function EndGameScreen:resume()
     endGameViewModel:resume()
+    endGameView:resume()
 end
