@@ -18,7 +18,7 @@ function GameExplosionScreen:init(calcPlane, calcGameCam)
 end
 
 function GameExplosionScreen:update()
-    if explosion and explosion:update() then
+    if not inputManager:isInputJustPressed(InputManager.actionThrottle) and explosion and explosion:update() then
         self.calcPlane() -- keep updating plane as a ghost target for camera
         self.calcGameCam()
         for i,item in ipairs(specialT) do
@@ -26,9 +26,6 @@ function GameExplosionScreen:update()
         end
         RenderGame()
     else
-        print(explosion)
-        printTable(explosion)
-        -- explosion might be nilled if game was reset via system menu
         popScreen()
         if explosion then
             DecreaseLife()
