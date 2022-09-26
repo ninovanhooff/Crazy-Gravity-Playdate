@@ -5,9 +5,9 @@
 ---
 
 import "CamController"
-import "gameExplosion.lua"
 import "gameHUD.lua"
 import "game-over/GameOverScreen.lua"
+import "game-explosion/GameExplosionScreen.lua"
 
 local pi <const> = pi
 local floor <const> = math.floor
@@ -176,29 +176,6 @@ local function calcPlane()
     end
 end
 
-local function playBlockingGameExplosion()
-    if Sounds then thrust_sound:stop() end
-    thrust = 0
-    local scrimHeight = hudY
-    if extras[2]==1 then
-        scrimHeight = screenHeight
-    end
-    explosion = GameExplosion(scrimHeight) -- disable fade-out on last life lost
-    print("KABOOM", extras[2])
-    -- explosion might be nilled when ResetGame is called while explosion is running
-    while explosion and explosion:update() do
-        calcPlane() -- keep updating plane as a ghost target for camera
-        CalcGameCam()
-        for i,item in ipairs(specialT) do
-            specialCalcT[item.sType](item,i)
-        end
-        RenderGame()
-        playdate.drawFPS(0,0)
-        coroutine.yield() -- let system update the screen
-    end
-end
-
-
 function CalcTimeStep()
     frameCounter = frameCounter + 1
     if flying then --physics
@@ -222,11 +199,8 @@ function CalcTimeStep()
         specialCalcT[item.sType](item,i)
     end
     if collision and explosion == nil and not Debug then
-        playBlockingGameExplosion()
-        -- explosion might be nilled if game was reset via system menu
-        if explosion then
-            DecreaseLife()
-        end
+        print("KABOOM", extras[2])
+        pushScreen(GameExplosionScreen(calcPlane, CalcGameCam))
     end
 end
 
