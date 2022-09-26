@@ -148,10 +148,8 @@ function CalcBlower(item,idx)
         end
     elseif item.direction==2 then --down
         if UnitCollision(item.x,item.y+8,6,item.distance,true) then
-            printf("blower a",vy,planePos[2],item.y+8)
             local mult = item.distance-(planePos[2] - (item.y+8))
             vy = vy + (mult/item.distance)*blowerStrength*(item.grating*0.5)
-            printf("blower b",vy,item.y)
         end
     elseif item.direction==3 then --left
         if UnitCollision(item.x,item.y,item.distance,6,true) then
@@ -174,10 +172,8 @@ function CalcMagnet(item,idx)
         end
     elseif item.direction==2 then --down
         if UnitCollision(item.x,item.y+6,4,item.distance,true) then
-            printf("magn a",vy,planePos[2],item.y+6)
             local mult = item.distance-(planePos[2] - (item.y+6))
             vy = vy - (mult/item.distance)*magnetStrength
-            printf("magn b",vy,item.y)
         end
     elseif item.direction==3 then --left
         if UnitCollision(item.x,item.y,item.distance,4,true) then
