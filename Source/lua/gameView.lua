@@ -25,7 +25,7 @@ function RenderGame(disableHUD)
 
     local tilesRendered = bricksView:render()
 
-    for i,item in ipairs(specialT) do -- special blocks
+    for _,item in ipairs(specialT) do -- special blocks
         local scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
         if item.x+item.w>=camPos[1] and item.x<=camPos[1]+gameWidthTiles+1 and item.y+item.h>=camPos[2] and item.y<camPos[2]+gameHeightTiles+1 then
             specialRenders[item.sType-7](item, scrX, scrY)
@@ -37,7 +37,7 @@ function RenderGame(disableHUD)
     if tilesRendered <= 80 and not disableHUD then
         -- only render HUD if we have render budget for it
         -- todo only update changed HUD parts (or only challenge target based on tilesRendered)
-        gameHUD:render()
+        gameHUD:render(tilesRendered >= 50)
     end
 
     if tilesRendered <= 50 and not disableHUD then

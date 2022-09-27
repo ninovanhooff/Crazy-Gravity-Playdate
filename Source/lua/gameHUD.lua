@@ -14,7 +14,10 @@ local abs <const> = math.abs
 local gfx <const> = playdate.graphics
 local unFlipped <const> = gfx.kImageUnflipped
 local defaultFont = gfx.getFont()
-local monoFont = monoFont
+local monoFont <const> = monoFont
+local screenWidth <const> = screenWidth
+local hudY <const> = hudY
+local hudHeight <const> = screenHeight - hudY
 
 local hudIcons = sprite -- hudIcons are placed at origin of the sprite
 local hudBgClr = gfx.kColorWhite
@@ -62,12 +65,11 @@ function GameHUD:challengeViewState()
     return currentValue, iconIdx
 end
 
-function GameHUD:render()
-    gfx.setColor(hudBgClr)
-    gfx.fillRect(0,hudY,400,16)
-    gfx.setColor(hudFgClr)
+function GameHUD:render(conservative)
     if frameCounter == 0 then
         self:renderStart()
+    elseif conservative then
+        self:renderChallenge()
     else
         self:renderDefault()
     end
@@ -75,6 +77,10 @@ end
 
 --- Render HUD for frame 0, with challenge centered
 function GameHUD:renderStart()
+    gfx.setColor(hudBgClr)
+    gfx.fillRect(0,hudY,screenWidth,16)
+    gfx.setColor(hudFgClr)
+
     local font = defaultFont
     local _, iconIdx = self:challengeViewState()
     -- render
@@ -86,7 +92,25 @@ function GameHUD:renderStart()
     font:drawText(self.challengeTarget,x,hudY)
 end
 
+function GameHUD:renderChallenge()
+    local currentValue, iconIdx = self:challengeViewState()
+    -- render
+    local textW = monoFont:getTextWidth(currentValue)
+    local textX = screenWidth - textW - hudPadding
+    local iconX = textX - hudGutter - 16
+    gfx.setColor(hudBgClr)
+    gfx.fillRect(iconX, hudY, screenWidth - iconX, hudHeight)
+    gfx.setColor(hudFgClr)
+    monoFont:drawText(currentValue, textX,hudY+2)
+    local srcY = boolToNum(self.challengeTarget < currentValue)*16
+    drawIcon(iconX, iconIdx,srcY)
+end
+
 function GameHUD:renderDefault()
+    gfx.setColor(hudBgClr)
+    gfx.fillRect(0,hudY,400,16)
+    gfx.setColor(hudFgClr)
+
     local x = hudPadding
 
     -- lives
@@ -152,15 +176,7 @@ function GameHUD:renderDefault()
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
 
-    -- challenge
-    local currentValue, iconIdx = self:challengeViewState()
-    -- render
-    local textW = monoFont:getTextWidth(currentValue)
-    x = screenWidth - textW - hudPadding
-    monoFont:drawText(currentValue,x,hudY+2)
-    x = x - hudGutter - 16
-    local srcY = boolToNum(self.challengeTarget < currentValue)*16
-    drawIcon(x, iconIdx,srcY)
+    self:renderChallenge()
 end
 
 --- Notify the GameHud that the count of one of the stats has changed.
