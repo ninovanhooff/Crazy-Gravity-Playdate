@@ -11,10 +11,11 @@ local fmod <const> = math.fmod
 local gfx <const> = playdate.graphics
 local sprite = _G["sprite"]
 local editorMode = editorMode
+local loopAnim <const> = loopAnim
 
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
 
-function RenderPlatform(item)
+function RenderPlatform(item, scrX, scrY)
     -- generic
     local barY
     if item.pType<5 then
@@ -91,7 +92,7 @@ function RenderPlatform(item)
     end
 end
 
-function RenderBlower(item)
+function RenderBlower(item, scrX, scrY)
     if item.direction==1 then
         sprite:draw(scrX, scrY+item.distance*8+16, unFlipped, 320+(frameCounter%3)*48, 142-(item.grating-1)*48, 48, 48) -- body
         sprite:draw(scrX, scrY+item.distance*8, unFlipped, 380, 372+(item.direction-1)*16, 48, 16)
@@ -119,7 +120,7 @@ function RenderBlower(item)
     end
 end
 
-function RenderMagnet(item)
+function RenderMagnet(item, scrX, scrY)
     if item.direction==1 then
         sprite:draw(scrX, scrY+item.distance*8+16, unFlipped, 0, 234, 32, 32) -- body
         sprite:draw(scrX, scrY+item.distance*8, unFlipped, 0+loopAnim(3,2)*32, 282, 32, 16)
@@ -139,7 +140,7 @@ function RenderMagnet(item)
     end
 end
 
-function RenderRotator(item)
+function RenderRotator(item, scrX, scrY)
     if item.direction==1 then
         sprite:draw(scrX, scrY+item.distance*8+24, unFlipped, 0+loopAnim(8,2)*40, 96+(item.rotates-1)*40, 40, 40)
         sprite:draw(scrX, scrY+item.distance*8, unFlipped, 320+(item.rotates-1)*80, 190, 40, 24)
@@ -159,7 +160,7 @@ function RenderRotator(item)
     end
 end
 
-function RenderCannon(item)
+function RenderCannon(item, scrX, scrY)
     if item.direction==1 then -- up
 
         if editorMode then
@@ -212,7 +213,7 @@ function RenderCannon(item)
 
 end
 
-function RenderRod(item)
+function RenderRod(item, scrX, scrY)
     local skip = 20
     if item.direction==2 then -- vertical
         if editorMode then
@@ -234,7 +235,7 @@ function RenderRod(item)
 
 end
 
-function Render1Way(item)
+function Render1Way(item, scrX, scrY)
     if item.direction==1 then -- up
         sprite:draw(scrX, scrY+item.distance*8-4, unFlipped, 160, 214, 96, 36) -- body
         sprite:draw(scrX+32, scrY-4-item.pos+item.distance*8, unFlipped, 436, 352, 32, item.pos) -- barrier
@@ -278,7 +279,7 @@ function Render1Way(item)
     end
 end
 
-function RenderBarrier(item)
+function RenderBarrier(item, scrX, scrY)
     local colorCoords = {}
     local pixDist = item.distance*8
     if item.direction==1 then -- up
