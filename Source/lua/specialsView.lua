@@ -139,14 +139,6 @@ function RenderMagnet(item)
     end
 end
 
---[[function RenderRotator(item)
-	if item.direction==1 then
-	elseif item.direction==2 then
-	elseif item.direction==3 then
-	elseif item.direction==4 then
-end]]
-
-
 function RenderRotator(item)
     if item.direction==1 then
         sprite:draw(scrX, scrY+item.distance*8+24, unFlipped, 0+loopAnim(8,2)*40, 96+(item.rotates-1)*40, 40, 40)
