@@ -36,6 +36,7 @@ function GameHUD:init()
     GameHUD.super.init(self)
     self.selectedChallenge = 1 -- 1: time, 2: fuel, 3: survivor
     self.challengeTarget = 1 -- seconds
+    self.lastChallengeValue = nil
 end
 
 -- global singleton
@@ -94,6 +95,9 @@ end
 
 function GameHUD:renderChallenge()
     local currentValue, iconIdx = self:challengeViewState()
+    if self.lastChallengeValue == currentValue then
+        return
+    end
     -- render
     local textW = monoFont:getTextWidth(currentValue)
     local textX = screenWidth - textW - hudPadding
@@ -104,11 +108,12 @@ function GameHUD:renderChallenge()
     monoFont:drawText(currentValue, textX,hudY+2)
     local srcY = boolToNum(self.challengeTarget < currentValue)*16
     drawIcon(iconX, iconIdx,srcY)
+    self.lastChallengeValue = currentValue
 end
 
 function GameHUD:renderDefault()
     gfx.setColor(hudBgClr)
-    gfx.fillRect(0,hudY,400,16)
+    gfx.fillRect(0,hudY,240,16)
     gfx.setColor(hudFgClr)
 
     local x = hudPadding
@@ -177,6 +182,12 @@ function GameHUD:renderDefault()
     x = x+16+hudPadding
 
     self:renderChallenge()
+end
+
+function GameHUD:resume()
+    gfx.setColor(hudBgClr)
+    gfx.fillRect(0,hudY,screenWidth,hudHeight)
+    self.lastChallengeValue = nil -- force challenge redraw on next frame
 end
 
 --- Notify the GameHud that the count of one of the stats has changed.
