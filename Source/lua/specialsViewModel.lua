@@ -15,6 +15,7 @@ local max <const> = math.max
 local random <const> = math.random
 local gameHUD <const> = gameHUD
 local tileSize <const> = tileSize
+local planePos <const> = planePos
 
 local barrierSpeed <const> = 2
 -- #frames between rods speed or direction change when chngOften is enabled
@@ -40,10 +41,13 @@ local function ApproxRectCollision(x, y, w, h)
 end
 
 local function PixelCollision(x,y,w,h) -- needs work?
+    local leftX = planePos[1]*8
+    local topY = planePos[2]*8
+    local colT <const> = colT
     for i=1,9,2 do
         --printf("pixelCol",planePos[1]*8+colT[i],x,planePos[2]*8+colT[i+1],y)
         --printf(planePos[1]*8+colT[i],x,planePos[2]*8+colT[i+1],y)
-        if planePos[1]*8+colT[i]>x and planePos[1]*8+colT[i]<=x+w and planePos[2]*8+colT[i+1]>=y and planePos[2]*8+colT[i+1]<=y+h then -- -1
+        if leftX+colT[i]>x and leftX+colT[i]<=x+w and topY+colT[i+1]>=y and topY+colT[i+1]<=y+h then -- -1
             collision = true
             return true
         end
@@ -222,29 +226,22 @@ local function planeIntersectsCannon(item)
 end
 
 function CalcCannon(item,idx)
-    if frameCounter >= item.nextEmitFrame then -- add a ball
-        table.insert(item.balls,{0,random(0,72)}) -- px position,color offset
-        item.nextEmitFrame = item.nextEmitFrame + item.rate
-    end
 
-    local shouldCalcBallCollisions = planeIntersectsCannon(item)
+    if not planeIntersectsCannon(item) then return end
 
-    for j,jtem in ipairs(item.balls) do
-        jtem[1] = jtem[1]+item.speed
-        if jtem[1]>(item.distance-1)*8 then
-            table.remove(item.balls,j)--WARNING!!
-        elseif shouldCalcBallCollisions then
-            -- ball collision
-            if item.direction==1 then
-                PixelCollision(item.x*8+8,(item.y+item.distance)*8-jtem[1],8,8)--+2
-            elseif item.direction==2 then
-                PixelCollision(item.x*8+8,item.y*8+jtem[1]+24,8,8)
-            elseif item.direction==3 then
-                PixelCollision((item.x+item.distance)*8-jtem[1],item.y*8+8,8,8)
-            else
-                PixelCollision(item.x*8+24+jtem[1],item.y*8+8,8,8)
-            end
+    local pos = (frameCounter %  item.rate) * item.speed
+    while pos < item.maxPos do
+        -- ball collision
+        if item.direction==1 then
+            PixelCollision(item.ballX,(item.y+item.distance)*8-pos,8,8)--+2
+        elseif item.direction==2 then
+            PixelCollision(item.ballX,item.y*8+pos+24,8,8)
+        elseif item.direction==3 then
+            PixelCollision((item.x+item.distance)*8-pos,item.ballY,8,8)
+        else
+            PixelCollision(item.x*8+24+pos, item.ballY,8,8)
         end
+        pos = pos + item.speed*item.rate
     end
 end
 
@@ -391,14 +388,14 @@ function InitPlatform(item)
 end
 
 function InitCannon(item)
-    item.balls = {}
     item.rate = max(1, ceil(convertInterval(item.rate)))
     item.speed = max(1, item.speed - 1)
-    item.nextEmitFrame = item.rate
-    local pos = 0
-    while pos < (item.distance-1)*tileSize do
-        table.insert(item.balls,{pos,random(0,72)}) -- px position,color offset
-        pos = pos + item.speed*item.rate
+    item.maxPos = (item.distance-1)*tileSize
+
+    if item.direction==1 or item.direction == 2 then
+        item.ballX = item.x*8+8
+    else
+        item.ballY = item.y*8+8
     end
 end
 

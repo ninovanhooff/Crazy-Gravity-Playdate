@@ -10,6 +10,7 @@ import "game-over/GameOverScreen.lua"
 import "game-explosion/GameExplosionScreen.lua"
 
 local pi <const> = pi
+local abs <const> = math.abs
 local floor <const> = math.floor
 local max <const> = math.max
 local sin <const> = math.sin
@@ -18,6 +19,8 @@ local cos <const> = math.cos
 local tileSize <const> = tileSize
 local gameWidthTiles <const> = gameWidthTiles
 local gameHeightTiles <const> = gameHeightTiles
+local halfWidthTiles <const> = math.ceil(gameWidthTiles*0.5)
+local halfHeightTiles <const> = math.ceil(gameHeightTiles*0.5)
 local gameWidthPixels <const> = screenWidth
 local gameHeightPixels <const> = gameHeightTiles * tileSize
 local halfGameWidthPixels <const> = gameWidthPixels * 0.5
@@ -29,9 +32,6 @@ local planeSpeedXCamMultiplier <const> = 0.05
 local planeSpeedYCamMultiplier <const> = 0.03
 local planeRotationCamMultiplier <const> = 0.05
 local gameHUD <const> = gameHUD
-
-local halfWidthTiles = math.ceil(gameWidthTiles*0.5)
-local halfHeightTiles = math.ceil(gameHeightTiles*0.5)
 
 --- sine component (y-direction) of plane orientation, ie. positive if plane is pointing up, 0 if pointing left and negative when pointing down
 local camRotY <const> = {}
@@ -64,7 +64,6 @@ for i = 0,23 do
 end
 
 local function CalcPlaneColCoords()
-    colT = nil
     colT = {}
     local colT = colT
     -- sin collision table for current rotation
@@ -195,8 +194,13 @@ function CalcTimeStep()
         end
     end
 
+    local screenCenterX = camPos[1] + halfWidthTiles
+    local screenCenterY = camPos[2] + halfHeightTiles
     for i,item in ipairs(specialT) do
-        specialCalcT[item.sType](item,i)
+        -- only calculate when item max half a screen out of view
+        if abs(item.x - screenCenterX) <= gameWidthTiles + item.w  and abs(item.y - screenCenterY) <= gameHeightTiles + item.h then
+            specialCalcT[item.sType](item,i)
+        end
     end
     if collision and explosion == nil and not Debug then
         print("KABOOM", extras[2])
@@ -276,8 +280,6 @@ function ResetGame()
             if item.pType == 2 then -- freight
                 remainingFreight[item.type+1] = remainingFreight[item.type+1]+item.amnt
             end
-        elseif item.sType == 12 then -- cannon
-            item.nextEmitFrame = item.nextEmitFrame - frameCounter
         end
     end
     extras = {0,levelProps.lives,1} -- turbo, lives, cargo

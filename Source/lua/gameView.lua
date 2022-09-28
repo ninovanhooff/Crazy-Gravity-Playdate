@@ -13,6 +13,9 @@ local floor <const> = math.floor
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local planePos <const> = planePos
 local camPos <const> = camPos
+local specialRenders <const> = specialRenders
+local gameWidthTiles <const> = gameWidthTiles
+local gameHeightTiles <const> = gameHeightTiles
 
 local gameHUD <const> = gameHUD
 

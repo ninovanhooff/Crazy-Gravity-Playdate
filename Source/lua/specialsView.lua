@@ -12,6 +12,7 @@ local gfx <const> = playdate.graphics
 local sprite = _G["sprite"]
 local editorMode = editorMode
 local loopAnim <const> = loopAnim
+local tileSize <const> = tileSize
 
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
 
@@ -161,51 +162,34 @@ function RenderRotator(item, scrX, scrY)
 end
 
 function RenderCannon(item, scrX, scrY)
-    if item.direction==1 then -- up
+    local pos = (frameCounter %  item.rate) * item.speed
+    local bOff = (floor((frameCounter)%72/3))*8
 
-        if editorMode then
-            pgeDrawRectoutline(scrX,scrY,24,item.distance*8,white)
-        else
-            for j,jtem in ipairs(item.balls) do
-                local bOff = (floor((frameCounter-jtem[2])%72/3))*8
-                sprite:draw(scrX+8, scrY+item.distance*8-jtem[1], unFlipped, 240+bOff, 72, 8, 8)
-            end
+    if item.direction==1 then -- up
+        while pos < item.maxPos do -- balls
+            sprite:draw(scrX+8, scrY+item.distance*8-pos, unFlipped, 240+bOff, 72, 8, 8)
+            pos = pos + item.speed*item.rate
         end
         sprite:draw(scrX, scrY+item.distance*8, unFlipped, 396, 405, 24, 40) -- body
         sprite:draw(scrX+4, scrY, unFlipped, 472, 150, 16, 24) -- receiver
     elseif item.direction==2 then -- down
-
-        if editorMode then
-            pgeDrawRectoutline(scrX,scrY+40,24,item.distance*8,white)
-        else
-            for j,jtem in ipairs(item.balls) do
-                local bOff = (floor((frameCounter-jtem[2])%72/3))*8
-                sprite:draw(scrX+8, scrY+jtem[1]+24, unFlipped, 240+bOff, 72, 8, 8)
-            end
+        while pos < item.maxPos do -- balls
+            sprite:draw(scrX+8, scrY+pos+24, unFlipped, 240+bOff, 72, 8, 8)
+            pos = pos + item.speed*item.rate
         end
         sprite:draw(scrX, scrY, unFlipped, 396, 421, 24, 40) -- body
         sprite:draw(scrX+4, scrY+item.distance*8+16, unFlipped, 472, 142, 16, 24) -- receiver
     elseif item.direction==3 then -- left
-
-        if editorMode then
-            pgeDrawRectoutline(scrX,scrY,item.distance*8,24,white)
-        else
-            for j,jtem in ipairs(item.balls) do
-                local bOff = (floor((frameCounter-jtem[2])%72/3))*8
-                sprite:draw(scrX+item.distance*8-jtem[1], scrY+8, unFlipped, 240+bOff, 72, 8, 8)
-            end
+        while pos < item.maxPos do
+            sprite:draw(scrX+item.distance*8-pos, scrY+8, unFlipped, 240+bOff, 72, 8, 8)
+            pos = pos + item.speed*item.rate
         end
         sprite:draw(scrX+item.distance*8, scrY, unFlipped, 380, 421, 40, 24) -- body
         sprite:draw(scrX, scrY+4, unFlipped, 472, 150, 24, 16) -- receiver
-    else -- right
-
-        if editorMode then
-            pgeDrawRectoutline(scrX+40,scrY,item.distance*8,24,white)
-        else
-            for j,jtem in ipairs(item.balls) do
-                local bOff = (floor((frameCounter-jtem[2])%72/3))*8
-                sprite:draw(scrX+24+jtem[1], scrY+8, unFlipped, 240+bOff, 72, 8, 8)
-            end
+    elseif item.direction == 4 then -- right
+        while pos < item.maxPos do -- balls
+            sprite:draw(scrX+24+pos, scrY+8, unFlipped, 240+bOff, 72, 8, 8)
+            pos = pos + item.speed*item.rate
         end
         sprite:draw(scrX, scrY, unFlipped, 396, 421, 40, 24) -- body
         sprite:draw(scrX+item.distance*8+16, scrY+4, unFlipped, 464, 150, 24, 16) -- receiver

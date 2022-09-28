@@ -42,6 +42,7 @@ function LoadFile(path)
 
 
     printf("loaded dim",#brickT,#brickT[1])
+    printf("loaded #specials:", #specialT)
 
     return true
 end
