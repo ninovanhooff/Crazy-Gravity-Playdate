@@ -154,12 +154,12 @@ function CalcBlower(item,idx)
     elseif item.direction==3 then --left
         if UnitCollision(item.x,item.y,item.distance,6,true) then
             local mult = item.distance-(item.x+item.distance - planePos[1])
-            vx = vx - (mult/item.distance)*blowerStrength*(1+item.grating)
+            vx = vx - (mult/item.distance)*blowerStrength*(0.5+item.grating)
         end
     elseif item.direction==4 then --right
         if UnitCollision(item.x+8,item.y,item.distance,6,true) then
             local mult = item.distance-(planePos[1] - (item.x+8))
-            vx = vx + (mult/item.distance)*blowerStrength*(1+item.grating)
+            vx = vx + (mult/item.distance)*blowerStrength*(0.5+item.grating)
         end
     end
 end
