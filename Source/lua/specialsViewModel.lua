@@ -391,7 +391,7 @@ function InitCannon(item)
     item.rate = max(1, ceil(convertInterval(item.rate)))
     item.speed = max(1, item.speed - 1)
     item.maxPos = (item.distance-1)*tileSize
-
+    item.ballSpacing = item.speed*item.rate
     if item.direction==1 or item.direction == 2 then
         item.ballX = item.x*8+8
     else

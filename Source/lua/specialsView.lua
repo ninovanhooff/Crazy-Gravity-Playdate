@@ -177,7 +177,7 @@ function RenderCannon(item, scrX, scrY)
             if yPos < gameHeightPixels then
                 sprite:draw(xPos, yPos, unFlipped, bOff, 72, 8, 8)
             end
-            yPos = yPos - item.speed*item.rate
+            yPos = yPos - item.ballSpacing
         end
         sprite:draw(scrX, scrY+item.distance*8, unFlipped, 396, 405, 24, 40) -- body
         sprite:draw(scrX+4, scrY, unFlipped, 472, 150, 16, 24) -- receiver
@@ -189,7 +189,7 @@ function RenderCannon(item, scrX, scrY)
             if yPos > 0 then
                 sprite:draw(xPos, yPos, unFlipped, bOff, 72, 8, 8)
             end
-            yPos = yPos + item.speed*item.rate
+            yPos = yPos + item.ballSpacing
         end
         sprite:draw(scrX, scrY, unFlipped, 396, 421, 24, 40) -- body
         sprite:draw(scrX+4, scrY+item.distance*8+16, unFlipped, 472, 142, 16, 24) -- receiver
@@ -200,7 +200,7 @@ function RenderCannon(item, scrX, scrY)
             if xPos < gameWidthPixels then
                 sprite:draw(xPos, scrY+8, unFlipped, bOff, 72, 8, 8)
             end
-            xPos = xPos - item.speed*item.rate
+            xPos = xPos - item.ballSpacing
         end
         sprite:draw(scrX+item.distance*8, scrY, unFlipped, 380, 421, 40, 24) -- body
         sprite:draw(scrX, scrY+4, unFlipped, 472, 150, 24, 16) -- receiver
@@ -211,7 +211,7 @@ function RenderCannon(item, scrX, scrY)
             if xPos > 0 then
                 sprite:draw(xPos, scrY+8, unFlipped, bOff, 72, 8, 8)
             end
-            xPos = xPos + item.speed*item.rate
+            xPos = xPos + item.ballSpacing
         end
         sprite:draw(scrX, scrY, unFlipped, 396, 421, 40, 24) -- body
         sprite:draw(scrX+item.distance*8+16, scrY+4, unFlipped, 464, 150, 24, 16) -- receiver
