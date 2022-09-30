@@ -144,7 +144,9 @@ function CalcPlatform(item,idx)
 
 end
 
-function CalcBlower(item,idx)
+function CalcBlower(item)
+    if not flying then return end
+
     if item.direction==1 then --up
         if UnitCollision(item.x,item.y,6,item.distance,true) then
             local mult = item.distance-(item.y+item.distance - planePos[2])
@@ -168,7 +170,9 @@ function CalcBlower(item,idx)
     end
 end
 
-function CalcMagnet(item,idx)
+function CalcMagnet(item)
+    if not flying then return end
+
     if item.direction==1 then --up
         if UnitCollision(item.x,item.y,4,item.distance,true) then
             local mult = item.distance-(item.y+item.distance - planePos[2])
@@ -192,7 +196,9 @@ function CalcMagnet(item,idx)
     end
 end
 
-function CalcRotator(item,idx)
+function CalcRotator(item)
+    if not flying then return end
+
     if (item.direction==1 and UnitCollision(item.x,item.y,5,item.distance,true))
             or (item.direction==2 and UnitCollision(item.x,item.y+8,5,item.distance,true))
             or (item.direction==3 and UnitCollision(item.x,item.y,item.distance,5,true))
