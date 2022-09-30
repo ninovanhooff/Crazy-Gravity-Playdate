@@ -26,7 +26,7 @@ function MusicManager:play(track)
     elseif track == "MIDI24" then
         self.player = MasterPlayer("music/E1M8.mid")
     elseif track == "MIDI7" then
-        self.player = MasterPlayer("music/E1M9.mid")
+        self.player = MasterPlayer("music/E3M6.mid")
     end
 
     if self.player then
