@@ -14,7 +14,7 @@
 	 {
 		"attack":0,
 		"decay":0.15000003576279,
-		"isMuted":false,
+		"isMuted":true,
 		"isSolo":false,
 		"notes": [
 			26,
@@ -193,7 +193,7 @@
 	 {
 		"attack":0,
 		"decay":0.15000000596046,
-		"isMuted":false,
+		"isMuted":true,
 		"isSolo":false,
 		"notes": [
 			47,
@@ -266,7 +266,7 @@
 	 {
 		"attack":0,
 		"decay":0.15000000596046,
-		"isMuted":false,
+		"isMuted":true,
 		"isSolo":false,
 		"notes": [
 			38,
