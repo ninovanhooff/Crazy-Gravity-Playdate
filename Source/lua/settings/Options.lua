@@ -43,8 +43,6 @@ local ROTATION_DELAY_VALS <const> = {
 local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
 local AUDIO_VOLUME_VALS <const> = { "off", 10, 20, 30, 40 , 50 , 60 , 70, 80, 90, 100 }
-local MUSIC_TRACK_KEY <const> = "musicTrack"
-local MUSIC_TRACK_VALS <const> = {"MIDI2", "MIDI7", "MIDI24", "NONE"}
 local MUSIC_VOLUME_KEY <const> = "musicVolume"
 
 local BUTTON_VALS <const> = {
@@ -97,8 +95,7 @@ local gameOptions = {
         header = 'Audio',
         options = {
             { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
-            { name='Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
-            { name='Music', key= MUSIC_TRACK_KEY, values= MUSIC_TRACK_VALS, default=2},
+            { name='Sound Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
             { name='Music Volume', key= MUSIC_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
         }
     },
@@ -325,8 +322,6 @@ function Options:apply()
             musicVolume = 0.0
         else
             musicVolume = musicVolume / 100
-            local musicTrack = MUSIC_TRACK_VALS[self:read(MUSIC_TRACK_KEY)]
-            resourceLoader:loadMusic(musicTrack)
         end
         resourceLoader:setMusicVolume(musicVolume)
     end

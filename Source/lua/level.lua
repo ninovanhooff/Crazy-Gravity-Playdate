@@ -47,6 +47,15 @@ function LoadFile(path)
     return true
 end
 
+function levelNumString(levelNumber)
+    return string.format("%02d", levelNumber)
+end
+
+function levelPath(_levelNumber)
+    local levelNumber = _levelNumber or currentLevel
+    return "levels/LEVEL" .. levelNumString(levelNumber)
+end
+
 levelNames = {
     [1] = "Test Flight",
     [2] = "Getaway-Gates",
@@ -69,5 +78,20 @@ levelNames = {
     [19] = "A-maze-ing",
     [20] = "Broadsides",
     [21] = "Final Countdown"
-    
 }
+
+local levelBgmPaths = {
+    "music/E1M8.mp3",
+    "music/E3M6.mp3",
+    "music/E1M9.mp3",
+    "music/scifiNights.mp3",
+}
+
+function levelSongPath(_levelNumber)
+    local levelNumber = _levelNumber or currentLevel
+    if levelNumber == 21 then
+        return "music/the-countdown.mp3"
+    end
+    print("music for level ", levelNumber, #levelBgmPaths, luaMod(levelNumber,#levelBgmPaths+1))
+    return levelBgmPaths[luaMod(levelNumber,#levelBgmPaths+1)]
+end

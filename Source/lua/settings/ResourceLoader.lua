@@ -82,12 +82,6 @@ function ResourceLoader:loadSounds(useClassic)
     self:setSoundVolume(self.soundVolume)
 end
 
-function ResourceLoader:loadMusic(track)
-    print("---MUSIC", track)
-    sample("loading new track", function()  musicManager:play(track) end, 1)
-    print("---END MUSIC")
-end
-
 local function setVolume(self, volume, ...)
     self.soundVolume = volume
     for _,item in ipairs({ ... }) do

@@ -27,5 +27,11 @@ test(-2, roundToNearest(-2.1,2), "roundToNearest(2.1,2)")
 test(-2, roundToNearest(-3,2), "roundToNearest(3,2)")
 test(-4, roundToNearest(-3.1,2), "roundToNearest(3.1,2)")
 
+test(1, luaMod(0, 3), "luaMod(0,3)")
+test(1, luaMod(1, 3), "luaMod(1,3)")
+test(2, luaMod(2, 3), "luaMod(2,3)")
+test(1, luaMod(3, 3), "luaMod(3,3)")
+test(1, luaMod(4, 3), "luaMod(4,3)")
+
 
 print "----TESTS OK"

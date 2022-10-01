@@ -5,6 +5,7 @@
 ---
 
 local floor <const> = math.floor
+local max <const> = math.max
 
 function boolToNum(bool)
     if bool then return 1 else return 0 end
@@ -28,6 +29,13 @@ function isarray(x)
     return type(x) == "table" and x[1] ~= nil
 end
 
+--- 1-based mod, where the result is 1 where it would be 0 for the regular mod operation
+--- useful for cycling through 1-based indexes like table indexes
+--- Usage example: luaMod(levelNumber, #levels+1) would give a 1-based level index that is always a valid index for the `levels` table
+function luaMod(first, second)
+    return max(1, first % second)
+end
+
 local getiter = function(x)
     if isarray(x) then
         return ipairs
@@ -44,15 +52,6 @@ function find(t, value)
         if v == value then return k end
     end
     return nil
-end
-
-function levelNumString(levelNumber)
-    return string.format("%02d", levelNumber)
-end
-
-function levelPath(_levelNumber)
-    local levelNumber = _levelNumber or currentLevel
-    return "levels/LEVEL" .. levelNumString(levelNumber)
 end
 
 function IncrementStringNumber(str)

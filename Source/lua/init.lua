@@ -12,7 +12,7 @@ import "records.lua"
 import "levelSuggestion.lua"
 import "CoreLibs/graphics"
 
-if Debug then
+if playdate.isSimulator then
     import "unittests.lua"
 end
 

@@ -265,6 +265,7 @@ function InitGame(_pathOrLevelNumber, selectedChallenge)
     end
     frameCounter = 0
     ResetGame()
+    musicManager:play(levelSongPath())
 end
 
 function ResetGame()

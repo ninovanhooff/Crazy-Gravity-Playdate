@@ -18,21 +18,18 @@ if not musicManager then
     musicManager = MusicManager()
 end
 
-function MusicManager:play(track)
-    self:stop()
-
-    if track == "MIDI2" then
-        self.player = MasterPlayer("music/skrillex.mid")
-    elseif track == "MIDI24" then
-        self.player = MasterPlayer("music/E1M8.mid")
-    elseif track == "MIDI7" then
-        self.player = MasterPlayer("music/E3M6.mid")
-    end
-
-    if self.player then
-        self.player:setVolume(self.volume)
-        self.player:play()
-    end
+function MusicManager:play(path)
+    print("---MUSIC", path)
+    sample("loading new track", function()
+        self:stop()
+        self.player = playdate.sound.fileplayer.new(path)
+        if self.player then
+            self.player:setStopOnUnderrun(false)
+            self.player:setVolume(self.volume)
+            self.player:play()
+        end
+    end, 1)
+    print("---END MUSIC")
 end
 
 function MusicManager:stop()
