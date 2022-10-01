@@ -5,6 +5,7 @@
 ---
 
 import "CoreLibs/object"
+local timer <const> = playdate.timer
 
 class("MusicManager").extends()
 
@@ -26,7 +27,7 @@ function MusicManager:play(path)
         return
     end
     sample("loading new track", function()
-        self:stop()
+        self:fadeOut()
         self.player = playdate.sound.fileplayer.new(path)
         if self.player then
             self.player:setStopOnUnderrun(false)
@@ -46,7 +47,23 @@ function MusicManager:stop()
     end
 end
 
--- range 0.0 - 1.0
+function MusicManager:fadeOut()
+    local currentPlayer <const> = self.player
+    if currentPlayer then
+        local fadeOut = timer.new(1000, currentPlayer:getVolume(), 0.0)
+        fadeOut.updateCallback = function()
+            currentPlayer:setVolume(fadeOut.value)
+        end
+        fadeOut.timerEndedCallback = function()
+            currentPlayer:stop()
+            if self.player == currentPlayer then
+                self:stop()
+            end
+        end
+    end
+end
+
+--- range 0.0 - 1.0
 function MusicManager:setVolume(vol)
     self.volume = vol
     if self.player then
