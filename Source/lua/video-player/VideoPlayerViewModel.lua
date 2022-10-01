@@ -34,4 +34,5 @@ function VideoPlayerViewModel:pause()
 end
 
 function VideoPlayerViewModel:resume()
+    musicManager:fadeOut()
 end
