@@ -3,8 +3,6 @@ import "FlyToCreditsScreen"
 
 local gfx <const> = playdate.graphics
 local getCrankChange <const> = playdate.getCrankChange
-local justPressed <const> = playdate.buttonJustPressed
-local buttonB <const> = playdate.kButtonB
 local floor <const> = math.floor
 
 local calcTimeStep <const> = CalcTimeStep
@@ -30,9 +28,12 @@ function EndGameViewModel:init()
     camPos[2] = 210
     planePos[1] = 59
     planePos[2] = 224
+    planePos[3] = 4
+    planePos[4] = 4
     planeRot = 18
     self.planePosX = planePos[1]*tileSize + planePos[3]
     self.planePosY = planePos[2]*tileSize + planePos[4]
+    self.launchTowerY = self.planePosY - 58 + 24
 
     local findSpecial = function(targetId)
         return lume.match(specialT, function(item) return item.id == targetId end)

@@ -4,8 +4,8 @@ local gfx <const> = playdate.graphics
 local asteroidSurface = gfx.image.new("images/asteroid_surface")
 local startBG = gfx.image.new("images/start_background")
 local rocketShip = gfx.image.new("images/rocket_ship")
-local rocketShipX = 88
-local planeX = rocketShipX + 18
+local rocketShipX = 81
+local planeX = rocketShipX + 25
 
 
 class("FlyToCreditsView").extends()

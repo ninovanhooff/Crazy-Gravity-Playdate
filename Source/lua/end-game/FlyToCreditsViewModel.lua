@@ -1,10 +1,8 @@
 import "CoreLibs/object"
 import "../credits/CreditsScreen.lua"
 
-local justPressed <const> = playdate.buttonJustPressed
-local buttonB <const> = playdate.kButtonB
 local tileSize <const> = tileSize
-local planeOffset <const> = 8 * tileSize
+local planeOffset <const> = 7 * tileSize
 
 class("FlyToCreditsViewModel").extends()
 

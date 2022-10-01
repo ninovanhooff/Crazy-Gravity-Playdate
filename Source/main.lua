@@ -1,4 +1,5 @@
 import "CoreLibs/timer"
+lume = import "lua/lume"
 import "lua/enum.lua"
 import "lua/util.lua"
 import "lua/level.lua"

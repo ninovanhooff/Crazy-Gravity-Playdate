@@ -4,12 +4,13 @@ local gfx <const> = playdate.graphics
 local floor <const> = math.floor
 
 local controlRoomBG = gfx.image.new("images/launch_control_room")
+local launchTowerImg = gfx.image.new("images/launch_tower")
 local rocketShip = gfx.image.new("images/rocket_ship")
 local airlockCrank <const> = gfx.imagetable.new("images/airlock-crank/airlock-crank")
 if #airlockCrank < 1 then
     error("no crank frames")
 end
-local rocketShipX <const> = 182
+local rocketShipX <const> = 175
 local tileSize <const> = tileSize
 
 
@@ -21,10 +22,15 @@ local function renderGame(viewModel)
     -- bricks
     bricksView:render()
 
+    local rocketShipScreenX = rocketShipX-camPos[1]*tileSize-camPos[3]
     -- rocket ship
+    launchTowerImg:draw(
+        rocketShipScreenX - 20,
+        viewModel.launchTowerY - camPos[2]*tileSize-camPos[4]
+    )
     rocketShip:draw(
-        rocketShipX-camPos[1]*tileSize-camPos[3],
-        floor(viewModel.planePosY - 8*tileSize - camPos[2]*tileSize-camPos[4])
+        rocketShipScreenX,
+        floor(viewModel.planePosY - 7*tileSize - camPos[2]*tileSize-camPos[4])
     )
 
     -- specials
