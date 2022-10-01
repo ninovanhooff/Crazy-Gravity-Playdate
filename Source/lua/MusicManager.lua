@@ -5,7 +5,6 @@
 ---
 
 import "CoreLibs/object"
-import "../libs/master-player/MasterPlayer.lua"
 
 class("MusicManager").extends()
 
