@@ -3,12 +3,10 @@ import "CoreLibs/animation"
 
 
 local gfx <const> = playdate.graphics
-local loop <const> = gfx.animation.loop
 local floor <const> = math.floor
 
 local controlRoomBG = gfx.image.new("images/launch_control_room")
 local launchTowerImg = gfx.image.new("images/launch_tower")
-local launchBurnImgTable = gfx.imagetable.new("images/rocket_ship_burn")
 local rocketShip = gfx.image.new("images/rocket_ship")
 local airlockCrank <const> = gfx.imagetable.new("images/airlock-crank/airlock-crank")
 if #airlockCrank < 1 then
@@ -23,8 +21,6 @@ class("EndGameView").extends()
 function EndGameView:init(viewModel)
     EndGameView.super.init(self)
     viewModel.numCrankFrames = #airlockCrank
-    self.launchBurnLoop = loop.new(100, launchBurnImgTable, true)
-
 end
 
 function EndGameView:resume()
@@ -45,10 +41,12 @@ function EndGameView:renderGame(viewModel)
         viewModel.launchTowerY - camPos[2]*tileSize-camPos[4]
     )
     rocketShip:draw(rocketShipScreenX, rocketShipScreenY)
-    self.launchBurnLoop:draw(
-        rocketShipScreenX + 22,
-        rocketShipScreenY + 114
-    )
+    if viewModel.rocketExhaustLoop then
+        viewModel.rocketExhaustLoop:draw(
+            rocketShipScreenX + viewModel.exhaustLoopOffsetX,
+            rocketShipScreenY + viewModel.exhaustLoopOffsetY
+        )
+    end
 
     -- specials
     for _,item in ipairs(specialT) do -- special blocks

@@ -7,9 +7,9 @@ class("FlyToCreditsScreen").extends(Screen)
 
 local flyToCreditsView, flyToCreditsViewModel
 
-function FlyToCreditsScreen:init()
+function FlyToCreditsScreen:init(exhaustLoopSpecs)
     FlyToCreditsScreen.super.init(self)
-    flyToCreditsViewModel = FlyToCreditsViewModel()
+    flyToCreditsViewModel = FlyToCreditsViewModel(exhaustLoopSpecs)
     flyToCreditsView = FlyToCreditsView(flyToCreditsViewModel)
 end
 

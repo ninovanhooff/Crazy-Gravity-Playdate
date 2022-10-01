@@ -35,6 +35,13 @@ function FlyToCreditsView:render(viewModel)
     end
     local rocketShipY = viewModel.rocketShipY
     rocketShip:draw(rocketShipX, rocketShipY)
+    local loopSpecs = viewModel.exhaustLoopSpecs
+    if loopSpecs then
+        loopSpecs.loop:draw(
+            rocketShipX + loopSpecs.offsetX,
+            rocketShipY + loopSpecs.offsetY
+        )
+    end
     -- plane
     sprite:draw(
         planeX, viewModel.planeY,

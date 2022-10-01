@@ -2,6 +2,10 @@ import "CoreLibs/object"
 import "FlyToCreditsScreen"
 
 local gfx <const> = playdate.graphics
+local loop <const> = gfx.animation.loop
+local rocketExhaustBurnImgTable = gfx.imagetable.new("images/rocket_ship_burn")
+local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_start")
+
 local getCrankChange <const> = playdate.getCrankChange
 local floor <const> = math.floor
 
@@ -62,6 +66,9 @@ function EndGameViewModel:initState(state)
         self.planeAnimator = gfx.animator.new(loadPlaneDurationMs, self.planePosX, targetPlanePosX)
         self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -600, 0)
     elseif state == states.LiftOff then
+        self.rocketExhaustLoop = loop.new(66, rocketExhaustStartImgTable, false)
+        self.exhaustLoopOffsetX = -6
+        self.exhaustLoopOffsetY = 106
         self.camOverrideY = camPos[2]*tileSize+camPos[4]
     elseif state == states.OpenAirlock then
         self.camOverrideY = 10 * tileSize
@@ -85,7 +92,13 @@ end
 
 function EndGameViewModel:onEnded()
     popScreen() -- pop self
-    pushScreen(FlyToCreditsScreen())
+    pushScreen(FlyToCreditsScreen(
+        {
+            ["loop"] = self.rocketExhaustLoop,
+            ["offsetX"] = self.exhaustLoopOffsetX,
+            ["offsetY"] = self.exhaustLoopOffsetY
+        }
+    ))
 end
 
 function EndGameViewModel:LoadPlaneUpdate()
@@ -118,6 +131,13 @@ function EndGameViewModel:ReturnPlatformUpdate()
 end
 
 function EndGameViewModel:LiftOffUpdate()
+    if not self.rocketExhaustLoop:isValid() then
+        -- liftoff animation finished
+        -- create the continuous burn loop, which is always valid
+        self.exhaustLoopOffsetX = self.exhaustLoopOffsetX + 28
+        self.exhaustLoopOffsetY = self.exhaustLoopOffsetY + 7
+        self.rocketExhaustLoop = loop.new(66, rocketExhaustBurnImgTable, true)
+    end
     self.planePosY = self.planePosY - self.liftOffSpeed
     self.liftOffSpeed = self.liftOffSpeed * 1.01 -- accelerate
     if self.liftOffSpeed > 0.8 then

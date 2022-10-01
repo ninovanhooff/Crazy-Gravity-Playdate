@@ -8,8 +8,9 @@ class("FlyToCreditsViewModel").extends()
 
 FlyToCreditsViewModel.bgTypes = enum({"surface", "asteroids", "stars"})
 
-function FlyToCreditsViewModel:init()
+function FlyToCreditsViewModel:init(loopSpecs)
     FlyToCreditsViewModel.super.init(self)
+    self.exhaustLoopSpecs = loopSpecs
     self:resetRocketShip()
     self.rocketShipHeight = 0 -- set by View
     self.bgType = FlyToCreditsViewModel.bgTypes.surface
@@ -23,6 +24,7 @@ function FlyToCreditsViewModel:update()
             self.bgType = FlyToCreditsViewModel.bgTypes.asteroids
             self:resetRocketShip()
         elseif self.bgType == FlyToCreditsViewModel.bgTypes.asteroids then
+            self.exhaustLoopSpecs = nil
             -- enter hyperspace
             self.bgType = FlyToCreditsViewModel.bgTypes.stars
             self:resetRocketShip()
