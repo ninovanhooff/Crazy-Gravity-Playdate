@@ -11,6 +11,8 @@ class("MusicManager").extends()
 function MusicManager:init()
     MusicManager.super.init()
     self.volume = 1.0
+    self.currentPath = nil
+    self.player = nil
 end
 
 if not musicManager then
@@ -19,6 +21,10 @@ end
 
 function MusicManager:play(path)
     print("---MUSIC", path)
+    if self.currentPath == path and self.player and self.player:isPlaying() then
+        print("Already playing this track.")
+        return
+    end
     sample("loading new track", function()
         self:stop()
         self.player = playdate.sound.fileplayer.new(path)
@@ -26,6 +32,7 @@ function MusicManager:play(path)
             self.player:setStopOnUnderrun(false)
             self.player:setVolume(self.volume)
             self.player:play()
+            self.currentPath = path
         end
     end, 1)
     print("---END MUSIC")
@@ -35,6 +42,7 @@ function MusicManager:stop()
     if self.player then
         self.player:stop()
         self.player = nil
+        self.currentPath = nil
     end
 end
 

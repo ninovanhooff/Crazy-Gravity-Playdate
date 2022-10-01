@@ -46,7 +46,6 @@ end
 
 function GameScreen:destroy()
     self:pause()
-    musicManager:stop()
 end
 
 function GameScreen:resume()
