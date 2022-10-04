@@ -9,6 +9,8 @@ import "../screen.lua"
 import "startView.lua"
 import "startViewModel.lua"
 
+local menu <const> = playdate.getSystemMenu()
+
 class("StartScreen").extends(Screen)
 
 local renderStart <const> = RenderStart
@@ -25,9 +27,18 @@ end
 
 function StartScreen:pause()
     self.viewModel:pause()
+
+    if self.settingsMenuItem then
+        menu:removeMenuItem(self.settingsMenuItem)
+        self.settingsMenuItem = nil
+    end
 end
 
 function StartScreen:resume()
     -- reset state entirely
     self.viewModel = StartViewModel(self.initialPlaneX, self.initialPlaneY)
+
+    self.settingsMenuItem = menu:addMenuItem("Settings", function()
+        pushScreen(SettingsScreen())
+    end)
 end
