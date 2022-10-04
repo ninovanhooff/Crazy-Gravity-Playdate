@@ -60,9 +60,12 @@ end
 function ResourceLoader:loadSounds(audioStyle, onlyStartAssets)
     print("audioStyle", audioStyle)
     -- common sounds
-    thrust_sound = sampleplayer.new("sounds/thrust.wav")
-    swish_sound_reverse = sampleplayer.new("sounds/hollow-swish-airy-short-reverse.wav")
-
+    if not thrust_sound then
+        thrust_sound = sampleplayer.new("sounds/thrust.wav")
+    end
+    if not swish_sound_reverse then
+        swish_sound_reverse = sampleplayer.new("sounds/hollow-swish-airy-short-reverse.wav")
+    end
 
     if onlyStartAssets then
         return
