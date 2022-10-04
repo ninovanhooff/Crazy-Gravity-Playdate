@@ -36,8 +36,6 @@ planePos = {}
 planeSize = 24
 camPos = {}
 
-print("hoi")
-
 sinThrustT= {}
 for i = 0,23 do
     sinThrustT[i] = math.sin(-i/12*pi)
@@ -58,5 +56,6 @@ gfx.setFont(playdate.graphics.getSystemFont(playdate.graphics.font.kVariantBold)
 monoFont = gfx.font.new("fonts/Roobert/Roobert-9-Mono-Condensed")
 dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
 if not dotFont then error("could not load dotFont") end
-
-Options():apply()
+printT("Before start options apply")
+Options():apply(true)
+printT("After start options apply")

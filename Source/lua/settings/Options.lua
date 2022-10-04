@@ -292,7 +292,7 @@ function Options:createButtonMapping()
 end
 
 --- Game code uses many globals to read options. Set them here based on current values
-function Options:apply()
+function Options:apply(onlyStartAssets)
     Debug = self:read(DEBUG_KEY)
     local newBG = BG_VALS[self:read(BG_KEY)]
     if newBG then
@@ -300,11 +300,11 @@ function Options:apply()
     end
     local graphicsStyle = STYLE_VALS[self:read(GRAPHICS_STYLE_KEY)]
     if graphicsStyle then
-        resourceLoader:loadGraphicsStyle(graphicsStyle)
+        resourceLoader:loadGraphicsStyle(graphicsStyle, onlyStartAssets)
     end
     local audioStyle = STYLE_VALS[self:read(AUDIO_STYLE_KEY)]
     if audioStyle then
-        resourceLoader:loadSounds(audioStyle == "classic")
+        resourceLoader:loadSounds(audioStyle, onlyStartAssets)
     end
     local audioVolume = AUDIO_VOLUME_VALS[self:read(AUDIO_VOLUME_KEY)]
     if audioVolume then

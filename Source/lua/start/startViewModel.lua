@@ -51,12 +51,19 @@ function StartViewModel:resetPlane(initialPlaneX, initialPlaneY)
     end
 end
 
+function StartViewModel:loadFullResources()
+    printT("Before full options apply")
+    Options():apply(false)
+    printT("After full options apply")
+end
+
 local function createLogoEnterAnimator()
     return animator.new(enterDuration, 0, 1, enterEasing)
 end
 
 --- create a GameScreen for the level and challenge the player is most likely to want to play next
-local function quickStartScreen()
+function StartViewModel:quickStartScreen()
+    self:loadFullResources()
     local selectLevelNum, challengeIdx = nextUnfinishedLevel()
     local levelPath = levelPath(selectLevelNum)
     gameHUD.selectedChallenge = challengeIdx
@@ -83,14 +90,19 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
             text = "Campaign",
             w = buttonWidth, h = buttonHeight,
             progress = 0.0,
-            onClickScreen = function() return LevelSelectScreen() end,
+            onClickScreen = function()
+                self:loadFullResources()
+                return LevelSelectScreen()
+            end,
             animator = createButtonEnterAnimator(0)
         },
         {
             text = "Quick Start",
             w = buttonWidth, h = buttonHeight,
             progress = 0.0,
-            onClickScreen = quickStartScreen,
+            onClickScreen = function()
+                return self:quickStartScreen()
+            end,
             animator = createButtonEnterAnimator(1)
         },
         {
@@ -119,7 +131,7 @@ function StartViewModel:approxRectCollision(button)
     return self.planeX + 24 > x and self.planeX < x+button.w  and self.planeY+24 > y and self.planeY <y+button.h
 end
 
---- @return Screen button's onClick function if activated; or nil
+--- Screen button's onClick function if activated; or nil
 function StartViewModel:calcButtonCollision()
     local anyCollision = false
     for _, button in ipairs(self.viewState.buttons) do

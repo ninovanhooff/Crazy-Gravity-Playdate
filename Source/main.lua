@@ -1,7 +1,8 @@
+import "lua/util.lua"
+printT("hoi")
 import "CoreLibs/timer"
 lume = import "lua/lume"
 import "lua/enum.lua"
-import "lua/util.lua"
 import "lua/level.lua"
 import "lua/init.lua"
 import "lua/start/startScreen.lua"
@@ -17,7 +18,7 @@ local pendingNavigators = {}
 local backStack = {}
 local activeScreen
 
--- note: GC might still be turned off temporarily in BricksView
+-- note: GC might still be turned off temporarily in gameView
 playdate.setMinimumGCTime(2)
 
 local function executePendingNavigators()
