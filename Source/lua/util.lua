@@ -6,6 +6,7 @@
 
 local floor <const> = math.floor
 local max <const> = math.max
+local currentTime <const> = playdate.sound.getCurrentTime
 
 function boolToNum(bool)
     if bool then return 1 else return 0 end
@@ -65,6 +66,11 @@ function printf(...)
     if Debug then
         print(table.unpack(arg))
     end
+end
+
+function printT(...)
+    local arg = {...}
+    print(currentTime(), table.unpack(arg))
 end
 
 function Trunc_Zeros(num,precision)
