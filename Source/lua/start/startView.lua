@@ -59,5 +59,4 @@ function RenderStart(viewState)
         viewState.planeRot%16*23, 391+(boolToNum(viewState.planeRot>15)*2-viewState.thrust)*23,
         23, 23
     )
-    printT("RenderStart")
 end
