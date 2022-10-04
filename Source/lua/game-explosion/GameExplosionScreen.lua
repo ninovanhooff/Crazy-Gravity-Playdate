@@ -2,6 +2,8 @@ import "CoreLibs/object"
 import "../screen.lua"
 import "GameExplosion.lua"
 
+local menu <const> = playdate.getSystemMenu()
+
 class("GameExplosionScreen").extends(Screen)
 
 function GameExplosionScreen:init(calcPlane, calcGameCam)
@@ -31,4 +33,41 @@ function GameExplosionScreen:update()
             DecreaseLife()
         end
     end
+end
+
+function GameExplosionScreen:pause()
+    if Sounds then thrust_sound:stop() end
+
+    if self.backMenuItem then
+        menu:removeMenuItem(self.backMenuItem)
+        self.backMenuItem = nil
+    end
+    if self.settingsMenuItem then
+        menu:removeMenuItem(self.settingsMenuItem)
+        self.settingsMenuItem = nil
+    end
+    if self.restartMenuItem then
+        menu:removeMenuItem(self.restartMenuItem)
+        self.restartMenuItem = nil
+    end
+end
+
+function GameExplosionScreen:destroy()
+    self:pause()
+end
+
+function GameExplosionScreen:resume()
+    self.settingsMenuItem = menu:addMenuItem("Settings", function()
+        pushScreen(SettingsScreen())
+    end)
+    self.backMenuItem = menu:addMenuItem("Quit level", function()
+        popScreen() -- remove self
+        popScreen() -- remove gameScreen
+    end)
+    self.restartMenuItem = menu:addMenuItem("Restart level", function()
+        popScreen() -- remove explosion
+        ResetGame()
+    end)
+
+    gameHUD:resume()
 end
