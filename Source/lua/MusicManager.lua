@@ -28,7 +28,7 @@ function MusicManager:play(path)
     end
     sample("loading new track", function()
         self:fadeOut()
-        self.player = playdate.sound.fileplayer.new(path)
+        self.player = playdate.sound.fileplayer.new(path, 1)
         if self.player then
             self.player:setStopOnUnderrun(false)
             self.player:setVolume(self.volume)
