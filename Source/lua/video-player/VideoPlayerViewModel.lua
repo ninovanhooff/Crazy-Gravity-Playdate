@@ -30,9 +30,10 @@ function VideoPlayerViewModel:update()
     end
 end
 
-function VideoPlayerViewModel:pause()
+function VideoPlayerViewModel:resume()
+    musicManager:fade(0.3) -- lower music volume for clear dialogue
 end
 
-function VideoPlayerViewModel:resume()
-    musicManager:fadeOut()
+function VideoPlayerViewModel:destroy()
+    musicManager:fade(1.0)  -- restore original music volume
 end

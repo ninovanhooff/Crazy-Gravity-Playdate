@@ -27,7 +27,7 @@ function MusicManager:play(path)
         return
     end
     sample("loading new track", function()
-        self:fadeOut()
+        self:fade(0.0)
         self.player = playdate.sound.fileplayer.new(path, 1)
         if self.player then
             self.player:setStopOnUnderrun(false)
@@ -47,17 +47,23 @@ function MusicManager:stop()
     end
 end
 
-function MusicManager:fadeOut()
+--- Fade in or out, starting at the current volume
+--- @param volumeMultiplier: volume relative to this MusicManager's volume
+---        when 0.0, playback will be stopped after the fade has completed
+function MusicManager:fade(volumeMultiplier)
     local currentPlayer <const> = self.player
+    local targetVolume = (volumeMultiplier or 0.0) * self.volume
     if currentPlayer then
-        local fadeOut = timer.new(1000, currentPlayer:getVolume(), 0.0)
+        local fadeOut = timer.new(1000, currentPlayer:getVolume(), targetVolume)
         fadeOut.updateCallback = function()
             currentPlayer:setVolume(fadeOut.value)
         end
         fadeOut.timerEndedCallback = function()
-            currentPlayer:stop()
-            if self.player == currentPlayer then
-                self:stop()
+            if targetVolume == 0.0  then
+                currentPlayer:stop()
+                if self.player == currentPlayer then
+                    self:stop()
+                end
             end
         end
     end

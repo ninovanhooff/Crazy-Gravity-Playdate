@@ -23,6 +23,7 @@ function VideoPlayerScreen:pause()
 end
 
 function VideoPlayerScreen:destroy()
+    self.videoPlayerViewModel:destroy()
     self.videoPlayerView:destroy()
 end
 
