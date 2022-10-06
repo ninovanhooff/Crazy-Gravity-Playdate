@@ -4,7 +4,7 @@
 --- DateTime: 25/08/2022 22:40
 ---
 
-import "CoreLibs/object"
+
 local timer <const> = playdate.timer
 
 class("MusicManager").extends()

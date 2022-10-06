@@ -4,7 +4,7 @@
 --- DateTime: 10/07/2022 17:48
 ---
 
-import "CoreLibs/object"
+
 import "Input"
 import "ButtonInput"
 

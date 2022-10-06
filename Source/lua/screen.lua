@@ -6,7 +6,7 @@
 
 --- A State that provides an update function
 
-import "CoreLibs/object"
+
 
 class("Screen").extends()
 

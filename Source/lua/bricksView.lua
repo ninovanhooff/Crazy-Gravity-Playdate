@@ -4,7 +4,7 @@
 --- DateTime: 28/03/2022 22:53
 ---
 
-import "CoreLibs/object"
+
 
 local abs <const> = math.abs
 local gfx <const> = playdate.graphics

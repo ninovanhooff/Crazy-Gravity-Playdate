@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+
 import "../screen.lua"
 import "FlyToCreditsView.lua"
 import "FlyToCreditsViewModel.lua"

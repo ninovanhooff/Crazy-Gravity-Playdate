@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+
 
 local justPressed <const> = playdate.buttonJustPressed
 local buttonA <const> = playdate.kButtonA

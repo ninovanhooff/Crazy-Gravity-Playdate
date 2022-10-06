@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+
 import "../credits/CreditsScreen.lua"
 
 local tileSize <const> = tileSize

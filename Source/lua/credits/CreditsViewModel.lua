@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+
 import "lua/start/startScreen.lua"
 
 local tileSize <const> = tileSize

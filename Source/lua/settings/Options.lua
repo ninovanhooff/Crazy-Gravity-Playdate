@@ -1,6 +1,3 @@
-import "CoreLibs/object"
-import "CoreLibs/ui"
-import "../input/InputManager.lua"
 import "ResourceLoader"
 
 class('Options').extends()

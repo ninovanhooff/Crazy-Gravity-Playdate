@@ -1,5 +1,5 @@
-import "CoreLibs/object"
-import "CoreLibs/animation"
+
+
 
 
 local gfx <const> = playdate.graphics

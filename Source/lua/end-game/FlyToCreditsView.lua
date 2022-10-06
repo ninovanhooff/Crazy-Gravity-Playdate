@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+
 
 local gfx <const> = playdate.graphics
 local asteroidSurface = gfx.image.new("images/asteroid_surface")

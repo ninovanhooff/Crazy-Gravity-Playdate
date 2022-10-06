@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+
 
 local gfx <const> = playdate.graphics
 local cardIcon <const> = gfx.image.new("images/card_info_icon")

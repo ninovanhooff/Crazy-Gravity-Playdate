@@ -4,7 +4,7 @@
 --- DateTime: 17/04/2022 21:24
 ---
 
-import "CoreLibs/easing"
+
 require "lua/common/PlanePhysicsViewModel"
 
 local animator <const> = playdate.graphics.animator

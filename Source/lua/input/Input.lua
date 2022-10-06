@@ -4,7 +4,7 @@
 --- DateTime: 10/07/2022 17:34
 ---
 
-import "CoreLibs/object"
+
 
 class('Input').extends()
 

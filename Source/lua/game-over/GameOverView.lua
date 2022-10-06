@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+
 
 
 local gfx <const> = playdate.graphics

@@ -4,17 +4,15 @@
 --- DateTime: 11/03/2022 16:59
 ---
 
-import "CoreLibs/utilities/sampler"
 import "input/InputManager"
 import "settings/physicsSettings"
 import "settings/options"
 import "records"
 import "levelSuggestion"
 import "challenges"
-import "CoreLibs/graphics"
 
 if playdate.isSimulator then
-    require "unittests.lua"
+    require "lua/unittests"
 end
 
 local gfx = playdate.graphics

@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+
 
 --- the amount of shards to create in both dimensions.
 --- Total shard count is the square of this number

@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+
 
 local floor <const> = math.floor
 local gfx <const> = playdate.graphics
