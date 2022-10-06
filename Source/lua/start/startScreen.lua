@@ -4,10 +4,8 @@
 --- DateTime: 17/04/2022 17:10
 ---
 
-import "CoreLibs/object"
-import "../screen.lua"
-import "startView.lua"
-import "startViewModel.lua"
+import "lua/start/startView"
+import "lua/start/startViewModel"
 
 local menu <const> = playdate.getSystemMenu()
 
@@ -39,6 +37,7 @@ function StartScreen:resume()
     self.viewModel = StartViewModel(self.initialPlaneX, self.initialPlaneY)
 
     self.settingsMenuItem = menu:addMenuItem("Settings", function()
+        require "lua/settings/SettingsScreen"
         pushScreen(SettingsScreen())
     end)
 end

@@ -1,5 +1,3 @@
-import "CoreLibs/object"
-import "../screen.lua"
 import "GameExplosion.lua"
 
 local menu <const> = playdate.getSystemMenu()
@@ -58,6 +56,7 @@ end
 
 function GameExplosionScreen:resume()
     self.settingsMenuItem = menu:addMenuItem("Settings", function()
+        require "lua/settings/SettingsScreen"
         pushScreen(SettingsScreen())
     end)
     self.backMenuItem = menu:addMenuItem("Quit level", function()

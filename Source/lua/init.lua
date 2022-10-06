@@ -5,15 +5,16 @@
 ---
 
 import "CoreLibs/utilities/sampler"
-import "input/InputManager.lua"
-import "settings/physicsSettings.lua"
-import "settings/options.lua"
-import "records.lua"
-import "levelSuggestion.lua"
+import "input/InputManager"
+import "settings/physicsSettings"
+import "settings/options"
+import "records"
+import "levelSuggestion"
+import "challenges"
 import "CoreLibs/graphics"
 
 if playdate.isSimulator then
-    import "unittests.lua"
+    require "unittests.lua"
 end
 
 local gfx = playdate.graphics

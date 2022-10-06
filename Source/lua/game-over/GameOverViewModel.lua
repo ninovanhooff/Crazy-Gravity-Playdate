@@ -1,8 +1,3 @@
-import "CoreLibs/object"
-import "../video-player/VideoPlayerScreen.lua"
-import "../end-game/EndGameScreen.lua"
-
-
 local justPressed <const> = playdate.buttonJustPressed
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
@@ -51,6 +46,8 @@ local function nextLevel()
 
     else
         -- initiate endgame
+        require "lua/video-player/VideoPlayerScreen"
+        require "lua/end-game/EndGameScreen"
         clearNavigationStack()
         pushScreen(VideoPlayerScreen(
             "video/congratulations",

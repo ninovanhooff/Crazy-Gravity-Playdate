@@ -1,7 +1,5 @@
-import "CoreLibs/object"
-import "../screen.lua"
-import "VideoPlayerView.lua"
-import "VideoPlayerViewModel.lua"
+import "VideoPlayerView"
+import "VideoPlayerViewModel"
 
 class("VideoPlayerScreen").extends(Screen)
 

@@ -15,10 +15,6 @@ colorT = {"red","green","blue","yellow"}
 sumT = {0,8,24}
 greySumT = {-1,56,32,0} -- -1:unused
 
-import "CoreLibs/object"
-import "util.lua"
-import "screen.lua"
-import "level-select/levelSelectScreen.lua"
 
 class("GameScreen").extends(Screen)
 
@@ -50,6 +46,7 @@ end
 
 function GameScreen:resume()
     self.settingsMenuItem = menu:addMenuItem("Settings", function()
+        require "lua/settings/SettingsScreen"
         pushScreen(SettingsScreen())
     end)
     self.backMenuItem = menu:addMenuItem("Quit level", function()

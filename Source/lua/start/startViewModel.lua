@@ -4,14 +4,8 @@
 --- DateTime: 17/04/2022 21:24
 ---
 
-import "CoreLibs/object"
-import "CoreLibs/animator"
 import "CoreLibs/easing"
-import "../common/PlanePhysicsViewModel.lua"
-import "../level-select/levelSelectScreen.lua"
-import "../bonus-content/BonusContentScreen.lua"
-import "../settings/SettingsScreen.lua"
-import "../GameScreen.lua"
+require "lua/common/PlanePhysicsViewModel"
 
 local animator <const> = playdate.graphics.animator
 local lineSegment <const> = playdate.geometry.lineSegment
@@ -64,6 +58,7 @@ end
 --- create a GameScreen for the level and challenge the player is most likely to want to play next
 function StartViewModel:quickStartScreen()
     self:loadFullResources()
+    require "lua/gameScreen"
     local selectLevelNum, challengeIdx = nextUnfinishedLevel()
     local levelPath = levelPath(selectLevelNum)
     gameHUD.selectedChallenge = challengeIdx
@@ -91,6 +86,7 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
             w = buttonWidth, h = buttonHeight,
             progress = 0.0,
             onClickScreen = function()
+                require "lua/level-select/levelSelectScreen"
                 self:loadFullResources()
                 return LevelSelectScreen()
             end,
@@ -109,14 +105,20 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
             text = "Bonus",
             w = buttonWidth, h = buttonHeight,
             progress = 0.0,
-            onClickScreen = function() return BonusContentScreen()  end,
+            onClickScreen = function()
+                require "lua/bonus-content/BonusContentScreen"
+                return BonusContentScreen()
+            end,
             animator = createButtonEnterAnimator(2)
         },
         {
             text = "Settings",
             w = buttonWidth, h = buttonHeight,
             progress = 0.0,
-            onClickScreen = function() return SettingsScreen()  end,
+            onClickScreen = function()
+                require "lua/settings/SettingsScreen"
+                return SettingsScreen()
+            end,
             animator = createButtonEnterAnimator(3)
         }
     }

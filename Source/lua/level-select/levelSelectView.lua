@@ -4,8 +4,6 @@
 --- DateTime: 24/04/2022 22:42levelsc
 ---
 
-import "CoreLibs/object"
-import "CoreLibs/ui"
 import "lockExplosion.lua"
 
 local gfx <const> = playdate.graphics

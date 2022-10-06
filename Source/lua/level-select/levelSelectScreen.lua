@@ -4,10 +4,8 @@
 --- DateTime: 24/04/2022 22:29
 ---
 
-import "CoreLibs/object"
-import "../screen.lua"
-import "levelSelectView.lua"
-import "levelSelectViewModel.lua"
+import "levelSelectView"
+import "levelSelectViewModel"
 
 class("LevelSelectScreen").extends(Screen)
 

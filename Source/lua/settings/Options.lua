@@ -255,7 +255,6 @@ function Options:userOptionsInit()
             option.key = key
         end
     end
-    printTable('Loaded Options\n', self.userOptions)
 end
 
 function Options:saveUserOptions()

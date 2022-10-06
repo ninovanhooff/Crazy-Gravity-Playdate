@@ -1,13 +1,11 @@
-import "CoreLibs/object"
-import "../screen.lua"
-import "SettingsViewModel.lua"
-import "Options.lua"
+import "lua/settings/SettingsViewModel"
+import "lua/settings/Options"
 
 local gfx <const> = playdate.graphics
 
 class("SettingsScreen").extends(Screen)
 
-local settingsView, settingsViewModel
+local settingsViewModel
 
 function SettingsScreen:init()
     SettingsScreen.super.init(self)

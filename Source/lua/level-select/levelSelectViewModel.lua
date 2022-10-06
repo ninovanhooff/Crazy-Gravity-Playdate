@@ -4,13 +4,6 @@
 --- DateTime: 29/04/2022 11:20
 ---
 
-import "CoreLibs/object"
-import "CoreLibs/timer"
-import "../util.lua"
-import "challenges.lua"
-import "../video-player/VideoPlayerScreen.lua"
-import "../gameHUD.lua"
-
 local numChallenges <const> = numChallenges
 local levelNames <const> = levelNames
 local justPressed <const> = playdate.buttonJustPressed
@@ -110,8 +103,11 @@ function LevelSelectViewModel:update()
         self.selectedChallenge = clamp(self.selectedChallenge+1, 1, numChallenges)
     elseif justPressed(buttonA) then
         currentLevel = self.selectedIdx
+        require("lua/gameScreen")
+
         -- start orientation video
         if self.selectedIdx == 1 then
+            require "lua/video-player/VideoPlayerScreen"
             pushScreen(VideoPlayerScreen(
                 "video/orientation",
                 function()

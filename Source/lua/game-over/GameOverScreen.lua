@@ -1,7 +1,5 @@
-import "CoreLibs/object"
-import "../screen.lua"
-import "GameOverView.lua"
-import "GameOverViewModel.lua"
+import "GameOverView"
+import "GameOverViewModel"
 
 class("GameOverScreen").extends(Screen)
 

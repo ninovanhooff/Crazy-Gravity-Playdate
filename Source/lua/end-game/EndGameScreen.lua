@@ -1,5 +1,3 @@
-import "CoreLibs/object"
-import "../screen.lua"
 import "EndGameView.lua"
 import "EndGameViewModel.lua"
 

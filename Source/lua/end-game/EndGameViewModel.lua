@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+require "lua/gameScreen"
 import "FlyToCreditsScreen"
 
 local gfx <const> = playdate.graphics
@@ -9,6 +9,7 @@ local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_s
 local getCrankChange <const> = playdate.getCrankChange
 local floor <const> = math.floor
 
+print("Setting calcTimeStep in EndGameVM")
 local calcTimeStep <const> = CalcTimeStep
 local tileSize <const> = tileSize
 local PlatformId <const> = "endGamePlatform"

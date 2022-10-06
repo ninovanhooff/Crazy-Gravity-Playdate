@@ -1,14 +1,34 @@
-import "lua/util.lua"
+import "lua/util"
+
+local run <const> = playdate.file.run
+
+local requiredPaths <const> = {}
+
+--- @param sourcePath path relative to source directory
+function require(sourcePath)
+    if requiredPaths[sourcePath] then
+        printT("SKIP: Already required", sourcePath)
+        return
+    end
+    printT("RUN " .. sourcePath)
+    requiredPaths[sourcePath] = true
+    return run(sourcePath)
+end
+
 printT("hoi")
+import "CoreLibs/object"
 import "CoreLibs/timer"
-lume = import "lua/lume"
-import "lua/enum.lua"
-import "lua/level.lua"
-import "lua/init.lua"
-import "lua/start/startScreen.lua"
-import "lua/level-select/levelSelectScreen.lua"
-import "lua/settings/SettingsScreen.lua"
-import "lua/video-player/VideoPlayerScreen.lua"
+import "CoreLibs/animation"
+import "CoreLibs/animator"
+import "lua/screen"
+lume = require "lua/lume"
+require "lua/enum"
+require "lua/level"
+require "lua/init"
+require "lua/start/startScreen"
+--require "lua/level-select/levelSelectScreen"
+--require "lua/settings/SettingsScreen"
+--require "lua/video-player/VideoPlayerScreen"
 
 local gfx <const> = playdate.graphics
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
