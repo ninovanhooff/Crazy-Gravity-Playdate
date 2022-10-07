@@ -1,5 +1,5 @@
-import "EndGameView.lua"
-import "EndGameViewModel.lua"
+import "EndGameView"
+import "EndGameViewModel"
 
 class("EndGameScreen").extends(Screen)
 

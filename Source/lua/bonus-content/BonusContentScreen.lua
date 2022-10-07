@@ -1,6 +1,6 @@
 
-import "BonusContentView.lua"
-import "BonusContentViewModel.lua"
+import "BonusContentView"
+import "BonusContentViewModel"
 
 class("BonusContentScreen").extends(Screen)
 

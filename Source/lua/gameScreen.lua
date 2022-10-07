@@ -1,9 +1,9 @@
-import "drawUtil.lua"
-import "specialsView.lua"
-import "specialsViewModel.lua"
-import "gameView.lua"
-import "gameInputs.lua"
-import "gameViewModel.lua"
+import "drawUtil"
+import "specialsView"
+import "specialsViewModel"
+import "gameView"
+import "gameInputs"
+import "gameViewModel"
 
 local menu <const> = playdate.getSystemMenu()
 local calcTimeStep <const> = CalcTimeStep

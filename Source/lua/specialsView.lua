@@ -4,7 +4,7 @@
 --- DateTime: 12/03/2022 15:42
 ---
 
-import "drawUtil.lua"
+import "drawUtil"
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local min <const> = math.min
 local max <const> = math.max

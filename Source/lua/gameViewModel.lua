@@ -5,9 +5,9 @@
 ---
 
 import "CamController"
-import "gameHUD.lua"
-import "game-over/GameOverScreen.lua"
-import "game-explosion/GameExplosionScreen.lua"
+import "gameHUD"
+import "game-over/GameOverScreen"
+import "game-explosion/GameExplosionScreen"
 
 local pi <const> = pi
 local abs <const> = math.abs

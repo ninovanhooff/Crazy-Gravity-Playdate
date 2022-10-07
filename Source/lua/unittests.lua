@@ -4,7 +4,7 @@
 --- DateTime: 05/08/2022 11:15
 ---
 
-import "util.lua"
+import "util"
 
 local function test(expected, actual, description)
     print(description)

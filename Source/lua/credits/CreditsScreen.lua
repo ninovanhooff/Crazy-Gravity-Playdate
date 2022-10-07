@@ -1,6 +1,6 @@
 
-import "CreditsView.lua"
-import "CreditsViewModel.lua"
+import "CreditsView"
+import "CreditsViewModel"
 
 class("CreditsScreen").extends(Screen)
 

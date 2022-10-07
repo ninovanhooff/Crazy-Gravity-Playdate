@@ -4,8 +4,8 @@
 --- DateTime: 03/04/2022 16:59
 ---
 
-import "gameHUD.lua"
-import "game-over/GameOverScreen.lua"
+import "gameHUD"
+import "game-over/GameOverScreen"
 
 local abs <const> = math.abs
 local ceil <const> = math.ceil

@@ -1,6 +1,6 @@
 
-import "FlyToCreditsView.lua"
-import "FlyToCreditsViewModel.lua"
+import "FlyToCreditsView"
+import "FlyToCreditsViewModel"
 
 class("FlyToCreditsScreen").extends(Screen)
 

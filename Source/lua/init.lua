@@ -4,6 +4,7 @@
 --- DateTime: 11/03/2022 16:59
 ---
 
+import "MusicManager"
 import "input/InputManager"
 import "settings/physicsSettings"
 import "settings/options"

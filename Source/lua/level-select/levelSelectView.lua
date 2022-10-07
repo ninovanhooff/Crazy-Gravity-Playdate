@@ -4,7 +4,7 @@
 --- DateTime: 24/04/2022 22:42levelsc
 ---
 
-import "lockExplosion.lua"
+import "lockExplosion"
 
 local gfx <const> = playdate.graphics
 local rect <const> = playdate.geometry.rect

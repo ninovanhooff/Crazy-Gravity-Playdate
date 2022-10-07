@@ -4,7 +4,7 @@
 --- DateTime: 13/03/2022 00:13
 ---
 
-import "input/InputManager.lua"
+import "input/InputManager"
 
 local getButtonState <const> = playdate.getButtonState
 local buttonState = 0

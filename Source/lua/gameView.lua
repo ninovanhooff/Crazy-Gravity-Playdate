@@ -4,9 +4,9 @@
 --- DateTime: 12/03/2022 22:55
 ---
 
---import "init.lua"
-import "gameHUD.lua"
-import "bricksView.lua"
+--import "init"
+import "gameHUD"
+import "bricksView"
 
 local gfx <const> = playdate.graphics
 local floor <const> = math.floor

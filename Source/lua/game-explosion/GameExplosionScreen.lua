@@ -1,4 +1,4 @@
-import "GameExplosion.lua"
+import "GameExplosion"
 
 local menu <const> = playdate.getSystemMenu()
 
