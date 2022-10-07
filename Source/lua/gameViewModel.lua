@@ -265,7 +265,6 @@ function InitGame(_pathOrLevelNumber, selectedChallenge)
     end
     frameCounter = 0
     ResetGame()
-    bricksView = BricksView()
     musicManager:play(levelSongPath())
 end
 
@@ -287,6 +286,7 @@ function ResetGame()
     extras = {0,levelProps.lives,1} -- turbo, lives, cargo
     frameCounter = 0
     editorMode = false
+    bricksView = BricksView()
 end
 
 function DecreaseLife()
@@ -302,6 +302,5 @@ function DecreaseLife()
         end
         planeFreight = {}
         ResetPlane()
-        bricksView:reset()
     end
 end

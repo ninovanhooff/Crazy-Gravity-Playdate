@@ -27,7 +27,6 @@ function BricksView:init()
     gfx.lockFocus(self.activeBuffer)
         self:initBricks()
     gfx.unlockFocus()
-    self.initialBricksImg = self.activeBuffer:copy()
 end
 
 --- Returns an estimation of the number of tiles that had to be re-rendered,
@@ -79,12 +78,6 @@ function BricksView:initBricks()
         j = j + 1
     end
 
-    self.camPosX = camPos[1]
-    self.camPosY = camPos[2]
-end
-
-function BricksView:reset()
-    self.activeBuffer = self.initialBricksImg:copy()
     self.camPosX = camPos[1]
     self.camPosY = camPos[2]
 end
