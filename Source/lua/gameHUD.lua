@@ -172,7 +172,7 @@ function GameHUD:renderDefault()
     end
     x = x+16+hudGutter
     gfx.drawCircleInRect(x+1,hudY+1, 14,14)
-    local speedPattern = gfx.image.kDitherTypeBayer4x4
+    local speedPattern = gfx.image.kDitherTypeBayer8x8
     local warnX = 1/(landingTolerance[1] / abs(vx))
     local warnY = 1/(landingTolerance[2] / vy) -- only downwards movement is dangerous
     local warnAlpha = max(warnX, warnY)
