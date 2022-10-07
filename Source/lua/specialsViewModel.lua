@@ -64,15 +64,6 @@ function CalcPlatform(item,idx)
         collision = true
         print("platform collide!!")
     end
-    -- crate collision
-    if item.pType~=1 then -- not landing, pickup
-        if item.amnt>0 then -- lower row
-            UnitCollision(item.x+1,item.y+2,2+floor(item.amnt*0.5)*2,2)
-            if item.amnt>2 then --upper row
-                UnitCollision(item.x+2,item.y,floor((item.amnt-1)*0.5)*2,2)
-            end
-        end
-    end
 
     -- don't collide on take-off
     if abs(planeRot - 18) <= 3 and vy<0  then
