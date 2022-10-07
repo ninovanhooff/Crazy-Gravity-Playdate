@@ -310,6 +310,9 @@ function Calc1Way(item)
             PixelCollision(item.x*8+36,item.y*8+32,item.pos,32)
         end
     end
+    if explosion then
+        activated = false
+    end
     if activated then
         item.pos = item.pos - barrierSpeed
         if item.pos<0 then
