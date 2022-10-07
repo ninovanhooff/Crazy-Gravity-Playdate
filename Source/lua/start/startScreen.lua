@@ -4,8 +4,8 @@
 --- DateTime: 17/04/2022 17:10
 ---
 
-import "lua/start/startView"
-import "lua/start/startViewModel"
+import "startView"
+import "startViewModel"
 
 local menu <const> = playdate.getSystemMenu()
 

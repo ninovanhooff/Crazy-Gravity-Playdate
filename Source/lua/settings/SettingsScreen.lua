@@ -1,5 +1,5 @@
-import "lua/settings/SettingsViewModel"
-import "lua/settings/Options"
+import "SettingsViewModel"
+import "Options"
 
 local gfx <const> = playdate.graphics
 
