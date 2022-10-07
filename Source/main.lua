@@ -25,10 +25,10 @@ import "CoreLibs/utilities/sampler"
 import "CoreLibs/ui"
 import "CoreLibs/graphics"
 import "lua/screen"
-require "lua/enum"
-require "lua/level"
-require "lua/init"
-require "lua/start/startScreen"
+import "lua/enum"
+import "lua/level"
+import "lua/init"
+import "lua/start/startScreen"
 --require "lua/level-select/levelSelectScreen"
 --require "lua/settings/SettingsScreen"
 --require "lua/video-player/VideoPlayerScreen"
@@ -101,8 +101,8 @@ function clearNavigationStack()
 end
 
 pushScreen(StartScreen())
-pushScreen(LevelSelectScreen())
-pushScreen(GameScreen(levelPath(1), 1))
+--pushScreen(LevelSelectScreen())
+--pushScreen(GameScreen(levelPath(1), 1))
 
 function playdate.update()
     gfx.pushContext() --make sure we start the frame with a clean gfx state.
