@@ -5,7 +5,7 @@
 ---
 
 
-
+local random <const> = math.random
 local inputManager <const> = inputManager
 local throttle <const> = InputManager.actionThrottle
 local selfRight <const> = InputManager.actionSelfRight
@@ -16,7 +16,7 @@ local cosThrustT <const> = cosThrustT
 local screenWidth <const> = screenWidth
 local screenHeight <const> = screenHeight
 local thrust_sound <const> = thrust_sound
-local random <const> = math.random
+
 
 class("PlanePhysicsViewModel").extends()
 
@@ -45,7 +45,9 @@ end
 function PlanePhysicsViewModel:processInputs()
     -- self.thrust
     if (inputManager:isInputPressed(throttle)) then
-        thrust_sound:play(0, 0.95 + random() * 0.1)
+        if Sounds and self.thrust == 0 then
+            thrust_sound:play(0, 0.98 + random() * 0.04)
+        end
         self.thrust = 1
         if not self.flying then
             self.vx = 0
