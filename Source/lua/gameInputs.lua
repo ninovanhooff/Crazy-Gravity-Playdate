@@ -4,7 +4,8 @@
 --- DateTime: 13/03/2022 00:13
 ---
 
-import "input/InputManager"
+local random <const> = math.random
+local thrust_sound <const> = thrust_sound
 
 local getButtonState <const> = playdate.getButtonState
 local buttonState = 0
@@ -26,7 +27,8 @@ function ProcessInputs()
     buttonState = getButtonState()
     -- thrust
     if (inputManager:isInputPressed(throttle) and fuel > 0) then
-        if Sounds and thrust == 0 then thrust_sound:play(0) end
+        -- play thrust sound at slightly different pitch each time to combat repetition
+        if Sounds and thrust == 0 then thrust_sound:play(0, 0.95 + random() * 0.1) end
         thrust = 1
         if not Debug then
             fuel = fuel - burnRate
