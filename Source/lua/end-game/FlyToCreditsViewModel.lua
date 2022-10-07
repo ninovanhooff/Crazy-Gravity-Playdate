@@ -1,6 +1,3 @@
-
-import "../credits/CreditsScreen.lua"
-
 local tileSize <const> = tileSize
 local planeOffset <const> = 7 * tileSize
 

@@ -1,5 +1,4 @@
 
-import "../screen.lua"
 import "CreditsView.lua"
 import "CreditsViewModel.lua"
 

@@ -37,6 +37,18 @@ function luaMod(first, second)
     return max(1, first % second)
 end
 
+-- ### START Lume functions
+
+local identity = function(x)
+    return x
+end
+
+local iscallable = function(x)
+    if type(x) == "function" then return true end
+    local mt = getmetatable(x)
+    return mt and mt.__call ~= nil
+end
+
 local getiter = function(x)
     if isarray(x) then
         return ipairs
@@ -46,6 +58,21 @@ local getiter = function(x)
     error("expected table", 3)
 end
 
+local iteratee = function(x)
+    if x == nil then return identity end
+    if iscallable(x) then return x end
+    if type(x) == "table" then
+        return function(z)
+            for k, v in pairs(x) do
+                if z[k] ~= v then return false end
+            end
+            return true
+        end
+    end
+    return function(z) return z[x] end
+end
+
+
 --- return index of value in table t; or nil
 function find(t, value)
     local iter = getiter(t)
@@ -54,6 +81,17 @@ function find(t, value)
     end
     return nil
 end
+
+function match(t, fn)
+    fn = iteratee(fn)
+    local iter = getiter(t)
+    for k, v in iter(t) do
+        if fn(v) then return v, k end
+    end
+    return nil
+end
+
+-- ### END Lume functions
 
 function IncrementStringNumber(str)
     printf("incr",str)

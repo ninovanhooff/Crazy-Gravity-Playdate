@@ -1,5 +1,4 @@
 
-import "../screen.lua"
 import "BonusContentView.lua"
 import "BonusContentViewModel.lua"
 

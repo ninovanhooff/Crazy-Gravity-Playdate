@@ -8,8 +8,10 @@ local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_s
 
 local getCrankChange <const> = playdate.getCrankChange
 local floor <const> = math.floor
+local clamp <const> = clamp
 
 print("Setting calcTimeStep in EndGameVM")
+local match <const> = match
 local calcTimeStep <const> = CalcTimeStep
 local tileSize <const> = tileSize
 local PlatformId <const> = "endGamePlatform"
@@ -41,7 +43,7 @@ function EndGameViewModel:init()
     self.launchTowerY = self.planePosY - 58 + 24
 
     local findSpecial = function(targetId)
-        return lume.match(specialT, function(item) return item.id == targetId end)
+        return match(specialT, function(item) return item.id == targetId end)
     end
     self.platform = findSpecial(PlatformId)
     self.barrier = findSpecial(BarrierId)
@@ -164,7 +166,7 @@ function EndGameViewModel:OpenAirlockUpdate()
         changeDirection = -1
     end
     self.crankFrame = math.abs((self.crankFrame + changeDirection) % (self.numCrankFrames))
-    self.airLockROverridePos = lume.clamp(self.airLockROverridePos + changeDirection * 2, 0, self.maxAirlockRPos)
+    self.airLockROverridePos = clamp(self.airLockROverridePos + changeDirection * 2, 0, self.maxAirlockRPos)
 
 end
 
