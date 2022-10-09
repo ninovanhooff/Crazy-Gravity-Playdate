@@ -29,9 +29,6 @@ import "lua/enum"
 import "lua/level"
 import "lua/init"
 import "lua/start/startScreen"
---require "lua/level-select/levelSelectScreen"
---require "lua/settings/SettingsScreen"
---require "lua/video-player/VideoPlayerScreen"
 
 local gfx <const> = playdate.graphics
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
@@ -101,6 +98,10 @@ function clearNavigationStack()
 end
 
 pushScreen(StartScreen())
+if playdate.file.exists("levels/temp.pdz") then
+    require "lua/gameScreen"
+    pushScreen(GameScreen("levels/temp", 1))
+end
 --pushScreen(LevelSelectScreen())
 --pushScreen(GameScreen(levelPath(1), 1))
 

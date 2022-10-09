@@ -19,7 +19,7 @@ function LoadFile(path)
     local levelT
     sample("pdz load", function() levelT = file.run(path) end, 1)
     levelProps = levelT["levelProps"]
-    levelProps.lives = levelProps.lives or 5
+    levelProps.lives = 9 -- NOTE ignoring value from level file!
     specialT = levelT["specialT"]
     brickT = {}
     local format = levelProps.packFormat
