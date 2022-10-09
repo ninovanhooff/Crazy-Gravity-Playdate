@@ -4,8 +4,6 @@
 --- DateTime: 05/08/2022 11:15
 ---
 
-import "util"
-
 local function test(expected, actual, description)
     print(description)
     if expected ~= actual then

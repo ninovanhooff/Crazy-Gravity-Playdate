@@ -4,7 +4,6 @@
 --- DateTime: 03/04/2022 16:59
 ---
 
-import "gameHUD"
 import "game-over/GameOverScreen"
 
 local abs <const> = math.abs

@@ -4,8 +4,6 @@
 --- DateTime: 11/03/2022 16:29
 ---
 
-import "util"
-
 local file <const> = playdate.file
 local unpack <const> = string.unpack
 

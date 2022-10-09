@@ -5,7 +5,7 @@
 ---
 
 
-require "lua/common/PlanePhysicsViewModel"
+import "lua/common/PlanePhysicsViewModel"
 
 local animator <const> = playdate.graphics.animator
 local lineSegment <const> = playdate.geometry.lineSegment
