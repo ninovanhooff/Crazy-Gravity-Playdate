@@ -65,6 +65,7 @@ function GameOverViewModel:update()
     elseif justPressed(buttonRight) then
         self.selectedButtonIdx = self.selectedButtonIdx + 1
     elseif justPressed(buttonA) then
+        ui_confirm:play()
         if self.selectedButtonIdx == 1 then
             quitLevel()
         elseif self.selectedButtonIdx == 2 then
@@ -73,6 +74,7 @@ function GameOverViewModel:update()
             nextLevel()
         end
     elseif justPressed(buttonB) then
+        ui_cancel:play()
         quitLevel()
     end
 

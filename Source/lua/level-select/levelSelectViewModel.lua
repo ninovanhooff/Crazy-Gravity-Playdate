@@ -102,6 +102,7 @@ function LevelSelectViewModel:update()
     elseif justPressed(buttonRight) then
         self.selectedChallenge = clamp(self.selectedChallenge+1, 1, numChallenges)
     elseif justPressed(buttonA) then
+        ui_confirm:play()
         currentLevel = self.selectedIdx
         require("lua/gameScreen")
 
@@ -120,6 +121,7 @@ function LevelSelectViewModel:update()
             )
         end
     elseif justPressed(buttonB) then
+        ui_cancel:play()
         self:finish()
     end
 end

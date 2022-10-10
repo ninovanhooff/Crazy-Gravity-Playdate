@@ -65,10 +65,13 @@ function ResourceLoader:loadSounds(audioStyle, onlyStartAssets)
         swish_sound_reverse = sampleplayer.new("sounds/hollow-swish-airy-short-reverse.wav")
     end
 
+    ui_confirm = sampleplayer.new("sounds/ui_confirm.wav")
+
     if onlyStartAssets then
         return
     end
 
+    ui_cancel = sampleplayer.new("sounds/ui_cancel.wav")
     explode_sound = sampleplayer.new("sounds/explosion.wav")
     unlock_sound = sampleplayer.new("sounds/unlock.wav")
     landing_sound = sampleplayer.new("sounds/landing.wav")

@@ -86,6 +86,7 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
             w = buttonWidth, h = buttonHeight,
             progress = 0.0,
             onClickScreen = function()
+                ui_confirm:play()
                 require "lua/level-select/levelSelectScreen"
                 self:loadFullResources()
                 return LevelSelectScreen()
@@ -97,6 +98,7 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
             w = buttonWidth, h = buttonHeight,
             progress = 0.0,
             onClickScreen = function()
+                ui_confirm:play()
                 return self:quickStartScreen()
             end,
             animator = createButtonEnterAnimator(1)
@@ -116,6 +118,7 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
             w = buttonWidth, h = buttonHeight,
             progress = 0.0,
             onClickScreen = function()
+                ui_confirm:play()
                 require "lua/settings/SettingsScreen"
                 return SettingsScreen()
             end,
