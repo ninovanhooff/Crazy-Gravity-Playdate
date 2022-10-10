@@ -277,18 +277,12 @@ function Render1Way(item, scrX, scrY)
         if item.endStone==1 then
             sprite:draw(scrX+32, scrY, unFlipped, 128, 234, 32, 16)
         end
-        if editorMode then
-            pgeDrawRectoutline(scrX+32+(item.XtoY-2)*(-32+item.actW*8),scrY+item.distance*4+18-item.actH*4-4,item.actW*8,item.actH*8,yellow)
-        end
     elseif item.direction==2 then -- down
         sprite:draw(scrX, scrY, unFlipped, 256, 214, 96, 36) -- body
         sprite:draw(scrX+32, scrY+36, unFlipped, 436, 512-item.pos, 32, item.pos) -- barrier
         sprite:draw(scrX+8+(item.XtoY-1)*64, scrY+8, unFlipped, 32-(item.XtoY-1)*32, 338, 16, 16) -- direction sign
         if item.endStone==1 then
             sprite:draw(scrX+32, scrY+32+item.distance*8-16, unFlipped, 128, 254, 32, 16)
-        end
-        if editorMode then
-            pgeDrawRectoutline(scrX+32+(item.XtoY-2)*(-32+item.actW*8),scrY+item.distance*4+18-item.actH*4-4,item.actW*8,item.actH*8,yellow)
         end
     elseif item.direction==3 then -- left
         sprite:draw(scrX-4+item.distance*8, scrY, unFlipped, 196, 250, 36, 96) -- body
@@ -297,9 +291,6 @@ function Render1Way(item, scrX, scrY)
         if item.endStone==1 then
             sprite:draw(scrX, scrY+32, unFlipped, 352, 214, 16, 32)
         end
-        if editorMode then
-            pgeDrawRectoutline(scrX+item.distance*4+18-item.actW*4-4,scrY+64-(item.XtoY-1)*32-boolToNum(item.XtoY==1)*item.actH*8,item.actW*8,item.actH*8,yellow)
-        end
     else -- right
         sprite:draw(scrX, scrY, unFlipped, 160, 250, 36, 96) -- body
         sprite:draw(scrX+36, scrY+32, unFlipped, 392-item.pos, 250, item.pos, 32) -- barrier
@@ -307,18 +298,15 @@ function Render1Way(item, scrX, scrY)
         if item.endStone==1 then
             sprite:draw(scrX+32+item.distance*8-16, scrY+32, unFlipped, 372, 214, 16, 32)
         end
-        if item.showWrongWay then
-            local wrongWayImage = toolTipsCache.WrongWay.image
-            if not item.wrongWayX then
-                local w,h = wrongWayImage:getSize()
-                item.wrongWayX = (item.w*tileSize)/2 - w/2
-                item.wrongWayY = (item.h*tileSize)/2 - h/2
-            end
-            wrongWayImage:draw(scrX + item.wrongWayX, scrY + item.wrongWayY)
+    end
+    if item.showWrongWay then
+        local wrongWayImage = toolTipsCache.WrongWay.image
+        if not item.wrongWayX then
+            local w,h = wrongWayImage:getSize()
+            item.wrongWayX = (item.w*tileSize)/2 - w/2
+            item.wrongWayY = (item.h*tileSize)/2 - h/2
         end
-        if editorMode then
-            pgeDrawRectoutline(scrX+item.distance*4+18-item.actW*4-4,scrY+64-(item.XtoY-1)*32-boolToNum(item.XtoY==1)*item.actH*8,item.actW*8,item.actH*8,yellow)
-        end
+        wrongWayImage:draw(scrX + item.wrongWayX, scrY + item.wrongWayY)
     end
 end
 

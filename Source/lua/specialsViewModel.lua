@@ -290,22 +290,34 @@ local wrongWayTriggerSize <const> = 12
 function Calc1Way(item)
     local activated = false
     if item.direction==1 then --up
-        if UnitCollision(item.unitCollisionX, item.unitCollisionY, item.actW,item.actH,true) then
-            activated = true
+        if UnitCollision(item.unitCollisionX, item.unitCollisionY, item.actW + wrongWayTriggerSize,item.actH,true) then
+            item.showWrongWay = (item.XtoY == 1 and planePos[1] > item.x + 5) or (item.XtoY == 2 and planePos[1] < item.x + 5)
+            if not item.showWrongWay then
+                activated = true
+            end
             PixelCollision(item.x*8+32,(item.y+item.distance)*8-4-item.pos,32,item.pos)
+        else
+            item.showWrongWay = false
         end
     elseif item.direction==2 then --down
-        if UnitCollision(item.unitCollisionX, item.unitCollisionY,item.actW,item.actH,true) then
-            activated = true
+        if UnitCollision(item.unitCollisionX, item.unitCollisionY,item.actW + wrongWayTriggerSize,item.actH,true) then
+            item.showWrongWay = (item.XtoY == 1 and planePos[1] > item.x + 5) or (item.XtoY == 2 and planePos[1] < item.x + 5)
+            if not item.showWrongWay then
+                activated = true
+            end
             PixelCollision(item.x*8+32,item.y*8+36,32,item.pos)
+        else
+            item.showWrongWay = false
         end
     elseif item.direction==3 then --left
         if UnitCollision(item.unitCollisionX, item.unitCollisionY,item.actW,item.actH+wrongWayTriggerSize,true) then
-            item.showWrongWay = planePos[2] < item.y + 5 and item.XtoY == 1
+            item.showWrongWay = (item.XtoY == 1 and planePos[2] > item.y + 5) or (item.XtoY == 2 and planePos[2] < item.y + 5)
             if not item.showWrongWay then
                 activated = true
             end
             PixelCollision((item.x+item.distance)*8-4-item.pos,item.y*8+32,item.pos,32)
+        else
+            item.showWrongWay = false
         end
     elseif item.direction==4 then --right
         if UnitCollision(
@@ -427,7 +439,7 @@ end
 
 function Init1Way(item)
     if item.direction < 3 then -- up or down
-        item.unitCollisionX = item.x+4+(item.XtoY-2)*(-4+item.actW)
+        item.unitCollisionX = item.x+8 - item.actW + boolToNum(item.XtoY == 2)*(item.actW - 4 - wrongWayTriggerSize)
         item.unitCollisionY = item.y+item.distance*0.5+3-item.actH*0.5
     else -- left or right
         item.unitCollisionX = item.x+item.distance*0.5+3-item.actW*0.5
