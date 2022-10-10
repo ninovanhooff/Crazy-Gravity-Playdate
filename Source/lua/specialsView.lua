@@ -17,8 +17,36 @@ local tileSize <const> = tileSize
 local gameWidthPixels <const> = screenWidth
 local gameHeightPixels <const> = gameHeightTiles*tileSize
 local loopAnim <const> = loopAnim
+local toolTipsCache <const> = enum({"WrongWay"})
+local monoFont <const> = monoFont
+local smallFont <const> = smallFont
 
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
+
+function PreRenderToolTips()
+    local text = "Wrong way!"
+    local tooltipBgColor
+    if gameBgColor == gfx.kColorBlack then
+        tooltipBgColor = gfx.kColorWhite
+    else
+        tooltipBgColor = gfx.kColorBlack
+    end
+
+    local wrongWayImage = gfx.image.new(
+        monoFont:getTextWidth(text) + 16,
+        14
+    )
+    gfx.pushContext(wrongWayImage)
+        gfx.setColor(tooltipBgColor)
+        local w,h = wrongWayImage:getSize()
+        gfx.fillRoundRect(0,0, w,h, 7)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
+        smallFont:drawText(text, 12, 0)
+    gfx.popContext()
+    toolTipsCache.WrongWay.image = wrongWayImage
+end
+
+PreRenderToolTips()
 
 function RenderPlatform(item, scrX, scrY)
     -- generic
@@ -278,6 +306,15 @@ function Render1Way(item, scrX, scrY)
         sprite:draw(scrX+8, scrY+8+(item.XtoY-1)*64, unFlipped, 48-(item.XtoY-1)*32, 338, 16, 16) -- direction sign
         if item.endStone==1 then
             sprite:draw(scrX+32+item.distance*8-16, scrY+32, unFlipped, 372, 214, 16, 32)
+        end
+        if item.showWrongWay then
+            local wrongWayImage = toolTipsCache.WrongWay.image
+            if not item.wrongWayX then
+                local w,h = wrongWayImage:getSize()
+                item.wrongWayX = (item.w*tileSize)/2 - w/2
+                item.wrongWayY = (item.h*tileSize)/2 - h/2
+            end
+            wrongWayImage:draw(scrX + item.wrongWayX, scrY + item.wrongWayY)
         end
         if editorMode then
             pgeDrawRectoutline(scrX+item.distance*4+18-item.actW*4-4,scrY+64-(item.XtoY-1)*32-boolToNum(item.XtoY==1)*item.actH*8,item.actW*8,item.actH*8,yellow)

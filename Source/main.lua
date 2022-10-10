@@ -99,6 +99,7 @@ end
 require "lua/start/startScreen"
 pushScreen(StartScreen())
 if playdate.file.exists("levels/temp.pdz") then
+    Sounds = false
     require "lua/gameScreen"
     pushScreen(GameScreen("levels/temp", 1))
 end
