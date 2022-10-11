@@ -18,13 +18,14 @@ function ResourceLoader:init()
 end
 
 function ResourceLoader:loadBG(newBG)
+    if newBG == gameBgColor then
+        return
+    end
+
     print("Changing background to ", newBG)
-    if newBG == "white" then
-        gameBgColor = gfx.kColorWhite
-    elseif newBG == "win95" then
-        gameBgColor = gfx.kColorClear
-    else
-        gameBgColor = gfx.kColorBlack
+    gameBgColor = newBG
+    if PreRenderToolTips then
+        PreRenderToolTips()
     end
 end
 

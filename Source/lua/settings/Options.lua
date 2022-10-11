@@ -24,7 +24,11 @@ local toggleVals <const> = {false, true}
 local STYLE_VALS <const> = { "playdate", "classic"}
 local DEBUG_KEY <const> = "debug"
 local BG_KEY <const> = "background"
-local BG_VALS <const> = { "black", "white", "win95"}
+local BG_VALS <const> = {
+    { label= "black", value = gfx.kColorBlack },
+    { label= "white", value = gfx.kColorWhite },
+    { label= "win95", value = gfx.kColorClear },
+}
 local GRAPHICS_STYLE_KEY <const> = "graphicsStyle"
 local PATTERN_KEY <const> = "brickPattern"
 local PATTERN_VALS <const> = {"lighter", "light", "dark", "darker", "white", "default"}
@@ -290,7 +294,7 @@ end
 --- Game code uses many globals to read options. Set them here based on current values
 function Options:apply(onlyStartAssets)
     Debug = self:read(DEBUG_KEY)
-    local newBG = BG_VALS[self:read(BG_KEY)]
+    local newBG = BG_VALS[self:read(BG_KEY)].value
     if newBG then
         resourceLoader:loadBG(newBG)
     end
