@@ -289,35 +289,25 @@ end
 local wrongWayTriggerSize <const> = 12
 function Calc1Way(item)
     local activated = false
+    local unitCollision = false
+    item.showWrongWay = false
     if item.direction==1 then --up
         if UnitCollision(item.unitCollisionX, item.unitCollisionY, item.actW + wrongWayTriggerSize,item.actH,true) then
-            item.showWrongWay = (item.XtoY == 1 and planePos[1] > item.x + 5) or (item.XtoY == 2 and planePos[1] < item.x + 5)
-            if not item.showWrongWay then
-                activated = true
-            end
+            unitCollision = true
+            activated = (item.XtoY == 1 and planePos[1] < item.x + 5) or (item.XtoY == 2 and planePos[1] > item.x + 5)
             PixelCollision(item.x*8+32,(item.y+item.distance)*8-4-item.pos,32,item.pos)
-        else
-            item.showWrongWay = false
         end
     elseif item.direction==2 then --down
         if UnitCollision(item.unitCollisionX, item.unitCollisionY,item.actW + wrongWayTriggerSize,item.actH,true) then
-            item.showWrongWay = (item.XtoY == 1 and planePos[1] > item.x + 5) or (item.XtoY == 2 and planePos[1] < item.x + 5)
-            if not item.showWrongWay then
-                activated = true
-            end
+            unitCollision = true
+            activated = (item.XtoY == 1 and planePos[1] < item.x + 5) or (item.XtoY == 2 and planePos[1] > item.x + 5)
             PixelCollision(item.x*8+32,item.y*8+36,32,item.pos)
-        else
-            item.showWrongWay = false
         end
     elseif item.direction==3 then --left
         if UnitCollision(item.unitCollisionX, item.unitCollisionY,item.actW,item.actH+wrongWayTriggerSize,true) then
-            item.showWrongWay = (item.XtoY == 1 and planePos[2] > item.y + 5) or (item.XtoY == 2 and planePos[2] < item.y + 5)
-            if not item.showWrongWay then
-                activated = true
-            end
+            unitCollision = true
+            activated = (item.XtoY == 1 and planePos[2] < item.y + 5) or (item.XtoY == 2 and planePos[2] > item.y + 5)
             PixelCollision((item.x+item.distance)*8-4-item.pos,item.y*8+32,item.pos,32)
-        else
-            item.showWrongWay = false
         end
     elseif item.direction==4 then --right
         if UnitCollision(
@@ -325,13 +315,9 @@ function Calc1Way(item)
             item.unitCollisionY,
             item.actW,item.actH+wrongWayTriggerSize,true
         ) then
-            item.showWrongWay = (item.XtoY == 1 and planePos[2] > item.y + 5) or (item.XtoY == 2 and planePos[2] < item.y + 5)
-            if not item.showWrongWay then
-                activated = true
-            end
+            unitCollision = true
+            activated = (item.XtoY == 1 and planePos[2] < item.y + 5) or (item.XtoY == 2 and planePos[2] > item.y + 5)
             PixelCollision(item.x*8+36,item.y*8+32,item.pos,32)
-        else
-            item.showWrongWay = false
         end
     end
     if explosion then
@@ -339,14 +325,12 @@ function Calc1Way(item)
     end
     if activated then
         item.pos = item.pos - barrierSpeed
-        if item.pos<0 then
-            item.pos = 0
-        end
     else
         item.pos = item.pos+barrierSpeed
-        if item.pos>item.distance*8-boolToNum(item.endStone==1)*16-4 then
-            item.pos=item.distance*8-boolToNum(item.endStone==1)*16-4
-        end
+    end
+    item.pos = clamp(item.pos, 0, item.closedPos)
+    if unitCollision and not activated and item.pos == item.closedPos then
+        item.showWrongWay = true
     end
 end
 
@@ -445,6 +429,8 @@ function Init1Way(item)
         item.unitCollisionX = item.x+item.distance*0.5+3-item.actW*0.5
         item.unitCollisionY = item.y+8-(item.XtoY-1)*(4 + wrongWayTriggerSize) - boolToNum(item.XtoY==1)*(item.actH)
     end
+
+    item.closedPos = item.distance*8-boolToNum(item.endStone==1)*16-4
 end
 
 function InitBarrier(item)
