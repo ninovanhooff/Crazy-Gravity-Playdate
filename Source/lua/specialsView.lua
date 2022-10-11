@@ -21,6 +21,8 @@ local toolTipsCache <const> = enum({"WrongWay"})
 local monoFont <const> = monoFont
 local smallFont <const> = smallFont
 
+local tooltipsIcons <const> = gfx.imagetable.new("images/tooltips/tooltips")
+
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
 
 function PreRenderToolTips()
@@ -40,8 +42,9 @@ function PreRenderToolTips()
         gfx.setColor(tooltipBgColor)
         local w,h = wrongWayImage:getSize()
         gfx.fillRoundRect(0,0, w,h, 7)
-        gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
-        smallFont:drawText(text, 12, 0)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+        tooltipsIcons:getImage(1):draw(0,0)
+        smallFont:drawText(text, 16, 0)
     gfx.popContext()
     toolTipsCache.WrongWay.image = wrongWayImage
 end
