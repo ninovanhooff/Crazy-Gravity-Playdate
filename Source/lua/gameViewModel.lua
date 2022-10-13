@@ -221,9 +221,9 @@ end
 
 function ResetPlane()
     explosion = nil
-    planePos[1], planePos[2], planePos[3], planePos[4] = homeBase.x+floor(homeBase.w*0.5-1)-1,homeBase.y+1,4,4 --x,y,subx,suby
-    -- when using y = homeBase.y-halfHeightTiles+1, no initial camera movement would occur
-    camPos[1], camPos[2], camPos[3], camPos[4] = homeBase.x+floor(homeBase.w*0.5)-halfWidthTiles,homeBase.y-halfHeightTiles, 0,0 --x,y,subx,suby
+    planePos[1], planePos[2], planePos[3], planePos[4] = checkpoint.x+floor(checkpoint.w*0.5-1)-1,checkpoint.y+1,4,4 --x,y,subx,suby
+    -- when using y = checkpoint.y-halfHeightTiles+1, no initial camera movement would occur
+    camPos[1], camPos[2], camPos[3], camPos[4] = checkpoint.x+floor(checkpoint.w*0.5)-halfWidthTiles,checkpoint.y-halfHeightTiles, 0,0 --x,y,subx,suby
     camControllerX = CamController(12, 12 * 25)
     camControllerY = CamController(12, 12 * 17)
     checkCam()
@@ -268,6 +268,7 @@ function InitGame(_pathOrLevelNumber, selectedChallenge)
 end
 
 function ResetGame()
+    checkpoint = homeBase
     ResetPlane()
     fuelSpent, livesLost = 0,0
     planeFreight = {} -- type, idx of special where picked up
@@ -293,13 +294,15 @@ function DecreaseLife()
     if extras[2]==1 then
         pushScreen(GameOverScreen("GAME_OVER"))
     else
-        extras[2] = extras[2]-1
-        gameHUD:onChanged(2)
-        for i,item in ipairs(planeFreight) do
-            specialT[item[2]].amnt = specialT[item[2]].amnt+1 -- replace freight on pltfrms
-            remainingFreight[item[1]+1] = remainingFreight[item[1]+1] + 1
+        extras[2] = extras[2]-1 -- decrease life
+        gameHUD:onChanged(2) -- update life counter in HUD
+        if checkpoint == homeBase then -- lose cargo when respawning at homeBase
+            for i,item in ipairs(planeFreight) do
+                specialT[item[2]].amnt = specialT[item[2]].amnt+1 -- replace freight on pltfrms
+                remainingFreight[item[1]+1] = remainingFreight[item[1]+1] + 1
+            end
+            planeFreight = {}
         end
-        planeFreight = {}
         ResetPlane()
     end
 end

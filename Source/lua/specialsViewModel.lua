@@ -6,6 +6,10 @@
 
 import "game-over/GameOverScreen"
 
+local animator <const> = playdate.graphics.animator
+local checkpointEasing <const> = playdate.easingFunctions.outBack
+local checkpointAnimatorDuration <const> = 800
+
 local abs <const> = math.abs
 local ceil <const> = math.ceil
 local floor <const> = math.floor

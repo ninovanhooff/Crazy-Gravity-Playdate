@@ -88,9 +88,9 @@ function RenderPlatform(item, scrX, scrY)
         if frameCounter < frameRate then
             local startText = levelNumString(currentLevel)
             if startText then
-                dotFont:drawText(
+                dotFont50:drawText(
                     startText,
-                    6 + scrX+item.w/2*tileSize  - dotFont:getTextWidth(startText)*0.5,
+                    6 + scrX+item.w/2*tileSize  - dotFont50:getTextWidth(startText)*0.5,
                     scrY - 50
                 )
             end

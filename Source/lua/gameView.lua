@@ -14,17 +14,44 @@ local camPos <const> = camPos
 local specialRenders <const> = specialRenders
 local gameWidthTiles <const> = gameWidthTiles
 local gameHeightTiles <const> = gameHeightTiles
+local tileSize <const> = tileSize
+local dotFont25 <const> = dotFont25
+local checkpointText <const> = "CHECKPOINT"
+
 
 local gameHUD <const> = gameHUD
 
 --- the active game area, excluding the HUD
 local gameClipRect = playdate.geometry.rect.new(0,0, screenWidth, hudY)
 
+local function renderCheckpointBanner()
+    -- todo performance: check visible / test cliprect perf
+    -- font or image? check perf.
+    -- if level cleared, use different textO
+    local checkpoint <const> = checkpoint
+    if checkpoint and checkpoint.animator then
+        local scrX,scrY = (checkpoint.x-camPos[1])*8-camPos[3],(checkpoint.y-camPos[2])*8-camPos[4]
+        gfx.setScreenClipRect(0,0, gameClipRect.width, scrY + 32)
+        if gameBgColor == gfx.kColorBlack then
+            gfx.setImageDrawMode(gfx.kDrawModeInverted)
+        end
+        dotFont25:drawText(
+            checkpointText,
+            scrX+checkpoint.w/2*tileSize - dotFont25:getTextWidth(checkpointText)*0.5,
+            scrY + checkpoint.animator:currentValue()
+        )
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        gfx.setScreenClipRect(gameClipRect)
+    end
+end
+
 function RenderGame(disableHUD)
     gfx.setColor(gfx.kColorBlack)
     gfx.setScreenClipRect(gameClipRect)
 
     local tilesRendered = bricksView:render()
+
+    renderCheckpointBanner()
 
     for _,item in ipairs(specialT) do -- special blocks
         local scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
