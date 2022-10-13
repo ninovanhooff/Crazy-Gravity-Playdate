@@ -97,7 +97,7 @@ local gameOptions = {
         options = {
             { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
             { name='Sound Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
-            { name='Music Volume', key= MUSIC_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
+            { name='Music Volume', key= MUSIC_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=8},
         }
     },
     {
@@ -106,7 +106,7 @@ local gameOptions = {
             { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
             { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
             { name='Throttle', key= THROTTLE_KEY, values= BUTTON_VALS, default=7},
-            { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default=10},
+            { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
         }
     },
 }
