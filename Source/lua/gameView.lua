@@ -59,11 +59,7 @@ function RenderGame(disableHUD)
         end
     end
 
-    sample("render checkpoint", function()
-        for _ = 1, 100 do
-            renderCheckpointBanner()
-        end
-    end, 1)
+    renderCheckpointBanner()
 
     -- HUD
     gfx.clearClipRect()
