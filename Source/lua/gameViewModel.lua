@@ -263,6 +263,7 @@ function InitGame(_pathOrLevelNumber, selectedChallenge)
         error("lvl has no base")
     end
     frameCounter = 0
+    numGameOvers = 0
     ResetGame()
     musicManager:play(levelSongPath())
 end
@@ -292,7 +293,12 @@ end
 function DecreaseLife()
     livesLost = livesLost + 1
     if extras[2]==1 then
-        pushScreen(GameOverScreen("GAME_OVER"))
+        numGameOvers = numGameOvers + 1
+        local config = (numGameOvers < 2 and
+            GAME_OVER_CONFIGS.GAME_OVER_NO_SKIP or
+            GAME_OVER_CONFIGS.GAME_OVER_MAY_SKIP
+        )
+        pushScreen(GameOverScreen(config))
     else
         extras[2] = extras[2]-1 -- decrease life
         gameHUD:onChanged(2) -- update life counter in HUD

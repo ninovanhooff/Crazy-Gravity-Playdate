@@ -6,6 +6,8 @@
 
 local datastoreKey <const> = "records"
 
+SKIPPED_RECORD = {9999, 9999, 9999}
+
 records = playdate.datastore.read(datastoreKey)
 if not records then
     print("could not load records, saving defaults")

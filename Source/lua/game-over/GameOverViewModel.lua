@@ -6,13 +6,20 @@ local buttonRight <const> = playdate.kButtonRight
 
 class("GameOverViewModel").extends()
 
+GAME_OVER_CONFIGS = enum({"GAME_OVER_NO_SKIP", "GAME_OVER_MAY_SKIP", "LEVEL_CLEARED"})
+
 function GameOverViewModel:init(config)
     GameOverViewModel.super.init()
-    if config == "GAME_OVER" then
+    if config == GAME_OVER_CONFIGS.GAME_OVER_NO_SKIP then
         self.title = "GAME OVER!"
         self.selectedButtonIdx = 2
         self.buttonSourceOffsetsX = {192, 240}
-    elseif config == "LEVEL_CLEARED" then
+    elseif config == GAME_OVER_CONFIGS.GAME_OVER_MAY_SKIP then
+        self.title = "GAME OVER!"
+        self.selectedButtonIdx = 2 -- default selection is retry
+        -- last button is next level button
+        self.buttonSourceOffsetsX = {192, 240, 288}
+    elseif config == GAME_OVER_CONFIGS.LEVEL_CLEARED then
         self.title = "WELL DONE!"
         self.selectedButtonIdx = 3
         if currentLevel == numLevels then
@@ -71,6 +78,9 @@ function GameOverViewModel:update()
         elseif self.selectedButtonIdx == 2 then
             retryGame()
         elseif self.selectedButtonIdx == 3 then
+            if not records[currentLevel] then
+                updateRecords(currentLevel, SKIPPED_RECORD)
+            end
             nextLevel()
         end
     elseif justPressed(buttonB) then
