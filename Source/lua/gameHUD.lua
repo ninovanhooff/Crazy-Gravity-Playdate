@@ -72,7 +72,7 @@ function GameHUD:render(conservative)
     elseif conservative then
         self:renderChallenge()
     else
-        self:renderDefault()
+        self:renderFull()
     end
 end
 
@@ -93,9 +93,9 @@ function GameHUD:renderStart()
     font:drawText(self.challengeTarget,x,hudY)
 end
 
-function GameHUD:renderChallenge()
+function GameHUD:renderChallenge(force)
     local currentValue, iconIdx = self:challengeViewState()
-    if self.lastChallengeValue == currentValue then
+    if self.lastChallengeValue == currentValue and not force then
         return
     end
     -- render
@@ -111,9 +111,9 @@ function GameHUD:renderChallenge()
     self.lastChallengeValue = currentValue
 end
 
-function GameHUD:renderDefault()
+function GameHUD:renderFull()
     gfx.setColor(hudBgClr)
-    gfx.fillRect(0,hudY,240,16)
+    gfx.fillRect(0,hudY,screenWidth,16)
     gfx.setColor(hudFgClr)
 
     local x = hudPadding
@@ -181,7 +181,7 @@ function GameHUD:renderDefault()
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
 
-    self:renderChallenge()
+    self:renderChallenge(true)
 end
 
 function GameHUD:resume()
