@@ -177,6 +177,7 @@ end
 function CalcTimeStep()
     frameCounter = frameCounter + 1
     if flying then --physics
+        landedAt = -1
         calcPlane()
     end
 
@@ -279,6 +280,7 @@ function ResetGame()
     for i,item in ipairs(specialT) do
         if item.sType == 8 then --platform
             item.amnt = item.origAmnt
+            item.tooltip = nil
             if item.pType == 2 then -- freight
                 remainingFreight[item.type+1] = remainingFreight[item.type+1]+item.amnt
             end

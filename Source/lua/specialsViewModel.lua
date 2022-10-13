@@ -48,14 +48,41 @@ local function PixelCollision(x,y,w,h) -- needs work?
     local topY = planePos[2]*8
     local colT <const> = colT
     for i=1,9,2 do
-        --printf("pixelCol",planePos[1]*8+colT[i],x,planePos[2]*8+colT[i+1],y)
-        --printf(planePos[1]*8+colT[i],x,planePos[2]*8+colT[i+1],y)
         if leftX+colT[i]>x and leftX+colT[i]<=x+w and topY+colT[i+1]>=y and topY+colT[i+1]<=y+h then -- -1
             collision = true
             return true
         end
     end
     return false
+end
+
+local function getPlatformTooltipTexts(platform)
+    if platform.pType == 2 then
+        return {pickup= "Loading Cargo", planeFull="Cargo hold filled!", done="Destination: HomeBase"}
+    elseif platform.pType == 3 then
+        return {pickup= "Refueling", planeFull="All filled up!", done="Done!"}
+    elseif platform.pType == 4 then
+        if platform.type == 1 then
+            return {pickup= "+1 Turbo", done="Go fast!"}
+        elseif platform.type == 2 then
+            return {pickup= "+1 Life", done="Take care!"}
+        elseif platform.type == 3 then
+            return {pickup= "+1 Cargo hold", done="Comfy!"}
+        else
+            error("unexpected extras type " .. platform.type)
+        end
+    elseif platform.pType == 5 then
+        return {pickup= "Load Keycard?", done="Done!"}
+    else
+        error("unexpected platform type " .. platform.pType)
+    end
+end
+
+local function updateCheckpoint(platform)
+    if platform ~= checkpoint then
+        checkpoint = platform
+        checkpoint.animator = animator.new(checkpointAnimatorDuration, 32, -56, checkpointEasing)
+    end
 end
 
 function CalcPlatform(item,idx)
@@ -73,6 +100,12 @@ function CalcPlatform(item,idx)
         collision = false
     end
 
+    if landedAt ~= idx then
+        item.tooltip = nil
+    else
+        landedTimer = landedTimer + 1
+    end
+
     --landing
     if flying and planeRot == 18 then -- upright
         if planePos[2]==item.y+1 and planePos[1]>=item.x-2 and planePos[1]<item.x+item.w-1 and planePos[4]>=3 and vy>0 and vy <= landingTolerance[2] and abs(vx)<= landingTolerance[1] then
@@ -85,39 +118,58 @@ function CalcPlatform(item,idx)
             landedAt = idx
             if Sounds then landing_sound:play() end
         end
-    elseif not flying then
-        if landedTimer>frameRate/2 and landedAt==idx then -- 1 secs and landed at cur pltfrm
-            --printf(item.pType,#planeFreight,"HJ")
-            if item.pType==1 and #planeFreight>0 then -- dump
-                if Sounds then
-                    dump_sound:play()
-                end
-                table.remove(planeFreight,1)
-                if table.sum(remainingFreight)==0 and #planeFreight == 0 then
-                    printf("VICTORY")
-                    updateRecords(currentLevel, {
-                        frameCounter / frameRate,
-                        fuelSpent,
-                        livesLost
-                    })
-                    RenderGame()
-                    playdate.wait(500) -- Show player that there is no more remaining freight
-                    pushScreen(GameOverScreen("LEVEL_CLEARED"))
+    elseif landedAt == idx then
+        --printf(item.pType,#planeFreight,"HJ")
+        if item.pType==1 then -- homebase
+            if #planeFreight > 0 then
+                if landedTimer < frameRate then
+                    item.tooltip = {text="Unloading", progress=landedTimer/frameRate}
                 else
-                    printf("HUH",table.sum(remainingFreight))
+                    updateCheckpoint(homeBase)
+                    if Sounds then
+                        dump_sound:play()
+                    end
+                    table.remove(planeFreight,1)
+                    if table.sum(remainingFreight)==0 and #planeFreight == 0 then
+                        printf("VICTORY")
+                        updateRecords(currentLevel, {
+                            frameCounter / frameRate,
+                            fuelSpent,
+                            livesLost
+                        })
+                        RenderGame()
+                        playdate.wait(500) -- Show player that there is no more remaining freight
+                        pushScreen(GameOverScreen(GAME_OVER_CONFIGS.LEVEL_CLEARED))
+                    else
+                        printf("HUH",table.sum(remainingFreight))
+                    end
+
+                    if #planeFreight == 0 then
+                        item.tooltip = {text="Goods received!"}
+                    end
                 end
-            elseif item.amnt>0 then --pickup
-                printf(#planeFreight,extras[3],pType)
-                if item.pType==2 and #planeFreight<extras[3] then -- freight
+            end
+        elseif item.amnt>0 then -- pickup
+            local planeIsFull =
+            (item.pType==2 and #planeFreight>=extras[3]) or -- freight
+            (item.pType==3 and fuel>=6000) -- fuel
+
+            if planeIsFull then
+                item.tooltip = {text= getPlatformTooltipTexts(item).planeFull}
+            elseif landedTimer < frameRate then
+                item.tooltip = { text= getPlatformTooltipTexts(item).pickup, progress=landedTimer/frameRate}
+            else
+                if item.pType==2 then -- freight
                     remainingFreight[item.type+1] = remainingFreight[item.type+1] -1
                     table.insert(planeFreight,{item.type,landedAt})
                     item.amnt = item.amnt -1
+                    updateCheckpoint(item)
                     if Sounds then pickup_sound:play() end
-                elseif item.pType==3 and fuel<6000 then -- fuel
+                elseif item.pType==3 then -- fuel
                     fuel = min(6000,fuel+3000)
                     item.amnt = item.amnt -1
                     if Sounds then fuel_sound:play() end
-                elseif item.pType==4 and item.amnt>0 then -- extras
+                elseif item.pType==4 then -- extras
                     extras[item.type]=extras[item.type]+1
                     gameHUD:onChanged(item.type)
                     item.amnt = item.amnt -1
@@ -130,12 +182,17 @@ function CalcPlatform(item,idx)
                     if Sounds then key_sound:play() end
                 end
             end
+
+            if item.amnt == 0 then
+                item.tooltip = { text = getPlatformTooltipTexts(item).done }
+            end
+
+        end
+
+        if landedTimer >= frameRate then
             landedTimer = 0
-        else
-            landedTimer = landedTimer + 1
         end
     end
-
 end
 
 function CalcBlower(item)

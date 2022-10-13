@@ -19,24 +19,32 @@ local gameHeightPixels <const> = gameHeightTiles*tileSize
 local loopAnim <const> = loopAnim
 local toolTipsCache <const> = enum({"WrongWay"})
 local monoFont <const> = monoFont
-local smallFont <const> = smallFont
+local tooltipFont <const> = smallFont
+local dotFont50 <const> = dotFont
+local dotFont25 <const> = dotFont25
+local tooltipHeight <const> = 14
+local halfTooltipHeight <const> = tooltipHeight/2
 
 local tooltipsIcons <const> = gfx.imagetable.new("images/tooltips/tooltips")
 
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
 
+local function getToolTipBgColor()
+    if gameBgColor == gfx.kColorBlack then
+        return gfx.kColorWhite
+    else
+        return gfx.kColorBlack
+    end
+end
+
 function PreRenderToolTips()
     local text = "Wrong way!"
-    local tooltipBgColor
-    if gameBgColor == gfx.kColorBlack then
-        tooltipBgColor = gfx.kColorWhite
-    else
-        tooltipBgColor = gfx.kColorBlack
-    end
+    local tooltipBgColor = getToolTipBgColor()
+
 
     local wrongWayImage = gfx.image.new(
-        monoFont:getTextWidth(text) + 16,
-        14
+        tooltipFont:getTextWidth(text) + 16,
+        tooltipHeight
     )
     gfx.pushContext(wrongWayImage)
         gfx.setColor(tooltipBgColor)
@@ -44,12 +52,36 @@ function PreRenderToolTips()
         gfx.fillRoundRect(0,0, w,h, 7)
         gfx.setImageDrawMode(gfx.kDrawModeNXOR)
         tooltipsIcons:getImage(1):draw(0,0)
-        smallFont:drawText(text, 16, 0)
+        tooltipFont:drawText(text, 16, 0)
     gfx.popContext()
     toolTipsCache.WrongWay.image = wrongWayImage
 end
 
 PreRenderToolTips()
+
+local function renderTooltip(tooltip, centerX, centerY)
+    local text = tooltip.text
+    local progress = tooltip.progress
+
+    gfx.pushContext()
+
+    local textWidth = tooltipFont:getTextWidth(text)
+    local w = textWidth + tooltipHeight + (progress and 12 or 0)
+    local x, y = centerX - w/2, centerY - halfTooltipHeight
+    gfx.setColor(getToolTipBgColor())
+    gfx.fillRoundRect(x,y, w,tooltipHeight, 3)
+    gfx.setColor(gameBgColor)
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    local contentX = x + halfTooltipHeight
+    tooltipFont:drawText(text, contentX, y)
+    contentX = contentX + textWidth + 10
+    if progress then
+        gfx.setLineWidth(5)
+        gfx.drawArc(contentX, centerY, 3, 0, progress * 360)
+    end
+
+    gfx.popContext()
+end
 
 function RenderPlatform(item, scrX, scrY)
     -- generic
@@ -123,8 +155,9 @@ function RenderPlatform(item, scrX, scrY)
     elseif item.pType==5 and item.amnt>0 then-- key
         sprite:draw(scrX+8, pltfrmY-24, unFlipped, 185+(frameCounter%7)*16, 398+16*item.color, 16, 16)
     end
-    if editorMode then
-        pgeDrawRectoutline(scrX,scrY,item.w*8,32,white)
+
+    if item.tooltip then
+        renderTooltip(item.tooltip, scrX + item.w*4, scrY)
     end
 end
 
