@@ -56,9 +56,6 @@ gfx.setFont(playdate.graphics.getSystemFont(playdate.graphics.font.kVariantBold)
 monoFont = gfx.font.new("fonts/Roobert/Roobert-9-Mono-Condensed")
 smallFont = gfx.font.new("fonts/Roobert/Roobert-10-Bold")
 dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50") -- todo rename to dotFont50
---dotFont25 = gfx.font.new("fonts/Edit Undo/edit-undo.dot-horizontal-25")
-dotFont25 = gfx.font.new("fonts/Edit Undo/edit-undo-dot-horiz-outlined-25")
-if not dotFont25 then error("could not load dotFont25") end
 printT("Before start options apply")
 Options():apply(true)
 printT("After start options apply")

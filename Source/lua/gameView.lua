@@ -12,12 +12,12 @@ local unFlipped <const> = playdate.graphics.kImageUnflipped
 local planePos <const> = planePos
 local camPos <const> = camPos
 local specialRenders <const> = specialRenders
-local gameWidthTiles <const> = gameWidthTiles
+local screenWidth <const> = screenWidth
 local gameHeightTiles <const> = gameHeightTiles
+local gameHeightPixels <const> = gameHeightTiles * tileSize
 local tileSize <const> = tileSize
-local dotFont25 <const> = dotFont25
-local checkpointText <const> = "CHECKPOINT"
-
+local checkpointImage <const> = gfx.image.new("images/checkpoint_banner.png")
+local checkpointImageW <const> = checkpointImage:getSize()
 
 local gameHUD <const> = gameHUD
 
@@ -25,19 +25,20 @@ local gameHUD <const> = gameHUD
 local gameClipRect = playdate.geometry.rect.new(0,0, screenWidth, hudY)
 
 local function renderCheckpointBanner()
-    -- todo performance: check visible / test cliprect perf
     -- font or image? check perf.
     -- if level cleared, use different textO
     local checkpoint <const> = checkpoint
     if checkpoint and checkpoint.animator then
         local scrX,scrY = (checkpoint.x-camPos[1])*8-camPos[3],(checkpoint.y-camPos[2])*8-camPos[4]
+        if scrX < -100 or scrX > screenWidth or scrY < -100 or scrY > gameHeightPixels then
+            return
+        end
         gfx.setScreenClipRect(0,0, gameClipRect.width, scrY + 32)
         if gameBgColor == gfx.kColorBlack then
             gfx.setImageDrawMode(gfx.kDrawModeInverted)
         end
-        dotFont25:drawText(
-            checkpointText,
-            scrX+checkpoint.w/2*tileSize - dotFont25:getTextWidth(checkpointText)*0.5,
+        checkpointImage:draw(
+            scrX+checkpoint.w/2*tileSize - checkpointImageW*0.5,
             scrY + checkpoint.animator:currentValue()
         )
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
@@ -51,14 +52,18 @@ function RenderGame(disableHUD)
 
     local tilesRendered = bricksView:render()
 
-    renderCheckpointBanner()
-
     for _,item in ipairs(specialT) do -- special blocks
         local scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
         if item.x+item.w>=camPos[1] and item.x<=camPos[1]+gameWidthTiles+1 and item.y+item.h>=camPos[2] and item.y<camPos[2]+gameHeightTiles+1 then
             specialRenders[item.sType-7](item, scrX, scrY)
         end
     end
+
+    sample("render checkpoint", function()
+        for _ = 1, 100 do
+            renderCheckpointBanner()
+        end
+    end, 1)
 
     -- HUD
     gfx.clearClipRect()
