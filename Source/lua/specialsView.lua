@@ -306,8 +306,19 @@ function Render1Way(item, scrX, scrY)
         local wrongWayImage = toolTipsCache.WrongWay.image
         if not item.wrongWayX then
             local w,h = wrongWayImage:getSize()
-            item.wrongWayX = (item.w*tileSize)/2 - w/2
-            item.wrongWayY = (item.h*tileSize)/2 - h/2
+            if item.direction == 1 then -- up
+                item.wrongWayX = (item.w*tileSize)/2 - w/2
+                item.wrongWayY = item.distance*8-item.closedPos/2 - h/2
+            elseif item.direction == 2 then -- down
+                item.wrongWayX = (item.w*tileSize)/2 - w/2
+                item.wrongWayY = 36 + (item.closedPos /2) - h/2
+            elseif item.direction == 3 then -- left
+                item.wrongWayX = -4 + item.distance*8-item.closedPos/2 - w/2
+                item.wrongWayY = (item.h*tileSize)/2 - h/2
+            else -- right
+                item.wrongWayX = 36 + (item.closedPos /2) - w/2
+                item.wrongWayY = (item.h*tileSize)/2 - h/2
+            end
         end
         wrongWayImage:draw(scrX + item.wrongWayX, scrY + item.wrongWayY)
     end
