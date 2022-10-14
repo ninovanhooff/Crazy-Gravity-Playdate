@@ -24,6 +24,7 @@ function ResourceLoader:loadBG(newBG)
 
     print("Changing background to ", newBG)
     gameBgColor = newBG
+    gameFgColor = (newBG == gfx.kColorBlack and gfx.kColorWhite) or gfx.kColorBlack
     if PreRenderToolTips then
         PreRenderToolTips()
     end

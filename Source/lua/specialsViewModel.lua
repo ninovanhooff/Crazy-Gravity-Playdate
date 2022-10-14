@@ -120,7 +120,7 @@ function CalcPlatform(item,idx)
         end
     elseif landedAt == idx then
         --printf(item.pType,#planeFreight,"HJ")
-        if item.pType==1 then -- homebase
+        if item.pType==1 then -- homeBase
             if #planeFreight > 0 then
                 if landedTimer < frameRate then
                     item.tooltip = {text="Unloading", progress=landedTimer/frameRate}

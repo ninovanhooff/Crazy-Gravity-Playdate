@@ -7,12 +7,15 @@
 import "bricksView"
 
 local gfx <const> = playdate.graphics
+local geometry <const> = playdate.geometry
+local polygon <const> = geometry.polygon
 local floor <const> = math.floor
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local planePos <const> = planePos
 local camPos <const> = camPos
 local specialRenders <const> = specialRenders
 local screenWidth <const> = screenWidth
+local gameWidthTiles <const> = gameWidthTiles
 local gameHeightTiles <const> = gameHeightTiles
 local gameHeightPixels <const> = gameHeightTiles * tileSize
 local tileSize <const> = tileSize
@@ -44,15 +47,45 @@ local function renderCheckpointBanner()
     end
 end
 
+local targetingArrowTipRadius <const> = 32 -- pixels
+local targetingArrowBaseRadius <const> = 28 -- pixels
+local targetingArrowAngleDiffRad <const> = math.rad(5)
+
+local function drawHomeBaseIndicator(centerX, centerY)
+    local homeBase <const> = homeBase
+    --- angle between plane and homeBase in radians
+    local homeBaseAngleRad = math.atan(
+    -- compare homeBase and planePos centers
+        (homeBase.y + homeBase.h*0.5) - (planePos[2] +1.5),
+        (homeBase.x + homeBase.w*0.5) - (planePos[1] +1.5)
+    )
+
+
+    --print("targeting homeBaseAngleRad", homeBaseAngleRad, "homeBase angle deg", math.deg(homeBaseAngleRad))
+
+    local targetingPolygon = polygon.new(
+    -- left leg
+        centerX + math.cos(homeBaseAngleRad - targetingArrowAngleDiffRad)*targetingArrowBaseRadius,
+        centerY + math.sin(homeBaseAngleRad - targetingArrowAngleDiffRad)*targetingArrowBaseRadius,
+    -- tip
+        centerX + math.cos(homeBaseAngleRad)*targetingArrowTipRadius,
+        centerY + math.sin(homeBaseAngleRad)*targetingArrowTipRadius,
+    -- right leg
+        centerX + math.cos(homeBaseAngleRad + targetingArrowAngleDiffRad)*targetingArrowBaseRadius,
+        centerY + math.sin(homeBaseAngleRad + targetingArrowAngleDiffRad)*targetingArrowBaseRadius
+    )
+    gfx.setColor(gameFgColor)
+    gfx.setLineWidth(2)
+    gfx.drawPolygon(targetingPolygon)
+end
+
 function RenderGame(disableHUD)
-    gfx.setColor(gfx.kColorBlack)
     gfx.setScreenClipRect(gameClipRect)
 
     local tilesRendered = bricksView:render()
-
     for _,item in ipairs(specialT) do -- special blocks
-        local scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
         if item.x+item.w>=camPos[1] and item.x<=camPos[1]+gameWidthTiles+1 and item.y+item.h>=camPos[2] and item.y<camPos[2]+gameHeightTiles+1 then
+            local scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
             specialRenders[item.sType-7](item, scrX, scrY)
         end
     end
@@ -80,14 +113,19 @@ function RenderGame(disableHUD)
         --explosion
         explosion:render()
     else
+        local planeX <const> = floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3])
+        local planeY <const> = floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4])
         -- plane
         sprite:draw(
-            floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3]),
-            floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4]),
+            planeX, planeY,
             unFlipped,
             planeRot%16*23, 391+(boolToNum(planeRot>15)*2-thrust)*23,
             23, 23
         )
+
+        if #planeFreight > 0 then
+            drawHomeBaseIndicator(planeX + 12, planeY + 12) -- center of plane is at origin + 12
+        end
     end
 end
 

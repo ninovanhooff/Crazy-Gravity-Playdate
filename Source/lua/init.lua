@@ -26,6 +26,7 @@ screenHeight = playdate.display.getHeight()
 hudY = 224
 tileSize = 8 -- refactor: probably hardcoded in a lot of places
 gameBgColor = gfx.kColorBlack
+gameFgColor = gfx.kColorWhite
 gameWidthTiles = math.ceil(screenWidth / tileSize)
 gameHeightTiles = math.ceil(hudY / tileSize)
 frameRate = 30
