@@ -1,0 +1,4 @@
+﻿{
+  "chyrons": [{"start": 0, "end": 3, "title": "Stephanie Shipwell", "subtitle": "CEO Gravity Express"}],
+  "subtitles": [{"start":0.51,"end":1.58,"text":"Congratulations!"},{"start":1.577,"end":4.94,"text":"new valued Gravity Express employee."},{"start":4.93,"end":7.034,"text":"You are one of the remarkably few"},{"start":7.034,"end":9.92,"text":"to earn an operator's license."},{"start":9.92,"end":12.09,"text":"The Galaxy awaits!"},{"start":12.09,"end":14.7,"text":"May you live long and have many"},{"start":14.7,"end":16.7,"text":"profitable ventures!"}]
+}

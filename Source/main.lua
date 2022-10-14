@@ -98,11 +98,18 @@ end
 
 require "lua/start/startScreen"
 pushScreen(StartScreen())
-if playdate.file.exists("levels/temp.pdz") then
-    Sounds = false
-    require "lua/gameScreen"
-    pushScreen(GameScreen("levels/temp", 1))
-end
+--if playdate.file.exists("levels/temp.pdz") then
+--    Sounds = false
+--    require "lua/gameScreen"
+--    pushScreen(GameScreen("levels/temp", 1))
+--end
+require("lua/video-player/VideoPlayerScreen")
+pushScreen(VideoPlayerScreen(
+    "video/congratulations",
+    function()
+        return EndGameScreen()
+    end
+))
 --pushScreen(LevelSelectScreen())
 --pushScreen(GameScreen(levelPath(1), 1))
 
