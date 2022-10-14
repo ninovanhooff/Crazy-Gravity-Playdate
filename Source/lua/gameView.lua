@@ -17,7 +17,7 @@ local gameHeightTiles <const> = gameHeightTiles
 local gameHeightPixels <const> = gameHeightTiles * tileSize
 local tileSize <const> = tileSize
 local checkpointImage <const> = gfx.image.new("images/checkpoint_banner.png")
-local checkpointImageW <const> = checkpointImage:getSize()
+local checkpointImageW <const>, checkpointImageH <const> = checkpointImage:getSize()
 
 local gameHUD <const> = gameHUD
 
@@ -29,18 +29,16 @@ local function renderCheckpointBanner()
     -- if level cleared, use different textO
     local checkpoint <const> = checkpoint
     if checkpoint and checkpoint.animator then
-        local scrX,scrY = (checkpoint.x-camPos[1])*8-camPos[3],(checkpoint.y-camPos[2])*8-camPos[4]
-        if scrX < -100 or scrX > screenWidth or scrY < -100 or scrY > gameHeightPixels then
+        local scrX <const> = (checkpoint.x-camPos[1])*8-camPos[3] + checkpoint.w/2*tileSize - checkpointImageW*0.5
+        local scrY <const> = (checkpoint.y-camPos[2])*8-camPos[4] + checkpoint.animator:currentValue()
+        if scrX < -checkpointImageW or scrX > screenWidth or scrY < -checkpointImageH or scrY > gameHeightPixels then
             return
         end
         gfx.setScreenClipRect(0,0, gameClipRect.width, scrY + 32)
         if gameBgColor == gfx.kColorBlack then
             gfx.setImageDrawMode(gfx.kDrawModeInverted)
         end
-        checkpointImage:draw(
-            scrX+checkpoint.w/2*tileSize - checkpointImageW*0.5,
-            scrY + checkpoint.animator:currentValue()
-        )
+        checkpointImage:draw(scrX, scrY)
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
         gfx.setScreenClipRect(gameClipRect)
     end

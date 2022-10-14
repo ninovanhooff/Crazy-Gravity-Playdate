@@ -290,6 +290,7 @@ function ResetGame()
     frameCounter = 0
     editorMode = false
     bricksView = BricksView()
+    checkpoint = nil
 end
 
 function DecreaseLife()

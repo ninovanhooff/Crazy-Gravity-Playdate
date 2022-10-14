@@ -125,7 +125,6 @@ function CalcPlatform(item,idx)
                 if landedTimer < frameRate then
                     item.tooltip = {text="Unloading", progress=landedTimer/frameRate}
                 else
-                    updateCheckpoint(homeBase)
                     if Sounds then
                         dump_sound:play()
                     end
@@ -141,7 +140,7 @@ function CalcPlatform(item,idx)
                         playdate.wait(500) -- Show player that there is no more remaining freight
                         pushScreen(GameOverScreen(GAME_OVER_CONFIGS.LEVEL_CLEARED))
                     else
-                        printf("HUH",table.sum(remainingFreight))
+                        updateCheckpoint(homeBase)
                     end
 
                     if #planeFreight == 0 then
