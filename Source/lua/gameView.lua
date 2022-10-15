@@ -49,6 +49,7 @@ end
 
 local targetingArrowTipRadius <const> = 32 -- pixels
 local targetingArrowBaseRadius <const> = 28 -- pixels
+--- tip will point exactly at target. Base legs of triangle will be at an offset angle
 local targetingArrowAngleDiffRad <const> = math.rad(5)
 
 local function drawHomeBaseIndicator(centerX, centerY)

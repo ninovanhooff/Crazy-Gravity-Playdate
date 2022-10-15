@@ -358,19 +358,19 @@ function Calc1Way(item)
     if item.direction==1 then --up
         if UnitCollision(item.unitCollisionX, item.unitCollisionY, item.actW + wrongWayTriggerSize,item.actH,true) then
             unitCollision = true
-            activated = (item.XtoY == 1 and planePos[1] < item.x + 5) or (item.XtoY == 2 and planePos[1] > item.x + 5)
+            activated = (item.XtoY == 1 and planePos[1] < item.x + 8) or (item.XtoY == 2 and planePos[1] > item.x + 1)
             pixelCollision(item.x*8+32,(item.y+item.distance)*8-4-item.pos,32,item.pos)
         end
     elseif item.direction==2 then --down
         if UnitCollision(item.unitCollisionX, item.unitCollisionY,item.actW + wrongWayTriggerSize,item.actH,true) then
             unitCollision = true
-            activated = (item.XtoY == 1 and planePos[1] < item.x + 5) or (item.XtoY == 2 and planePos[1] > item.x + 5)
+            activated = (item.XtoY == 1 and planePos[1] < item.x + 8) or (item.XtoY == 2 and planePos[1] > item.x + 1)
             pixelCollision(item.x*8+32,item.y*8+36,32,item.pos)
         end
     elseif item.direction==3 then --left
         if UnitCollision(item.unitCollisionX, item.unitCollisionY,item.actW,item.actH+wrongWayTriggerSize,true) then
             unitCollision = true
-            activated = (item.XtoY == 1 and planePos[2] < item.y + 5) or (item.XtoY == 2 and planePos[2] > item.y + 5)
+            activated = (item.XtoY == 1 and planePos[2] < item.y + 8) or (item.XtoY == 2 and planePos[2] > item.y + 1)
             pixelCollision((item.x+item.distance)*8-4-item.pos,item.y*8+32,item.pos,32)
         end
     elseif item.direction==4 then --right
@@ -380,11 +380,11 @@ function Calc1Way(item)
             item.actW,item.actH+wrongWayTriggerSize,true
         ) then
             unitCollision = true
-            activated = (item.XtoY == 1 and planePos[2] < item.y + 5) or (item.XtoY == 2 and planePos[2] > item.y + 5)
+            activated = (item.XtoY == 1 and planePos[2] < item.y + 8) or (item.XtoY == 2 and planePos[2] > item.y + 1)
             pixelCollision(item.x*8+36,item.y*8+32,item.pos,32)
         end
     end
-    if explosion then
+    if collision then
         activated = false
     end
     if activated then
