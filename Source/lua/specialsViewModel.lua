@@ -38,12 +38,12 @@ end
 
 -- returns true if this rect may collide with planePos, does not take plane sub-pos ([3] and 4]) into
 -- account. When false, it is guaranteed that this rect does not intersect with the plane
-local function ApproxRectCollision(x, y, w, h)
+local function approxRectCollision(x, y, w, h)
     -- plane size is 3
     return planePos[1]+3 > x and planePos[1] < x+w  and planePos[2]+3 > y and planePos[2] <y+h
 end
 
-local function PixelCollision(x,y,w,h) -- needs work?
+local function pixelCollision(x, y, w, h) -- needs work?
     local leftX = planePos[1]*8
     local topY = planePos[2]*8
     local colT <const> = colT
@@ -85,12 +85,16 @@ local function updateCheckpoint(platform)
     end
 end
 
+function ApproxSpecialCollision(item)
+    return approxRectCollision(item.x, item.y, item.w, item.h)
+end
+
 function CalcPlatform(item,idx)
-    if not ApproxRectCollision(item.x,item.y-3, item.w, item.h) then
+    if not approxRectCollision(item.x,item.y-3, item.w, item.h) then
         return -- out of range
     end
     --platform collision
-    if PixelCollision(item.x*8,item.y*8+32,item.w*8,16) and (planeRot~=18 or(vy > landingTolerance[2] or abs(vx)> landingTolerance[1]))   then
+    if pixelCollision(item.x*8,item.y*8+32,item.w*8,16) and (planeRot~=18 or(vy > landingTolerance[2] or abs(vx)> landingTolerance[1]))   then
         collision = true
         print("platform collide!!")
     end
@@ -271,13 +275,13 @@ end
 
 local function planeIntersectsCannon(item)
     if item.direction==1 then -- up
-        return ApproxRectCollision(item.x,item.y,3,item.distance)
+        return approxRectCollision(item.x,item.y,3,item.distance)
     elseif item.direction==2 then -- down
-        return ApproxRectCollision(item.x,item.y+5,3,item.distance)
+        return approxRectCollision(item.x,item.y+5,3,item.distance)
     elseif item.direction==3 then -- left
-        return ApproxRectCollision(item.x,item.y,item.distance,3)
+        return approxRectCollision(item.x,item.y,item.distance,3)
     else -- right
-        return ApproxRectCollision(item.x+5,item.y,item.distance,3)
+        return approxRectCollision(item.x+5,item.y,item.distance,3)
     end
 end
 
@@ -289,13 +293,13 @@ function CalcCannon(item,idx)
     while pos < item.maxPos do
         -- ball collision
         if item.direction==1 then
-            PixelCollision(item.ballX,(item.y+item.distance)*8-pos,8,8)--+2
+            pixelCollision(item.ballX,(item.y+item.distance)*8-pos,8,8)--+2
         elseif item.direction==2 then
-            PixelCollision(item.ballX,item.y*8+pos+24,8,8)
+            pixelCollision(item.ballX,item.y*8+pos+24,8,8)
         elseif item.direction==3 then
-            PixelCollision((item.x+item.distance)*8-pos,item.ballY,8,8)
+            pixelCollision((item.x+item.distance)*8-pos,item.ballY,8,8)
         else
-            PixelCollision(item.x*8+24+pos, item.ballY,8,8)
+            pixelCollision(item.x*8+24+pos, item.ballY,8,8)
         end
         pos = pos + item.speed*item.rate
     end
@@ -338,11 +342,11 @@ function CalcRod(item)
     item.pos1 = item.pos1+item.speed1*item.d1
     item.pos2 = item.pos2+item.speed2*item.d2
     if item.direction==1 then -- horiz
-        PixelCollision(item.x*8+24,item.y*8+6,item.pos1,12) -- left rod
-        PixelCollision(item.x*8+item.distance*8-item.pos2,item.y*8+6,item.pos2,12) -- right rod
+        pixelCollision(item.x*8+24,item.y*8+6,item.pos1,12) -- left rod
+        pixelCollision(item.x*8+item.distance*8-item.pos2,item.y*8+6,item.pos2,12) -- right rod
     else -- vert
-        PixelCollision(item.x*8+6,item.y*8+24,12,item.pos1) -- top
-        PixelCollision(item.x*8+6,item.y*8+item.distance*8-item.pos2,12,item.pos2) -- bottom
+        pixelCollision(item.x*8+6,item.y*8+24,12,item.pos1) -- top
+        pixelCollision(item.x*8+6,item.y*8+item.distance*8-item.pos2,12,item.pos2) -- bottom
     end
 end
 
@@ -355,19 +359,19 @@ function Calc1Way(item)
         if UnitCollision(item.unitCollisionX, item.unitCollisionY, item.actW + wrongWayTriggerSize,item.actH,true) then
             unitCollision = true
             activated = (item.XtoY == 1 and planePos[1] < item.x + 5) or (item.XtoY == 2 and planePos[1] > item.x + 5)
-            PixelCollision(item.x*8+32,(item.y+item.distance)*8-4-item.pos,32,item.pos)
+            pixelCollision(item.x*8+32,(item.y+item.distance)*8-4-item.pos,32,item.pos)
         end
     elseif item.direction==2 then --down
         if UnitCollision(item.unitCollisionX, item.unitCollisionY,item.actW + wrongWayTriggerSize,item.actH,true) then
             unitCollision = true
             activated = (item.XtoY == 1 and planePos[1] < item.x + 5) or (item.XtoY == 2 and planePos[1] > item.x + 5)
-            PixelCollision(item.x*8+32,item.y*8+36,32,item.pos)
+            pixelCollision(item.x*8+32,item.y*8+36,32,item.pos)
         end
     elseif item.direction==3 then --left
         if UnitCollision(item.unitCollisionX, item.unitCollisionY,item.actW,item.actH+wrongWayTriggerSize,true) then
             unitCollision = true
             activated = (item.XtoY == 1 and planePos[2] < item.y + 5) or (item.XtoY == 2 and planePos[2] > item.y + 5)
-            PixelCollision((item.x+item.distance)*8-4-item.pos,item.y*8+32,item.pos,32)
+            pixelCollision((item.x+item.distance)*8-4-item.pos,item.y*8+32,item.pos,32)
         end
     elseif item.direction==4 then --right
         if UnitCollision(
@@ -377,7 +381,7 @@ function Calc1Way(item)
         ) then
             unitCollision = true
             activated = (item.XtoY == 1 and planePos[2] < item.y + 5) or (item.XtoY == 2 and planePos[2] > item.y + 5)
-            PixelCollision(item.x*8+36,item.y*8+32,item.pos,32)
+            pixelCollision(item.x*8+36,item.y*8+32,item.pos,32)
         end
     end
     if explosion then
@@ -400,22 +404,22 @@ function CalcBarrier(item)
     if item.direction==1 then --up
         if UnitCollision(item.x+3-item.actW*0.5,item.y+item.distance*0.5-item.actH*0.5,item.actW,item.actH,true) then
             item.activated = true
-            PixelCollision(item.x*8+8,(item.y+item.distance)*8-4-item.pos,32,item.pos)
+            pixelCollision(item.x*8+8,(item.y+item.distance)*8-4-item.pos,32,item.pos)
         end
     elseif item.direction==2 then --down
         if UnitCollision(item.x+3-item.actW*0.5,item.y+3+item.distance*0.5-item.actH*0.5,item.actW,item.actH,true) then
             item.activated = true
-            PixelCollision(item.x*8+8,item.y*8+36,32,item.pos)
+            pixelCollision(item.x*8+8,item.y*8+36,32,item.pos)
         end
     elseif item.direction==3 then --left
         if UnitCollision(item.x+item.distance*0.5-item.actW*0.5,item.y+3-item.actH*0.5,item.actW,item.actH,true) then
             item.activated = true
-            PixelCollision((item.x+item.distance)*8-4-item.pos,item.y*8+8,item.pos,32)
+            pixelCollision((item.x+item.distance)*8-4-item.pos,item.y*8+8,item.pos,32)
         end
     elseif item.direction==4 then --right
         if UnitCollision(item.x+4+item.distance*0.5-item.actW*0.5-1,item.y+3-item.actH*0.5,item.actW,item.actH,true) then
             item.activated = true
-            PixelCollision(item.x*8+36,item.y*8+8,item.pos,32)
+            pixelCollision(item.x*8+36,item.y*8+8,item.pos,32)
         end
     end
 
