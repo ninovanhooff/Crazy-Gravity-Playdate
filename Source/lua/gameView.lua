@@ -75,7 +75,6 @@ local function drawHomeBaseIndicator(centerX, centerY)
         centerY + math.sin(homeBaseAngleRad + targetingArrowAngleDiffRad)*targetingArrowBaseRadius
     )
     gfx.setColor(gameFgColor)
-    gfx.setLineWidth(2)
     gfx.drawPolygon(targetingPolygon)
 end
 
