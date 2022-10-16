@@ -19,6 +19,7 @@ local random <const> = math.random
 local gameHUD <const> = gameHUD
 local tileSize <const> = tileSize
 local planePos <const> = planePos
+local keyGlyphT <const> = {"●", "▲", "◆", "■"}
 
 local barrierSpeed <const> = 2
 -- #frames between rods speed or direction change when chngOften is enabled
@@ -407,6 +408,7 @@ end
 
 function CalcBarrier(item)
     item.activated = false
+    item.tooltip = nil
     -- gate collision
     if item.direction==1 then --up
         if UnitCollision(item.x+3-item.actW*0.5,item.y+item.distance*0.5-item.actH*0.5,item.actW,item.actH,true) then
@@ -431,15 +433,15 @@ function CalcBarrier(item)
     end
 
     -- update gate position
-    local mayPass = true
+    local missingKeyGlyphs = ""
     if item.activated then
         for j,jtem in ipairs(colorT) do
             if item[jtem]==1 and not keys[j] then -- key required but player doesn't have it
-                mayPass = false
+                missingKeyGlyphs = missingKeyGlyphs .. keyGlyphT[j]
             end
         end
     end
-    if item.activated and mayPass then
+    if item.activated and #missingKeyGlyphs == 0 then
         item.pos = item.pos - barrierSpeed
         if item.pos<0 then
             item.pos = 0
@@ -450,6 +452,15 @@ function CalcBarrier(item)
             item.pos=item.distance*8-boolToNum(item.endStone==1)*16-4
         end
     end
+
+    -- tooltip
+    if item.activated and #missingKeyGlyphs > 0 then
+        item.tooltip = {
+            leftIconIndex = 1,
+            text="Missing: " .. missingKeyGlyphs
+        }
+    end
+
 end
 
 specialCalcT = {}
@@ -506,6 +517,7 @@ end
 
 function InitBarrier(item)
     item.activated = false
+    item.closedPos = item.distance*8-boolToNum(item.endStone==1)*16-4
 end
 
 --- No Operation, do nothing

@@ -21,11 +21,11 @@ local toolTipsCache <const> = enum({"WrongWay"})
 local monoFont <const> = monoFont
 local tooltipFont <const> = smallFont
 local dotFont50 <const> = dotFont
-local dotFont25 <const> = dotFont25
 local tooltipHeight <const> = 14
 local halfTooltipHeight <const> = tooltipHeight/2
+local tooltipContentSpacing = 3
 
-local tooltipsIcons <const> = gfx.imagetable.new("images/tooltips/tooltips")
+local tooltipIcons <const> = gfx.imagetable.new("images/tooltips/tooltips")
 
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
 
@@ -51,7 +51,7 @@ function PreRenderToolTips()
         local w,h = wrongWayImage:getSize()
         gfx.fillRoundRect(0,0, w,h, 7)
         gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-        tooltipsIcons:getImage(1):draw(0,0)
+        tooltipIcons:getImage(1):draw(0,0) -- access denied sign
         tooltipFont:drawText(text, 16, 0)
     gfx.popContext()
     toolTipsCache.WrongWay.image = wrongWayImage
@@ -62,19 +62,37 @@ PreRenderToolTips()
 local function renderTooltip(tooltip, centerX, centerY)
     local text = tooltip.text
     local progress = tooltip.progress
+    local leftIcon = tooltipIcons[tooltip.leftIconIndex]
 
     gfx.pushContext()
 
     local textWidth = tooltipFont:getTextWidth(text)
-    local w = textWidth + tooltipHeight + (progress and 12 or 0)
+    local leftIconWidth = (leftIcon and leftIcon:getSize() or 0)
+    local w = textWidth + tooltipContentSpacing*2
+    if leftIcon then
+        w = w + leftIconWidth
+    end
+    if progress then
+        w = w + 12 + tooltipContentSpacing
+    end
+
     local x, y = centerX - w/2, centerY - halfTooltipHeight
     gfx.setColor(getToolTipBgColor())
     gfx.fillRoundRect(x,y, w,tooltipHeight, 3)
     gfx.setColor(gameBgColor)
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    local contentX = x + halfTooltipHeight
+    local contentX = x
+
+    if leftIcon then
+        leftIcon:draw(contentX, y)
+        contentX = contentX + leftIconWidth + tooltipContentSpacing
+    else
+        contentX = contentX + tooltipContentSpacing
+    end
+
     tooltipFont:drawText(text, contentX, y)
     contentX = contentX + textWidth + 10
+
     if progress then
         gfx.setLineWidth(5)
         gfx.drawArc(contentX, centerY, 3, 0, progress * 360)
@@ -409,6 +427,26 @@ function RenderBarrier(item, scrX, scrY)
                 end
             end
         end
+    end
+
+    if item.tooltip then
+        local centerX, centerY
+        if not item.wrongWayX then
+            if item.direction == 1 then -- up
+                centerX = (item.w*tileSize)/2
+                centerY = item.distance*8-item.closedPos/2
+            elseif item.direction == 2 then -- down
+                centerX = (item.w*tileSize)/2
+                centerY = 36 + (item.closedPos /2)
+            elseif item.direction == 3 then -- left
+                centerX = -4 + item.distance*8-item.closedPos/2
+                centerY = (item.h*tileSize)/2
+            else -- right
+                centerX = 36 + (item.closedPos /2)
+                centerY = (item.h*tileSize)/2
+            end
+        end
+        renderTooltip(item.tooltip, scrX + centerX, scrY + centerY)
     end
 end
 
