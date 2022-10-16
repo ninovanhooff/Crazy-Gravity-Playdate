@@ -32,13 +32,17 @@ function InputManager:setButtonMapping(mapping)
     self.inputs.button = ButtonInput(mapping)
 end
 
+--- call-through to all input-managers for a specific function like isInputJustPressed
+--- @param func function eg. isInputJustPressed
+--- @param action number eg. InputManager.actionThrottle
 local function delegateActionFunction(self, func, action)
     for _, input in pairs(self.inputs) do
-        if func(input, action) then
-            return true
+        local result = func(input, action)
+        if result then
+            return result
         end
     end
-    return false
+    return nil
 end
 
 function InputManager:isInputPressed(action)
@@ -50,5 +54,12 @@ end
 function InputManager:isInputJustPressed(action)
     return delegateActionFunction(self, function(input)
         return input:isInputJustPressed(action)
+    end)
+end
+
+--- Describe the mapping for action. eg "⬆/Ⓑ" when the user can press either d-pad up or B-button to trigger action
+function InputManager:mappingString(action)
+    return delegateActionFunction(self, function(input)
+        return input:mappingString(action)
     end)
 end

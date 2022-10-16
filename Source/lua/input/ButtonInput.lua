@@ -4,6 +4,22 @@
 --- DateTime: 10/07/2022 17:19
 ---
 
+local buttonA <const> = playdate.kButtonA
+local buttonB <const> = playdate.kButtonB
+local buttonUp <const> = playdate.kButtonUp
+local buttonDown <const> = playdate.kButtonDown
+local buttonLeft <const> = playdate.kButtonLeft
+local buttonRight <const> = playdate.kButtonRight
+
+local buttonGlyphs <const> = {
+    [buttonLeft] = "⬅",
+    [buttonRight] = "➡",
+    [buttonUp] = "⬆",
+    [buttonDown] = "️⬇",
+    [buttonB] = "Ⓑ",
+    [buttonA] = "Ⓐ",
+}
+
 class('ButtonInput').extends(Input)
 
 local pressed <const> = playdate.buttonIsPressed
@@ -20,4 +36,16 @@ end
 
 function ButtonInput:isInputJustPressed(action)
     return justPressed(self.mapping[action])
+end
+
+function ButtonInput:mappingString(action)
+    local buttonMask = self.mapping[action]
+    local buttonSymbols = {}
+    for button, glyph in pairs(buttonGlyphs) do
+        if buttonMask & button ~= 0 then
+            table.insert(buttonSymbols, glyph)
+        end
+    end
+
+    return table.concat(buttonSymbols, "/")
 end

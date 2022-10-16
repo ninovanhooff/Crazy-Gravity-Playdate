@@ -91,6 +91,7 @@ end
 
 function CalcPlatform(item,idx)
     if not approxRectCollision(item.x,item.y-3, item.w, item.h) then
+        item.tooltip = nil
         return -- out of range
     end
     --platform collision
@@ -105,14 +106,20 @@ function CalcPlatform(item,idx)
     end
 
     if landedAt ~= idx then
-        item.tooltip = nil
+        if planeRot ~= 18 then
+            local buttonMappingString = inputManager:mappingString(InputManager.actionSelfRight)
+            item.tooltip = { text= buttonMappingString .. ": Self-right" }
+        else
+            item.tooltip = nil
+        end
     else
         landedTimer = landedTimer + 1
     end
 
     --landing
     if flying and planeRot == 18 then -- upright
-        if planePos[2]==item.y+1 and planePos[1]>=item.x-2 and planePos[1]<item.x+item.w-1 and planePos[4]>=3 and vy>0 and vy <= landingTolerance[2] and abs(vx)<= landingTolerance[1] then
+        local overSpeed = vy>0 and (vy > landingTolerance[2] or abs(vx) > landingTolerance[1])
+        if planePos[2]==item.y+1 and planePos[1]>=item.x-2 and planePos[1]<item.x+item.w-1 and planePos[4]>=3 and vy > 0 and not overSpeed then
             flying = false
             collision = false
             vx,vy=0,0

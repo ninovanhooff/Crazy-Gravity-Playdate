@@ -5,13 +5,11 @@
 ---
 
 local function test(expected, actual, description)
-    print(description)
     if expected ~= actual then
+        print(description)
         error(string.format("Expected %s, got %s", expected, actual))
     end
 end
-
-print "----TESTS"
 
 test(0, roundToNearest(0,2), "roundToNearest(0,2)")
 test(2, roundToNearest(1.2,2), "roundToNearest(1.2,2)")
