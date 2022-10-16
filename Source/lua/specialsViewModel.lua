@@ -58,21 +58,21 @@ end
 
 local function getPlatformTooltipTexts(platform)
     if platform.pType == 2 then
-        return {pickup= "Loading Cargo", planeFull="Cargo hold filled!", done="Destination: HomeBase"}
+        return {pickup= "Loading Cargo", planeFull="Cargo hold filled!", done="Got it, back to base!"}
     elseif platform.pType == 3 then
-        return {pickup= "Refueling", planeFull="All filled up!", done="Done!"}
+        return {pickup= "Refueling", planeFull="All filled up!", done="See ya!"}
     elseif platform.pType == 4 then
         if platform.type == 1 then
             return {pickup= "+1 Turbo", done="Go fast!"}
         elseif platform.type == 2 then
             return {pickup= "+1 Life", done="Take care!"}
         elseif platform.type == 3 then
-            return {pickup= "+1 Cargo hold", done="Comfy!"}
+            return {pickup= "+1 Cargo hold", done="Spacious!"}
         else
             error("unexpected extras type " .. platform.type)
         end
     elseif platform.pType == 5 then
-        return {pickup= "Load Keycard?", done="Done!"}
+        return {pickup= "Analyzing key", done="Open sesame!"}
     else
         error("unexpected platform type " .. platform.pType)
     end
