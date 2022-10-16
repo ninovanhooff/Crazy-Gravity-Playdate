@@ -171,7 +171,9 @@ function RenderPlatform(item, scrX, scrY)
     elseif item.pType==4 and item.amnt>0 then-- extras
         sprite:draw(scrX+8, pltfrmY-16, unFlipped, 128+16*item.type, 346, 16, 16)
     elseif item.pType==5 and item.amnt>0 then-- key
-        sprite:draw(scrX+8, pltfrmY-24, unFlipped, 185+(frameCounter%7)*16, 398+16*item.color, 16, 16)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+        sprite:draw(scrX+8, pltfrmY-24, unFlipped, 184, 398+16*item.color, 16, 16)
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
 
     if item.tooltip then

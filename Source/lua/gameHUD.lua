@@ -158,7 +158,7 @@ function GameHUD:renderFull()
     for i=1,4 do
         local subX = (i+1)%2*8
         local subY = boolToNum(i>2)*9
-        hudIcons:draw(x+subX, hudY+subY, unFlipped, 32 +subX, boolToNum(keys[i])*16,8,8)
+        hudIcons:draw(x+subX, hudY+subY, unFlipped, 32 +subX, boolToNum(keys[i])*16 + subY,8,8)
     end
     x = x+15+hudPadding
 
