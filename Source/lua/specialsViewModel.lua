@@ -106,7 +106,7 @@ function CalcPlatform(item,idx)
     end
 
     if landedAt ~= idx then
-        if planeRot ~= 18 then
+        if planeRot ~= 18 and vy > 0 then
             local buttonMappingString = inputManager:mappingString(InputManager.actionSelfRight)
             item.tooltip = { text= buttonMappingString .. ": Self-right" }
         else
