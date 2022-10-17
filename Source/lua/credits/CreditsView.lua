@@ -25,7 +25,6 @@ function CreditsView:render(viewModel)
     gfx.clear(gfx.kColorBlack)
     local creditsY = -((camPos[2]-1)*tileSize) - camPos[4]
 
-
     --- the active game area, excluding the HUD
     gfx.setScreenClipRect(0,0, screenWidth, hudY)
     self.creditsImage:draw(0,creditsY)

@@ -25,6 +25,7 @@ function GameScreen:init(levelPathOrLevelNumber, challengeIdx)
 end
 
 function GameScreen:pause()
+    gamePaused = true
     if Sounds then thrust_sound:stop() end
 
     if self.backMenuItem then
@@ -46,6 +47,7 @@ function GameScreen:destroy()
 end
 
 function GameScreen:resume()
+    -- NOT setting gamePaused to false; requires button press
     self.settingsMenuItem = menu:addMenuItem("Settings", function()
         require "lua/settings/SettingsScreen"
         pushScreen(SettingsScreen())
@@ -61,7 +63,8 @@ function GameScreen:resume()
 end
 
 function GameScreen:update()
-    if frameCounter ~= 0 or isThrottleJustPressed() then
+    if not gamePaused or isThrottleJustPressed() then
+        gamePaused = false
         processInputs()
         calcTimeStep()
     end

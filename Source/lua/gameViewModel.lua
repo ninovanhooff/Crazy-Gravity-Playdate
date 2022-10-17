@@ -288,6 +288,7 @@ function ResetGame()
     end
     extras = {0,levelProps.lives,1} -- turbo, lives, cargo
     frameCounter = 0
+    gamePaused = true
     editorMode = false
     bricksView = BricksView()
 end
