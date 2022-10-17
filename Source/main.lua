@@ -114,8 +114,10 @@ pushScreen(VideoPlayerScreen(
 --pushScreen(GameScreen(levelPath(1), 1))
 
 function playdate.update()
+    gfx.pushContext() --make sure we start the frame with a clean gfx state.
     executePendingNavigators()
     activeScreen:update()
+    gfx.popContext()
     playdate.drawFPS(0,0)
     updateBlinkers()
     updateTimers()
