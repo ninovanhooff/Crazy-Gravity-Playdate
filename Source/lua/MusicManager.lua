@@ -32,7 +32,7 @@ function MusicManager:play(path)
         if self.player then
             self.player:setStopOnUnderrun(false)
             self.player:setVolume(self.volume)
-            self.player:play()
+            self.player:play(0)
             self.currentPath = path
         end
     end, 1)
