@@ -22,6 +22,8 @@ function FlyToCreditsViewModel:update()
         if self.bgType == FlyToCreditsViewModel.bgTypes.surface then
             self.bgType = FlyToCreditsViewModel.bgTypes.asteroids
             self:resetRocketShip()
+            -- create the CreditsScreen while nothing is moving on screen, so no yank is visible
+            self.cachedCreditsScreen = CreditsScreen()
         elseif self.bgType == FlyToCreditsViewModel.bgTypes.asteroids then
             self.exhaustLoopSpecs = nil
             -- enter hyperspace
@@ -30,7 +32,7 @@ function FlyToCreditsViewModel:update()
             self.swish_sound:play()
         else
             popScreen()
-            pushScreen(CreditsScreen())
+            pushScreen(self.cachedCreditsScreen)
         end
     end
 

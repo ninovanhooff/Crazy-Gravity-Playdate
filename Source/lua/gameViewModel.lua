@@ -290,7 +290,9 @@ function ResetGame()
     frameCounter = 0
     gamePaused = true
     editorMode = false
-    bricksView = BricksView()
+    sample("init BricksView", function()
+        bricksView = BricksView()
+    end, 1)
 end
 
 function DecreaseLife()

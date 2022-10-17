@@ -17,7 +17,9 @@ class("CreditsView").extends()
 function CreditsView:init()
     CreditsView.super.init(self)
     self.textHeight = gfx.getFont():getHeight()
-    self:createCreditsImage()
+    sample("Create credits Image", function()
+        self:createCreditsImage()
+    end, 1)
     --playdate.simulator.writeToFile(self.creditsImage, "~/PlaydateProjects/GravityExpressEditor/Source/images/credits_bg.png")
 end
 
