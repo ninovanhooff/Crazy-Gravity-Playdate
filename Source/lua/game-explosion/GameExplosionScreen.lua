@@ -67,6 +67,4 @@ function GameExplosionScreen:resume()
         popScreen() -- remove explosion
         ResetGame()
     end)
-
-    gameHUD:resume()
 end

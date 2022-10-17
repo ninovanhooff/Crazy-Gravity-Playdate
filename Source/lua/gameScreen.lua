@@ -59,7 +59,6 @@ function GameScreen:resume()
         ResetGame()
     end)
 
-    gameHUD:resume()
 end
 
 function GameScreen:update()

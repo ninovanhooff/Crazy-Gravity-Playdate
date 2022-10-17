@@ -184,12 +184,6 @@ function GameHUD:renderFull()
     self:renderChallenge(true)
 end
 
-function GameHUD:resume()
-    gfx.setColor(hudBgClr)
-    gfx.fillRect(0,hudY,screenWidth,hudHeight)
-    self.lastChallengeValue = nil -- force challenge redraw on next frame
-end
-
 --- Notify the GameHud that the count of one of the stats has changed.
 --- @param itemId number @ 1: turbo, 2: lives, 3:cargo, 4: key
 function GameHUD:onChanged(itemId)
