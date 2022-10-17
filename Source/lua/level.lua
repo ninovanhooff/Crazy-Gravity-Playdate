@@ -12,7 +12,6 @@ function LoadFile(path)
     printf("loading ".. path)
 
     levelT, brickT, specialT, levelProps = nil, nil, nil
-    sample("GC", function() collectgarbage("collect")end, 1)
 
     local levelT
     sample("pdz load", function() levelT = file.run(path) end, 1)
