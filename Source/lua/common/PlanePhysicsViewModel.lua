@@ -62,17 +62,7 @@ function PlanePhysicsViewModel:processInputs()
     end
 
     -- rotation
-    if inputManager:isInputPressed(selfRight) then
-        if self.planeRot~=18 then
-            if self.planeRot>18 or self.planeRot<6 then
-                self.planeRot = self.planeRot-1
-            else
-                self.planeRot = self.planeRot+1
-            end
-        end
-        if self.planeRot<0 then self.planeRot = 23 end
-        self.rotationTimeout = 0
-    elseif inputManager:isInputPressed(left) then
+    if inputManager:isInputPressed(left) then
         if self.rotationTimeout > 0 then
             -- cancel clockwise rotation timeout
             self.rotationTimeout = 0
@@ -98,6 +88,16 @@ function PlanePhysicsViewModel:processInputs()
         else
             self.rotationTimeout = self.rotationTimeout - 1
         end
+    elseif inputManager:isInputPressed(selfRight) then
+            if self.planeRot~=18 then
+                if self.planeRot>18 or self.planeRot<6 then
+                    self.planeRot = self.planeRot-1
+                else
+                    self.planeRot = self.planeRot+1
+                end
+            end
+            if self.planeRot<0 then self.planeRot = 23 end
+            self.rotationTimeout = 0
     else
         self.rotationTimeout = 0
     end

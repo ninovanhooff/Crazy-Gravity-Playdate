@@ -45,17 +45,7 @@ function ProcessInputs()
     end
 
     -- rotation
-    if inputManager:isInputPressed(selfRight) then
-        if planeRot~=18 then
-            if planeRot>18 or planeRot<6 then
-                planeRot = planeRot-1
-            else
-                planeRot = planeRot+1
-            end
-        end
-        if planeRot<0 then planeRot = 23 end
-        rotationTimeout = 0
-    elseif inputManager:isInputPressed(left) then
+    if inputManager:isInputPressed(left) then
         if rotationTimeout > 0 then
             -- cancel clockwise rotation timeout
             rotationTimeout = 0
@@ -81,6 +71,16 @@ function ProcessInputs()
         else
             rotationTimeout = rotationTimeout - 1
         end
+    elseif inputManager:isInputPressed(selfRight) then
+            if planeRot~=18 then
+                if planeRot>18 or planeRot<6 then
+                    planeRot = planeRot-1
+                else
+                    planeRot = planeRot+1
+                end
+            end
+            if planeRot<0 then planeRot = 23 end
+            rotationTimeout = 0
     else
         rotationTimeout = 0
     end
