@@ -47,7 +47,7 @@ end
 
 function StartViewModel:loadFullResources()
     printT("Before full options apply")
-    Options():apply(false)
+    GetOptions():apply(false)
     printT("After full options apply")
 end
 

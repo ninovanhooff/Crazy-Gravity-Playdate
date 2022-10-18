@@ -1,5 +1,4 @@
 import "SettingsViewModel"
-import "Options"
 
 local gfx <const> = playdate.graphics
 
@@ -10,7 +9,7 @@ local settingsViewModel
 function SettingsScreen:init()
     SettingsScreen.super.init(self)
     settingsViewModel = SettingsViewModel()
-    self.options = Options()
+    self.options = GetOptions()
     self.scrimDrawn = false
 end
 

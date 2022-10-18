@@ -16,9 +16,12 @@ local floor <const> = math.floor
 local min <const> = math.min
 local max <const> = math.max
 local random <const> = math.random
+local options <const> = GetOptions()
+local selfRightTipShownKey <const> = Options.SELF_RIGHT_TIP_SHOWN_KEY
 local gameHUD <const> = gameHUD
 local tileSize <const> = tileSize
 local planePos <const> = planePos
+local renderTooltip <const> = RenderTooltip
 local keyGlyphT <const> = {"●", "▲", "◆", "■"}
 
 local barrierSpeed <const> = 2
@@ -107,12 +110,20 @@ function CalcPlatform(item,idx)
     end
 
     if landedAt ~= idx then
-        if planeRot ~= 18 and vy > 0 then
+        if planeRot ~= 18 and vy > 0  and not options:read(selfRightTipShownKey) and approxRectCollision(item.x,item.y, item.w, item.h) then
             local buttonMappingString = inputManager:mappingString(InputManager.actionSelfRight)
-            item.tooltip = { text= buttonMappingString .. ": Self-right" }
-        else
-            item.tooltip = nil
+            local tooltip = { text= buttonMappingString .. ": Self-right" }
+            local planeX <const> = floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3])
+            local planeY <const> = floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4])
+
+            renderTooltip(tooltip, planeX + 12, planeY + 40)
+            while not inputManager:isInputPressed(InputManager.actionSelfRight) do
+                coroutine.yield()
+            end
+            options:set(selfRightTipShownKey, true)
+            options:saveUserOptions()
         end
+        item.tooltip = nil
     else
         landedTimer = landedTimer + 1
     end

@@ -36,7 +36,6 @@ function VideoPlayerView:init(viewModel)
         self.subtitles = self.metadata.subtitles
         self.chyrons = self.metadata.chyrons
     end
-    printTable(self.chyrons)
 end
 
 function VideoPlayerView:resume()

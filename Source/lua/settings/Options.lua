@@ -1,6 +1,14 @@
 import "ResourceLoader"
 
-class('Options').extends()
+--- internal namespace used to hide the class from external instantiation. Use GetOptions() to retrieve the global singleton
+local optionsNS <const> = {}
+
+
+Options = {
+    SELF_RIGHT_TIP_SHOWN_KEY = "selfRightTipShown"
+}
+
+class('Options' , {}, optionsNS).extends()
 
 local playdate <const> = playdate
 local gfx <const> = playdate.graphics
@@ -109,12 +117,28 @@ local gameOptions = {
             { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
         }
     },
+    {
+        -- HIDDEN Options set by game logic only
+        options = {
+            { key= Options.SELF_RIGHT_TIP_SHOWN_KEY, values= toggleVals, default=1},
+        }
+    },
 }
 
 local editorOptions = {}
 
-function Options:init()
-    Options.super.init()
+-- get or create the global singleton
+function GetOptions()
+    if optionsNS.instance then
+        return optionsNS.instance
+    else
+        optionsNS.instance = optionsNS.Options()
+        return optionsNS.instance
+    end
+end
+
+function optionsNS.Options:init()
+    optionsNS.Options.super.init()
     self.menu = playdate.ui.gridview.new(0, itemHeight)
 
     -- list of available options based on option screen (indexed by section/row for easy selection)
@@ -151,7 +175,7 @@ function Options:init()
         -- draw switch as glyph
         if val ~= 'n/a' and val ~= nil then
             if type(val) == 'boolean' then
-                Options.drawRoundSwitch(right - 42, y+textPadding-1, val, selected)
+                optionsNS.Options.drawRoundSwitch(right - 42, y+textPadding-1, val, selected)
             else
                 -- draw value as text
                 local optionWidth = right - 8 - (labelWidth+textPadding)
@@ -201,7 +225,7 @@ function Options:init()
 
 end
 
-function Options:menuInit()
+function optionsNS.Options:menuInit()
     self.currentOptions = (self.currentOptions == gameOptions) and editorOptions or gameOptions
 
     local sectionRows = {}
@@ -221,9 +245,8 @@ function Options:menuInit()
     self.menu:setSelectedRow(1)
 end
 
-function Options:userOptionsInit()
+function optionsNS.Options:userOptionsInit()
     local existingOptions = self:loadUserOptions()
-    -- TODO add editor options to init
     for _, section in ipairs(gameOptions) do
         for i, option in ipairs(section.options) do 
             local key = option.key or option.name:lower()
@@ -258,15 +281,15 @@ function Options:userOptionsInit()
     end
 end
 
-function Options:saveUserOptions()
+function optionsNS.Options:saveUserOptions()
     playdate.datastore.write(self.userOptions, 'settings')
 end
 
-function Options:loadUserOptions()
+function optionsNS.Options:loadUserOptions()
     return playdate.datastore.read('settings')
 end
 
-function Options:show()
+function optionsNS.Options:show()
     self.visible = true
     self.previewMode = false
     playdate.inputHandlers.push(self.controls, true)
@@ -274,7 +297,7 @@ end
 
 --- Prevents drawMenu() from drawing anything
 ---and saves the values to disk
-function Options:hide()
+function optionsNS.Options:hide()
     self.visible = false
     self:saveUserOptions()
     playdate.inputHandlers.pop()
@@ -282,7 +305,7 @@ function Options:hide()
     self:markClean()
 end
 
-function Options:createButtonMapping()
+function optionsNS.Options:createButtonMapping()
     return {
         [InputManager.actionLeft] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
         [InputManager.actionRight] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
@@ -292,7 +315,7 @@ function Options:createButtonMapping()
 end
 
 --- Game code uses many globals to read options. Set them here based on current values
-function Options:apply(onlyStartAssets)
+function optionsNS.Options:apply(onlyStartAssets)
     Debug = self:read(DEBUG_KEY)
     local newBG = BG_VALS[self:read(BG_KEY)].value
     if newBG then
@@ -355,26 +378,26 @@ function Options:apply(onlyStartAssets)
 end
 
 -- Returns the option at the given section and row, or the currently selected option if no args
-function Options:getSelectedOption(section, row)
+function optionsNS.Options:getSelectedOption(section, row)
     local selectedSection, selectedRow, selectedCol = self.menu:getSelection()
     section = section or selectedSection
     row = row or selectedRow
     return self.currentOptions[section].options[row]
 end
 
-function Options:getLabel(section, row)
+function optionsNS.Options:getLabel(section, row)
     local active <const> = self:getValue(section, row) == nil 
     local bold <const> = active and '' or '*'
     gfx.setFontTracking(0)
     return bold..self:getSelectedOption(section, row).name:lower()
 end
 
-function Options:getValue(section, row)
+function optionsNS.Options:getValue(section, row)
     local option = self:getSelectedOption(section, row) 
     return option.values[option.current]
 end
 
-function Options:read(key, ignoreDirty)
+function optionsNS.Options:read(key, ignoreDirty)
     local opt = self.userOptions[key]
     if opt == nil then return opt end
     if #opt == 2 and not ignoreDirty then
@@ -390,19 +413,32 @@ function Options:read(key, ignoreDirty)
     end
 end
 
-function Options:isDirty()
+function optionsNS.Options:set(key, value)
+    local opt = self.userOptions[key]
+    if opt then
+        if opt[1] ~= value then
+            opt[1] = value
+            self:markDirty()
+        end
+    else
+        self.userOptions[key] = { value }
+        self:markDirty()
+    end
+end
+
+function optionsNS.Options:isDirty()
     return self.dirty
 end
 
-function Options:markDirty()
+function optionsNS.Options:markDirty()
     self.dirty = true
 end
 
-function Options:markClean()
+function optionsNS.Options:markClean()
     self.dirty = false
 end
 
-function Options:toggleCurrentOption(incr, forceWrap)
+function optionsNS.Options:toggleCurrentOption(incr, forceWrap)
     incr = incr or 1
 
     local option = self:getSelectedOption()
@@ -437,7 +473,7 @@ function Options:toggleCurrentOption(incr, forceWrap)
     option.current = newIdx
 end
 
-function Options:onCurrentOption()
+function optionsNS.Options:onCurrentOption()
     local row <const> = self:getCurrentRow()
 
     if self:getValue(row) == false then
@@ -445,7 +481,7 @@ function Options:onCurrentOption()
     end
 end
 
-function Options:offCurrentOption()
+function optionsNS.Options:offCurrentOption()
     local row <const> = self:getCurrentRow()
 
     if self:getValue(row) == true then
@@ -453,7 +489,7 @@ function Options:offCurrentOption()
     end
 end
 
-function Options:drawMenu()
+function optionsNS.Options:drawMenu()
     if not self.visible then return end
 
     local w <const> = 200
@@ -487,18 +523,18 @@ function Options:drawMenu()
     gfx.popContext()
 end
 
-function Options:selectPreviousRow()
+function optionsNS.Options:selectPreviousRow()
     self.previewMode = false
     self.menu:selectPreviousRow(true)
 end
 
-function Options:selectNextRow()
+function optionsNS.Options:selectNextRow()
     self.previewMode = false
     self.menu:selectNextRow(true)
 end
 
 --------- STATIC METHODS ---------
-function Options.drawRectSwitch(y, val, selected)
+function optionsNS.Options.drawRectSwitch(y, val, selected)
     local x <const> = 158
     local y <const> = y
 
@@ -534,7 +570,7 @@ function Options.drawRectSwitch(y, val, selected)
     gfx.popContext()
 end
 
-function Options.drawRoundSwitch(x, y, val, selected)
+function optionsNS.Options.drawRoundSwitch(x, y, val, selected)
     local y <const> = y+8
 
     local r <const> = 6

@@ -58,5 +58,5 @@ monoFont = gfx.font.new("fonts/Roobert/Roobert-9-Mono-Condensed")
 smallFont = gfx.font.new("fonts/Roobert/Roobert-10-Bold")
 dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50") -- todo rename to dotFont50
 printT("Before start options apply")
-Options():apply(true)
+GetOptions():apply(true)
 printT("After start options apply")
