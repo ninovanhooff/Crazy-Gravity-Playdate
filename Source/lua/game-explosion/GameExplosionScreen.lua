@@ -1,6 +1,7 @@
 import "GameExplosion"
 
 local menu <const> = playdate.getSystemMenu()
+local gameHUD <const> = gameHUD
 
 class("GameExplosionScreen").extends(Screen)
 
@@ -25,6 +26,9 @@ function GameExplosionScreen:update()
             specialCalcT[item.sType](item,i)
         end
         RenderGame()
+        if collision == CollisionReason.OverSpeed then
+            gameHUD:renderOverSpeedTooltip()
+        end
     else
         popScreen()
         if explosion then

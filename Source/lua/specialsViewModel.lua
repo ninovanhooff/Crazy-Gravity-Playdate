@@ -21,7 +21,7 @@ local selfRightTipShownKey <const> = Options.SELF_RIGHT_TIP_SHOWN_KEY
 local gameHUD <const> = gameHUD
 local tileSize <const> = tileSize
 local planePos <const> = planePos
-local renderTooltip <const> = RenderTooltip
+local renderTooltip <const> = Tooltips.renderTooltip
 local keyGlyphT <const> = {"●", "▲", "◆", "■"}
 
 local barrierSpeed <const> = 2
@@ -99,9 +99,13 @@ function CalcPlatform(item,idx)
         return -- out of range
     end
     --platform collision
-    if pixelCollision(item.x*8,item.y*8+32,item.w*8,16) and (planeRot~=18 or(vy > landingTolerance[2] or abs(vx)> landingTolerance[1]))   then
-        collision = true
-        print("platform collide!!")
+    local overSpeed = vy > landingTolerance[2] or abs(vx) > landingTolerance[1]
+    if pixelCollision(item.x*8,item.y*8+32,item.w*8,16) then
+        if overSpeed then
+            collision = CollisionReason.OverSpeed
+        elseif planeRot~=18 then
+            collision = CollisionReason.Other
+        end
     end
 
     -- don't collide on take-off
@@ -130,7 +134,6 @@ function CalcPlatform(item,idx)
 
     --landing
     if flying and planeRot == 18 then -- upright
-        local overSpeed = vy>0 and (vy > landingTolerance[2] or abs(vx) > landingTolerance[1])
         if planePos[2]==item.y+1 and planePos[1]>=item.x-2 and planePos[1]<item.x+item.w-1 and planePos[4]>=3 and vy > 0 and not overSpeed then
             flying = false
             collision = false

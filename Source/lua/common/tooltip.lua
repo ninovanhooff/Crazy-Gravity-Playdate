@@ -3,11 +3,16 @@
 --- Created by ninovanhooff.
 --- DateTime: 18/10/2022 18:14
 ---
+---
+
+Tooltips = {}
+
 local gfx <const> = playdate.graphics
 
 local toolTipsCache <const> = enum({"WrongWay"})
 local tooltipFont <const> = smallFont
 local tooltipHeight <const> = 14
+local tooltipTriangleSize <const> = 8
 local halfTooltipHeight <const> = tooltipHeight/2
 local tooltipContentSpacing = 3
 
@@ -21,32 +26,13 @@ local function getToolTipBgColor()
     end
 end
 
-function PreRenderToolTips()
-    local text = "Wrong way!"
-    local tooltipBgColor = getToolTipBgColor()
+Tooltips.toolTipsCache = toolTipsCache
 
-
-    local wrongWayImage = gfx.image.new(
-        tooltipFont:getTextWidth(text) + 16,
-        tooltipHeight
-    )
-    gfx.pushContext(wrongWayImage)
-    gfx.setColor(tooltipBgColor)
-    local w,h = wrongWayImage:getSize()
-    gfx.fillRoundRect(0,0, w,h, 7)
-    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    tooltipIcons:getImage(1):draw(0,0) -- access denied sign
-    tooltipFont:drawText(text, 16, 0)
-    gfx.popContext()
-    toolTipsCache.WrongWay.image = wrongWayImage
-end
-
-PreRenderToolTips()
-
-function RenderTooltip(tooltip, centerX, centerY)
+function Tooltips.renderTooltip(tooltip, centerX, anchorY)
     local text = tooltip.text
     local progress = tooltip.progress
     local leftIcon = tooltipIcons[tooltip.leftIconIndex]
+    local alignment = tooltip.alignment
 
     gfx.pushContext()
 
@@ -60,10 +46,28 @@ function RenderTooltip(tooltip, centerX, centerY)
         w = w + 12 + tooltipContentSpacing
     end
 
-    local x, y = centerX - w/2, centerY - halfTooltipHeight
+    -- Background
     gfx.setColor(getToolTipBgColor())
+
+    local x = centerX - w/2
+    local y
+    if not alignment then
+        -- default is center
+        y = anchorY - halfTooltipHeight
+    elseif alignment == "above" then
+        y = anchorY - tooltipHeight - tooltipTriangleSize
+        -- triangle pointing from tooltip to anchor
+        gfx.fillTriangle(
+            centerX, anchorY,
+            centerX - tooltipTriangleSize, anchorY - tooltipTriangleSize,
+            centerX + tooltipTriangleSize, anchorY - tooltipTriangleSize
+        )
+    end
     gfx.fillRoundRect(x,y, w,tooltipHeight, 3)
     gfx.setColor(gameBgColor)
+
+    -- Foreground / content
+
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     local contentX = x
 
@@ -79,8 +83,30 @@ function RenderTooltip(tooltip, centerX, centerY)
 
     if progress then
         gfx.setLineWidth(5)
-        gfx.drawArc(contentX, centerY, 3, 0, progress * 360)
+        gfx.drawArc(contentX, anchorY, 3, 0, progress * 360)
     end
 
     gfx.popContext()
 end
+
+function Tooltips.preRenderTooltips()
+    local text = "Wrong way!"
+    local tooltipBgColor = getToolTipBgColor()
+
+
+    local wrongWayImage = gfx.image.new(
+        tooltipFont:getTextWidth(text) + 22,
+        tooltipHeight
+    )
+    gfx.pushContext(wrongWayImage)
+    gfx.setColor(tooltipBgColor)
+    local w,h = wrongWayImage:getSize()
+    gfx.fillRoundRect(0,0, w,h, 7)
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    tooltipIcons:getImage(1):draw(0,0) -- access denied sign
+    tooltipFont:drawText(text, 16, 0)
+    gfx.popContext()
+    toolTipsCache.WrongWay.image = wrongWayImage
+end
+
+Tooltips.preRenderTooltips()

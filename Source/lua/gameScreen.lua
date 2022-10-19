@@ -1,4 +1,5 @@
 import "drawUtil"
+import "common/tooltip"
 import "gameHUD"
 import "specialsView"
 import "specialsViewModel"

@@ -4,9 +4,6 @@
 --- DateTime: 14/03/2022 18:51
 ---
 
-
-
-
 local floor <const> = math.floor
 local ceil <const> = math.ceil
 local max <const> = math.max
@@ -15,6 +12,7 @@ local gfx <const> = playdate.graphics
 local unFlipped <const> = gfx.kImageUnflipped
 local defaultFont = gfx.getFont()
 local monoFont <const> = monoFont
+local renderTooltip <const> = Tooltips.renderTooltip
 local screenWidth <const> = screenWidth
 local hudY <const> = hudY
 local hudHeight <const> = screenHeight - hudY
@@ -168,7 +166,7 @@ function GameHUD:renderFull()
             hudIcons:draw(x, hudY, unFlipped, 48,16 ,16,16)
         end
     else
-        drawIcon(x, 3) -- rggular speed icon
+        drawIcon(x, 3) -- regular speed icon
     end
     x = x+16+hudGutter
     gfx.drawCircleInRect(x+1,hudY+1, 14,14)
@@ -178,10 +176,17 @@ function GameHUD:renderFull()
     local warnAlpha = max(warnX, warnY)
     gfx.setDitherPattern(1-warnAlpha, speedPattern) -- invert alpha due to bug in SDK
     gfx.fillCircleInRect(x+4,hudY+4, 8,8)
+    self.speedIndicatorCenterX = x + 8
     gfx.setDitherPattern(1, gfx.image.kDitherTypeNone)
     x = x+16+hudPadding
 
     self:renderChallenge(true)
+end
+
+function GameHUD:renderOverSpeedTooltip()
+    if self.speedIndicatorCenterX then
+        renderTooltip({text = "Watch your speed!", alignment="above"}, self.speedIndicatorCenterX, hudY - 1)
+    end
 end
 
 --- Notify the GameHud that the count of one of the stats has changed.

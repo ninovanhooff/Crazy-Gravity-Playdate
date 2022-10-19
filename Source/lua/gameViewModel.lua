@@ -32,6 +32,8 @@ local planeSpeedYCamMultiplier <const> = 0.03
 local planeRotationCamMultiplier <const> = 0.05
 local gameHUD <const> = gameHUD
 
+CollisionReason = enum({"OverSpeed", "Other"})
+
 --- sine component (y-direction) of plane orientation, ie. positive if plane is pointing up, 0 if pointing left and negative when pointing down
 local camRotY <const> = {}
 for i = 0,23 do

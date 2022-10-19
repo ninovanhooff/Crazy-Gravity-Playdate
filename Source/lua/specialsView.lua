@@ -4,8 +4,6 @@
 --- DateTime: 12/03/2022 15:42
 ---
 
-import "drawUtil"
-import "common/tooltip"
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local min <const> = math.min
 local max <const> = math.max
@@ -20,7 +18,8 @@ local gameHeightPixels <const> = gameHeightTiles*tileSize
 local loopAnim <const> = loopAnim
 local monoFont <const> = monoFont
 local dotFont50 <const> = dotFont
-local renderTooltip <const> = RenderTooltip
+local toolTipsCache <const> = Tooltips.toolTipsCache
+local renderTooltip <const> = Tooltips.renderTooltip
 
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
 
