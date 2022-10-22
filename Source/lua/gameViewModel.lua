@@ -32,7 +32,7 @@ local planeSpeedYCamMultiplier <const> = 0.03
 local planeRotationCamMultiplier <const> = 0.05
 local gameHUD <const> = gameHUD
 
-CollisionReason = enum({"OverSpeed", "Other"})
+CollisionReason = enum({"OverSpeed", "SelfDestruct", "Other"})
 
 --- sine component (y-direction) of plane orientation, ie. positive if plane is pointing up, 0 if pointing left and negative when pointing down
 local camRotY <const> = {}
@@ -187,7 +187,6 @@ function CalcTimeStep()
     --printf("plane".." "..planePos[1].." "..planePos[2].." "..planePos[3].." "..planePos[4].." "..vx.." "..vy)
 
     -- brick collision
-    collision = false
     CalcPlaneColCoords()
     for i=1,5,2 do
         if brickT[colBT[i]][colBT[i+1]][1]>1 then

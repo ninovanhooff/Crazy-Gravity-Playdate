@@ -37,3 +37,16 @@ end
 function Screen:debugDraw()
     -- no-op, implemented in subclasses
 end
+
+
+class("WaitScreen").extends(Screen)
+
+function WaitScreen:init(resumeCondition)
+    self.resumeCondition = resumeCondition
+end
+
+function WaitScreen:update()
+    if self.resumeCondition() then
+        popScreen()
+    end
+end

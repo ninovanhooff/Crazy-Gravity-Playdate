@@ -146,6 +146,22 @@ function CalcPlatform(item,idx)
         end
     elseif landedAt == idx then
         --printf(item.pType,#planeFreight,"HJ")
+
+        if fuel < 1 and not collision then
+            local buttonMappingString = inputManager:mappingString(InputManager.actionSelfRight)
+            item.tooltip = { text= "Out of fuel! " .. buttonMappingString .. ": Self-destruct" }
+            RenderGame()
+            pushScreen(WaitScreen(function()
+                if inputManager:isInputPressed(InputManager.actionSelfRight) then
+                    print("setting collision")
+                    collision = CollisionReason.SelfDestruct
+                    gamePaused = false
+                    return true
+                end
+            end))
+        end
+
+
         if item.pType==1 then -- homeBase
             if #planeFreight > 0 then
                 if landedTimer < frameRate then
@@ -211,7 +227,6 @@ function CalcPlatform(item,idx)
             if item.amnt == 0 then
                 item.tooltip = { text = getPlatformTooltipTexts(item).done }
             end
-
         end
 
         if landedTimer >= frameRate then
