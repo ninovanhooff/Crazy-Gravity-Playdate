@@ -10,6 +10,7 @@ local gfx <const> = playdate.graphics
 local geometry <const> = playdate.geometry
 local polygon <const> = geometry.polygon
 local floor <const> = math.floor
+local min <const> = math.min
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local planePos <const> = planePos
 local camPos <const> = camPos
@@ -37,7 +38,7 @@ local function renderCheckpointBanner()
         if scrX < -checkpointImageW or scrX > screenWidth or scrY < -checkpointImageH or scrY > gameHeightPixels then
             return
         end
-        gfx.setScreenClipRect(0,0, gameClipRect.width, scrY + 32)
+        gfx.setScreenClipRect(0,0, gameClipRect.width, min(scrY + 32, gameClipRect.height))
         if gameBgColor == gfx.kColorBlack then
             gfx.setImageDrawMode(gfx.kDrawModeInverted)
         end
