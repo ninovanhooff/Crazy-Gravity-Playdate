@@ -24,6 +24,7 @@ function BricksView:init()
     self.inactiveBuffer = self.activeBuffer:copy()
     self.bricksImg = bricksImg
     self.brickPatternOverride = brickPatternOverride
+    self.sizeY = levelProps.sizeY
     gfx.lockFocus(self.activeBuffer)
         self:initBricks()
     gfx.unlockFocus()
@@ -39,20 +40,20 @@ function BricksView:render()
         gfx.lockFocus(self.inactiveBuffer)
             self.activeBuffer:draw(-shiftX*tileSize, -shiftY*tileSize)
             if shiftX < 0 then
-                for x = 0, -shiftX, 1 do
+                for x = 0, -shiftX-1, 1 do
                     self:renderLineVert(camPos[1]+x, camPos[2], x*tileSize)
                 end
             elseif shiftX > 0 then
-                for x = 0, shiftX, 1 do
+                for x = 0, shiftX-1, 1 do
                     self:renderLineVert(self.camPosX+self.bufferWidthTiles + x, camPos[2], (self.bufferWidthTiles - shiftX+x) * tileSize)
                 end
             end
             if shiftY < 0 then
-                for y = 0, -shiftY, 1 do
+                for y = 0, -shiftY-1, 1 do
                     self:renderLineHoriz(camPos[1], camPos[2]+y, y*tileSize)
                 end
             elseif shiftY > 0 then
-                for y = 0, shiftY, 1 do
+                for y = 0, shiftY-1, 1 do
                     self:renderLineHoriz(camPos[1], self.camPosY+self.bufferHeightTiles + y, (self.bufferHeightTiles-shiftY+y) * tileSize)
                 end
             end
@@ -92,7 +93,9 @@ function BricksView:renderLineVert(i,j, drawOffsetX)
     local bricksImg <const> = self.bricksImg
     local brickT <const> = brickT
     local startJ = j
-    while j<= startJ + self.bufferHeightTiles do
+    while j<= startJ + self.bufferHeightTiles-1 do
+        if j > self.sizeY then return end
+
         local curBrick = brickT[i]
         if not curBrick then
             break
@@ -128,6 +131,8 @@ end
 
 --- render a row of bricks, brute force, fail safe
 function BricksView:renderLineHoriz(i,j, drawOffsetY)
+    if j > self.sizeY then return end
+
     local sumT <const> = sumT
     local greySumT <const> = greySumT
     local noFlip <const> = gfx.kImageUnflipped
@@ -137,9 +142,7 @@ function BricksView:renderLineHoriz(i,j, drawOffsetY)
     local startI = i
     while i<=startI+self.bufferWidthTiles do
         local curBrick = brickT[i]
-        if not curBrick then
-            break
-        end
+        if not curBrick then break end
         curBrick = curBrick[j]
 
         local brickPattern = brickPatternOverride or curBrick[1]

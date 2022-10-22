@@ -120,7 +120,7 @@ local function CalcGameCam()
     camAfterY = camControllerY:update(camBeforeY, targetY)
 
     -- vertical clamping
-    camAfterY = clamp(camAfterY, tileSize, (levelProps.sizeY- gameHeightTiles - 1) * tileSize)
+    camAfterY = clamp(camAfterY, tileSize, (levelProps.sizeY- gameHeightTiles + 1) * tileSize)
     cam[2] = floor(camAfterY / tileSize)
     cam[4] = camAfterY % tileSize
 
@@ -210,28 +210,18 @@ function CalcTimeStep()
     end
 end
 
-local function checkCam()
-    if camPos[1]>levelProps.sizeX- gameWidthTiles then
-        camPos[1] = levelProps.sizeX- gameWidthTiles
-    end
-    if camPos[2]>levelProps.sizeY-31 then
-        camPos[2] = levelProps.sizeY-31
-    end
 
-    if camPos[1]<1 then camPos[1]=1 end
-    if camPos[2]<1 then camPos[2]=1 end
-end
 
 function ResetPlane()
     explosion = nil
     planePos[1], planePos[2], planePos[3], planePos[4] = checkpoint.x+floor(checkpoint.w*0.5-1)-1,checkpoint.y+1,4,4 --x,y,subx,suby
     -- when using y = checkpoint.y-halfHeightTiles+1, no initial camera movement would occur
     camPos[1], camPos[2], camPos[3], camPos[4] = checkpoint.x+floor(checkpoint.w*0.5)-halfWidthTiles,checkpoint.y-halfHeightTiles, 0,0 --x,y,subx,suby
+    vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
     camControllerX = CamController(12, 12 * 25)
     camControllerY = CamController(12, 12 * 17)
-    checkCam()
+    CalcGameCam()
     flying = false
-    vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
     CalcPlaneColCoords()
     collision = false
     fuel = levelProps.fuel
@@ -239,10 +229,13 @@ function ResetPlane()
 end
 
 local function initSpecials()
+    fuelEnabled = false
     for i,item in ipairs(specialT) do
         if item.sType == 8 then --platform
             if item.pType == 1 then -- home
                 homeBase = item
+            elseif item.pType == 3 then -- fuel
+                fuelEnabled = true
             end
         end
         initSpecial[item.sType](item)
