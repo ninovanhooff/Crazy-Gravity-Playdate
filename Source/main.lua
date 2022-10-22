@@ -54,11 +54,12 @@ local function executePendingNavigators()
         end
         if #backStack < 1 then
             print("ERROR: No active screen, adding Start Screen")
+            require "lua/start/startScreen"
             table.insert(backStack, StartScreen())
         end
         activeScreen = backStack[#backStack]
         print("Resuming screen", activeScreen.className, activeScreen)
-        playdate.setCollectsGarbage(true) -- prevent permanently disabled GC
+        playdate.setCollectsGarbage(true) -- prevent permanently disabled GC by previous Screen
         activeScreen:resume()
     end
 end
@@ -98,18 +99,25 @@ end
 
 require "lua/start/startScreen"
 pushScreen(StartScreen())
---if playdate.file.exists("levels/temp.pdz") then
---    Sounds = false
---    require "lua/gameScreen"
---    pushScreen(GameScreen("levels/temp", 1))
---end
-require("lua/video-player/VideoPlayerScreen")
-pushScreen(VideoPlayerScreen(
-    "video/congratulations",
-    function()
-        return EndGameScreen()
-    end
-))
+
+
+if playdate.file.exists("levels/temp.pdz") then
+    GetOptions():apply() -- load all sounds required for game
+    require "lua/gameScreen"
+    pushScreen(GameScreen("levels/temp", 1))
+end
+
+--
+--require("lua/end-game/EndGameScreen")
+--pushScreen(FlyToCreditsScreen())
+
+--require("lua/video-player/VideoPlayerScreen")
+--pushScreen(VideoPlayerScreen(
+--    "video/congratulations",
+--    function()
+--        return EndGameScreen()
+--    end
+--))
 --pushScreen(LevelSelectScreen())
 --pushScreen(GameScreen(levelPath(1), 1))
 
