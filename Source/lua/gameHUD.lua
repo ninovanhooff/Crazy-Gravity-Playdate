@@ -125,16 +125,18 @@ function GameHUD:renderFull()
     x = x+10+hudPadding
 
     -- fuel
-    if fuel > 1500 or frameCounter % 20 > 10 then
-        drawIcon(x, 5)
+    if fuelEnabled then
+        if fuel > 1500 or frameCounter % 20 > 10 then
+            drawIcon(x, 5)
+        end
+        x = x+16+hudGutter
+        gfx.drawRect(x, hudY+1, 32, 14)
+        local fuelW = (fuel/6000)*28
+        gfx.setPattern({0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99})
+        gfx.fillRect(x+3, hudY+4, fuelW,8)
+        gfx.setColor(hudFgClr)
+        x = x+32+hudPadding
     end
-    x = x+16+hudGutter
-    gfx.drawRect(x, hudY+1, 32, 14)
-    local fuelW = (fuel/6000)*28
-    gfx.setPattern({0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99})
-    gfx.fillRect(x+3, hudY+4, fuelW,8)
-    gfx.setColor(hudFgClr)
-    x = x+32+hudPadding
 
     -- cargo
     if hudBlinkers[3].on then
@@ -149,16 +151,18 @@ function GameHUD:renderFull()
     x = x+containerWidth+hudPadding-1
 
     -- keys
-    if hudBlinkers[4].on then
-        drawIcon(x, 1)
+    if barriersEnabled then
+        if hudBlinkers[4].on then
+            drawIcon(x, 1)
+        end
+        x=x+12+hudGutter
+        for i=1,4 do
+            local subX = (i+1)%2*8
+            local subY = boolToNum(i>2)*9
+            hudIcons:draw(x+subX, hudY+subY, unFlipped, 32 +subX, boolToNum(keys[i])*16 + subY,8,8)
+        end
+        x = x+15+hudPadding
     end
-    x=x+12+hudGutter
-    for i=1,4 do
-        local subX = (i+1)%2*8
-        local subY = boolToNum(i>2)*9
-        hudIcons:draw(x+subX, hudY+subY, unFlipped, 32 +subX, boolToNum(keys[i])*16 + subY,8,8)
-    end
-    x = x+15+hudPadding
 
     -- turbo -> speed warning
     if(extras[1] > 0) then -- turbo enabled

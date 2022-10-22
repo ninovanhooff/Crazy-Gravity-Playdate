@@ -230,15 +230,21 @@ end
 
 local function initSpecials()
     fuelEnabled = false
-    for i,item in ipairs(specialT) do
+    barriersEnabled = false
+    for _,item in ipairs(specialT) do
         if item.sType == 8 then --platform
             if item.pType == 1 then -- home
                 homeBase = item
             elseif item.pType == 3 then -- fuel
                 fuelEnabled = true
             end
+        elseif item.sType == 15 then -- barriers
+            barriersEnabled = true
         end
         initSpecial[item.sType](item)
+    end
+    if not fuelEnabled then
+        fuel = math.maxinteger
     end
 end
 
