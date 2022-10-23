@@ -153,7 +153,6 @@ function CalcPlatform(item,idx)
             RenderGame()
             pushScreen(WaitScreen(function()
                 if inputManager:isInputPressed(InputManager.actionSelfRight) then
-                    print("setting collision")
                     collision = CollisionReason.SelfDestruct
                     gamePaused = false
                     return true
