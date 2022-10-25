@@ -72,6 +72,10 @@ function GameHUD:render(conservative)
     else
         self:renderFull()
     end
+
+    if fuel < 500 and fuelEnabled and frameCounter > 0 then
+        self:renderLowFuelTooltip()
+    end
 end
 
 --- Render HUD for frame 0, with challenge centered
@@ -132,6 +136,7 @@ function GameHUD:renderFull()
         x = x+16+hudGutter
         gfx.drawRect(x, hudY+1, 32, 14)
         local fuelW = (fuel/6000)*28
+        self.fuelIndicatorCenterX = x + 17
         gfx.setPattern({0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99})
         gfx.fillRect(x+3, hudY+4, fuelW,8)
         gfx.setColor(hudFgClr)
@@ -187,10 +192,29 @@ function GameHUD:renderFull()
     self:renderChallenge(true)
 end
 
+function GameHUD:renderLowFuelTooltip()
+    if self.fuelIndicatorCenterX then
+        local text
+        if fuel < 1 then
+            text = "Out of fuel!"
+        elseif fuel < 500 then
+            text = "Go get fuel!"
+        else
+            text = "Fuel"
+        end
+        renderTooltip({text = text, alignment="above"}, self.fuelIndicatorCenterX, hudY - 1)
+    end
+end
+
 function GameHUD:renderOverSpeedTooltip()
     if self.speedIndicatorCenterX then
         renderTooltip({text = "Watch your speed!", alignment="above"}, self.speedIndicatorCenterX, hudY - 1)
     end
+end
+
+function GameHUD:reset()
+    self.fuelIndicatorCenterX = nil
+    self.speedIndicatorCenterX = nil
 end
 
 --- Notify the GameHud that the count of one of the stats has changed.

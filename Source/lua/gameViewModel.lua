@@ -257,6 +257,7 @@ function InitGame(_pathOrLevelNumber, selectedChallenge)
     print("InitGame", path)
     LoadFile(path)
     curGamePath = path
+    gameHUD:reset()
     gameHUD.selectedChallenge = selectedChallenge
     gameHUD.challengeTarget = getChallengesForPath(path)[selectedChallenge]
     sample("init specials", function()  initSpecials()end, 1)
