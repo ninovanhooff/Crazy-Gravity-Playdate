@@ -16,7 +16,7 @@ function LoadFile(path)
     local levelT
     sample("pdz load", function() levelT = file.run(path) end, 1)
     levelProps = levelT["levelProps"]
-    levelProps.lives = 9 -- NOTE ignoring value from level file!
+    levelProps.lives = levelProps.lives or 9
     specialT = levelT["specialT"]
     brickT = {}
     local format = levelProps.packFormat
@@ -54,27 +54,31 @@ function levelPath(_levelNumber)
 end
 
 levelNames = {
-    [1] = "Test Flight",
-    [2] = "Getaway-Gates",
-    [3] = "Rod-a-bout",
-    [4] = "Luxury Raceway",
-    [5] = "Hide+See-key",
-    [6] = "Turbo boost!",
-    [7] = "Grab grab+go!",
-    [8] = "Meditative Test",
-    [9] = "Criss Crossing",
-    [10] = "Mind the curve",
-    [11] = "Before the storm",
-    [12] = "Push+Pull",
-    [13] = "Fuel Shortage",
-    [14] = "Lone Station",
-    [15] = "Tight Squeeze",
-    [16] = "Caution Cannon",
-    [17] = "Cannonballers",
-    [18] = "Team Push+Pull",
-    [19] = "A-maze-ing",
-    [20] = "Broadsides",
-    [21] = "Final Countdown"
+    "Test Flight",
+    "Just one ways",
+    "Big gulp",
+    "Key Analysis",
+    "Hooked",
+    "Getaway-Gates",
+    "Rod-a-bout",
+    "Luxury Raceway",
+    "Hide+See-key",
+    "Turbo boost!",
+    "Grab grab+go!",
+    "Meditative Test",
+    "Criss Crossing",
+    "Mind the curve",
+    "Before the storm",
+    "Push+Pull",
+    "Fuel Shortage",
+    "Lone Station",
+    "Tight Squeeze",
+    "Caution Cannon",
+    "Cannonballers",
+    "Team Push+Pull",
+    "A-maze-ing",
+    "Broadsides",
+    "Final Countdown"
 }
 
 local levelBgmPaths = {
