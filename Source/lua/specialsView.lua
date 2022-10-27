@@ -94,7 +94,7 @@ function RenderPlatform(item, scrX, scrY)
         sprite:draw(scrX+8, pltfrmY-16, unFlipped, 128+16*item.type, 346, 16, 16)
     elseif item.pType==5 and item.amnt>0 then-- key
         gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-        sprite:draw(scrX+8, pltfrmY-20, unFlipped, 184, 398+16*item.color, 16, 16)
+        sprite:draw(scrX+8, pltfrmY-20, unFlipped, 184+(math.floor(frameCounter/2)%7)*16, 398+16*item.color, 16, 16)
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
 
