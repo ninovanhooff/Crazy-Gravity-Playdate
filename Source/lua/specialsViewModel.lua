@@ -214,7 +214,7 @@ function CalcPlatform(item,idx)
             end
         end
 
-        if fuel < 1 and not collision then
+        if fuel < 1 and not collision and not (item.pType == 3 and item.amnt > 0) then
             local buttonMappingString = inputManager:mappingString(InputManager.actionSelfRight)
             item.tooltip = { text= "Out of fuel! " .. buttonMappingString .. ": Self-destruct" }
             RenderGame()
