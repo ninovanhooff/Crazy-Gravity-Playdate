@@ -30,6 +30,8 @@ end
 
 class('GameHUD').extends()
 
+GameHUD.lowFuelThreshold = 700
+
 function GameHUD:init()
     GameHUD.super.init(self)
     self.selectedChallenge = 1 -- 1: time, 2: fuel, 3: survivor
@@ -73,7 +75,7 @@ function GameHUD:render(conservative)
         self:renderFull()
     end
 
-    if fuel < 500 and fuelEnabled and frameCounter > 0 then
+    if fuel < GameHUD.lowFuelThreshold and fuelEnabled and frameCounter > 0 then
         self:renderLowFuelTooltip()
     end
 end
@@ -197,7 +199,7 @@ function GameHUD:renderLowFuelTooltip()
         local text
         if fuel < 1 then
             text = "Out of fuel!"
-        elseif fuel < 500 then
+        elseif fuel < GameHUD.lowFuelThreshold then
             text = "Go get fuel!"
         else
             text = "Fuel"
