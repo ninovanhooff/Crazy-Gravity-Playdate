@@ -82,9 +82,10 @@ levelNames = {
 }
 
 local levelBgmPaths = {
+    "music/SmoothAndCool.mp3",
+    "music/StrangeStuff.mp3",
     "music/E1M8.mp3",
     "music/E3M6.mp3",
-    "music/E1M9.mp3",
     "music/scifiNights.mp3",
 }
 
