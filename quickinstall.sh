@@ -1,23 +1,20 @@
+# Get Game name from pdxinfo and remove whitespace. pdutil cannot run files with whitespace in them
+PRODUCT="$(cat Source/pdxinfo | grep name | cut -d "=" -f 2- | sed '/^$/d;s/[[:blank:]]//g').pdx"
+echo "PRODUCT ${PRODUCT}"
+
+# Put device in data disk mode
 until ls /dev/cu.usbmodemPD*
 do
   echo "Playdate not found. Is it connected to USB and unlocked?"
   sleep 1
 done
-
 PDUTIL_DEVICE="$(ls /dev/cu.usbmodemPD* | head -n 1)"
 echo "device $PDUTIL_DEVICE"
-
-
-# Get Game name from pdxinfo and remove whitespace. pdutil cannot run files with whitespace in them
-PRODUCT="$(cat Source/pdxinfo | grep name | cut -d "=" -f 2- | sed '/^$/d;s/[[:blank:]]//g').pdx"
+pdutil "${PDUTIL_DEVICE}" datadisk
 
 echo "Compiling C projects and libs"
 make device
-
-echo "PDUTIL_DEVICE ${PDUTIL_DEVICE}"
-echo "PRODUCT ${PRODUCT}"
 pdc Source "${PRODUCT}"
-pdutil "${PDUTIL_DEVICE}" datadisk
 
 echo "Waiting for Data Disk to be mounted ... "
 until [ -d /Volumes/PLAYDATE/GAMES ]
@@ -25,6 +22,8 @@ do
      sleep 1
 done
 echo "Game Dir mounted"
+#echo "Input anything to continue"
+#trap 'tput setaf 1;tput bold;echo $BASH_COMMAND;read;tput init' DEBUG
 
 # Only copy files with changed file sizes. To copy all files, remove "--size-only"
 rsync -zarv --size-only --prune-empty-dirs "${PRODUCT}" "/Volumes/PLAYDATE/Games/"
