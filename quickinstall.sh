@@ -26,7 +26,7 @@ echo "Game Dir mounted"
 #trap 'tput setaf 1;tput bold;echo $BASH_COMMAND;read;tput init' DEBUG
 
 # Only copy files with changed file sizes. To copy all files, remove "--size-only"
-rsync -zarv --size-only --prune-empty-dirs "${PRODUCT}" "/Volumes/PLAYDATE/Games/"
+rsync -zarvi --size-only --prune-empty-dirs "${PRODUCT}" "/Volumes/PLAYDATE/Games/"
 MOUNT_DEVICE="$(diskutil list | grep PLAYDATE | grep -oE '[^ ]+$')"
 diskutil unmount "${MOUNT_DEVICE}"
 diskutil eject PLAYDATE
