@@ -107,8 +107,7 @@ if playdate.file.exists("levels/temp.pdz") then
     pushScreen(GameScreen("levels/temp", 1))
 end
 
---
---require("lua/end-game/EndGameScreen")
+--require("lua/end-game/EndGameScreen") -- imports and FlyTo ScreditsScreen CreditsScreen
 --pushScreen(FlyToCreditsScreen())
 
 --require("lua/video-player/VideoPlayerScreen")
