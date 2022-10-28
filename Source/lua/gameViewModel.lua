@@ -178,6 +178,7 @@ end
 
 function CalcTimeStep()
     frameCounter = frameCounter + 1
+    if Debug then collision = nil end
     if flying then --physics
         landedAt = -1
         calcPlane()
