@@ -12,19 +12,19 @@
 
 numChallenges = 3
 
-local defaultChallenges = {235, 1200, 1}
+local defaultChallenges = {235, 1200, 0}
 
 local challenges = {
-    ["levels/LEVEL01"] = {235, 1200, 1},
-    ["levels/LEVEL02"] = {98, 1200, 10},
-    ["levels/LEVEL03"] = {350, 1200, 1},
-    ["levels/LEVEL04"] = {98, 1200, 1},
-    ["levels/LEVEL05"] = {98, 1200, 1},
-    ["levels/LEVEL06"] = {98, 1200, 1},
-    ["levels/LEVEL07"] = {400, 1200, 1},
-    ["levels/LEVEL08"] = {350, 1200, 1},
-    ["levels/LEVEL09"] = {420, 1200, 1},
-    ["levels/LEVEL10"] = {450, 1200, 1},
+    ["levels/LEVEL01"] = {10, 75, 0},
+    ["levels/LEVEL02"] = {45, 300, 0},
+    ["levels/LEVEL03"] = {40, 250, 0},
+    ["levels/LEVEL04"] = {55, 300, 0},
+    ["levels/LEVEL05"] = {75, 500, 0},
+    ["levels/LEVEL06"] = {130, 900, 0},
+    ["levels/LEVEL07"] = {250, 1200, 0},
+    ["levels/LEVEL08"] = {100, 550, 0},
+    ["levels/LEVEL09"] = {250, 1200, 0},
+    ["levels/LEVEL10"] = {450, 1200, 0},
 }
 
 
