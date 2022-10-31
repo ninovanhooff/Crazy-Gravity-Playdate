@@ -1,4 +1,3 @@
-local round <const> = round
 local gfx <const> = playdate.graphics
 local cardIcon <const> = gfx.image.new("images/card_info_icon")
 local subtitleBox <const> = playdate.geometry.rect.new(0, 212, 400, 28)
@@ -6,65 +5,40 @@ local subtitleRect <const> = playdate.geometry.rect.new(8, 218, 384, 28)
 
 class("VideoPlayerView").extends()
 
-local snd = playdate.sound
-
 function VideoPlayerView:init(viewModel)
     VideoPlayerView.super.init(self)
-    local basePath <const> = viewModel.basePath
-
-    print("Loading video", basePath)
-    self.video = gfx.video.new(basePath)
-    local width, height = self.video:getSize()
-    self.framerate = self.video:getFrameRate()
-    self.frameCount = self.video:getFrameCount()
-    print("video size", width, height, "frameRate", self.framerate, "frameCount", self.frameCount)
-
-    self.audio, self.loaderr = snd.sampleplayer.new(basePath)
-    if self.audio == nil then
-        print("loaderr", self.loaderr)
-    end
-    print("audio", self.audio)
-    self.offsetX = (screenWidth-width)/2
-    self.offsetY = (screenHeight-height)/2
-
-    self.metadata, self.loaderr = json.decodeFile(basePath .. ".json")
-    if self.loaderr then
-        print(self.loaderr)
-    else
-        self.cards = self.metadata.cards
-        self.subtitles = self.metadata.subtitles
-        self.chyrons = self.metadata.chyrons
-    end
+    self.viewModel = viewModel
+    self.videoContext = viewModel.video:getContext()
 end
 
 function VideoPlayerView:resume()
-    playdate.display.setRefreshRate(self.framerate)
+    playdate.display.setRefreshRate(self.viewModel.framerate)
     playdate.setAutoLockDisabled(true)
-    if self.audio ~= nil then
-        self.audio:play()
-    end
+    self.viewModel:resume()
 end
 
 function VideoPlayerView:pause()
     playdate.display.setRefreshRate(30)
-    self.audio:stop()
     playdate.setAutoLockDisabled(false)
+    self.viewModel:pause()
 end
 
 function VideoPlayerView:destroy()
     self:pause()
 end
 
-function VideoPlayerView:render(viewModel)
-    local frame = round(self.audio:getOffset() * self.framerate)
-    print("VideoPlayerView:render", frame,  "/",  self.frameCount)
-
-    self.video:renderFrame(frame)
-    self.video:getContext():draw(self.offsetX,self.offsetY)
+function VideoPlayerView:render()
+    local viewModel = self.viewModel
+    viewModel.video:renderFrame(viewModel:currentFrame())
+    local image = self.videoContext
+    if viewModel:shouldApplyVcrFilter() then
+        image = image:vcrPauseFilterImage()
+    end
+    image:draw(viewModel.offsetX,viewModel.offsetY)
 
     self:renderChyron()
 
-    local card = self:getCurrentMetaData(self.cards)
+    local card = viewModel:getCurrentCard(self.cards)
     if card then
         local cardText = card.text
         gfx.setColor(gfx.kColorWhite)
@@ -75,16 +49,12 @@ function VideoPlayerView:render(viewModel)
         cardIcon:draw(378,4)
     end
 
-    local subtitle = self:getCurrentMetaData(self.subtitles)
+    local subtitle = viewModel:getCurrentSubtitle()
     if subtitle then
         gfx.setColor(gfx.kColorBlack)
         gfx.fillRect(subtitleBox)
         gfx.setImageDrawMode(gfx.kDrawModeInverted)
         gfx.drawTextInRect(subtitle.text, subtitleRect, nil, "...", kTextAlignment.center)
-    end
-
-    if frame >= self.frameCount then
-        viewModel:onVideoFinished()
     end
 end
 
@@ -94,7 +64,7 @@ local chyronSlant <const> = 16
 local chyronHeight <const> = 18
 --- The words on the screen that identify speakers, locations, or story subjects
 function VideoPlayerView:renderChyron()
-    local chyron = self:getCurrentMetaData(self.chyrons)
+    local chyron = self.viewModel:getCurrentChyron()
     if not chyron then
         return
     end
@@ -134,18 +104,4 @@ function VideoPlayerView:renderChyron()
     gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
     gfx.drawText(title, chyronLeft, chyronTop)
     monoFont:drawText(subtitle, subtitleLeft, subtitleTop+4)
-end
-
-function VideoPlayerView:getCurrentMetaData(metaData)
-    if not metaData then
-        return nil
-    end
-
-    local currentTime = self.audio:getOffset()
-
-    for _,item in ipairs(metaData) do
-        if item.start <= currentTime and item["end"] >= currentTime then
-            return item
-        end
-    end
 end

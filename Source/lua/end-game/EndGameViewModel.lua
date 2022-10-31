@@ -75,9 +75,8 @@ function EndGameViewModel:initState(state)
         require("lua/video-player/VideoPlayerScreen")
         self.videoViewModel = VideoViewModel("video/test2_final")
         self.videoPlayerView = VideoPlayerView(self.videoViewModel)
-        self.videoPlayerView.offsetX = 14
-        self.videoPlayerView.offsetY = 86
-        self.videoViewModel:resume()
+        self.videoViewModel.offsetX = 14
+        self.videoViewModel.offsetY = 86
         self.videoPlayerView:resume()
     elseif state == states.LiftOff then
         self.rocketExhaustLoop = loop.new(66, rocketExhaustStartImgTable, false)
