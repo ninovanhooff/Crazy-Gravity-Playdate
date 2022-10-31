@@ -9,7 +9,7 @@
 class('Input').extends()
 
 function Input:init()
-    Input.super.init()
+    Input.super.init(self)
 end
 
 function Input:isInputPressed(action)

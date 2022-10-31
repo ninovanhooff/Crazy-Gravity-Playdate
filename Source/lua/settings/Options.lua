@@ -21,7 +21,7 @@ local resourceLoader <const> = ResourceLoader()
 -- drawRectSwitch is unused
 -- added fixes to show menu on arbitrary x position
 -- added missing imports CoreLibs/object and ui
--- added Options.super.init()
+-- added Options.super.init(self)
 
 local KEY_REPEAT_INITIAL = 300
 local KEY_REPEAT = 200
@@ -138,7 +138,7 @@ function GetOptions()
 end
 
 function optionsNS.Options:init()
-    optionsNS.Options.super.init()
+    optionsNS.Options.super.init(self)
     self.menu = playdate.ui.gridview.new(0, itemHeight)
 
     -- list of available options based on option screen (indexed by section/row for easy selection)

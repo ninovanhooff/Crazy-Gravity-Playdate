@@ -9,7 +9,7 @@ class("GameOverViewModel").extends()
 GAME_OVER_CONFIGS = enum({"GAME_OVER_NO_SKIP", "GAME_OVER_MAY_SKIP", "LEVEL_CLEARED"})
 
 function GameOverViewModel:init(config)
-    GameOverViewModel.super.init()
+    GameOverViewModel.super.init(self)
     if config == GAME_OVER_CONFIGS.GAME_OVER_NO_SKIP then
         self.title = "GAME OVER!"
         self.selectedButtonIdx = 2

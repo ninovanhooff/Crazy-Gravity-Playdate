@@ -35,6 +35,7 @@ function EndGameView:renderGame(viewModel)
 
     local rocketShipScreenX = rocketShipX-camPos[1]*tileSize-camPos[3]
     local rocketShipScreenY = floor(viewModel.planePosY - 7*tileSize - camPos[2]*tileSize-camPos[4])
+
     -- rocket ship
     launchTowerImg:draw(
         rocketShipScreenX - 20,
@@ -73,5 +74,9 @@ function EndGameView:render(viewModel)
         local controlRoomX = viewModel.controlRoomAnimator:currentValue()
         controlRoomBG:draw(controlRoomX,0)
         airlockCrank:getImage(viewModel.crankFrame + 1):draw(controlRoomX + 265,180)
+    end
+
+    if viewModel.videoPlayerView and not viewModel.videoViewModel.finished then
+        viewModel.videoPlayerView:render(viewModel.videoViewModel)
     end
 end

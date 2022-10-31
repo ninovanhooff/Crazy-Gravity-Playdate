@@ -22,7 +22,10 @@ local targetPlanePosX <const> = 200
 local loadPlaneDurationMs <const> = 5000
 local returnPlatformDurationMs <const> = loadPlaneDurationMs
 
-local states = enum({"LoadPlane", "ReturnPlatform", "LiftOff", "OpenAirlock", "FlyAway"})
+local states = enum({
+    "LoadPlane", "DirectorIntro",
+    "ReturnPlatform", "LiftOff", "OpenAirlock", "FlyAway"
+})
 
 class("EndGameViewModel").extends()
 
@@ -67,7 +70,15 @@ function EndGameViewModel:initState(state)
     print("init state", state.name)
     if state == states.LoadPlane then
         self.planeAnimator = gfx.animator.new(loadPlaneDurationMs, self.planePosX, targetPlanePosX)
-        self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -600, 0)
+        self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -545, 0)
+    elseif state == states.DirectorIntro then
+        require("lua/video-player/VideoPlayerScreen")
+        self.videoViewModel = VideoViewModel("video/test2_final")
+        self.videoPlayerView = VideoPlayerView(self.videoViewModel)
+        self.videoPlayerView.offsetX = 14
+        self.videoPlayerView.offsetY = 86
+        self.videoViewModel:resume()
+        self.videoPlayerView:resume()
     elseif state == states.LiftOff then
         self.rocketExhaustLoop = loop.new(66, rocketExhaustStartImgTable, false)
         self.exhaustLoopOffsetX = -6
@@ -114,7 +125,6 @@ function EndGameViewModel:LoadPlaneUpdate()
 end
 
 function EndGameViewModel:ReturnPlatformUpdate()
-
     if not self.returnPlatformAnimator then
         self.returnPlatformAnimator = gfx.animator.new(
             returnPlatformDurationMs,
@@ -129,6 +139,13 @@ function EndGameViewModel:ReturnPlatformUpdate()
     end
 
     if self.returnPlatformAnimator:ended() then
+        self:setState(states.DirectorIntro)
+    end
+end
+
+function EndGameViewModel:DirectorIntroUpdate()
+    local finished = self.videoViewModel:update()
+    if  finished then
         self:setState(states.LiftOff)
     end
 end
@@ -179,6 +196,7 @@ end
 
 local stateUpdaters = {
     [states.LoadPlane] = EndGameViewModel.LoadPlaneUpdate,
+    [states.DirectorIntro] = EndGameViewModel.DirectorIntroUpdate,
     [states.ReturnPlatform] = EndGameViewModel.ReturnPlatformUpdate,
     [states.LiftOff] = EndGameViewModel.LiftOffUpdate,
     [states.OpenAirlock] = EndGameViewModel.OpenAirlockUpdate,

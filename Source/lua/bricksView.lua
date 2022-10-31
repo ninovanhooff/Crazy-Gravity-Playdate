@@ -17,7 +17,7 @@ local tileSize <const> = tileSize
 class('BricksView').extends()
 
 function BricksView:init()
-    BricksView.super.init()
+    BricksView.super.init(self)
     self.bufferWidthTiles = gameWidthTiles + 1
     self.bufferHeightTiles = gameHeightTiles + 1
     self.activeBuffer = gfx.image.new(self.bufferWidthTiles * tileSize, self.bufferHeightTiles* tileSize, gameBgColor)

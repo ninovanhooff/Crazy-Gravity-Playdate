@@ -10,7 +10,7 @@ local timer <const> = playdate.timer
 class("MusicManager").extends()
 
 function MusicManager:init()
-    MusicManager.super.init()
+    MusicManager.super.init(self)
     self.volume = 1.0
     self.currentPath = nil
     self.player = nil

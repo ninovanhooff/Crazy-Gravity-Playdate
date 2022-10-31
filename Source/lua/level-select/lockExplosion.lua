@@ -33,7 +33,7 @@ local function shakeCam(self)
 end
 
 function LockExplosion:init(thumbRect)
-    LockExplosion.super.init()
+    LockExplosion.super.init(self)
     self.thumbRect = thumbRect
     -- initial shard velocity and shake velocity
     self.vX, self.vY = 2,2

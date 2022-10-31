@@ -11,7 +11,7 @@ local sampleplayer <const> = playdate.sound.sampleplayer
 class("ResourceLoader").extends()
 
 function ResourceLoader:init()
-    ResourceLoader.super.init()
+    ResourceLoader.super.init(self)
     self.soundVolume = 1.0
     self.graphicsStyle = nil
     self.soundStyle = nil

@@ -91,7 +91,7 @@ local levelBgmPaths = {
 
 function levelSongPath(_levelNumber)
     local levelNumber = _levelNumber or currentLevel
-    if levelNumber == 21 then
+    if levelNumber == numLevels then
         return "music/the-countdown.mp3"
     end
     print("music for level ", levelNumber, #levelBgmPaths, luaMod(levelNumber,#levelBgmPaths+1))

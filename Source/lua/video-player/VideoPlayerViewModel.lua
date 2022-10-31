@@ -4,14 +4,15 @@ local justPressed <const> = playdate.buttonJustPressed
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
 
-class("VideoPlayerViewModel").extends()
+class("VideoPlayerViewModel").extends(VideoViewModel)
 
 function VideoPlayerViewModel:init(basePath, nextScreenFun)
-    self.basePath = basePath
+    VideoPlayerViewModel.super.init(self, basePath)
     self.nextScreenFun = nextScreenFun
 end
 
 function VideoPlayerViewModel:onVideoFinished()
+    self.super:onVideoFinished()
     popScreen() -- remove self
     if self.nextScreenFun then
         pushScreen(self:nextScreenFun())
@@ -21,6 +22,7 @@ function VideoPlayerViewModel:onVideoFinished()
 end
 
 function VideoPlayerViewModel:update()
+    self.super:update()
     if justPressed(buttonA) then
         -- skip video
         self:onVideoFinished()
@@ -28,12 +30,4 @@ function VideoPlayerViewModel:update()
     if justPressed(buttonB) then
         popScreen()
     end
-end
-
-function VideoPlayerViewModel:resume()
-    musicManager:fade(0.3) -- lower music volume for clear dialogue
-end
-
-function VideoPlayerViewModel:destroy()
-    musicManager:fade(1.0)  -- restore original music volume
 end

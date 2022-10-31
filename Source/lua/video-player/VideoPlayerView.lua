@@ -1,5 +1,4 @@
-
-
+local round <const> = round
 local gfx <const> = playdate.graphics
 local cardIcon <const> = gfx.image.new("images/card_info_icon")
 local subtitleBox <const> = playdate.geometry.rect.new(0, 212, 400, 28)
@@ -25,8 +24,8 @@ function VideoPlayerView:init(viewModel)
         print("loaderr", self.loaderr)
     end
     print("audio", self.audio)
-    self.lastframe = 0
-    self.offsetX = (400-width)/2
+    self.offsetX = (screenWidth-width)/2
+    self.offsetY = (screenHeight-height)/2
 
     self.metadata, self.loaderr = json.decodeFile(basePath .. ".json")
     if self.loaderr then
@@ -39,6 +38,7 @@ function VideoPlayerView:init(viewModel)
 end
 
 function VideoPlayerView:resume()
+    playdate.display.setRefreshRate(self.framerate)
     playdate.setAutoLockDisabled(true)
     if self.audio ~= nil then
         self.audio:play()
@@ -46,6 +46,7 @@ function VideoPlayerView:resume()
 end
 
 function VideoPlayerView:pause()
+    playdate.display.setRefreshRate(30)
     self.audio:stop()
     playdate.setAutoLockDisabled(false)
 end
@@ -55,33 +56,31 @@ function VideoPlayerView:destroy()
 end
 
 function VideoPlayerView:render(viewModel)
-    local frame = math.floor(self.audio:getOffset() * self.framerate)
+    local frame = round(self.audio:getOffset() * self.framerate)
+    print("VideoPlayerView:render", frame,  "/",  self.frameCount)
 
-    if frame ~= lastframe then
-        self.video:renderFrame(frame)
-        self.lastframe = frame
-        self.video:getContext():draw(self.offsetX,0)
+    self.video:renderFrame(frame)
+    self.video:getContext():draw(self.offsetX,self.offsetY)
 
-        self:renderChyron()
+    self:renderChyron()
 
-        local card = self:getCurrentMetaData(self.cards)
-        if card then
-            local cardText = card.text
-            gfx.setColor(gfx.kColorWhite)
-            local width = monoFont:getTextWidth(cardText) + 28
-            gfx.fillRect(396-width, 4, width, 16)
-            monoFont:drawText(cardText, 396 - width + 4, 5)
-            gfx.setColor(gfx.kColorBlack)
-            cardIcon:draw(378,4)
-        end
+    local card = self:getCurrentMetaData(self.cards)
+    if card then
+        local cardText = card.text
+        gfx.setColor(gfx.kColorWhite)
+        local width = monoFont:getTextWidth(cardText) + 28
+        gfx.fillRect(396-width, 4, width, 16)
+        monoFont:drawText(cardText, 396 - width + 4, 5)
+        gfx.setColor(gfx.kColorBlack)
+        cardIcon:draw(378,4)
+    end
 
-        local subtitle = self:getCurrentMetaData(self.subtitles)
-        if subtitle then
-            gfx.setColor(gfx.kColorBlack)
-            gfx.fillRect(subtitleBox)
-            gfx.setImageDrawMode(gfx.kDrawModeInverted)
-            gfx.drawTextInRect(subtitle.text, subtitleRect, nil, "...", kTextAlignment.center)
-        end
+    local subtitle = self:getCurrentMetaData(self.subtitles)
+    if subtitle then
+        gfx.setColor(gfx.kColorBlack)
+        gfx.fillRect(subtitleBox)
+        gfx.setImageDrawMode(gfx.kDrawModeInverted)
+        gfx.drawTextInRect(subtitle.text, subtitleRect, nil, "...", kTextAlignment.center)
     end
 
     if frame >= self.frameCount then

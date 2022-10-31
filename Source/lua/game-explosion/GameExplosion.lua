@@ -29,7 +29,7 @@ local function getCam()
 end
 
 function GameExplosion:init(scrimHeight)
-    GameExplosion.super.init()
+    GameExplosion.super.init(self)
     shardDrag = (1 + drag) * 0.5
     local planeX, planeY = planePos[1]*tileSize+planePos[3], planePos[2]*tileSize+planePos[4]
 

@@ -20,7 +20,7 @@ local ceil <const> = math.ceil
 class("LevelSelectViewModel").extends()
 
 function LevelSelectViewModel:init()
-    LevelSelectViewModel.super.init()
+    LevelSelectViewModel.super.init(self)
     self.lastUnlocked = numLevelsUnlocked()
     --- the level for which an unlock animation should be played
     self.newUnlock = nil

@@ -1,3 +1,4 @@
+import "VideoViewModel"
 import "VideoPlayerView"
 import "VideoPlayerViewModel"
 

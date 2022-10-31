@@ -5,6 +5,7 @@
 ---
 
 local floor <const> = math.floor
+local ceil <const> = math.ceil
 local max <const> = math.max
 local currentTime <const> = playdate.sound.getCurrentTime
 
@@ -15,6 +16,12 @@ end
 function sign(x)
     return x < 0 and -1 or 1
 end
+
+function round(x, increment)
+    if increment then return round(x / increment) * increment end
+    return x >= 0 and floor(x + .5) or ceil(x - .5)
+end
+
 
 --- round to the nearest multiple of mult
 --- ie to nearest 2: 1 -> 0, 2.1 -> 2, 2.6 -> 2, 3.1 -> 4, -1.1 -> -2

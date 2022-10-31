@@ -19,7 +19,7 @@ function InputManager:init()
     if inputManager ~= nil then
         error("Not creating inputmanager. inputManager already exists")
     end
-    InputManager.super.init()
+    InputManager.super.init(self)
     self.inputs = {}
 end
 

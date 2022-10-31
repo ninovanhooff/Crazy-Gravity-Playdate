@@ -33,7 +33,7 @@ class("LevelSelectView").extends()
 
 function LevelSelectView:init(vm)
 
-    LevelSelectView.super.init()
+    LevelSelectView.super.init(self)
     viewModel = vm
     listView:setNumberOfRows(#vm.menuOptions)
     self.initialRender = true
