@@ -2,11 +2,16 @@ require "lua/gameScreen"
 import "FlyToCreditsScreen"
 
 local gfx <const> = playdate.graphics
+local snd <const> = playdate.sound
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
 local loop <const> = gfx.animation.loop
 local rocketExhaustBurnImgTable = gfx.imagetable.new("images/rocket_ship_burn")
 local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_start")
+
+local clickSample = snd.sample.new("sounds/launch_control_click")
+local clickSamplePlayer = snd.sampleplayer.new(clickSample)
+assert(clickSamplePlayer)
 
 local getCrankChange <const> = playdate.getCrankChange
 local floor <const> = math.floor
@@ -149,16 +154,19 @@ function EndGameViewModel:ReturnPlatformUpdate()
 end
 
 function EndGameViewModel:DirectorIntroUpdate()
-    local finished = self.videoViewModel:update()
+    local finished = true --self.videoViewModel:update()
     if finished and not self.directorIntroFinished then
         self.directorIntroFinished = true
+        clickSamplePlayer:play(1,2.0)
         self.launchButtonFrame = 2
     end
     if self.directorIntroFinished then
         if justPressed(playdate.kButtonA) then
+            clickSamplePlayer:play()
             self.launchButtonFrame = 3
         elseif justReleased(playdate.kButtonA) then
             self.launchButtonFrame = 1
+            clickSamplePlayer:play(1, -1.0)
             self:setState(states.LiftOff)
         end
     end
