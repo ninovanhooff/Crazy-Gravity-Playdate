@@ -31,6 +31,7 @@ function VideoViewModel:init(basePath)
         self.subtitles = self.metadata.subtitles
         self.chyrons = self.metadata.chyrons
     end
+
 end
 
 function VideoViewModel:currentFrame()
@@ -68,11 +69,14 @@ function VideoViewModel:getCurrentSubtitle()
     return self:getCurrentMetaData(self.subtitles)
 end
 
+function VideoViewModel:onVideoFinished()
+    self.finished = true
+    self:pause()
+end
 
 function VideoViewModel:update()
     if self:currentFrame() >= self.frameCount then
-        self.finished = true
-        self:pause()
+        self:onVideoFinished()
     end
     return self.finished
 end

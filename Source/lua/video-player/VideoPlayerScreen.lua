@@ -13,7 +13,7 @@ end
 
 function VideoPlayerScreen:update()
     self.videoPlayerViewModel:update()
-    self.videoPlayerView:render(self.videoPlayerViewModel)
+    self.videoPlayerView:render()
 end
 
 function VideoPlayerScreen:pause()

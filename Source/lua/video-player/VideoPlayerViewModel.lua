@@ -12,7 +12,7 @@ function VideoPlayerViewModel:init(basePath, nextScreenFun)
 end
 
 function VideoPlayerViewModel:onVideoFinished()
-    self.super:onVideoFinished()
+    VideoPlayerViewModel.super.onVideoFinished(self)
     popScreen() -- remove self
     if self.nextScreenFun then
         pushScreen(self:nextScreenFun())
@@ -22,7 +22,7 @@ function VideoPlayerViewModel:onVideoFinished()
 end
 
 function VideoPlayerViewModel:update()
-    self.super:update()
+    VideoPlayerViewModel.super.update(self)
     if justPressed(buttonA) then
         -- skip video
         self:onVideoFinished()
