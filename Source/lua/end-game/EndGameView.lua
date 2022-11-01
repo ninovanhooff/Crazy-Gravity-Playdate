@@ -9,6 +9,7 @@ local controlRoomBG = gfx.image.new("images/launch_control_room")
 local launchTowerImg = gfx.image.new("images/launch_tower")
 local rocketShip = gfx.image.new("images/rocket_ship")
 local airlockCrank <const> = gfx.imagetable.new("images/launch_control_crank")
+local launchButton <const> = gfx.imagetable.new("images/launch_control_button")
 if #airlockCrank < 1 then
     error("no crank frames")
 end
@@ -73,7 +74,8 @@ function EndGameView:render(viewModel)
     if viewModel.controlRoomAnimator then
         local controlRoomX = viewModel.controlRoomAnimator:currentValue()
         controlRoomBG:draw(controlRoomX,0)
-        airlockCrank:getImage(viewModel.crankFrame + 1):draw(controlRoomX + 290,184)
+        airlockCrank:getImage(viewModel.crankFrame):draw(controlRoomX + 283,184)
+        launchButton:getImage(viewModel.launchButtonFrame):draw(controlRoomX + 174, 154)
     end
 
     if viewModel.videoPlayerView and not viewModel.videoViewModel.finished then

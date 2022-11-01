@@ -2,6 +2,8 @@ require "lua/gameScreen"
 import "FlyToCreditsScreen"
 
 local gfx <const> = playdate.graphics
+local justPressed <const> = playdate.buttonJustPressed
+local justReleased <const> = playdate.buttonJustReleased
 local loop <const> = gfx.animation.loop
 local rocketExhaustBurnImgTable = gfx.imagetable.new("images/rocket_ship_burn")
 local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_start")
@@ -9,6 +11,7 @@ local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_s
 local getCrankChange <const> = playdate.getCrankChange
 local floor <const> = math.floor
 local clamp <const> = clamp
+local luaMod <const> = luaMod
 
 print("Setting calcTimeStep in EndGameVM")
 local match <const> = match
@@ -19,7 +22,7 @@ local BarrierId <const> = "endGameBarrier"
 local AirlockLId <const> = "endGameAirlockL"
 local AirlockRId <const> = "endGameAirlockR"
 local targetPlanePosX <const> = 200
-local loadPlaneDurationMs <const> = 5000
+local loadPlaneDurationMs <const> = 500
 local returnPlatformDurationMs <const> = loadPlaneDurationMs
 
 local states = enum({
@@ -54,7 +57,8 @@ function EndGameViewModel:init()
     self.airlockR = findSpecial(AirlockRId)
 
     self.airLockROverridePos = 9*tileSize
-    self.crankFrame = 0 -- 0-based
+    self.crankFrame = 1
+    self.launchButtonFrame = 1
     self.numCrankFrames = 0 -- set by View
     self.maxAirlockRPos = self.airlockR.pos
     self.origPlatformX = self.platform.x
@@ -71,6 +75,7 @@ function EndGameViewModel:initState(state)
     if state == states.LoadPlane then
         self.planeAnimator = gfx.animator.new(loadPlaneDurationMs, self.planePosX, targetPlanePosX)
         self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -545, 0)
+        self.camOverrideY = camPos[2]*tileSize+camPos[4] + 16
     elseif state == states.DirectorIntro then
         require("lua/video-player/VideoPlayerScreen")
         self.videoViewModel = VideoViewModel("video/test2_final")
@@ -79,6 +84,7 @@ function EndGameViewModel:initState(state)
         self.videoViewModel.offsetY = 86
         self.videoPlayerView:resume()
     elseif state == states.LiftOff then
+        self.launchButtonFrame = 1
         self.rocketExhaustLoop = loop.new(66, rocketExhaustStartImgTable, false)
         self.exhaustLoopOffsetX = -6
         self.exhaustLoopOffsetY = 106
@@ -144,8 +150,17 @@ end
 
 function EndGameViewModel:DirectorIntroUpdate()
     local finished = self.videoViewModel:update()
-    if  finished then
-        self:setState(states.LiftOff)
+    if finished and not self.directorIntroFinished then
+        self.directorIntroFinished = true
+        self.launchButtonFrame = 2
+    end
+    if self.directorIntroFinished then
+        if justPressed(playdate.kButtonA) then
+            self.launchButtonFrame = 3
+        elseif justReleased(playdate.kButtonA) then
+            self.launchButtonFrame = 1
+            self:setState(states.LiftOff)
+        end
     end
 end
 
@@ -181,7 +196,7 @@ function EndGameViewModel:OpenAirlockUpdate()
     elseif getCrankChange() < -5 and self.airLockROverridePos > 0 then
         changeDirection = -1
     end
-    self.crankFrame = math.abs((self.crankFrame + changeDirection) % (self.numCrankFrames))
+    self.crankFrame = luaMod((self.crankFrame + changeDirection), self.numCrankFrames)
     self.airLockROverridePos = clamp(self.airLockROverridePos + changeDirection * 2, 0, self.maxAirlockRPos)
 
 end
