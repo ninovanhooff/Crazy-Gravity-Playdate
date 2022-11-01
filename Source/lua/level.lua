@@ -6,6 +6,7 @@
 
 local file <const> = playdate.file
 local unpack <const> = string.unpack
+local luaMod <const> = luaMod
 
 
 function LoadFile(path)
