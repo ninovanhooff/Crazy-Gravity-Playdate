@@ -14,10 +14,18 @@ function MusicManager:init()
     self.volume = 1.0
     self.currentPath = nil
     self.player = nil
+    self.fadeTimer = nil
 end
 
 if not musicManager then
     musicManager = MusicManager()
+end
+
+function MusicManager:cancelFade()
+    if self.fadeTimer then
+        self.fadeTimer:remove()
+        self.fadeTimer = nil
+    end
 end
 
 function MusicManager:play(path)
@@ -40,11 +48,20 @@ function MusicManager:play(path)
 end
 
 function MusicManager:stop()
+    self:cancelFade()
     if self.player then
         self.player:stop()
         self.player = nil
         self.currentPath = nil
     end
+end
+
+function MusicManager:isPlaying()
+    if not self.player then
+        return false
+    end
+
+    return self.player:isPlaying()
 end
 
 --- Fade in or out, starting at the current volume
@@ -53,12 +70,14 @@ end
 function MusicManager:fade(volumeMultiplier)
     local currentPlayer <const> = self.player
     local targetVolume = (volumeMultiplier or 0.0) * self.volume
+    self:cancelFade() -- ensure no simultaneous fades fades
     if currentPlayer then
-        local fadeOut = timer.new(1000, currentPlayer:getVolume(), targetVolume)
-        fadeOut.updateCallback = function()
-            currentPlayer:setVolume(fadeOut.value)
+        local fadeTimer = timer.new(1000, currentPlayer:getVolume(), targetVolume)
+        self.fadeTimer = fadeTimer
+        fadeTimer.updateCallback = function()
+            currentPlayer:setVolume(fadeTimer.value)
         end
-        fadeOut.timerEndedCallback = function()
+        fadeTimer.timerEndedCallback = function()
             if targetVolume == 0.0  then
                 currentPlayer:stop()
                 if self.player == currentPlayer then

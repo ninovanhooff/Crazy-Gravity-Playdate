@@ -69,6 +69,10 @@ function VideoViewModel:getCurrentSubtitle()
     return self:getCurrentMetaData(self.subtitles)
 end
 
+function VideoViewModel:getOffset()
+    return self.audio:getOffset()
+end
+
 function VideoViewModel:onVideoFinished()
     self.finished = true
     self:pause()

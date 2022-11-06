@@ -18,6 +18,7 @@ local getCrankChange <const> = playdate.getCrankChange
 local floor <const> = math.floor
 local clamp <const> = clamp
 local luaMod <const> = luaMod
+local musicManager <const> = musicManager
 
 print("Setting calcTimeStep in EndGameVM")
 local match <const> = match
@@ -86,7 +87,7 @@ function EndGameViewModel:initState(state)
         self:startVideo("video/director_intro_2")
     elseif state == states.DirectorLaunchInitiated then
         self:startVideo("video/director_t_minus_ten")
-        self.launchTime = getCurrentTime() + 10 -- starting countdown, launch 10 secconds into the future
+        self.launchTime = getCurrentTime() + 12 -- starting countdown, launch 12 seconds into the future
     elseif state == states.LiftOff then
         self.launchButtonFrame = 1
         self.rocketExhaustLoop = loop.new(66, rocketExhaustStartImgTable, false)
@@ -110,6 +111,7 @@ function EndGameViewModel:pause()
 end
 
 function EndGameViewModel:resume()
+    musicManager:stop()
     self.platform.arrows = false
 end
 
@@ -165,8 +167,8 @@ function EndGameViewModel:ReturnPlatformUpdate()
 end
 
 function EndGameViewModel:DirectorIntroUpdate()
-    local finished = true --self.videoViewModel:update()
-    if finished and not self.directorIntroFinished then
+    self.videoViewModel:update()
+    if self.videoViewModel:getOffset() > 11 and not self.directorIntroFinished then
         self.directorIntroFinished = true
         clickSamplePlayer:play(1,2.0)
         self.launchButtonFrame = 2
@@ -186,6 +188,9 @@ end
 function EndGameViewModel:DirectorLaunchInitiatedUpdate()
     if self:getLaunchTimeOffset() >= 0 then
         self:setState(states.LiftOff)
+    -- music track contains countdown which reaches 0 at t = 7s
+    elseif self:getLaunchTimeOffset() >= -7 and not musicManager:isPlaying() then
+        musicManager:play("music/the-countdown.mp3")
     end
 end
 
@@ -204,6 +209,10 @@ function EndGameViewModel:LiftOffUpdate()
             self.liftOffCamSpeed = 2
         end
         self.camOverrideY = self.camOverrideY - self.liftOffCamSpeed
+    end
+    if self:getLaunchTimeOffset() > 7.5 and not self.liftOffStartedAirlockVideo then
+        self:startVideo("video/director_open_airlock_3")
+        self.liftOffStartedAirlockVideo = true
     end
     if self.planePosY < 120 * tileSize then
         self:setState(states.OpenAirlock)
@@ -235,7 +244,6 @@ end
 
 --- negative when launch is in future
 function EndGameViewModel:getLaunchTimeOffset()
-    printT("launchtime", self.launchTime)
     if not self.launchTime then
         return nil
     end
