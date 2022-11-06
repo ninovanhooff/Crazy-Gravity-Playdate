@@ -31,6 +31,8 @@ local AirlockRId <const> = "endGameAirlockR"
 local targetPlanePosX <const> = 200
 local loadPlaneDurationMs <const> = 500
 local returnPlatformDurationMs <const> = loadPlaneDurationMs
+local airlockCamOverrideY = 10 * tileSize
+local directorIntroLaunchButtonEnabledOffset = 1
 
 local states = enum({
     "LoadPlane", "ReturnPlatform", "DirectorIntro", "DirectorLaunchInitiated",
@@ -87,7 +89,7 @@ function EndGameViewModel:initState(state)
         self:startVideo("video/director_intro_2")
     elseif state == states.DirectorLaunchInitiated then
         self:startVideo("video/director_t_minus_ten")
-        self.launchTime = getCurrentTime() + 12 -- starting countdown, launch 12 seconds into the future
+        self.launchTime = getCurrentTime() + 6 -- starting countdown, launch 12 seconds into the future
     elseif state == states.LiftOff then
         self.launchButtonFrame = 1
         self.rocketExhaustLoop = loop.new(66, rocketExhaustStartImgTable, false)
@@ -95,7 +97,7 @@ function EndGameViewModel:initState(state)
         self.exhaustLoopOffsetY = 106
         self.camOverrideY = camPos[2]*tileSize+camPos[4]
     elseif state == states.OpenAirlock then
-        self.camOverrideY = 10 * tileSize
+        self.camOverrideY = airlockCamOverrideY
     elseif state == states.FlyAway then
         self.liftOffSpeed = 4
         self.planePosY = (gameHeightTiles + 10) * tileSize -- right outside frame, offset to also place rocketShip outside frame
@@ -167,13 +169,12 @@ function EndGameViewModel:ReturnPlatformUpdate()
 end
 
 function EndGameViewModel:DirectorIntroUpdate()
-    self.videoViewModel:update()
-    if self.videoViewModel:getOffset() > 11 and not self.directorIntroFinished then
-        self.directorIntroFinished = true
+    if self.videoViewModel:getOffset() > directorIntroLaunchButtonEnabledOffset and not self.launchButtonEnabled then
+        self.launchButtonEnabled = true
         clickSamplePlayer:play(1,2.0)
         self.launchButtonFrame = 2
     end
-    if self.directorIntroFinished then
+    if self.launchButtonEnabled then
         if justPressed(playdate.kButtonA) then
             clickSamplePlayer:play()
             self.launchButtonFrame = 3
@@ -205,16 +206,19 @@ function EndGameViewModel:LiftOffUpdate()
     self.planePosY = self.planePosY - self.liftOffSpeed
     self.liftOffSpeed = self.liftOffSpeed * 1.01 -- accelerate
     if self.liftOffSpeed > 0.8 then
-        if not self.liftOffCamSpeed then
+        if self.liftOffSpeed < 4 then
             self.liftOffCamSpeed = 2
+        else
+            self.liftOffCamSpeed = roundToNearest(self.liftOffSpeed, 2) + 2
         end
         self.camOverrideY = self.camOverrideY - self.liftOffCamSpeed
+        self.camOverrideY = clamp(self.camOverrideY, airlockCamOverrideY,  self.camOverrideY)
     end
     if self:getLaunchTimeOffset() > 7.5 and not self.liftOffStartedAirlockVideo then
         self:startVideo("video/director_open_airlock_3")
         self.liftOffStartedAirlockVideo = true
     end
-    if self.planePosY < 120 * tileSize then
+    if self.camOverrideY == airlockCamOverrideY then
         self:setState(states.OpenAirlock)
     end
 end
@@ -263,6 +267,9 @@ local stateUpdaters = {
 
 function EndGameViewModel:update()
     calcTimeStep()
+    if self.videoViewModel then
+        self.videoViewModel:update()
+    end
     stateUpdaters[self.state](self)
     planePos[1] = floor(self.planePosX / tileSize)
     planePos[2] = floor(self.planePosY / tileSize)
