@@ -10,12 +10,14 @@ local loop <const> = gfx.animation.loop
 local rocketExhaustBurnImgTable = gfx.imagetable.new("images/rocket_ship_burn")
 local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_start")
 
+
 local clickSample = snd.sample.new("sounds/launch_control_click")
 local clickSamplePlayer = snd.sampleplayer.new(clickSample)
 assert(clickSamplePlayer)
 
 local getCrankChange <const> = playdate.getCrankChange
 local floor <const> = math.floor
+local abs <const> = math.abs
 local clamp <const> = clamp
 local luaMod <const> = luaMod
 local musicManager <const> = musicManager
@@ -31,18 +33,25 @@ local AirlockRId <const> = "endGameAirlockR"
 local targetPlanePosX <const> = 200
 local loadPlaneDurationMs <const> = 500
 local returnPlatformDurationMs <const> = loadPlaneDurationMs
-local airlockCamOverrideY = 10 * tileSize
-local directorIntroLaunchButtonEnabledOffset = 1
+local airlockCamOverrideY <const> = 10 * tileSize
+local directorIntroLaunchButtonEnabledOffset <const> = 1
+local launchInitiatedLiftOffDelay <const> = 1 -- starting countdown, launch 12 seconds into the future
+local chargingSpeed <const> = 0.1
 
 local states = enum({
     "LoadPlane", "ReturnPlatform", "DirectorIntro", "DirectorLaunchInitiated",
     "LiftOff", "OpenAirlock", "FlyAway"
 })
 
+local openAirlockStates = enum({"Initial", "PowerIncorrect", "PowerCorrect"})
+
 class("EndGameViewModel").extends()
 
 function EndGameViewModel:init()
     EndGameViewModel.super.init(self)
+
+    self.batteryProgress = 0
+    self.showBatteryProgress = false
 
     -- setup start of EndGame scene
     keys = {true,true,true,true} -- have? bool
@@ -89,7 +98,7 @@ function EndGameViewModel:initState(state)
         self:startVideo("video/director_intro_2")
     elseif state == states.DirectorLaunchInitiated then
         self:startVideo("video/director_t_minus_ten")
-        self.launchTime = getCurrentTime() + 6 -- starting countdown, launch 12 seconds into the future
+        self.launchTime = getCurrentTime() + launchInitiatedLiftOffDelay
     elseif state == states.LiftOff then
         self.launchButtonFrame = 1
         self.rocketExhaustLoop = loop.new(66, rocketExhaustStartImgTable, false)
@@ -98,6 +107,9 @@ function EndGameViewModel:initState(state)
         self.camOverrideY = camPos[2]*tileSize+camPos[4]
     elseif state == states.OpenAirlock then
         self.camOverrideY = airlockCamOverrideY
+        self.showBatteryProgress = true
+        self.openAirlockState = openAirlockStates.Initial
+        self.openAirlockBatteryBlinker = gfx.animation.blinker.new()
     elseif state == states.FlyAway then
         self.liftOffSpeed = 4
         self.planePosY = (gameHeightTiles + 10) * tileSize -- right outside frame, offset to also place rocketShip outside frame
@@ -224,19 +236,49 @@ function EndGameViewModel:LiftOffUpdate()
 end
 
 function EndGameViewModel:OpenAirlockUpdate()
-    if self.airLockROverridePos == 0 then
-        self:setState(states.FlyAway)
+    if self.openAirlockState == openAirlockStates.Initial then
+        local changeDirection = 0 -- 1 for close, -1 for open
+        if getCrankChange() > 5 and self.airLockROverridePos < self.maxAirlockRPos then
+            changeDirection = 1
+        elseif getCrankChange() < -5 and self.airLockROverridePos > 0 then
+            changeDirection = -1
+        end
+        self.crankFrame = luaMod((self.crankFrame + changeDirection), self.numCrankFrames)
+        self.batteryProgress = self.batteryProgress + changeDirection * chargingSpeed
+        self.batteryProgress = clamp(self.batteryProgress, -1, 1)
+        local batteryActivated = abs(self.batteryProgress) == 1
+        if batteryActivated then
+            if self.correctDirection == nil then
+                -- initial direction is the wrong one
+                self.correctDirection = -self.batteryProgress
+                self.openAirlockState = openAirlockStates.PowerIncorrect
+                self.openAirlockBatteryBlinker:startLoop()
+            elseif self.correctDirection == self.batteryProgress then
+                -- fully cranked to the correct direction
+                self.openAirlockState = openAirlockStates.PowerCorrect
+                self.openAirlockBatteryBlinker:startLoop()
+            end
+        elseif self.correctDirection ~= nil and abs(self.batteryProgress) < 0.3 then
+            self:startVideo("video/director_impact_imminent_2")
+        end
+    elseif self.openAirlockState == openAirlockStates.PowerIncorrect then
+        self.showBatteryProgress = self.openAirlockBatteryBlinker.on
+        self.airLockROverridePos = clamp(self.airLockROverridePos + 2, 0, self.maxAirlockRPos)
+        if self.airLockROverridePos == self.maxAirlockRPos then
+            self.openAirlockBatteryBlinker:stop()
+            self.openAirlockState = openAirlockStates.Initial
+            self.showBatteryProgress = true
+            self:startVideo("video/director_other_way_2")
+        end
+    elseif self.openAirlockState == openAirlockStates.PowerCorrect then
+        self.showBatteryProgress = self.openAirlockBatteryBlinker.on
+        self.airLockROverridePos = clamp(self.airLockROverridePos - 2, 0, self.maxAirlockRPos)
+        if self.airLockROverridePos == 0 then
+            self.openAirlockBatteryBlinker:stop()
+            self.showBatteryProgress = false
+            self:setState(states.FlyAway)
+        end
     end
-
-    local changeDirection = 0 -- 1 for close, -1 for open
-    if getCrankChange() > 5 and self.airLockROverridePos < self.maxAirlockRPos then
-        changeDirection = 1
-    elseif getCrankChange() < -5 and self.airLockROverridePos > 0 then
-        changeDirection = -1
-    end
-    self.crankFrame = luaMod((self.crankFrame + changeDirection), self.numCrankFrames)
-    self.airLockROverridePos = clamp(self.airLockROverridePos + changeDirection * 2, 0, self.maxAirlockRPos)
-
 end
 
 function EndGameViewModel:FlyAwayUpdate()
