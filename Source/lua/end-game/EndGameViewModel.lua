@@ -51,7 +51,7 @@ function EndGameViewModel:init()
     EndGameViewModel.super.init(self)
 
     self.batteryProgress = 0
-    self.showBatteryProgress = false
+    self.showBatteryProgress = true
 
     -- setup start of EndGame scene
     keys = {true,true,true,true} -- have? bool
@@ -74,6 +74,7 @@ function EndGameViewModel:init()
     self.airlockL = findSpecial(AirlockLId)
     self.airlockR = findSpecial(AirlockRId)
 
+    self.openAirlockBatteryBlinker = gfx.animation.blinker.new()
     self.airLockROverridePos = 9*tileSize
     self.crankFrame = 1
     self.launchButtonFrame = 1
@@ -109,8 +110,8 @@ function EndGameViewModel:initState(state)
         self.camOverrideY = airlockCamOverrideY
         self.showBatteryProgress = true
         self.openAirlockState = openAirlockStates.Initial
-        self.openAirlockBatteryBlinker = gfx.animation.blinker.new()
     elseif state == states.FlyAway then
+        self:startVideo("video/director_airlock_clear")
         self.liftOffSpeed = 4
         self.planePosY = (gameHeightTiles + 10) * tileSize -- right outside frame, offset to also place rocketShip outside frame
     end
@@ -238,9 +239,9 @@ end
 function EndGameViewModel:OpenAirlockUpdate()
     if self.openAirlockState == openAirlockStates.Initial then
         local changeDirection = 0 -- 1 for close, -1 for open
-        if getCrankChange() > 5 and self.airLockROverridePos < self.maxAirlockRPos then
+        if getCrankChange() > 5 then
             changeDirection = 1
-        elseif getCrankChange() < -5 and self.airLockROverridePos > 0 then
+        elseif getCrankChange() < -5 then
             changeDirection = -1
         end
         self.crankFrame = luaMod((self.crankFrame + changeDirection), self.numCrankFrames)
@@ -262,19 +263,16 @@ function EndGameViewModel:OpenAirlockUpdate()
             self:startVideo("video/director_impact_imminent_2")
         end
     elseif self.openAirlockState == openAirlockStates.PowerIncorrect then
-        self.showBatteryProgress = self.openAirlockBatteryBlinker.on
         self.airLockROverridePos = clamp(self.airLockROverridePos + 2, 0, self.maxAirlockRPos)
         if self.airLockROverridePos == self.maxAirlockRPos then
-            self.openAirlockBatteryBlinker:stop()
+            self.openAirlockBatteryBlinker.loop = false
             self.openAirlockState = openAirlockStates.Initial
-            self.showBatteryProgress = true
             self:startVideo("video/director_other_way_2")
         end
     elseif self.openAirlockState == openAirlockStates.PowerCorrect then
-        self.showBatteryProgress = self.openAirlockBatteryBlinker.on
         self.airLockROverridePos = clamp(self.airLockROverridePos - 2, 0, self.maxAirlockRPos)
         if self.airLockROverridePos == 0 then
-            self.openAirlockBatteryBlinker:stop()
+            self.openAirlockBatteryBlinker.loop = false
             self.showBatteryProgress = false
             self:setState(states.FlyAway)
         end
@@ -284,7 +282,11 @@ end
 function EndGameViewModel:FlyAwayUpdate()
     self.planePosY = self.planePosY - self.liftOffSpeed
     if self.planePosY < 0 then
-        self:onEnded()
+        -- the combination of transitioning to a new Screen + glitch is a bit too much
+        self.videoViewModel.vcrFilterEnabled = false
+        if self.videoViewModel.finished then
+            self:onEnded()
+        end
     end
 end
 

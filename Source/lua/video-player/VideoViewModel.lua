@@ -32,6 +32,8 @@ function VideoViewModel:init(basePath)
         self.chyrons = self.metadata.chyrons
     end
 
+    self.vcrFilterEnabled = true
+
 end
 
 function VideoViewModel:currentFrame()
@@ -39,6 +41,9 @@ function VideoViewModel:currentFrame()
 end
 
 function VideoViewModel:shouldApplyVcrFilter()
+    if not self.vcrFilterEnabled then
+        return false
+    end
     local currentFrame = self:currentFrame()
     return currentFrame < 3 or currentFrame > self.frameCount - 3
 end

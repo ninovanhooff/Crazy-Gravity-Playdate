@@ -11,7 +11,7 @@ local launchTowerImg = gfx.image.new("images/launch_tower")
 local rocketShip = gfx.image.new("images/rocket_ship")
 local airlockCrank <const> = gfx.imagetable.new("images/launch_control_crank")
 local launchButton <const> = gfx.imagetable.new("images/launch_control_button")
-local batteriesImg = gfx.image.new("images/launch_control_batteries")
+local batteryMonitorImg = gfx.image.new("images/launch_control_battery_monitor")
 
 if #airlockCrank < 1 then
     error("no crank frames")
@@ -83,17 +83,21 @@ function EndGameView:render(viewModel)
 
     if viewModel.videoPlayerView and not viewModel.videoViewModel.finished then
         viewModel.videoPlayerView:render(viewModel.videoViewModel)
-    elseif viewModel.showBatteryProgress then
+    end
+
+    if viewModel.showBatteryProgress then
         local progress = viewModel.batteryProgress
         local h = abs(progress) * 68
         gfx.pushContext()
-            gfx.setDrawOffset(14,86)
-            batteriesImg:draw(0,0)
-            gfx.setColor(playdate.graphics.kColorXOR)
-            if progress > 0 then
-                gfx.fillRect(10, 84 - h, 17, h)
-            elseif progress < 0 then
-                gfx.fillRect(44, 12, 17, h)
+            gfx.setDrawOffset(317, 55)
+            batteryMonitorImg:draw(0,0)
+            if viewModel.openAirlockBatteryBlinker.on then
+                gfx.setColor(playdate.graphics.kColorXOR)
+                if progress > 0 then
+                    gfx.fillRect(16, 106 - h, 17, h)
+                elseif progress < 0 then
+                    gfx.fillRect(43, 35, 17, h)
+                end
             end
         gfx.popContext()
     end
