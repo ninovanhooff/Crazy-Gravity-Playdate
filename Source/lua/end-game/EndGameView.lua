@@ -81,4 +81,10 @@ function EndGameView:render(viewModel)
     if viewModel.videoPlayerView and not viewModel.videoViewModel.finished then
         viewModel.videoPlayerView:render(viewModel.videoViewModel)
     end
+
+    local launchTimeOffset = viewModel:getLaunchTimeOffset()
+    if launchTimeOffset then
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
+        gfx.drawText(launchTimeOffset, 163, 12)
+    end
 end

@@ -3,6 +3,7 @@ import "FlyToCreditsScreen"
 
 local gfx <const> = playdate.graphics
 local snd <const> = playdate.sound
+local getCurrentTime <const> = snd.getCurrentTime
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
 local loop <const> = gfx.animation.loop
@@ -31,8 +32,8 @@ local loadPlaneDurationMs <const> = 500
 local returnPlatformDurationMs <const> = loadPlaneDurationMs
 
 local states = enum({
-    "LoadPlane", "DirectorIntro",
-    "ReturnPlatform", "LiftOff", "OpenAirlock", "FlyAway"
+    "LoadPlane", "ReturnPlatform", "DirectorIntro", "DirectorLaunchInitiated",
+    "LiftOff", "OpenAirlock", "FlyAway"
 })
 
 class("EndGameViewModel").extends()
@@ -82,12 +83,10 @@ function EndGameViewModel:initState(state)
         self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -545, 0)
         self.camOverrideY = camPos[2]*tileSize+camPos[4] + 16
     elseif state == states.DirectorIntro then
-        require("lua/video-player/VideoPlayerScreen")
-        self.videoViewModel = VideoViewModel("video/test2_final")
-        self.videoPlayerView = VideoPlayerView(self.videoViewModel)
-        self.videoViewModel.offsetX = 14
-        self.videoViewModel.offsetY = 86
-        self.videoPlayerView:resume()
+        self:startVideo("video/director_intro_2")
+    elseif state == states.DirectorLaunchInitiated then
+        self:startVideo("video/director_t_minus_ten")
+        self.launchTime = getCurrentTime() + 10 -- starting countdown, launch 10 secconds into the future
     elseif state == states.LiftOff then
         self.launchButtonFrame = 1
         self.rocketExhaustLoop = loop.new(66, rocketExhaustStartImgTable, false)
@@ -123,6 +122,18 @@ function EndGameViewModel:onEnded()
             ["offsetY"] = self.exhaustLoopOffsetY
         }
     ))
+end
+
+function EndGameViewModel:startVideo(path)
+    require("lua/video-player/VideoPlayerScreen")
+    if self.videoViewModel then
+        self.videoViewModel:destroy()
+    end
+    self.videoViewModel = VideoViewModel(path)
+    self.videoPlayerView = VideoPlayerView(self.videoViewModel)
+    self.videoViewModel.offsetX = 14
+    self.videoViewModel.offsetY = 86
+    self.videoPlayerView:resume()
 end
 
 function EndGameViewModel:LoadPlaneUpdate()
@@ -167,8 +178,14 @@ function EndGameViewModel:DirectorIntroUpdate()
         elseif justReleased(playdate.kButtonA) then
             self.launchButtonFrame = 1
             clickSamplePlayer:play(1, -1.0)
-            self:setState(states.LiftOff)
+            self:setState(states.DirectorLaunchInitiated)
         end
+    end
+end
+
+function EndGameViewModel:DirectorLaunchInitiatedUpdate()
+    if self:getLaunchTimeOffset() >= 0 then
+        self:setState(states.LiftOff)
     end
 end
 
@@ -216,10 +233,21 @@ function EndGameViewModel:FlyAwayUpdate()
     end
 end
 
+--- negative when launch is in future
+function EndGameViewModel:getLaunchTimeOffset()
+    printT("launchtime", self.launchTime)
+    if not self.launchTime then
+        return nil
+    end
+
+    return getCurrentTime() - self.launchTime
+end
+
 local stateUpdaters = {
     [states.LoadPlane] = EndGameViewModel.LoadPlaneUpdate,
-    [states.DirectorIntro] = EndGameViewModel.DirectorIntroUpdate,
     [states.ReturnPlatform] = EndGameViewModel.ReturnPlatformUpdate,
+    [states.DirectorIntro] = EndGameViewModel.DirectorIntroUpdate,
+    [states.DirectorLaunchInitiated] = EndGameViewModel.DirectorLaunchInitiatedUpdate,
     [states.LiftOff] = EndGameViewModel.LiftOffUpdate,
     [states.OpenAirlock] = EndGameViewModel.OpenAirlockUpdate,
     [states.FlyAway] = EndGameViewModel.FlyAwayUpdate,

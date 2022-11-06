@@ -94,5 +94,5 @@ function VideoViewModel:resume()
 end
 
 function VideoViewModel:destroy()
-    self:pause()
+    self.audio:stop() --todo move fadeout to videoPlayerViewModel
 end
