@@ -136,7 +136,8 @@ function EndGameViewModel:setState(state)
     self.state = state
 end
 
-function EndGameViewModel:pause()
+function EndGameViewModel:destroy()
+    self.videoPlayerView:destroy()
 end
 
 function EndGameViewModel:resume()

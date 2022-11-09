@@ -27,10 +27,6 @@ function FlyToCreditsViewModel:update()
             -- create the CreditsScreen while nothing is moving on screen, so no yank is visible
             self.cachedCreditsScreen = CreditsScreen()
         elseif self.bgType == FlyToCreditsViewModel.bgTypes.asteroids then
-            rocketEngineLoop:stop()
-            rocketEngineStop:setVolume(0.5)
-            rocketEngineStop:play()
-            self.exhaustLoopSpecs = nil
             -- enter hyperspace
             self.bgType = FlyToCreditsViewModel.bgTypes.stars
             self:resetRocketShip()
@@ -50,6 +46,14 @@ function FlyToCreditsViewModel:update()
         self.rocketShipY = self.rocketShipY - 1
     else
         self.rocketShipY = self.planeY - planeOffset
+    end
+    if self.bgType == FlyToCreditsViewModel.bgTypes.asteroids and self.planeY < 180 and rocketEngineLoop:isPlaying() then
+        rocketEngineLoop:stop()
+        rocketEngineStop:setVolume(0.5)
+        rocketEngineStop:setFinishCallback(function()
+            self.exhaustLoopSpecs = nil
+        end)
+        rocketEngineStop:play()
     end
 end
 

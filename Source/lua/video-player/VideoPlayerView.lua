@@ -18,7 +18,7 @@ function VideoPlayerView:resume()
 end
 
 function VideoPlayerView:pause()
-    playdate.display.setRefreshRate(30)
+    playdate.display.setRefreshRate(frameRate)
     playdate.setAutoLockDisabled(false)
     self.viewModel:pause()
 end

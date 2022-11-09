@@ -16,8 +16,8 @@ function EndGameScreen:update()
     endGameViewModel:update()
 end
 
-function EndGameScreen:pause()
-    endGameViewModel:pause()
+function EndGameScreen:destroy()
+    endGameViewModel:destroy()
 end
 
 function EndGameScreen:resume()
