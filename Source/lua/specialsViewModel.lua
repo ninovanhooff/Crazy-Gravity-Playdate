@@ -21,6 +21,7 @@ local selfRightTipShownKey <const> = Options.SELF_RIGHT_TIP_SHOWN_KEY
 local gameHUD <const> = gameHUD
 local tileSize <const> = tileSize
 local planePos <const> = planePos
+local clamp <const> = clamp
 local renderTooltip <const> = Tooltips.renderTooltip
 local keyGlyphT <const> = {"●", "▲", "◆", "■"}
 
@@ -28,6 +29,8 @@ local barrierSpeed <const> = 2
 -- #frames between rods speed or direction change when chngOften is enabled
 local rodsChangeTimeoutMin <const> = 30
 local rodsChangeTimeoutMax <const> = 90
+
+local shouldPlayBarrierSound = false
 
 local function UnitCollision(x,y,w,h,testMode)
     --printf(x,y,w,h)
@@ -86,6 +89,19 @@ local function updateCheckpoint(platform)
     if platform ~= checkpoint then
         checkpoint = platform
         checkpoint.animator = animator.new(checkpointAnimatorDuration, 32, -56, checkpointEasing)
+    end
+end
+
+function notifySpecialsCalcStart()
+    shouldPlayBarrierSound = false
+end
+
+function notifySpecialsCalcEnd()
+    if not barrier_sound then return end
+    if shouldPlayBarrierSound and not barrier_sound:isPlaying() then
+        barrier_sound:play(0)
+    elseif shouldPlayBarrierSound == false and barrier_sound:isPlaying() then
+        barrier_sound:stop()
     end
 end
 
@@ -384,6 +400,7 @@ end
 
 local wrongWayTriggerSize <const> = 12
 function Calc1Way(item)
+    local oldPos <const> = item.pos
     local activated = false
     local unitCollision = false
     item.showWrongWay = false
@@ -424,13 +441,20 @@ function Calc1Way(item)
     else
         item.pos = item.pos+barrierSpeed
     end
+
     item.pos = clamp(item.pos, 0, item.closedPos)
+
+    if item.pos ~= oldPos then
+        shouldPlayBarrierSound = true
+    end
+
     if unitCollision and not activated and item.pos == item.closedPos then
         item.showWrongWay = true
     end
 end
 
 function CalcBarrier(item)
+    local oldPos <const> = item.pos
     item.activated = false
     item.tooltip = nil
     -- gate collision
@@ -467,14 +491,14 @@ function CalcBarrier(item)
     end
     if item.activated and #missingKeyGlyphs == 0 then
         item.pos = item.pos - barrierSpeed
-        if item.pos<0 then
-            item.pos = 0
-        end
     else
         item.pos = item.pos+barrierSpeed
-        if item.pos>item.distance*8-boolToNum(item.endStone==1)*16-4 then
-            item.pos=item.distance*8-boolToNum(item.endStone==1)*16-4
-        end
+    end
+
+    item.pos = clamp(item.pos, 0, item.distance*8-boolToNum(item.endStone==1)*16-4)
+
+    if item.pos ~= oldPos then
+        shouldPlayBarrierSound = true
     end
 
     -- tooltip

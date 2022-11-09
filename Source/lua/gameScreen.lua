@@ -27,7 +27,10 @@ end
 
 function GameScreen:pause()
     gamePaused = true
-    if Sounds then thrust_sound:stop() end
+    if Sounds then
+        thrust_sound:stop()
+        barrier_sound:stop()
+    end
 
     if self.backMenuItem then
         menu:removeMenuItem(self.backMenuItem)

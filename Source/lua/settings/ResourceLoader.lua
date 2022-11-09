@@ -78,6 +78,8 @@ function ResourceLoader:loadSounds(audioStyle, onlyStartAssets)
     explode_sound = sampleplayer.new("sounds/explosion.wav")
     unlock_sound = sampleplayer.new("sounds/unlock.wav")
     landing_sound = sampleplayer.new("sounds/landing.wav")
+    barrier_sound = sampleplayer.new("sounds/barrier.wav")
+
 
     -- style-specific sounds
     if audioStyle == "classic" then

@@ -35,7 +35,7 @@ local BarrierId <const> = "endGameBarrier"
 local AirlockLId <const> = "endGameAirlockL"
 local AirlockRId <const> = "endGameAirlockR"
 local targetPlanePosX <const> = 200
-local loadPlaneDurationMs <const> = 1--5000
+local loadPlaneDurationMs <const> = 5000--5000
 local returnPlatformDurationMs <const> = loadPlaneDurationMs
 local airlockCamOverrideY <const> = 10 * tileSize
 local directorIntroLaunchButtonEnabledDelay <const> = 1--11
@@ -74,6 +74,7 @@ function EndGameViewModel:init()
         return match(specialT, function(item) return item.id == targetId end)
     end
     self.platform = findSpecial(PlatformId)
+    --- the barrier that separates the launch shaft from the rest of the level
     self.barrier = findSpecial(BarrierId)
     self.airlockL = findSpecial(AirlockLId)
     self.airlockR = findSpecial(AirlockRId)
