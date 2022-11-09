@@ -10,6 +10,10 @@ local loop <const> = gfx.animation.loop
 local rocketExhaustBurnImgTable = gfx.imagetable.new("images/rocket_ship_burn")
 local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_start")
 
+local conveyorBeltPlayer = snd.sampleplayer.new("sounds/conveyor_belt")
+
+rocketEngineStart = snd.sampleplayer.new("sounds/rocket_engine_start")
+rocketEngineLoop = snd.sampleplayer.new("sounds/rocket_engine_loop")
 
 local clickSample = snd.sample.new("sounds/launch_control_click")
 local clickSamplePlayer = snd.sampleplayer.new(clickSample)
@@ -31,12 +35,12 @@ local BarrierId <const> = "endGameBarrier"
 local AirlockLId <const> = "endGameAirlockL"
 local AirlockRId <const> = "endGameAirlockR"
 local targetPlanePosX <const> = 200
-local loadPlaneDurationMs <const> = 500
+local loadPlaneDurationMs <const> = 1--5000
 local returnPlatformDurationMs <const> = loadPlaneDurationMs
 local airlockCamOverrideY <const> = 10 * tileSize
-local directorIntroLaunchButtonEnabledOffset <const> = 1
-local launchInitiatedLiftOffDelay <const> = 1 -- starting countdown, launch 12 seconds into the future
-local chargingSpeed <const> = 0.1
+local directorIntroLaunchButtonEnabledDelay <const> = 1--11
+local launchInitiatedLiftOffDelay <const> = 1--12 -- starting countdown, launch 12 seconds into the future
+local chargingSpeed <const> = 0.1--0.01
 
 local states = enum({
     "LoadPlane", "ReturnPlatform", "DirectorIntro", "DirectorLaunchInitiated",
@@ -51,7 +55,7 @@ function EndGameViewModel:init()
     EndGameViewModel.super.init(self)
 
     self.batteryProgress = 0
-    self.showBatteryProgress = true
+    self.showBatteryProgress = false
 
     -- setup start of EndGame scene
     keys = {true,true,true,true} -- have? bool
@@ -95,6 +99,11 @@ function EndGameViewModel:initState(state)
         self.planeAnimator = gfx.animator.new(loadPlaneDurationMs, self.planePosX, targetPlanePosX)
         self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -545, 0)
         self.camOverrideY = camPos[2]*tileSize+camPos[4] + 16
+        conveyorBeltPlayer:play()
+    elseif state == states.ReturnPlatform then
+        conveyorBeltPlayer:stop()
+        conveyorBeltPlayer:setPlayRange(1,115000) -- do not play clamp / lock / thud
+        conveyorBeltPlayer:play()
     elseif state == states.DirectorIntro then
         self:startVideo("video/director_intro_2")
     elseif state == states.DirectorLaunchInitiated then
@@ -106,6 +115,11 @@ function EndGameViewModel:initState(state)
         self.exhaustLoopOffsetX = -6
         self.exhaustLoopOffsetY = 106
         self.camOverrideY = camPos[2]*tileSize+camPos[4]
+        rocketEngineStart:setFinishCallback(function()
+            rocketEngineLoop:setVolume(0.5)
+            rocketEngineLoop:play(0)
+        end)
+        rocketEngineStart:play()
     elseif state == states.OpenAirlock then
         self.camOverrideY = airlockCamOverrideY
         self.showBatteryProgress = true
@@ -113,7 +127,7 @@ function EndGameViewModel:initState(state)
     elseif state == states.FlyAway then
         self:startVideo("video/director_airlock_clear")
         self.liftOffSpeed = 4
-        self.planePosY = (gameHeightTiles + 10) * tileSize -- right outside frame, offset to also place rocketShip outside frame
+        self.planePosY = (gameHeightTiles + 20) * tileSize -- a little outside frame, so it doesn't appear immediately when airlock is opened
     end
 end
 
@@ -158,6 +172,7 @@ function EndGameViewModel:LoadPlaneUpdate()
         self.planePosX = floor(self.planeAnimator:currentValue())
         self.platform.x = (self.planePosX + self.platformOffsetX)/tileSize
     else
+        playdate.wait(1500)
         self:setState(states.ReturnPlatform)
     end
 end
@@ -182,7 +197,7 @@ function EndGameViewModel:ReturnPlatformUpdate()
 end
 
 function EndGameViewModel:DirectorIntroUpdate()
-    if self.videoViewModel:getOffset() > directorIntroLaunchButtonEnabledOffset and not self.launchButtonEnabled then
+    if self.videoViewModel:getOffset() > directorIntroLaunchButtonEnabledDelay and not self.launchButtonEnabled then
         self.launchButtonEnabled = true
         clickSamplePlayer:play(1,2.0)
         self.launchButtonFrame = 2
@@ -259,7 +274,7 @@ function EndGameViewModel:OpenAirlockUpdate()
                 self.openAirlockState = openAirlockStates.PowerCorrect
                 self.openAirlockBatteryBlinker:startLoop()
             end
-        elseif self.correctDirection ~= nil and abs(self.batteryProgress) < 0.3 then
+        elseif self.correctDirection ~= nil and abs(self.batteryProgress) < 0.3 and self.videoViewModel.finished then
             self:startVideo("video/director_impact_imminent_2")
         end
     elseif self.openAirlockState == openAirlockStates.PowerIncorrect then

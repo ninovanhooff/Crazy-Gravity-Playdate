@@ -3,6 +3,8 @@ import "../credits/CreditsScreen.lua"
 local tileSize <const> = tileSize
 local planeOffset <const> = 7 * tileSize
 
+local rocketEngineStop = playdate.sound.sampleplayer.new("sounds/rocket_engine_stop")
+
 class("FlyToCreditsViewModel").extends()
 
 FlyToCreditsViewModel.bgTypes = enum({"surface", "asteroids", "stars"})
@@ -25,6 +27,9 @@ function FlyToCreditsViewModel:update()
             -- create the CreditsScreen while nothing is moving on screen, so no yank is visible
             self.cachedCreditsScreen = CreditsScreen()
         elseif self.bgType == FlyToCreditsViewModel.bgTypes.asteroids then
+            rocketEngineLoop:stop()
+            rocketEngineStop:setVolume(0.5)
+            rocketEngineStop:play()
             self.exhaustLoopSpecs = nil
             -- enter hyperspace
             self.bgType = FlyToCreditsViewModel.bgTypes.stars
