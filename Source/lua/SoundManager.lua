@@ -5,6 +5,7 @@
 ---
 
 local min <const> = math.min
+local random <const> = math.random
 local distanceToPoint <const> = playdate.geometry.distanceToPoint
 local halfWidthTiles <const> = math.ceil(gameWidthTiles*0.5)
 local halfHeightTiles <const> = math.ceil(gameHeightTiles*0.5)
@@ -23,6 +24,10 @@ else
     print("WARN sound manager initiated multiple times")
 end
 
+local function playRandomPitch(player, times)
+    player:play(times, 0.98 + random() * 0.04)
+end
+
 function SoundManager:notifySoundCalcStart()
     self.minBarrierSoundDistance = SOUND_DISTANCE_INFINITE
 end
@@ -34,15 +39,15 @@ function SoundManager:notifySoundCalcEnd()
         print("barrier vol", volume)
         barrier_sound:setVolume(volume)
         if not barrier_sound:isPlaying() then
-            barrier_sound:play(0)
+            playRandomPitch(barrier_sound, 0)
         end
     elseif barrier_sound and barrier_sound:isPlaying() then
-            barrier_sound:stop()
+        barrier_sound:stop()
     end
 end
 
 function SoundManager:addSoundForItem(item)
-    local distance = distanceToPoint(item.x, item.y, camPos[1]+halfWidthTiles, camPos[2]+halfWidthTiles)
+    local distance = distanceToPoint(item.x, item.y, camPos[1]+halfWidthTiles, camPos[2]+halfHeightTiles)
     if item.sType == 14 or item.sType == 15 then -- barrier or 1way
         self.minBarrierSoundDistance = min(self.minBarrierSoundDistance, distance)
     end
