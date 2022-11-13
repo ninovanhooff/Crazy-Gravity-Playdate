@@ -37,6 +37,10 @@ planePos = {}
 planeSize = 24
 camPos = {}
 
+-- requires gameWidthTiles
+import "SoundManager"
+
+
 sinThrustT= {}
 for i = 0,23 do
     sinThrustT[i] = math.sin(-i/12*pi)

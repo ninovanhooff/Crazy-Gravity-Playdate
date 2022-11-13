@@ -78,8 +78,7 @@ function ResourceLoader:loadSounds(audioStyle, onlyStartAssets)
     explode_sound = sampleplayer.new("sounds/explosion.wav")
     unlock_sound = sampleplayer.new("sounds/unlock.wav")
     landing_sound = sampleplayer.new("sounds/landing.wav")
-    barrier_sound = sampleplayer.new("sounds/barrier.wav")
-
+    soundManager:loadGameSounds()
 
     -- style-specific sounds
     if audioStyle == "classic" then
@@ -117,6 +116,7 @@ end
 
 --- volume range 0.0-1.0
 function ResourceLoader:setSoundVolume(volume)
+    soundManager:setVolume(volume)
     local extra_sounds = extra_sounds or {}
     Sounds = volume > 0.0
     print("set volume", volume)

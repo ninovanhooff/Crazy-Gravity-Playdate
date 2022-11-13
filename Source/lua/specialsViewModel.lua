@@ -235,6 +235,8 @@ end
 function CalcBlower(item)
     if not flying then return end
 
+    soundManager:addSoundForItem(item)
+
     if item.direction==1 then --up
         if UnitCollision(item.x,item.y,6,item.distance,true) then
             local mult = item.distance-(item.y+item.distance - planePos[2])
@@ -286,6 +288,8 @@ end
 
 function CalcRotator(item)
     if not flying then return end
+
+    soundManager:addSoundForItem(item)
 
     if (item.direction==1 and UnitCollision(item.x,item.y,5,item.distance,true))
             or (item.direction==2 and UnitCollision(item.x,item.y+8,5,item.distance,true))
@@ -559,7 +563,7 @@ local function noOp() end
 
 initSpecial = {}
 initSpecial[8]=InitPlatform
-initSpecial[9]=noOp
+initSpecial[9]=noOp -- blower a.k.a. fan
 initSpecial[10]=noOp -- magnet
 initSpecial[11]=noOp --rotator
 initSpecial[12]=InitCannon
