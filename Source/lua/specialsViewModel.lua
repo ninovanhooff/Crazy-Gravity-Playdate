@@ -30,7 +30,6 @@ local barrierSpeed <const> = 2
 local rodsChangeTimeoutMin <const> = 30
 local rodsChangeTimeoutMax <const> = 90
 
-local shouldPlayBarrierSound = false
 
 local function UnitCollision(x,y,w,h,testMode)
     --printf(x,y,w,h)
@@ -89,19 +88,6 @@ local function updateCheckpoint(platform)
     if platform ~= checkpoint then
         checkpoint = platform
         checkpoint.animator = animator.new(checkpointAnimatorDuration, 32, -56, checkpointEasing)
-    end
-end
-
-function notifySpecialsCalcStart()
-    shouldPlayBarrierSound = false
-end
-
-function notifySpecialsCalcEnd()
-    if not barrier_sound then return end
-    if shouldPlayBarrierSound and not barrier_sound:isPlaying() then
-        barrier_sound:play(0)
-    elseif shouldPlayBarrierSound == false and barrier_sound:isPlaying() then
-        barrier_sound:stop()
     end
 end
 
@@ -445,7 +431,7 @@ function Calc1Way(item)
     item.pos = clamp(item.pos, 0, item.closedPos)
 
     if item.pos ~= oldPos then
-        shouldPlayBarrierSound = true
+        soundManager:addSoundForItem(item)
     end
 
     if unitCollision and not activated and item.pos == item.closedPos then

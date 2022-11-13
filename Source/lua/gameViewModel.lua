@@ -5,6 +5,7 @@
 ---
 
 import "CamController"
+import "SoundManager"
 import "game-over/GameOverScreen"
 import "game-explosion/GameExplosionScreen"
 
@@ -31,6 +32,7 @@ local planeSpeedXCamMultiplier <const> = 0.05
 local planeSpeedYCamMultiplier <const> = 0.03
 local planeRotationCamMultiplier <const> = 0.05
 local gameHUD <const> = gameHUD
+local soundManager <const> = soundManager
 
 CollisionReason = enum({"OverSpeed", "SelfDestruct", "Other"})
 
@@ -198,14 +200,14 @@ function CalcTimeStep()
 
     local screenCenterX = camPos[1] + halfWidthTiles
     local screenCenterY = camPos[2] + halfHeightTiles
-    notifySpecialsCalcStart()
+    soundManager:notifySoundCalcStart()
     for i,item in ipairs(specialT) do
         -- only calculate when item max half a screen out of view
         if abs(item.x - screenCenterX) <= gameWidthTiles + item.w  and abs(item.y - screenCenterY) <= gameHeightTiles + item.h then
             specialCalcT[item.sType](item,i)
         end
     end
-    notifySpecialsCalcEnd()
+    soundManager:notifySoundCalcEnd()
     if collision and explosion == nil and not Debug then
         print("KABOOM", extras[2])
         pushScreen(GameExplosionScreen(calcPlane, CalcGameCam))
