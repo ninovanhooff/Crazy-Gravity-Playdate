@@ -11,7 +11,8 @@ local launchTowerImg = gfx.image.new("images/launch_tower")
 local rocketShip = gfx.image.new("images/rocket_ship")
 local airlockCrank <const> = gfx.imagetable.new("images/launch_control_crank")
 local launchButton <const> = gfx.imagetable.new("images/launch_control_button")
-local batteryMonitorImg = gfx.image.new("images/launch_control_battery_monitor")
+local batteryMonitorImg <const> = gfx.image.new("images/launch_control_battery_monitor")
+local lcdFont <const> = gfx.font.new("fonts/digital-7-mono-20")
 
 if #airlockCrank < 1 then
     error("no crank frames")
@@ -71,7 +72,6 @@ function EndGameView:renderGame(viewModel)
     )
 end
 
-
 function EndGameView:render(viewModel)
     self:renderGame(viewModel)
     if viewModel.controlRoomAnimator then
@@ -105,6 +105,12 @@ function EndGameView:render(viewModel)
     local launchTimeOffset = viewModel:getLaunchTimeOffset()
     if launchTimeOffset then
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
-        gfx.drawText(launchTimeOffset, 163, 12)
+        local signString = launchTimeOffset > 0 and "+" or "-"
+        local minutes = floor(abs(launchTimeOffset)/60)
+        local seconds = floor(abs(launchTimeOffset)%60)
+        local text = string.format(
+            "T%s %d:%02d", signString, minutes, seconds
+        )
+        lcdFont:drawText(text, 156, 6)
     end
 end
