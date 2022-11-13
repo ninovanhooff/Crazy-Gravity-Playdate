@@ -263,6 +263,8 @@ end
 function CalcMagnet(item)
     if not flying then return end
 
+    soundManager:addSoundForItem(item)
+
     if item.direction==1 then --up
         if UnitCollision(item.x,item.y,4,item.distance,true) then
             local mult = item.distance-(item.y+item.distance - planePos[2])

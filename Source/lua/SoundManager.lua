@@ -19,10 +19,30 @@ function SoundManager:init()
     self.volume = 1.0
 end
 
+local function forSounds(self, func)
+    if self.volume == 0.0 or not self.sounds then return end
+
+    for _, sound in pairs(self.sounds) do
+        func(sound)
+    end
+end
+
+local function loadSound(path)
+    return {
+        ["player"] = sampleplayer.new(path),
+    }
+end
+
+local function playRandomPitch(player, times)
+    player:play(times, 0.98 + random() * 0.04)
+end
+
 function SoundManager:loadGameSounds()
-    self.barrier_sound = sampleplayer.new("sounds/barrier.wav")
-    self.blower_sound = sampleplayer.new("sounds/blower.wav")
-    self.gameSoundsLoaded = true
+    self.sounds = {
+        ["barrier"] = loadSound("sounds/barrier.wav"),
+        ["magnet"] = loadSound("sounds/magnet.wav"),
+        ["blower"] = loadSound("sounds/blower.wav"),
+    }
 end
 
 if not soundManager then
@@ -31,13 +51,12 @@ else
     print("WARN sound manager initiated multiple times")
 end
 
-local function playRandomPitch(player, times)
-    player:play(times, 0.98 + random() * 0.04)
-end
+
 
 function SoundManager:stop()
-    self.barrier_sound:stop()
-    self.blower_sound:stop()
+    forSounds(self, function(item)
+        item.player:stop()
+    end)
 end
 
 function SoundManager:setVolume(volume)
@@ -48,40 +67,40 @@ function SoundManager:setVolume(volume)
 end
 
 function SoundManager:notifySoundCalcStart()
-    self.minBarrierSoundDistance = SOUND_DISTANCE_INFINITE
-    self.minBlowerSoundDistance = SOUND_DISTANCE_INFINITE
+    forSounds(self, function(item)
+        item.minDistance = SOUND_DISTANCE_INFINITE
+    end)
 end
 
 function SoundManager:notifySoundCalcEnd()
-    if self.volume == 0.0 or not self.gameSoundsLoaded then
-        return
-    end
-    if self.minBarrierSoundDistance < SOUND_DISTANCE_INFINITE then
-        local volume = self.volume*(1.0-(self.minBarrierSoundDistance/SOUND_DISTANCE_INFINITE))
-        self.barrier_sound:setVolume(volume)
-        if not self.barrier_sound:isPlaying() then
-            playRandomPitch(self.barrier_sound, 0)
+    forSounds(self, function(item)
+        if item.minDistance < SOUND_DISTANCE_INFINITE then
+            local volume = self.volume*(1.0-(item.minDistance/SOUND_DISTANCE_INFINITE))
+            item.player:setVolume(volume)
+            if not item.player:isPlaying() then
+                playRandomPitch(item.player, 0)
+            end
+        elseif item.player:isPlaying() then
+            item.player:stop()
         end
-    elseif self.barrier_sound:isPlaying() then
-        self.barrier_sound:stop()
-    end
+    end)
+end
 
-    if self.minBlowerSoundDistance < SOUND_DISTANCE_INFINITE then
-        local volume = self.volume*(1.0-(self.minBlowerSoundDistance/SOUND_DISTANCE_INFINITE))
-        self.blower_sound:setVolume(volume)
-        if not self.blower_sound:isPlaying() then
-            playRandomPitch(self.blower_sound, 0)
-        end
-    elseif self.blower_sound:isPlaying() then
-        self.blower_sound:stop()
+function SoundManager:soundForSpecial(item)
+    if item.sType == 14 or item.sType == 15 then -- barrier or 1way
+        return self.sounds.barrier
+    elseif item.sType == 9 or item.sType == 11 then -- fan or rotator
+        return self.sounds.blower
+    elseif item.sType == 10 then -- magnet
+        return self.sounds.magnet
+    else
+        error("no sound for", item.sType)
     end
 end
 
 function SoundManager:addSoundForItem(item)
+    if not self.sounds then return end
     local distance = distanceToPoint(item.x, item.y, camPos[1]+halfWidthTiles, camPos[2]+halfHeightTiles)
-    if item.sType == 14 or item.sType == 15 then -- barrier or 1way
-        self.minBarrierSoundDistance = min(self.minBarrierSoundDistance, distance)
-    elseif item.sType == 9 or item.sType == 11 then -- fan or rotator
-        self.minBlowerSoundDistance = min(self.minBlowerSoundDistance, distance)
-    end
+    local sound = self:soundForSpecial(item)
+    sound.minDistance = min(sound.minDistance, distance)
 end
