@@ -35,11 +35,15 @@ local function playRandomPitch(player, times)
     player:play(times, 0.98 + random() * 0.04)
 end
 
+function SoundManager:stop()
+    self.barrier_sound:stop()
+    self.blower_sound:stop()
+end
+
 function SoundManager:setVolume(volume)
     self.volume = volume
     if volume == 0.0 then
-        self.barrier_sound:stop()
-        self.blower_sound:stop()
+        self:stop()
     end
 end
 

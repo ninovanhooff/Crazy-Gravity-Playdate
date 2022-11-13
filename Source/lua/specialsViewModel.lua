@@ -488,7 +488,7 @@ function CalcBarrier(item)
     item.pos = clamp(item.pos, 0, item.distance*8-boolToNum(item.endStone==1)*16-4)
 
     if item.pos ~= oldPos then
-        shouldPlayBarrierSound = true
+        soundManager:addSoundForItem(item)
     end
 
     -- tooltip
