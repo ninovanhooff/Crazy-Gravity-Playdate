@@ -276,6 +276,7 @@ end
 
 function ResetGame()
     checkpoint = homeBase
+    checkpoint.animator = nil
     ResetPlane()
     fuelSpent, livesLost = 0,0
     planeFreight = {} -- type, idx of special where picked up
