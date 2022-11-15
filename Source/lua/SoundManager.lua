@@ -8,8 +8,6 @@ local min <const> = math.min
 local random <const> = math.random
 local sampleplayer <const> = playdate.sound.sampleplayer
 local distanceToPoint <const> = playdate.geometry.distanceToPoint
-local halfWidthTiles <const> = math.ceil(gameWidthTiles*0.5)
-local halfHeightTiles <const> = math.ceil(gameHeightTiles*0.5)
 --- distance in tiles at which a sound cannot be heard anymore
 local SOUND_DISTANCE_INFINITE <const> = 25
 
@@ -34,7 +32,7 @@ local function loadSound(path)
 end
 
 local function playRandomPitch(player, times)
-    player:play(times, 0.98 + random() * 0.04)
+    player:play(times, player:getRate() + random() * 0.04)
 end
 
 function SoundManager:loadGameSounds()
@@ -43,6 +41,7 @@ function SoundManager:loadGameSounds()
         ["magnet"] = loadSound("sounds/electronic_hum.wav"),
         ["blower"] = loadSound("sounds/blower.wav"),
     }
+    self.sounds.barrier.player:setRate(0.5)
 end
 
 if not soundManager then
@@ -101,7 +100,7 @@ end
 
 function SoundManager:addSoundForItem(item)
     if not self.sounds then return end
-    local distance = distanceToPoint(item.x, item.y, camPos[1]+halfWidthTiles, camPos[2]+halfHeightTiles)
+    local distance = distanceToPoint(item.x, item.y, planePos[1], planePos[2])
     local sound = self:soundForSpecial(item)
     if sound then
         sound.minDistance = min(sound.minDistance, distance)
