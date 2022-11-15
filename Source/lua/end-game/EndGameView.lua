@@ -24,7 +24,6 @@ class("EndGameView").extends()
 
 function EndGameView:init(viewModel)
     EndGameView.super.init(self)
-    viewModel.numCrankFrames = #airlockCrank
 end
 
 function EndGameView:resume()

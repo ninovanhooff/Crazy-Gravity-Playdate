@@ -50,7 +50,7 @@ local states = enum({
     "LiftOff", "OpenAirlock", "FlyAway"
 })
 
-local openAirlockStates = enum({"Initial", "PowerIncorrect", "PowerCorrect"})
+local openAirlockStates = enum({"DeployCrank", "FirstCharge", "PowerIncorrect", "PowerCorrect"})
 
 class("EndGameViewModel").extends()
 
@@ -86,13 +86,15 @@ function EndGameViewModel:init()
     self.airLockROverridePos = 9*tileSize
     self.crankFrame = 1
     self.launchButtonFrame = 1
-    self.numCrankFrames = 0 -- set by View
+    self.numCrankEnterFrames = 11
+    self.numCrankLoopFrames = 6
+    self.numCrankFrames = self.numCrankEnterFrames + self.numCrankLoopFrames
     self.maxAirlockRPos = self.airlockR.pos
     self.origPlatformX = self.platform.x
     self.closedBarrierPos = self.barrier.pos
     self.platformOffsetX = self.platform.x*tileSize - self.planePosX
 
-    self.liftOffSpeed = 0.2
+    self.liftOffSpeed = 4 -- 0.2
 
     self:setState(states.LoadPlane)
 end
@@ -127,7 +129,7 @@ function EndGameViewModel:initState(state)
     elseif state == states.OpenAirlock then
         self.camOverrideY = airlockCamOverrideY
         self.batteryMonitorAnimator = animator.new(monitorDuration, 0, 1, monitorEasing)
-        self.openAirlockState = openAirlockStates.Initial
+        self.openAirlockState = openAirlockStates.DeployCrank
     elseif state == states.FlyAway then
         self:startVideo("video/director_airlock_clear")
         self.liftOffSpeed = 4
@@ -257,20 +259,30 @@ function EndGameViewModel:LiftOffUpdate()
 end
 
 function EndGameViewModel:OpenAirlockUpdate()
-    if self.openAirlockState == openAirlockStates.Initial then
+    if self.openAirlockState == openAirlockStates.DeployCrank then
+        self.crankFrame = self.crankFrame + 1
+        if self.crankFrame > self.numCrankEnterFrames then
+            self.openAirlockState = openAirlockStates.FirstCharge
+        end
+    elseif self.openAirlockState == openAirlockStates.FirstCharge then
         local changeDirection = 0 -- 1 for close, -1 for open
         if getCrankChange() > 5 then
             changeDirection = 1
         elseif getCrankChange() < -5 then
             changeDirection = -1
         end
-        self.crankFrame = luaMod((self.crankFrame + changeDirection), self.numCrankFrames)
+        self.crankFrame = self.crankFrame + changeDirection
+        if self.crankFrame <= self.numCrankEnterFrames then
+            self.crankFrame = self.numCrankFrames
+        elseif self.crankFrame > self.numCrankFrames then
+            self.crankFrame = self.numCrankEnterFrames+1
+        end
         self.batteryProgress = self.batteryProgress + changeDirection * chargingSpeed
         self.batteryProgress = clamp(self.batteryProgress, -1, 1)
         local batteryActivated = abs(self.batteryProgress) == 1
         if batteryActivated then
             if self.correctDirection == nil then
-                -- initial direction is the wrong one
+                -- FirstCharge direction is the wrong one
                 self.correctDirection = -self.batteryProgress
                 self.openAirlockState = openAirlockStates.PowerIncorrect
                 self.openAirlockBatteryBlinker:startLoop()
@@ -286,7 +298,7 @@ function EndGameViewModel:OpenAirlockUpdate()
         self.airLockROverridePos = clamp(self.airLockROverridePos + 2, 0, self.maxAirlockRPos)
         if self.airLockROverridePos == self.maxAirlockRPos then
             self.openAirlockBatteryBlinker.loop = false
-            self.openAirlockState = openAirlockStates.Initial
+            self.openAirlockState = openAirlockStates.FirstCharge
             self:startVideo("video/director_other_way_2")
         end
     elseif self.openAirlockState == openAirlockStates.PowerCorrect then
