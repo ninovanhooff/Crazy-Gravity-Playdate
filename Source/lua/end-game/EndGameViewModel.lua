@@ -4,6 +4,7 @@ import "FlyToCreditsScreen"
 local gfx <const> = playdate.graphics
 local snd <const> = playdate.sound
 local animator <const> = playdate.graphics.animator
+local crankIndicator <const> = playdate.ui.crankIndicator
 local monitorEasing <const> = playdate.easingFunctions.inOutCubic
 local monitorDuration <const> = 600
 local getCurrentTime <const> = snd.getCurrentTime
@@ -26,7 +27,6 @@ local getCrankChange <const> = playdate.getCrankChange
 local floor <const> = math.floor
 local abs <const> = math.abs
 local clamp <const> = clamp
-local luaMod <const> = luaMod
 local musicManager <const> = musicManager
 
 print("Setting calcTimeStep in EndGameVM")
@@ -50,7 +50,7 @@ local states = enum({
     "LiftOff", "OpenAirlock", "FlyAway"
 })
 
-local openAirlockStates = enum({"DeployCrank", "FirstCharge", "PowerIncorrect", "PowerCorrect"})
+local openAirlockStates = enum({"WaitForCrank", "DeployCrank", "FirstCharge", "PowerIncorrect", "PowerCorrect"})
 
 class("EndGameViewModel").extends()
 
@@ -129,7 +129,7 @@ function EndGameViewModel:initState(state)
     elseif state == states.OpenAirlock then
         self.camOverrideY = airlockCamOverrideY
         self.batteryMonitorAnimator = animator.new(monitorDuration, 0, 1, monitorEasing)
-        self.openAirlockState = openAirlockStates.DeployCrank
+        self.openAirlockState = openAirlockStates.WaitForCrank
     elseif state == states.FlyAway then
         self:startVideo("video/director_airlock_clear")
         self.liftOffSpeed = 4
@@ -259,7 +259,18 @@ function EndGameViewModel:LiftOffUpdate()
 end
 
 function EndGameViewModel:OpenAirlockUpdate()
-    if self.openAirlockState == openAirlockStates.DeployCrank then
+    if self.openAirlockState == openAirlockStates.WaitForCrank then
+        if playdate.isCrankDocked() then
+            if not self.crankIndicatorStarted then
+                crankIndicator:start()
+                self.crankIndicatorStarted = true
+            else
+                crankIndicator:update()
+            end
+        else
+            self.openAirlockState = openAirlockStates.DeployCrank
+        end
+    elseif self.openAirlockState == openAirlockStates.DeployCrank then
         self.crankFrame = self.crankFrame + 1
         if self.crankFrame > self.numCrankEnterFrames then
             self.openAirlockState = openAirlockStates.FirstCharge
