@@ -3,6 +3,9 @@ import "FlyToCreditsScreen"
 
 local gfx <const> = playdate.graphics
 local snd <const> = playdate.sound
+local animator <const> = playdate.graphics.animator
+local monitorEasing <const> = playdate.easingFunctions.inOutCubic
+local monitorDuration <const> = 600
 local getCurrentTime <const> = snd.getCurrentTime
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
@@ -55,7 +58,7 @@ function EndGameViewModel:init()
     EndGameViewModel.super.init(self)
 
     self.batteryProgress = 0
-    self.showBatteryProgress = false
+    self.batteryMonitorAnimator = nil
 
     -- setup start of EndGame scene
     keys = {true,true,true,true} -- have? bool
@@ -123,7 +126,7 @@ function EndGameViewModel:initState(state)
         rocketEngineStart:play()
     elseif state == states.OpenAirlock then
         self.camOverrideY = airlockCamOverrideY
-        self.showBatteryProgress = true
+        self.batteryMonitorAnimator = animator.new(monitorDuration, 0, 1, monitorEasing)
         self.openAirlockState = openAirlockStates.Initial
     elseif state == states.FlyAway then
         self:startVideo("video/director_airlock_clear")
@@ -290,7 +293,7 @@ function EndGameViewModel:OpenAirlockUpdate()
         self.airLockROverridePos = clamp(self.airLockROverridePos - 2, 0, self.maxAirlockRPos)
         if self.airLockROverridePos == 0 then
             self.openAirlockBatteryBlinker.loop = false
-            self.showBatteryProgress = false
+            self.batteryMonitorAnimator = animator.new(monitorDuration, 1, 0, monitorEasing)
             self:setState(states.FlyAway)
         end
     end

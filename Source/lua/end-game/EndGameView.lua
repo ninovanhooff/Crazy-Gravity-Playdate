@@ -12,13 +12,12 @@ local rocketShip = gfx.image.new("images/rocket_ship")
 local airlockCrank <const> = gfx.imagetable.new("images/launch_control_crank")
 local launchButton <const> = gfx.imagetable.new("images/launch_control_button")
 local batteryMonitorImg <const> = gfx.image.new("images/launch_control_battery_monitor")
+local batteryMonitorWidth <const> = batteryMonitorImg:getSize()
 local lcdFont <const> = gfx.font.new("fonts/digital-7-mono-20")
 
-if #airlockCrank < 1 then
-    error("no crank frames")
-end
 local rocketShipX <const> = 175
 local tileSize <const> = tileSize
+local screenWidth <const> = screenWidth
 
 
 class("EndGameView").extends()
@@ -85,11 +84,12 @@ function EndGameView:render(viewModel)
         viewModel.videoPlayerView:render(viewModel.videoViewModel)
     end
 
-    if viewModel.showBatteryProgress then
+    if viewModel.batteryMonitorAnimator then
+        local xOffset = screenWidth - viewModel.batteryMonitorAnimator:currentValue()*batteryMonitorWidth
         local progress = viewModel.batteryProgress
         local h = abs(progress) * 68
         gfx.pushContext()
-            gfx.setDrawOffset(317, 55)
+            gfx.setDrawOffset(xOffset, 55)
             batteryMonitorImg:draw(0,0)
             if viewModel.openAirlockBatteryBlinker.on then
                 gfx.setColor(playdate.graphics.kColorXOR)
