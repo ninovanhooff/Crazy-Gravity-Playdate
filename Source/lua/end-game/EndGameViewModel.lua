@@ -94,7 +94,7 @@ function EndGameViewModel:init()
     self.closedBarrierPos = self.barrier.pos
     self.platformOffsetX = self.platform.x*tileSize - self.planePosX
 
-    self.liftOffSpeed = 4 -- 0.2
+    self.liftOffSpeed = 0.2 -- 0.2
 
     self:setState(states.LoadPlane)
 end
@@ -256,6 +256,11 @@ function EndGameViewModel:LiftOffUpdate()
     if self.camOverrideY == airlockCamOverrideY then
         self:setState(states.OpenAirlock)
     end
+
+    local rocketShipScreenY = floor(self.planePosY - 7*tileSize - camPos[2]*tileSize-camPos[4])
+    local engineVolume = clamp(1-((rocketShipScreenY-50) / 250), 0, 1)
+    printT(rocketShipScreenY, engineVolume)
+    rocketEngineLoop:setVolume(engineVolume)
 end
 
 function EndGameViewModel:OpenAirlockUpdate()

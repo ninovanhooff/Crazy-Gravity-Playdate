@@ -47,13 +47,11 @@ function FlyToCreditsViewModel:update()
     else
         self.rocketShipY = self.planeY - planeOffset
     end
-    if self.bgType == FlyToCreditsViewModel.bgTypes.asteroids and self.planeY < 180 and rocketEngineLoop:isPlaying() then
+    if self.bgType == FlyToCreditsViewModel.bgTypes.asteroids and self.planeY < 150 and rocketEngineLoop:isPlaying() then
         rocketEngineLoop:stop()
-        rocketEngineStop:setVolume(0.5)
-        rocketEngineStop:setFinishCallback(function()
-            self.exhaustLoopSpecs = nil
-        end)
+        rocketEngineStop:setVolume(0.3)
         rocketEngineStop:play()
+        self.exhaustLoopSpecs = nil
     end
 end
 
