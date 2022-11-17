@@ -105,7 +105,7 @@ local gameOptions = {
         options = {
             { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
             { name='Sound Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
-            { name='Music Volume', key= MUSIC_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=8},
+            { name='Music Volume', key= MUSIC_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=5},
         }
     },
     {
