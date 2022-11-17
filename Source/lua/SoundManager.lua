@@ -6,10 +6,13 @@
 
 local min <const> = math.min
 local random <const> = math.random
+local gfx <const> = playdate.graphics
 local sampleplayer <const> = playdate.sound.sampleplayer
 local distanceToPoint <const> = playdate.geometry.distanceToPoint
 --- distance in tiles at which a sound cannot be heard anymore
-local SOUND_DISTANCE_INFINITE <const> = 25
+local SOUND_DISTANCE_INFINITE <const> = 40
+--- this animator is just a means to use the easing function to calculate sound falloff
+local falloff <const> = gfx.animator.new(SOUND_DISTANCE_INFINITE, 1, 0, playdate.easingFunctions.inCirc)
 
 class("SoundManager").extends()
 
@@ -74,7 +77,7 @@ end
 function SoundManager:notifySoundCalcEnd()
     forSounds(self, function(item)
         if item.minDistance < SOUND_DISTANCE_INFINITE then
-            local volume = self.volume*(1.0-(item.minDistance/SOUND_DISTANCE_INFINITE))
+            local volume = self.volume*falloff:valueAtTime(item.minDistance)
             print("set vol", volume)
             item.player:setVolume(volume)
             if not item.player:isPlaying() then
