@@ -6,6 +6,7 @@ local snd <const> = playdate.sound
 local animator <const> = playdate.graphics.animator
 local crankIndicator <const> = playdate.ui.crankIndicator
 local monitorEasing <const> = playdate.easingFunctions.inOutCubic
+local soundManager <const> = soundManager
 local monitorDuration <const> = 600
 local getCurrentTime <const> = snd.getCurrentTime
 local justPressed <const> = playdate.buttonJustPressed
@@ -18,6 +19,8 @@ local conveyorBeltPlayer = snd.sampleplayer.new("sounds/conveyor_belt")
 
 rocketEngineStart = snd.sampleplayer.new("sounds/rocket_engine_start")
 rocketEngineLoop = snd.sampleplayer.new("sounds/rocket_engine_loop")
+local barrierPlayer = soundManager.sounds.barrier.player
+assert(barrierPlayer)
 
 local clickSample = snd.sample.new("sounds/launch_control_click")
 local clickSamplePlayer = snd.sampleplayer.new(clickSample)
@@ -41,16 +44,16 @@ local targetPlanePosX <const> = 200
 local loadPlaneDurationMs <const> = 5000--5000
 local returnPlatformDurationMs <const> = loadPlaneDurationMs
 local airlockCamOverrideY <const> = 10 * tileSize
-local directorIntroLaunchButtonEnabledDelay <const> = 1--11
-local launchInitiatedLiftOffDelay <const> = 1--12 -- starting countdown, launch 12 seconds into the future
-local chargingSpeed <const> = 0.1--0.01
+local directorIntroLaunchButtonEnabledDelay <const> = 11--11
+local launchInitiatedLiftOffDelay <const> = 12--12 -- starting countdown, launch 12 seconds into the future
+local chargingSpeed <const> = 0.01--0.01
 
 local states = enum({
     "LoadPlane", "ReturnPlatform", "DirectorIntro", "DirectorLaunchInitiated",
     "LiftOff", "OpenAirlock", "FlyAway"
 })
 
-local openAirlockStates = enum({"WaitForCrank", "DeployCrank", "FirstCharge", "PowerIncorrect", "PowerCorrect"})
+local openAirlockStates = enum({"WaitForCrank", "DeployCrank", "Charge", "PowerIncorrect", "PowerCorrect"})
 
 class("EndGameViewModel").extends()
 
@@ -83,7 +86,7 @@ function EndGameViewModel:init()
     self.airlockR = findSpecial(AirlockRId)
 
     self.openAirlockBatteryBlinker = gfx.animation.blinker.new()
-    self.airLockROverridePos = 9*tileSize
+    self.airLockROverridePos = 8*tileSize
     self.crankFrame = 1
     self.launchButtonFrame = 1
     self.numCrankEnterFrames = 11
@@ -281,9 +284,9 @@ function EndGameViewModel:OpenAirlockUpdate()
     elseif self.openAirlockState == openAirlockStates.DeployCrank then
         self.crankFrame = self.crankFrame + 1
         if self.crankFrame > self.numCrankEnterFrames then
-            self.openAirlockState = openAirlockStates.FirstCharge
+            self.openAirlockState = openAirlockStates.Charge
         end
-    elseif self.openAirlockState == openAirlockStates.FirstCharge then
+    elseif self.openAirlockState == openAirlockStates.Charge then
         local changeDirection = 0 -- 1 for close, -1 for open
         if getCrankChange() > 5 then
             changeDirection = 1
@@ -301,14 +304,16 @@ function EndGameViewModel:OpenAirlockUpdate()
         local batteryActivated = abs(self.batteryProgress) == 1
         if batteryActivated then
             if self.correctDirection == nil then
-                -- FirstCharge direction is the wrong one
+                -- Charge direction is the wrong one
                 self.correctDirection = -self.batteryProgress
                 self.openAirlockState = openAirlockStates.PowerIncorrect
                 self.openAirlockBatteryBlinker:startLoop()
+                barrierPlayer:play(0, 0.95)
             elseif self.correctDirection == self.batteryProgress then
                 -- fully cranked to the correct direction
                 self.openAirlockState = openAirlockStates.PowerCorrect
                 self.openAirlockBatteryBlinker:startLoop()
+                barrierPlayer:play(0, 1.05)
             end
         elseif self.correctDirection ~= nil and abs(self.batteryProgress) < 0.3 and self.videoViewModel.finished then
             self:startVideo("video/director_impact_imminent_2")
@@ -317,7 +322,8 @@ function EndGameViewModel:OpenAirlockUpdate()
         self.airLockROverridePos = clamp(self.airLockROverridePos + 2, 0, self.maxAirlockRPos)
         if self.airLockROverridePos == self.maxAirlockRPos then
             self.openAirlockBatteryBlinker.loop = false
-            self.openAirlockState = openAirlockStates.FirstCharge
+            self.openAirlockState = openAirlockStates.Charge
+            barrierPlayer:stop()
             self:startVideo("video/director_other_way_2")
         end
     elseif self.openAirlockState == openAirlockStates.PowerCorrect then
@@ -325,6 +331,7 @@ function EndGameViewModel:OpenAirlockUpdate()
         if self.airLockROverridePos == 0 then
             self.openAirlockBatteryBlinker.loop = false
             self.batteryMonitorAnimator = animator.new(monitorDuration, 1, 0, monitorEasing)
+            barrierPlayer:stop()
             self:setState(states.FlyAway)
         end
     end
