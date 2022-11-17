@@ -202,7 +202,8 @@ function CalcTimeStep()
     soundManager:notifySoundCalcStart()
     for i,item in ipairs(specialT) do
         -- only calculate when item max half a screen out of view
-        if abs(item.x - screenCenterX) <= gameWidthTiles + item.w  and abs(item.y - screenCenterY) <= gameHeightTiles + item.h then
+        -- using gameWidthTiles for both dimensions because sound calculations need to happen for both directions equally
+        if abs(item.x - screenCenterX) <= gameWidthTiles + item.w  and abs(item.y - screenCenterY) <= gameWidthTiles + item.h then
             specialCalcT[item.sType](item,i)
         end
     end
@@ -216,6 +217,7 @@ end
 
 
 function ResetPlane()
+    soundManager:stop()
     explosion = nil
     planePos[1], planePos[2], planePos[3], planePos[4] = checkpoint.x+floor(checkpoint.w*0.5-1)-1,checkpoint.y+1,4,4 --x,y,subx,suby
     -- when using y = checkpoint.y-halfHeightTiles+1, no initial camera movement would occur
