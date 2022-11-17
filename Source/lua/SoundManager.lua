@@ -18,9 +18,12 @@ class("SoundManager").extends()
 
 function SoundManager:init()
     self.volume = 1.0
+    self.enabled = true
 end
 
 local function forSounds(self, func)
+    if not self.enabled then return end
+
     if self.volume == 0.0 or not self.sounds then return end
 
     for _, sound in pairs(self.sounds) do
@@ -102,7 +105,7 @@ function SoundManager:soundForSpecial(item)
 end
 
 function SoundManager:addSoundForItem(item)
-    if not self.sounds then return end
+    if not self.sounds  or not self.enabled then return end
     local distance = distanceToPoint(item.x, item.y, planePos[1], planePos[2])
     local sound = self:soundForSpecial(item)
     if sound then

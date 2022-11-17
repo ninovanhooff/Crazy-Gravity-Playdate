@@ -111,6 +111,8 @@ function EndGameViewModel:initState(state)
         conveyorBeltPlayer:setPlayRange(1,115000) -- do not play clamp / lock / thud
         conveyorBeltPlayer:play()
     elseif state == states.DirectorIntro then
+        -- prevent obstacle sounds from playing
+        soundManager.enabled = false
         self:startVideo("video/director_intro_2")
     elseif state == states.DirectorLaunchInitiated then
         self:startVideo("video/director_t_minus_ten")
@@ -144,6 +146,7 @@ end
 
 function EndGameViewModel:destroy()
     self.videoPlayerView:destroy()
+    soundManager.enabled = true
 end
 
 function EndGameViewModel:resume()
