@@ -287,6 +287,7 @@ function EndGameViewModel:OpenAirlockUpdate()
             self.openAirlockState = openAirlockStates.Charge
         end
     elseif self.openAirlockState == openAirlockStates.Charge then
+        self.batteryProgress = self.batteryProgress * 0.993
         local changeDirection = 0 -- 1 for close, -1 for open
         if getCrankChange() > 5 then
             changeDirection = 1
@@ -319,6 +320,7 @@ function EndGameViewModel:OpenAirlockUpdate()
             self:startVideo("video/director_impact_imminent_2")
         end
     elseif self.openAirlockState == openAirlockStates.PowerIncorrect then
+        self.batteryProgress = self.batteryProgress * 0.99
         self.airLockROverridePos = clamp(self.airLockROverridePos + 2, 0, self.maxAirlockRPos)
         if self.airLockROverridePos == self.maxAirlockRPos then
             self.openAirlockBatteryBlinker.loop = false
