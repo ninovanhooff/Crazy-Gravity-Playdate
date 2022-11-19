@@ -20,8 +20,8 @@ buttonTimer:pause()  -- disable auto start
 
 local screenWidth <const> = screenWidth
 local buttonStartAlign <const> = 240
-local buttonStartY <const> = 40
-local buttonSpacingV <const> = 50
+local buttonStartY <const> = 28
+local buttonSpacingV <const> = 80
 local buttonWidth <const> = 100
 local buttonHeight <const> = 24
 
@@ -104,16 +104,6 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
             animator = createButtonEnterAnimator(1)
         },
         {
-            text = "Bonus",
-            w = buttonWidth, h = buttonHeight,
-            progress = 0.0,
-            onClickScreen = function()
-                require "lua/bonus-content/BonusContentScreen"
-                return BonusContentScreen()
-            end,
-            animator = createButtonEnterAnimator(2)
-        },
-        {
             text = "Settings",
             w = buttonWidth, h = buttonHeight,
             progress = 0.0,
@@ -122,7 +112,7 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
                 require "lua/settings/SettingsScreen"
                 return SettingsScreen()
             end,
-            animator = createButtonEnterAnimator(3)
+            animator = createButtonEnterAnimator(2)
         }
     }
     updateViewState(self)
