@@ -153,7 +153,7 @@ function EndGameViewModel:destroy()
 end
 
 function EndGameViewModel:resume()
-    musicManager:stop()
+    musicManager:fade(0)
     self.platform.arrows = false
 end
 
