@@ -64,7 +64,11 @@ end
 
 local function getPlatformTooltipTexts(platform)
     if platform.pType == 2 then
-        return {pickup= "Loading Cargo", planeFull="Cargo hold full!", done="Got it, back to base!"}
+        local doneText =
+            levelProps.numBases == 1 and "Got it, back to base!"
+        or
+            "Got it, onwards!"
+        return {pickup= "Loading Cargo", planeFull="Cargo hold full!", done=doneText}
     elseif platform.pType == 3 then
         return {pickup= "Refueling", planeFull="All filled up!", done="See ya!"}
     elseif platform.pType == 4 then

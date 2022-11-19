@@ -124,7 +124,7 @@ function RenderGame(disableHUD)
             23, 23
         )
 
-        if #planeFreight > 0 and not ApproxSpecialCollision(homeBase) then
+        if #planeFreight > 0 and not ApproxSpecialCollision(homeBase) and levelProps.numBases == 1 then
             drawHomeBaseIndicator(planeX + 12, planeY + 12) -- center of plane is at origin + 12
         end
     end

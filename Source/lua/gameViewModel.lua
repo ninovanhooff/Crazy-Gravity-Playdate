@@ -237,11 +237,13 @@ function ResetPlane()
 end
 
 local function initSpecials()
+    levelProps.numBases = 0
     fuelEnabled = false
     barriersEnabled = false
     for _,item in ipairs(specialT) do
         if item.sType == 8 then --platform
             if item.pType == 1 then -- home
+                levelProps.numBases = levelProps.numBases + 1
                 homeBase = item
             elseif item.pType == 3 then -- fuel
                 fuelEnabled = true
