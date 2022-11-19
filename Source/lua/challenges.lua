@@ -25,6 +25,13 @@ local challenges = {
     ["levels/LEVEL08"] = {100, 550, 0},
     ["levels/LEVEL09"] = {250, 1200, 0},
     ["levels/LEVEL10"] = {450, 1200, 0},
+    ["levels/LEVEL11"] = {200, 1200, 0},
+    ["levels/LEVEL12"] = {130, 1000, 0},
+    ["levels/LEVEL13"] = {450, 3500, 0},
+    ["levels/LEVEL15"] = {350, 2000, 0},
+    ["levels/LEVEL16"] = {425, 2200, 0},
+    ["levels/LEVEL19"] = {260, 1500, 0},
+    ["levels/LEVEL20"] = {320, 1800, 0},
 }
 
 
