@@ -19,7 +19,6 @@ function firstUnCompletedChallenge(levelNum)
     local challenges = getChallengesForPath(levelPath(levelNum))
     for challengeIdx, score in ipairs(challenges) do
         if levelRecords[challengeIdx] > score then
-            print("found challenge", score, levelRecords[challengeIdx])
             -- challenge not completed
             return challengeIdx
         end
