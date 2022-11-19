@@ -105,8 +105,8 @@ function SoundManager:soundForSpecial(item)
 end
 
 function SoundManager:addSoundForItem(item)
-    if not self.sounds  or not self.enabled then return end
-    local distance = distanceToPoint(item.x, item.y, planePos[1], planePos[2])
+    if not self.sounds or not self.enabled then return end
+    local distance = distanceToPoint(item.x + item.w/2, item.y+item.h/2, planePos[1], planePos[2])
     local sound = self:soundForSpecial(item)
     if sound then
         sound.minDistance = min(sound.minDistance, distance)
