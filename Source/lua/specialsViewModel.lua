@@ -162,22 +162,25 @@ function CalcPlatform(item)
                         dump_sound:play()
                     end
                     table.remove(planeFreight,1)
-                    if table.sum(remainingFreight)==0 and #planeFreight == 0 then
+                    local remainingCount = table.sum(remainingFreight)
+                    if remainingCount==0 and #planeFreight == 0 then
                         printf("VICTORY")
                         updateRecords(currentLevel, {
                             frameCounter / frameRate,
                             fuelSpent,
                             livesLost
                         })
+                        item.tooltip = nil
                         RenderGame()
                         playdate.wait(500) -- Show player that there is no more remaining freight
                         pushScreen(GameOverScreen(GAME_OVER_CONFIGS.LEVEL_CLEARED))
                     else
                         updateCheckpoint(homeBase)
-                    end
-
-                    if #planeFreight == 0 then
-                        item.tooltip = {text="Goods received!"}
+                        if #planeFreight == 0 then
+                            if remainingCount > 0 then
+                                item.tooltip = {text=string.format("Goods received, %d remaining!", remainingCount)}
+                            end
+                        end
                     end
                 end
             end
