@@ -11,6 +11,10 @@ function VideoPlayerViewModel:init(basePath, nextScreenFun)
     self.nextScreenFun = nextScreenFun
 end
 
+function VideoPlayerViewModel:shouldApplyVcrFilter()
+    return false
+end
+
 function VideoPlayerViewModel:onVideoFinished()
     VideoPlayerViewModel.super.onVideoFinished(self)
     popScreen() -- remove self
