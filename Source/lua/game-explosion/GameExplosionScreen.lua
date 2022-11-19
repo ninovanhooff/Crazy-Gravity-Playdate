@@ -22,8 +22,8 @@ function GameExplosionScreen:update()
     if not inputManager:isInputJustPressed(InputManager.actionThrottle) and explosion and explosion:update() then
         self.calcPlane() -- keep updating plane as a ghost target for camera
         self.calcGameCam()
-        for i,item in ipairs(specialT) do
-            specialCalcT[item.sType](item,i)
+        for _,item in ipairs(specialT) do
+            specialCalcT[item.sType](item)
         end
         RenderGame()
         if collision == CollisionReason.OverSpeed then

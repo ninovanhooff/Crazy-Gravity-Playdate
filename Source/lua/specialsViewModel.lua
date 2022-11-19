@@ -95,7 +95,7 @@ function ApproxSpecialCollision(item)
     return approxRectCollision(item.x, item.y, item.w, item.h)
 end
 
-function CalcPlatform(item,idx)
+function CalcPlatform(item)
     if not approxRectCollision(item.x,item.y-3, item.w, item.h) then
         item.tooltip = nil
         return -- out of range
@@ -115,8 +115,8 @@ function CalcPlatform(item,idx)
         collision = false
     end
 
-    if landedAt ~= idx then
-        if planeRot ~= 18 and vy > 0  and not options:read(selfRightTipShownKey) and approxRectCollision(item.x,item.y, item.w, item.h) then
+    if landedAt ~= item then
+        if planeRot ~= 18 and vy > 0 and item ~= prevLandedAt and not options:read(selfRightTipShownKey) and approxRectCollision(item.x,item.y, item.w, item.h) then
             local buttonMappingString = inputManager:mappingString(InputManager.actionSelfRight)
             local tooltip = { text= buttonMappingString .. ": Self-right" }
             local planeX <const> = floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3])
@@ -141,12 +141,12 @@ function CalcPlatform(item,idx)
             collision = false
             vx,vy=0,0
             planePos[4]=4
-            printf("LANDED AT",idx)
+            printf("LANDED AT", item)
             landedTimer = 0
-            landedAt = idx
+            landedAt = item
             if Sounds then landing_sound:play() end
         end
-    elseif landedAt == idx then
+    elseif landedAt == item then
         --printf(item.pType,#planeFreight,"HJ")
 
         if item.pType==1 then -- homeBase
@@ -191,7 +191,7 @@ function CalcPlatform(item,idx)
 
                 if item.pType==2 then -- freight
                     remainingFreight[item.type+1] = remainingFreight[item.type+1] -1
-                    table.insert(planeFreight,{item.type,landedAt})
+                    table.insert(planeFreight,{item.type,item})
                     item.amnt = item.amnt -1
                     if Sounds then pickup_sound:play() end
                 elseif item.pType==3 then -- fuel
@@ -326,7 +326,7 @@ local function planeIntersectsCannon(item)
     end
 end
 
-function CalcCannon(item,idx)
+function CalcCannon(item)
 
     if not planeIntersectsCannon(item) then return end
 

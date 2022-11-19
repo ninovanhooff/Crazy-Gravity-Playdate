@@ -181,7 +181,10 @@ function CalcTimeStep()
     frameCounter = frameCounter + 1
     if Debug then collision = nil end
     if flying then --physics
-        landedAt = -1
+        if landedAt then
+            prevLandedAt = landedAt
+        end
+        landedAt = nil
         calcPlane()
     end
 
@@ -200,11 +203,11 @@ function CalcTimeStep()
     local screenCenterX = camPos[1] + halfWidthTiles
     local screenCenterY = camPos[2] + halfHeightTiles
     soundManager:notifySoundCalcStart()
-    for i,item in ipairs(specialT) do
+    for _,item in ipairs(specialT) do
         -- only calculate when item max half a screen out of view
         -- using gameWidthTiles for both dimensions because sound calculations need to happen for both directions equally
         if abs(item.x - screenCenterX) <= gameWidthTiles + item.w  and abs(item.y - screenCenterY) <= gameWidthTiles + item.h then
-            specialCalcT[item.sType](item,i)
+            specialCalcT[item.sType](item)
         end
     end
     soundManager:notifySoundCalcEnd()
@@ -230,7 +233,7 @@ function ResetPlane()
     CalcPlaneColCoords()
     collision = false
     fuel = levelProps.fuel
-    landedTimer,landedAt = 0,-1
+    landedTimer,landedAt, prevLandedAt = 0, checkpoint, checkpoint
 end
 
 local function initSpecials()
@@ -285,7 +288,7 @@ function ResetGame()
     deliveredFreight = {0,0,0,0} -- amount for each type
     remainingFreight = {0,0,0,0} -- amnt for each type
     keys = {false,false,false,false} -- have? bool
-    for i,item in ipairs(specialT) do
+    for _,item in ipairs(specialT) do
         if item.sType == 8 then --platform
             item.amnt = item.origAmnt
             item.tooltip = nil
@@ -316,7 +319,7 @@ function DecreaseLife()
         extras[2] = extras[2]-1 -- decrease life
         gameHUD:onChanged(2) -- update life counter in HUD
         if checkpoint == homeBase then -- lose cargo when respawning at homeBase
-            for i,item in ipairs(planeFreight) do
+            for _,item in ipairs(planeFreight) do
                 specialT[item[2]].amnt = specialT[item[2]].amnt+1 -- replace freight on pltfrms
                 remainingFreight[item[1]+1] = remainingFreight[item[1]+1] + 1
             end
