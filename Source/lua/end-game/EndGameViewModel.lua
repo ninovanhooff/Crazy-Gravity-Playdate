@@ -232,6 +232,10 @@ function EndGameViewModel:DirectorLaunchInitiatedUpdate()
         self:setState(states.LiftOff)
     -- music track contains countdown which reaches 0 at t = 7s
     elseif self:getLaunchTimeOffset() >= -7 and not musicManager:isPlaying() then
+        -- this moment is too epic not to play music.
+        -- This volume is not reset during the current run, but
+        -- I'd say that's okay in this occasion.
+        musicManager:setVolume(math.max(0.2, musicManager.volume))
         musicManager:play("music/the-countdown.mp3")
     end
 end
