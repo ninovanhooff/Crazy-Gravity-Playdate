@@ -187,11 +187,12 @@ function CalcPlatform(item,idx)
             elseif landedTimer < frameRate then
                 item.tooltip = { text= getPlatformTooltipTexts(item).pickup, progress=landedTimer/frameRate}
             else
+                updateCheckpoint(item)
+
                 if item.pType==2 then -- freight
                     remainingFreight[item.type+1] = remainingFreight[item.type+1] -1
                     table.insert(planeFreight,{item.type,landedAt})
                     item.amnt = item.amnt -1
-                    updateCheckpoint(item)
                     if Sounds then pickup_sound:play() end
                 elseif item.pType==3 then -- fuel
                     fuel = min(6000,fuel+3000)
