@@ -8,11 +8,14 @@ import "lockExplosion"
 
 local gfx <const> = playdate.graphics
 local rect <const> = playdate.geometry.rect
+local unFlipped <const> = gfx.kImageUnflipped
 local defaultFont <const> = gfx.getFont()
 local monoFont <const> = monoFont
 local hudIcons <const> = sprite -- hud icons are placed at origin of sprite
 local thumbs <const> = gfx.imagetable.new("images/level-thumbs/level-thumbs")
 local banners <const> = gfx.imagetable.new("images/level-banners/level-banners")
+local console <const> = gfx.image.new("images/level-select/console")
+local connector <const> = gfx.image.new("images/level-select/connector")
 
 --- size of various content spacing
 local gutter <const> = 4
@@ -24,8 +27,8 @@ local lockOffsetPoint <const> = playdate.geometry.point.new(gutter + (thumbSize 
 local infoOffsetX <const> = thumbSize + 3*gutter
 local viewModel
 
-local listRect <const> = playdate.geometry.rect.new(gutter, 0, 192, 240)
-local detailRect <const> = playdate.geometry.rect.new(200+gutter, gutter, 200-gutter*2, 224 - gutter*2)
+local listRect <const> = playdate.geometry.rect.new(gutter, 0, 174, 240)
+local detailRect <const> = playdate.geometry.rect.new(400-238, 0, 238, 240)
 local listView = playdate.ui.gridview.new(0, thumbSize + 2* gutter)
 listView:setCellPadding(0, 0, gutter, gutter) -- left, right , top, bottom
 
@@ -69,7 +72,7 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     gfx.setColor(gfx.kColorBlack) -- shape color
     local vDivider = y + 24
     local right = x+width
-    local infoX = x + infoOffsetX
+    local infoX <const> = x + infoOffsetX
     if selected then
         gfx.fillRoundRect(x, y, width, height, gutter)
         gfx.setColor(gfx.kColorWhite) -- shape color
@@ -99,9 +102,8 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     -- challenges
     monoFont:drawText("Achievements", infoX, vDivider + gutter  - 2)
     local iconY = vDivider + 14 + gutter
-
     for i = 0,2 do
-        hudIcons:draw(infoX+i*48,iconY,unFlipped,64+i*16,
+        hudIcons:draw(infoX+i*39,iconY,unFlipped,64+i*16,
             -- shift 16px down when challenge is not achieved
             boolToNum(not curOption.achievements[i+1])*16,
             16,16
@@ -109,89 +111,63 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     end
 end
 
-local function drawTextInRectUnderlined(text, rect, font)
-    local width, height = gfx.drawTextInRect(
-        text,
-        rect.x, rect.y, rect.width, rect.height, -- cannot pass rect directly due to bug in SDK https://devforum.play.date/t/5314
-        nil, nil,
-        kTextAlignment.center, font
-    )
-    local halfWidth, y, centerX = width*0.5 + 12 , rect.y+height, rect:centerPoint().x
-    gfx.drawLine(centerX-halfWidth, y, centerX+halfWidth, y)
-
-end
-
 local function renderDetailScreen(info)
     local levelNumber = info.levelNumber
     gfx.pushContext()
     gfx.setClipRect(detailRect)
-    gfx.clear(gfx.kColorWhite)
+    console:draw(detailRect.x, detailRect.y)
 
-    local infoY = detailRect.y
+    --local infoY = detailRect.y
+    --
+    ---- title
+    --drawTextInRectUnderlined(levelNumString(levelNumber) .. " : " .. info.title, detailRect, defaultFont)
+    --infoY = infoY + 30
+    --
+    ---- banner image
+    --gfx.drawRect(detailRect.x, infoY, detailRect.width, 64)
+    --if banners[levelNumber] then
+    --    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    --    banners[levelNumber]:draw(detailRect.x + 1, infoY + 1)
+    --    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    --end
+    --infoY = infoY + 67
+    --
+    --monoFont:drawText("Challenges", detailRect.x, infoY)
+    --infoY = infoY + 15
+    ---- challenges
+    --local challengeX = detailRect.x
+    ---- time
+    --challengeX = challengeX + gutter +  renderChallengePill(
+    --    challengeX, infoY,
+    --    viewModel.selectedChallenge == 1,
+    --    4, info.challenges[1]
+    --)
+    ---- fuel
+    --challengeX = challengeX + gutter +  renderChallengePill(
+    --    challengeX, infoY,
+    --    viewModel.selectedChallenge == 2,
+    --    5, info.challenges[2]
+    --)
+    ---- lives
+    --challengeX = challengeX + gutter +  renderChallengePill(
+    --    challengeX, infoY,
+    --    viewModel.selectedChallenge == 3,
+    --    6, info.challenges[3]
+    --)
+    --infoY = infoY + 24
+    --
+    ---- scores
+    --if(info.scores) then
+    --    monoFont:drawText("Personal Best", detailRect.x, infoY)
+    --    infoY = infoY + 15
+    --    for i, item in ipairs(info.scores) do
+    --        hudIcons:draw(detailRect.x,infoY,unFlipped,48+i*16,0,16,16)
+    --        monoFont:drawText(item, detailRect.x + 20, infoY + 2)
+    --        infoY = infoY + 20
+    --    end
+    --end
 
-    -- title
-    drawTextInRectUnderlined(levelNumString(levelNumber) .. " : " .. info.title, detailRect, defaultFont)
-    infoY = infoY + 30
 
-    -- banner image
-    gfx.drawRect(detailRect.x, infoY, detailRect.width, 64)
-    if banners[levelNumber] then
-        gfx.setImageDrawMode(gfx.kDrawModeCopy)
-        banners[levelNumber]:draw(detailRect.x + 1, infoY + 1)
-        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    end
-    infoY = infoY + 67
-
-    monoFont:drawText("Challenges", detailRect.x, infoY)
-    infoY = infoY + 15
-    -- challenges
-    local challengeX = detailRect.x
-    -- time
-    challengeX = challengeX + gutter +  renderChallengePill(
-        challengeX, infoY,
-        viewModel.selectedChallenge == 1,
-        4, info.challenges[1]
-    )
-    -- fuel
-    challengeX = challengeX + gutter +  renderChallengePill(
-        challengeX, infoY,
-        viewModel.selectedChallenge == 2,
-        5, info.challenges[2]
-    )
-    -- lives
-    challengeX = challengeX + gutter +  renderChallengePill(
-        challengeX, infoY,
-        viewModel.selectedChallenge == 3,
-        6, info.challenges[3]
-    )
-    infoY = infoY + 24
-
-    -- scores
-    if(info.scores) then
-        monoFont:drawText("Personal Best", detailRect.x, infoY)
-        infoY = infoY + 15
-        for i, item in ipairs(info.scores) do
-            hudIcons:draw(detailRect.x,infoY,unFlipped,48+i*16,0,16,16)
-            monoFont:drawText(item, detailRect.x + 20, infoY + 2)
-            infoY = infoY + 20
-        end
-    end
-
-
-    gfx.popContext()
-end
-
-local function renderStaticViews()
-    gfx.pushContext()
-    local originalSystemFont = playdate.graphics.getSystemFont()
-    gfx.setFont( originalSystemFont, playdate.graphics.font.kVariantItalic )
-    --gfx.setFont(defaultFont)
-    gfx.setPattern({0x55, 0xFF, 0x7F, 0xFF, 0x7F, 0xFF, 0x7F, 0xFF})
-    gfx.drawLine(200, 0,200, 240)
-    gfx.setColor(gfx.kColorBlack) -- clear pattern
-    -- draw keymap hint below detail
-    --gfx.drawTextInRect('*'.."_Ⓐhallo_hee", detailRect.x - 20, detailRect.bottom, detailRect.width, 20, nil, '...', kTextAlignment.right)
-    gfx.drawTextInRect("_⬅️➡_ challenge   _Ⓐ_ *start*", detailRect.x, detailRect.bottom , detailRect.width, 25, nil, "...", kTextAlignment.center)
     gfx.popContext()
 end
 
@@ -200,7 +176,6 @@ function LevelSelectView:render()
     local needsDetailDisplay = self.lastSelectedChallenge ~= viewModel.selectedChallenge
     if self.initialRender then
         gfx.clear(gfx.kColorWhite)
-        renderStaticViews()
         renderDetailScreen(viewModel:selectedOption())
         self.initialRender = false
     end
@@ -216,9 +191,19 @@ function LevelSelectView:render()
     end
 
     if listView.needsDisplay or self.lockExplosion then
-        gfx.setClipRect(listRect)
-        gfx.clear(gfx.kColorWhite)
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRect(listRect)
         listView:drawInRect(listRect.x, listRect.y, listRect.width, listRect.height)
+
+        -- connector between list and console
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRect(178,0,10,400)
+        local _,y,_, height = listView:getCellBounds(1, viewModel.selectedIdx, 1, listRect.width)
+        connector:draw(178, y + height/2 - 9)
+        -- redraw part of the console that occludes the list
+        gfx.setClipRect(detailRect.x, detailRect.y, 40, 240)
+        console:draw(detailRect.x, detailRect.y)
+        gfx.clearClipRect()
     end
 
     local expRunning = self.lockExplosion and self.lockExplosion:update()
