@@ -17,6 +17,7 @@ local min <const> = math.min
 local max <const> = math.max
 local random <const> = math.random
 local options <const> = GetOptions()
+local soundManager <const> = soundManager
 local selfRightTipShownKey <const> = Options.SELF_RIGHT_TIP_SHOWN_KEY
 local gameHUD <const> = gameHUD
 local tileSize <const> = tileSize
@@ -141,6 +142,10 @@ function CalcPlatform(item)
     --landing
     if flying and planeRot == 18 then -- upright
         if planePos[2]==item.y+1 and planePos[1]>=item.x-2 and planePos[1]<item.x+item.w-1 and planePos[4]>=3 and vy > 0 and not overSpeed then
+            local warnX = 1/(landingTolerance[1] / abs(vx))
+            local warnY = 1/(landingTolerance[2] / vy)
+            local landingVolume = soundManager.volume * max(warnX, warnY)
+            if Sounds then landing_sound:playAt(0, landingVolume) end
             flying = false
             collision = false
             vx,vy=0,0
@@ -148,7 +153,6 @@ function CalcPlatform(item)
             printf("LANDED AT", item)
             landedTimer = 0
             landedAt = item
-            if Sounds then landing_sound:play() end
         end
     elseif landedAt == item then
         --printf(item.pType,#planeFreight,"HJ")
