@@ -61,14 +61,14 @@ local BUTTON_VALS <const> = {
     {label="_➡_", keys = playdate.kButtonRight},
     {label="_️Ⓐ_", keys = playdate.kButtonA},
     {label="_Ⓑ_", keys = playdate.kButtonB},
-    {label="_⬆,Ⓐ_", keys = playdate.kButtonUp + playdate.kButtonA},
-    {label="_⬆,Ⓑ_", keys = playdate.kButtonUp + playdate.kButtonB},
-    {label="_️⬇,Ⓐ_", keys = playdate.kButtonDown + playdate.kButtonA},
-    {label="_️⬇,Ⓑ_", keys = playdate.kButtonDown + playdate.kButtonB},
-    {label="_⬅,Ⓐ_", keys = playdate.kButtonLeft + playdate.kButtonA},
-    {label="_⬅,Ⓑ_", keys = playdate.kButtonLeft + playdate.kButtonB},
-    {label="_️➡,Ⓐ_", keys = playdate.kButtonRight + playdate.kButtonA},
-    {label="_️➡,Ⓑ_", keys = playdate.kButtonRight + playdate.kButtonB}
+    {label="_⬆/Ⓐ_", keys = playdate.kButtonUp + playdate.kButtonA},
+    {label="_⬆/Ⓑ_", keys = playdate.kButtonUp + playdate.kButtonB},
+    {label="_️⬇/Ⓐ_", keys = playdate.kButtonDown + playdate.kButtonA},
+    {label="_️⬇/Ⓑ_", keys = playdate.kButtonDown + playdate.kButtonB},
+    {label="_⬅/Ⓐ_", keys = playdate.kButtonLeft + playdate.kButtonA},
+    {label="_⬅/Ⓑ_", keys = playdate.kButtonLeft + playdate.kButtonB},
+    {label="_️➡/Ⓐ_", keys = playdate.kButtonRight + playdate.kButtonA},
+    {label="_️➡/Ⓑ_", keys = playdate.kButtonRight + playdate.kButtonB}
 }
 local TURN_LEFT_KEY <const> = "turnLeftMapping"
 local TURN_RIGHT_KEY <const> = "turnRightMapping"
