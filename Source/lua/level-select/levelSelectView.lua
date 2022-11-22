@@ -15,6 +15,8 @@ local hudIcons <const> = sprite -- hud icons are placed at origin of sprite
 local thumbs <const> = gfx.imagetable.new("images/level-thumbs/level-thumbs")
 local banners <const> = gfx.imagetable.new("images/level-banners/level-banners")
 local console <const> = gfx.image.new("images/level-select/console")
+local dPad <const> = gfx.imagetable.new("images/level-select/d_pad")
+local aButton <const> = gfx.imagetable.new("images/level-select/a_button")
 local connector <const> = gfx.image.new("images/level-select/connector")
 
 --- size of various content spacing
@@ -189,6 +191,9 @@ function LevelSelectView:render()
     if needsDetailDisplay then
         renderDetailScreen(viewModel:selectedOption())
     end
+
+    dPad:getImage(viewModel.dPadImageIdx):draw(223,182)
+    aButton:getImage(viewModel.aButtonImageIdx):draw(319,182)
 
     if listView.needsDisplay or self.lockExplosion then
         gfx.setColor(gfx.kColorWhite)

@@ -6,6 +6,7 @@
 
 local numChallenges <const> = numChallenges
 local levelNames <const> = levelNames
+local pressed <const> = playdate.buttonIsPressed
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
 local buttonDown <const> = playdate.kButtonDown
@@ -35,6 +36,8 @@ function LevelSelectViewModel:init()
     end
     self.selectedIdx = numLevelsUnlocked()
     self.selectedChallenge = firstUnCompletedChallenge(self.selectedIdx) or 1
+    self.dPadImageIdx = 1
+    self.aButtonImageIdx = 1
 end
 
 function LevelSelectViewModel:resume()
@@ -101,7 +104,7 @@ function LevelSelectViewModel:update()
         self.selectedChallenge = clamp(self.selectedChallenge-1, 1, numChallenges)
     elseif justPressed(buttonRight) then
         self.selectedChallenge = clamp(self.selectedChallenge+1, 1, numChallenges)
-    elseif justPressed(buttonA) then
+    elseif justReleased(buttonA) then
         ui_confirm:play()
         currentLevel = self.selectedIdx
         require("lua/gameScreen")
@@ -124,6 +127,9 @@ function LevelSelectViewModel:update()
         ui_cancel:play()
         self:finish()
     end
+
+    self.aButtonImageIdx = pressed(buttonA) and 2 or 1
+    self.dPadImageIdx = pressed(buttonLeft) and 2 or pressed(buttonRight) and 3 or 1
 end
 
 function LevelSelectViewModel:selectedOption()

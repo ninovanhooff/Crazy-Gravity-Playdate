@@ -26,6 +26,6 @@ function LevelSelectScreen:resume()
 end
 
 function LevelSelectScreen:update()
-    levelSelectView:render(levelSelectViewModel)
     levelSelectViewModel:update()
+    levelSelectView:render(levelSelectViewModel)
 end
