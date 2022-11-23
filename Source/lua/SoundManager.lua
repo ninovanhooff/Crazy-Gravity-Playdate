@@ -34,6 +34,7 @@ end
 local function loadSound(path)
     return {
         ["player"] = sampleplayer.new(path),
+        ["minDistance"] = SOUND_DISTANCE_INFINITE
     }
 end
 
