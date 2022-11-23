@@ -88,6 +88,8 @@ local levelBgmPaths = {
     "music/E1M8.mp3",
     "music/E3M6.mp3",
     "music/scifiNights.mp3",
+    "music/AUTO.mp3",
+    "music/HomeStretch.mp3",
 }
 
 function levelSongPath(_levelNumber)
