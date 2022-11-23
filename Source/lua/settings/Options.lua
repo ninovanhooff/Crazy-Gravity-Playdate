@@ -35,7 +35,7 @@ local BG_KEY <const> = "background"
 local BG_VALS <const> = {
     { label= "black", value = gfx.kColorBlack },
     { label= "white", value = gfx.kColorWhite },
-    { label= "win95", value = gfx.kColorClear },
+    { label= "trippy", value = gfx.kColorClear },
 }
 local GRAPHICS_STYLE_KEY <const> = "graphicsStyle"
 local PATTERN_KEY <const> = "brickPattern"
