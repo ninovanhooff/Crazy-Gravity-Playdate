@@ -35,7 +35,7 @@ function LevelSelectViewModel:init()
         }
     end
     self.selectedIdx = numLevelsUnlocked()
-    self.selectedChallenge = firstUnCompletedChallenge(self.selectedIdx) or 1
+    self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
     self.dPadImageIdx = 1
     self.aButtonImageIdx = 1
 end
@@ -65,6 +65,9 @@ function LevelSelectViewModel:resume()
         curOptions.achievements = achievements
         curOptions.unlocked = numLevelsUnlocked >= i
     end
+    --- when pressing the A button to dismiss a gameOverScreen, we don't want to register that press
+    --- here again to start a level
+    self.aButtonPressedAtLeastOnce = false
 end
 
 function LevelSelectViewModel:pause()
@@ -84,7 +87,7 @@ function LevelSelectViewModel:update()
         local function timerCallback()
             if self.selectedIdx < #self.menuOptions and (numLevelsUnlocked() >= self.selectedIdx + 1 or Debug) then
                 self.selectedIdx = self.selectedIdx + 1
-                self.selectedChallenge = firstUnCompletedChallenge(self.selectedIdx) or 1
+                self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
             end
         end
         self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
@@ -92,7 +95,7 @@ function LevelSelectViewModel:update()
         local function timerCallback()
             if self.selectedIdx > 1 then
                 self.selectedIdx = self.selectedIdx - 1
-                self.selectedChallenge = firstUnCompletedChallenge(self.selectedIdx) or 1
+                self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
             end
         end
         self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
@@ -101,10 +104,12 @@ function LevelSelectViewModel:update()
             self.keyTimer:remove()
         end
     elseif justPressed(buttonLeft) then
-        self.selectedChallenge = clamp(self.selectedChallenge-1, 1, numChallenges)
+        self.selectedChallengeIdx = clamp(self.selectedChallengeIdx -1, 1, numChallenges)
     elseif justPressed(buttonRight) then
-        self.selectedChallenge = clamp(self.selectedChallenge+1, 1, numChallenges)
-    elseif justReleased(buttonA) then
+        self.selectedChallengeIdx = clamp(self.selectedChallengeIdx +1, 1, numChallenges)
+    elseif justPressed(buttonA) then
+        self.aButtonPressedAtLeastOnce = true
+    elseif justReleased(buttonA) and self.aButtonPressedAtLeastOnce then
         ui_confirm:play()
         currentLevel = self.selectedIdx
         require("lua/gameScreen")
@@ -115,12 +120,12 @@ function LevelSelectViewModel:update()
             pushScreen(VideoPlayerScreen(
                 "video/orientation",
                 function()
-                    return GameScreen(currentLevel, self.selectedChallenge)
+                    return GameScreen(currentLevel, self.selectedChallengeIdx)
                 end
             ))
         else
             pushScreen(
-                GameScreen(currentLevel, self.selectedChallenge)
+                GameScreen(currentLevel, self.selectedChallengeIdx)
             )
         end
     elseif justPressed(buttonB) then

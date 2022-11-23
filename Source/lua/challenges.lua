@@ -12,6 +12,8 @@
 
 numChallenges = 3
 
+challengeNames = {"Time Attack", "Fuel Saver", "Survivor"}
+
 local defaultChallenges = {235, 1200, 0}
 
 local challenges = {

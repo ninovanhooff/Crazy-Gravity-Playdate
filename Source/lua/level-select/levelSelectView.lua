@@ -17,22 +17,32 @@ local banners <const> = gfx.imagetable.new("images/level-banners/level-banners")
 local console <const> = gfx.image.new("images/level-select/console")
 local dPad <const> = gfx.imagetable.new("images/level-select/d_pad")
 local aButton <const> = gfx.imagetable.new("images/level-select/a_button")
+local largeChallengeIcons <const> = gfx.imagetable.new("images/level-select/large_challenge_icons")
 local connector <const> = gfx.image.new("images/level-select/connector")
+local challengeBg <const> = gfx.image.new("images/level-select/challenge_bg", 14,11,14,8)
 
 --- size of various content spacing
 local gutter <const> = 4
 --- includes border, the image is 2px smaller
 local thumbSize <const> = 58
 local lockSize <const> = 32
+local contentCenterX <const> = 298
 local lockOffsetPoint <const> = playdate.geometry.point.new(gutter + (thumbSize -lockSize)/2, gutter +(thumbSize -lockSize)/2)
 --- x offset of info column
 local infoOffsetX <const> = thumbSize + 3*gutter
 local viewModel
+local numChallenges <const> = numChallenges
+local challengeNames <const> = challengeNames
 
 local listRect <const> = playdate.geometry.rect.new(gutter, 0, 174, 240)
 local detailRect <const> = playdate.geometry.rect.new(400-238, 0, 238, 240)
 local listView = playdate.ui.gridview.new(0, thumbSize + 2* gutter)
 listView:setCellPadding(0, 0, gutter, gutter) -- left, right , top, bottom
+
+local challengeRect <const> = playdate.geometry.rect.new(217, 98, 164, 71)
+local challengeListView = playdate.ui.gridview.new(0, challengeRect.height)
+challengeListView:setNumberOfRows(numChallenges)
+challengeListView.backgroundImage = challengeBg
 
 class("LevelSelectView").extends()
 
@@ -42,7 +52,7 @@ function LevelSelectView:init(vm)
     viewModel = vm
     listView:setNumberOfRows(#vm.menuOptions)
     self.initialRender = true
-    self.lastSelectedChallenge = viewModel.selectedChallenge
+    self.lastselectedChallengeIdx = viewModel.selectedChallengeIdx
     if vm.newUnlock then
         local x,y,width, height = listView:getCellBounds(1, vm.newUnlock, 1, listRect.width)
         self.lockExplosion = LockExplosion(
@@ -52,24 +62,7 @@ function LevelSelectView:init(vm)
 
 end
 
-local function renderChallengePill(x, y, selected, hudIdx, text)
-    local w = monoFont:getTextWidth(text) + 35
-    gfx.pushContext()
-
-    if selected then
-        gfx.fillRoundRect(x, y, w, 18, 9)
-        gfx.setColor(gfx.kColorWhite)
-    else
-        gfx.drawRoundRect(x, y , w, 18, 9)
-    end
-    gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
-    hudIcons:draw(x + 8,y+1,unFlipped,hudIdx*16,0,16,16)
-    monoFont:drawText(text, x+28, y+3)
-    gfx.popContext()
-    return w
-end
-
-function listView:drawCell(section, row, column, selected, x, y, width, height)
+function listView:drawCell(_, row, _, selected, x, y, width, height)
     local curOption = viewModel.menuOptions[row]
     gfx.setColor(gfx.kColorBlack) -- shape color
     local vDivider = y + 24
@@ -113,69 +106,78 @@ function listView:drawCell(section, row, column, selected, x, y, width, height)
     end
 end
 
+local pillWidth <const> = 59
+local pillHeight <const> = 16
+local pillCornerRadius <const> = pillHeight/2
+local function renderChallengePill(x, y, selected, label, value)
+    gfx.pushContext()
+
+    if selected then
+        gfx.fillRoundRect(x, y, pillWidth, pillHeight, pillCornerRadius)
+    else
+        gfx.drawRoundRect(x, y , pillWidth, pillHeight, pillCornerRadius)
+    end
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR) --text color
+    monoFont:drawTextAligned(value, x + pillWidth - pillCornerRadius, y + 2, kTextAlignment.right)
+    gfx.drawText(label, x + pillWidth + gutter, y)
+    gfx.popContext()
+end
+
+function challengeListView:drawCell(_, row, _, selected, x, y, width, height)
+    local centerX <const> = x + width/2
+    local selectedChallengeIdx = viewModel.selectedChallengeIdx
+    local selectedOption <const> = viewModel:selectedOption()
+    local challengeValue <const> = selectedOption.challenges[selectedChallengeIdx]
+    local scores <const> = selectedOption.scores
+    local achievementUnlocked <const> = selectedOption.achievements[selectedChallengeIdx]
+
+    -- title
+    gfx.drawTextAligned(challengeNames[selectedChallengeIdx], centerX, y + 2, kTextAlignment.center)
+    -- icon
+    largeChallengeIcons:getImage(selectedChallengeIdx):draw(x + 12, y + 22)
+    -- goal
+    renderChallengePill(
+        x+53, y+20,
+        not achievementUnlocked,
+        "Goal",
+        challengeValue
+    )
+    if scores then
+        -- personal best
+        renderChallengePill(
+            x+53, y+39,
+            achievementUnlocked,
+            "Best",
+            scores[selectedChallengeIdx]
+        )
+    end
+
+end
+
+
 local function renderDetailScreen(info)
     local levelNumber = info.levelNumber
     gfx.pushContext()
     gfx.setClipRect(detailRect)
+    -- console
     console:draw(detailRect.x, detailRect.y)
+    -- title
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    gfx.drawTextAligned(levelNumString(levelNumber) .. ": " .. info.title, contentCenterX, 12, kTextAlignment.center)
 
-    --local infoY = detailRect.y
-    --
-    ---- title
-    --drawTextInRectUnderlined(levelNumString(levelNumber) .. " : " .. info.title, detailRect, defaultFont)
-    --infoY = infoY + 30
-    --
-    ---- banner image
-    --gfx.drawRect(detailRect.x, infoY, detailRect.width, 64)
-    --if banners[levelNumber] then
-    --    gfx.setImageDrawMode(gfx.kDrawModeCopy)
-    --    banners[levelNumber]:draw(detailRect.x + 1, infoY + 1)
-    --    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    --end
-    --infoY = infoY + 67
-    --
-    --monoFont:drawText("Challenges", detailRect.x, infoY)
-    --infoY = infoY + 15
-    ---- challenges
-    --local challengeX = detailRect.x
-    ---- time
-    --challengeX = challengeX + gutter +  renderChallengePill(
-    --    challengeX, infoY,
-    --    viewModel.selectedChallenge == 1,
-    --    4, info.challenges[1]
-    --)
-    ---- fuel
-    --challengeX = challengeX + gutter +  renderChallengePill(
-    --    challengeX, infoY,
-    --    viewModel.selectedChallenge == 2,
-    --    5, info.challenges[2]
-    --)
-    ---- lives
-    --challengeX = challengeX + gutter +  renderChallengePill(
-    --    challengeX, infoY,
-    --    viewModel.selectedChallenge == 3,
-    --    6, info.challenges[3]
-    --)
-    --infoY = infoY + 24
-    --
-    ---- scores
-    --if(info.scores) then
-    --    monoFont:drawText("Personal Best", detailRect.x, infoY)
-    --    infoY = infoY + 15
-    --    for i, item in ipairs(info.scores) do
-    --        hudIcons:draw(detailRect.x,infoY,unFlipped,48+i*16,0,16,16)
-    --        monoFont:drawText(item, detailRect.x + 20, infoY + 2)
-    --        infoY = infoY + 20
-    --    end
-    --end
-
+    -- banner
+    if banners[levelNumber] then
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        banners[levelNumber]:draw(216, 36)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    end
 
     gfx.popContext()
 end
 
 function LevelSelectView:render()
     gfx.setColor(gfx.kColorBlack)
-    local needsDetailDisplay = self.lastSelectedChallenge ~= viewModel.selectedChallenge
+    local needsDetailDisplay = self.lastSelectedChallenge ~= viewModel.selectedChallengeIdx
     if self.initialRender then
         gfx.clear(gfx.kColorWhite)
         renderDetailScreen(viewModel:selectedOption())
@@ -190,6 +192,22 @@ function LevelSelectView:render()
 
     if needsDetailDisplay then
         renderDetailScreen(viewModel:selectedOption())
+    end
+
+    if challengeListView.needsDisplay or self.lastselectedChallengeIdx ~= viewModel.selectedChallengeIdxthen then
+        challengeListView:drawInRect(challengeRect.x, challengeRect.y, challengeRect.width, challengeRect.height)
+        -- pagination dots
+        gfx.setColor(gfx.kColorBlack)
+        local selectedChallengeIdx = viewModel.selectedChallengeIdx
+        for i = 1, numChallenges do
+            local drawFun = selectedChallengeIdx == i and gfx.fillCircleAtPoint or gfx.drawCircleAtPoint
+            drawFun(
+                challengeRect.x+39 + selectedChallengeIdx*22,
+                challengeRect.y+63,
+                4
+            )
+        end
+
     end
 
     dPad:getImage(viewModel.dPadImageIdx):draw(223,182)
@@ -217,5 +235,5 @@ function LevelSelectView:render()
     else self.lockExplosion = nil
     end
 
-    self.lastSelectedChallenge = viewModel.selectedChallenge
+    self.lastselectedChallengeIdx = viewModel.selectedChallengeIdx
 end
