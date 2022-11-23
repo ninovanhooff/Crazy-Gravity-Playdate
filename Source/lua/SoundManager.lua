@@ -81,7 +81,6 @@ function SoundManager:notifySoundCalcEnd()
     forSounds(self, function(item)
         if item.minDistance < SOUND_DISTANCE_INFINITE then
             local volume = self.volume*falloff:valueAtTime(item.minDistance)
-            print("set vol", volume)
             item.player:setVolume(volume)
             if not item.player:isPlaying() then
                 playRandomPitch(item.player, 0)
