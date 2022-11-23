@@ -137,7 +137,7 @@ function CreditsView:createCreditsImage()
     y = y + self:drawTextCentered({"Launch Director", "Gary Williams"}, y) + sectionSpacing
 
     y = y + self:drawTextCentered("Testers", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered("@Guv_Bubbs - @Rebecca - @fnc12", y) + lineSpacing
+    y = y + self:drawTextCentered("@Guv_Bubbs - @professir - @Rebecca - @fnc12", y) + lineSpacing -- todo test width
 
     y = y + self:drawTextCentered("Thanks", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Matt Septhon", y) + lineSpacing
