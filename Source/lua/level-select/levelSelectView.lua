@@ -40,8 +40,9 @@ local listView = playdate.ui.gridview.new(0, thumbSize + 2* gutter)
 listView:setCellPadding(0, 0, gutter, gutter) -- left, right , top, bottom
 
 local challengeRect <const> = playdate.geometry.rect.new(217, 98, 164, 71)
-local challengeListView = playdate.ui.gridview.new(0, challengeRect.height)
-challengeListView:setNumberOfRows(numChallenges)
+local challengeListView = playdate.ui.gridview.new(challengeRect.width, challengeRect.height)
+challengeListView:setNumberOfColumns(numChallenges)
+challengeListView:setNumberOfRows(1)
 challengeListView.backgroundImage = challengeBg
 
 class("LevelSelectView").extends()
@@ -52,7 +53,7 @@ function LevelSelectView:init(vm)
     viewModel = vm
     listView:setNumberOfRows(#vm.menuOptions)
     self.initialRender = true
-    self.lastselectedChallengeIdx = viewModel.selectedChallengeIdx
+    self.lastSelectedChallengeIdx = viewModel.selectedChallengeIdx
     if vm.newUnlock then
         local x,y,width, height = listView:getCellBounds(1, vm.newUnlock, 1, listRect.width)
         self.lockExplosion = LockExplosion(
@@ -123,18 +124,17 @@ local function renderChallengePill(x, y, selected, label, value)
     gfx.popContext()
 end
 
-function challengeListView:drawCell(_, row, _, selected, x, y, width, height)
+function challengeListView:drawCell(_, _, challengeIdx, selected, x, y, width, height)
     local centerX <const> = x + width/2
-    local selectedChallengeIdx = viewModel.selectedChallengeIdx
-    local selectedOption <const> = viewModel:selectedOption()
-    local challengeValue <const> = selectedOption.challenges[selectedChallengeIdx]
-    local scores <const> = selectedOption.scores
-    local achievementUnlocked <const> = selectedOption.achievements[selectedChallengeIdx]
+    local option <const> = viewModel:selectedOption()
+    local challengeValue <const> = option.challenges[challengeIdx]
+    local scores <const> = option.scores
+    local achievementUnlocked <const> = option.achievements[challengeIdx]
 
     -- title
-    gfx.drawTextAligned(challengeNames[selectedChallengeIdx], centerX, y + 2, kTextAlignment.center)
+    gfx.drawTextAligned(challengeNames[challengeIdx], centerX, y + 2, kTextAlignment.center)
     -- icon
-    largeChallengeIcons:getImage(selectedChallengeIdx):draw(x + 12, y + 22)
+    largeChallengeIcons:getImage(challengeIdx):draw(x + 12, y + 22)
     -- goal
     renderChallengePill(
         x+53, y+20,
@@ -148,7 +148,7 @@ function challengeListView:drawCell(_, row, _, selected, x, y, width, height)
             x+53, y+39,
             achievementUnlocked,
             "Best",
-            scores[selectedChallengeIdx]
+            scores[challengeIdx]
         )
     end
 
@@ -177,7 +177,7 @@ end
 
 function LevelSelectView:render()
     gfx.setColor(gfx.kColorBlack)
-    local needsDetailDisplay = self.lastSelectedChallenge ~= viewModel.selectedChallengeIdx
+    local needsDetailDisplay = false
     if self.initialRender then
         gfx.clear(gfx.kColorWhite)
         renderDetailScreen(viewModel:selectedOption())
@@ -194,7 +194,12 @@ function LevelSelectView:render()
         renderDetailScreen(viewModel:selectedOption())
     end
 
-    if challengeListView.needsDisplay or self.lastselectedChallengeIdx ~= viewModel.selectedChallengeIdxthen then
+    local challengeChanged = self.lastSelectedChallengeIdx ~= viewModel.selectedChallengeIdx
+    if challengeChanged then
+        challengeListView:scrollToCell(1,1, viewModel.selectedChallengeIdx)
+    end
+
+    if needsDetailDisplay or challengeListView.needsDisplay or challengeChanged then
         challengeListView:drawInRect(challengeRect.x, challengeRect.y, challengeRect.width, challengeRect.height)
         -- pagination dots
         gfx.setColor(gfx.kColorBlack)
@@ -235,5 +240,5 @@ function LevelSelectView:render()
     else self.lockExplosion = nil
     end
 
-    self.lastselectedChallengeIdx = viewModel.selectedChallengeIdx
+    self.lastSelectedChallengeIdx = viewModel.selectedChallengeIdx
 end

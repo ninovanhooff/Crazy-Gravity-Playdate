@@ -87,7 +87,7 @@ function LevelSelectViewModel:update()
         local function timerCallback()
             if self.selectedIdx < #self.menuOptions and (numLevelsUnlocked() >= self.selectedIdx + 1 or Debug) then
                 self.selectedIdx = self.selectedIdx + 1
-                self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
+                --self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
             end
         end
         self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
@@ -95,7 +95,7 @@ function LevelSelectViewModel:update()
         local function timerCallback()
             if self.selectedIdx > 1 then
                 self.selectedIdx = self.selectedIdx - 1
-                self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
+                --self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
             end
         end
         self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
