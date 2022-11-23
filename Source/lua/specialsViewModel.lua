@@ -89,10 +89,14 @@ local function getPlatformTooltipTexts(platform)
     end
 end
 
-local function updateCheckpoint(platform)
+local function updateCheckpoint(platform, suppressCheckpointSound)
     if platform ~= checkpoint then
         checkpoint = platform
         checkpoint.animator = animator.new(checkpointAnimatorDuration, 32, -56, checkpointEasing)
+
+        if Sounds and not suppressCheckpointSound then
+            pickup_sound:play()
+        end
     end
 end
 
@@ -156,13 +160,14 @@ function CalcPlatform(item)
         end
     elseif landedAt == item then
         --printf(item.pType,#planeFreight,"HJ")
-
+        local suppressCheckpointSound = false
         if item.pType==1 then -- homeBase
             if #planeFreight > 0 then
                 if landedTimer < frameRate then
                     item.tooltip = {text="Unloading", progress=landedTimer/frameRate}
                 else
                     if Sounds then
+                        suppressCheckpointSound = true
                         dump_sound:play()
                     end
                     table.remove(planeFreight,1)
@@ -179,7 +184,6 @@ function CalcPlatform(item)
                         playdate.wait(500) -- Show player that there is no more remaining freight
                         pushScreen(GameOverScreen(GAME_OVER_CONFIGS.LEVEL_CLEARED))
                     else
-                        updateCheckpoint(homeBase)
                         if #planeFreight == 0 then
                             if remainingCount > 0 then
                                 item.tooltip = {text=string.format("Goods received, %d remaining!", remainingCount)}
@@ -198,8 +202,7 @@ function CalcPlatform(item)
             elseif landedTimer < frameRate then
                 item.tooltip = { text= getPlatformTooltipTexts(item).pickup, progress=landedTimer/frameRate}
             else
-                updateCheckpoint(item)
-
+                suppressCheckpointSound = true
                 if item.pType==2 then -- freight
                     remainingFreight[item.type+1] = remainingFreight[item.type+1] -1
                     table.insert(planeFreight,{item.type,item})
@@ -239,6 +242,7 @@ function CalcPlatform(item)
         end
 
         if landedTimer >= frameRate then
+            updateCheckpoint(item, suppressCheckpointSound)
             landedTimer = 0
         end
     end
