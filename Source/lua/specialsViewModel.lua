@@ -104,6 +104,9 @@ function ApproxSpecialCollision(item)
     return approxRectCollision(item.x, item.y, item.w, item.h)
 end
 
+local checkpointWaitingLabels <const> = {"Back so soon?", "Papers, please", "Who are you?", "You look familiar"}
+local checkpointDoneLabels  <const> = {"Let's go!", "Safe and sound!", "Keep going!", "Nice!", "See ya!", "You can do it!"}
+
 function CalcPlatform(item)
     if not approxRectCollision(item.x,item.y-3, item.w, item.h) then
         item.tooltip = nil
@@ -143,8 +146,8 @@ function CalcPlatform(item)
         landedTimer = landedTimer + 1
     end
 
-    --landing
     if flying and planeRot == 18 then -- upright
+        --landing
         if planePos[2]==item.y+1 and planePos[1]>=item.x-2 and planePos[1]<item.x+item.w-1 and planePos[4]>=3 and vy > 0 and not overSpeed then
             local warnX = 1/(landingTolerance[1] / abs(vx))
             local warnY = 1/(landingTolerance[2] / vy)
@@ -159,10 +162,13 @@ function CalcPlatform(item)
             landedAt = item
         end
     elseif landedAt == item then
+        -- landed
         --printf(item.pType,#planeFreight,"HJ")
         local suppressCheckpointSound = false
+        local handled = false
         if item.pType==1 then -- homeBase
             if #planeFreight > 0 then
+                handled = true
                 if landedTimer < frameRate then
                     item.tooltip = {text="Unloading", progress=landedTimer/frameRate}
                 else
@@ -183,6 +189,7 @@ function CalcPlatform(item)
                         RenderGame()
                         playdate.wait(500) -- Show player that there is no more remaining freight
                         pushScreen(GameOverScreen(GAME_OVER_CONFIGS.LEVEL_CLEARED))
+                        return
                     else
                         if #planeFreight == 0 then
                             if remainingCount > 0 then
@@ -229,6 +236,7 @@ function CalcPlatform(item)
             if item.amnt == 0 then
                 item.tooltip = { text = getPlatformTooltipTexts(item).done }
             end
+            handled = true
         end
 
         if fuel < 1 and not collision and not (item.pType == 3 and item.amnt > 0) then
@@ -239,10 +247,21 @@ function CalcPlatform(item)
                 gamePaused = false
                 return true
             end
+            handled = true
+        end
+
+        if checkpoint ~= item then
+            if landedTimer >= frameRate then
+                updateCheckpoint(item, suppressCheckpointSound)
+                if not handled then
+                    item.tooltip = { text= item.checkpointDoneLabel}
+                end
+            elseif not handled then
+                item.tooltip = { text= item.checkpointWaitingLabel, progress=landedTimer/frameRate}
+            end
         end
 
         if landedTimer >= frameRate then
-            updateCheckpoint(item, suppressCheckpointSound)
             landedTimer = 0
         end
     end
@@ -531,6 +550,8 @@ specialCalcT[15] = CalcBarrier
 
 function InitPlatform(item)
     item.origAmnt = item.amnt
+    item.checkpointWaitingLabel = checkpointWaitingLabels[random(1, #checkpointWaitingLabels)]
+    item.checkpointDoneLabel = checkpointDoneLabels[random(1, #checkpointDoneLabels)]
 end
 
 function InitCannon(item)
