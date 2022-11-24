@@ -43,6 +43,8 @@ local PATTERN_VALS <const> = {"lighter", "light", "dark", "darker", "white", "de
 local INVERT_KEY <const> = "invertDisplay"
 local SPEED_KEY <const> = "gameFps"
 local SPEED_VALS <const> = {15, 20, 25, 30, 0}
+local LIVES_KEY <const> = "lives"
+local LIVES_VALS <const> = { 6, 9, 12, 18, 90 }
 local ROTATION_DELAY_KEY <const> = "rotationDelay"
 local ROTATION_DELAY_VALS <const> = {
     {label="Slow", value = 2},
@@ -88,6 +90,7 @@ local gameOptions = {
         options = {
             { name='Debug', key='debug', values=toggleVals, default=1},
             { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
+            { name='Lives', key=LIVES_KEY, values= LIVES_VALS, default=2},
             { name='Game speed', key=SPEED_KEY, values= SPEED_VALS, default=4},
         }
     },
@@ -360,6 +363,10 @@ function optionsNS.Options:apply(onlyStartAssets)
     end
     print("set brickPatternOverride", brickPatternOverride)
 
+    local lives = self:read(LIVES_KEY)
+    if lives then
+        InitialLives = LIVES_VALS[lives]
+    end
     local framerateIdx = self:read(SPEED_KEY)
     if framerateIdx then
         playdate.display.setRefreshRate(SPEED_VALS[framerateIdx])

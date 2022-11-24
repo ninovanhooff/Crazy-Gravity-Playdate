@@ -299,7 +299,7 @@ function ResetGame()
             end
         end
     end
-    extras = {0,levelProps.lives,1} -- turbo, lives, cargo
+    extras = {0,InitialLives or levelProps.lives or 9,1} -- turbo, lives, cargo
     frameCounter = 0
     gamePaused = true
     editorMode = false

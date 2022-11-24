@@ -127,8 +127,8 @@ function GameHUD:renderFull()
         drawIcon(x, 0)
     end
     x = x+16+hudGutter
-    defaultFont:drawText(extras[2], x, hudY)
-    x = x+10+hudPadding
+    -- drawText returns drawn text width
+    x = x+defaultFont:drawText(extras[2], x, hudY)+hudPadding
 
     -- fuel
     if fuelEnabled then
