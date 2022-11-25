@@ -17,10 +17,7 @@ function VideoViewModel:init(basePath)
     self.frameCount = self.video:getFrameCount()
     print("video size", width, height, "frameRate", self.framerate, "frameCount", self.frameCount)
 
-    self.audio, self.loaderr = snd.sampleplayer.new(basePath)
-    if self.audio == nil then
-        print("loaderr", self.loaderr)
-    end
+    self.audio, self.loaderr = snd.fileplayer.new(basePath)
     print("audio", self.audio)
 
     self.metadata, self.loaderr = json.decodeFile(basePath .. ".json")
