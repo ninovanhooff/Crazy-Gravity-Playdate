@@ -147,16 +147,6 @@ function EndGameViewModel:setState(state)
     self.state = state
 end
 
-function EndGameViewModel:destroy()
-    self.videoPlayerView:destroy()
-    soundManager.enabled = true
-end
-
-function EndGameViewModel:resume()
-    musicManager:fade(0)
-    self.platform.arrows = false
-end
-
 function EndGameViewModel:onEnded()
     popScreen() -- pop self
     pushScreen(FlyToCreditsScreen(
@@ -376,6 +366,7 @@ local stateUpdaters = {
 
 function EndGameViewModel:update()
     calcTimeStep()
+    self.platform.tooltip = nil
     if self.videoViewModel then
         self.videoViewModel:update()
     end
@@ -395,14 +386,17 @@ function EndGameViewModel:update()
 end
 
 function EndGameViewModel:resume()
-    playdate.setAutoLockDisabled(true)
+    printT("endgameVM resume")
+    musicManager:fade(0)
+    self.platform.arrows = false
 end
 
 function EndGameViewModel:pause()
     playdate.display.setRefreshRate(frameRate)
-    playdate.setAutoLockDisabled(false)
 end
 
 function EndGameViewModel:destroy()
     self.pause()
+    self.videoPlayerView:destroy()
+    soundManager.enabled = true
 end
