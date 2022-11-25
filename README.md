@@ -13,7 +13,7 @@ Available as pdz at runtime, which can be loaded with file.run()
 ## Credits
 Nino - Programming
 Axel Meierhöfer - Concept (Crazy Gravity)
-Richard Lems - Logo and device mockups
+Richard Lems - Launch Control Art, Logo and device mockups
 Script - Magnum Kramer from Fiverr
 Count Moriarty - Art
 Labeardi - Art

@@ -123,6 +123,7 @@ function CreditsView:createCreditsImage()
     y = y + self:drawTextCentered("Art", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Mike Brown", y) + lineSpacing -- sprite work
     y = y + self:drawTextCentered("Count Moriarty", y) + lineSpacing
+    y = y + self:drawTextCentered("Richard Lems", y) + lineSpacing
     y = y + self:drawTextCentered("Casey Gatti", y) + lineSpacing
 
     y = y + self:drawTextCentered("Audio", y, screenCenterX, true) + lineSpacing
@@ -133,17 +134,16 @@ function CreditsView:createCreditsImage()
     y = y + self:drawTextCentered("Magnum Kramer", y) + sectionSpacing
 
     y = y + self:drawTextCentered("Starring", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered({"Stephanie Shipwell", "Jodi Hutton"}, y) + lineSpacing
+    y = y + self:drawTextCentered({"CEO", "Jodi Hutton"}, y) + lineSpacing
     y = y + self:drawTextCentered({"Launch Director", "Gary Williams"}, y) + sectionSpacing
 
     y = y + self:drawTextCentered("Testers", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered("@Guv_Bubbs - @professir - @Rebecca - @fnc12", y) + lineSpacing -- todo test width
+    y = y + self:drawTextCentered("@Guv__Bubbs - @professir - @Rebecca - @fnc12", y) + lineSpacing
 
     y = y + self:drawTextCentered("Thanks", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Matt Septhon", y) + lineSpacing
     y = y + self:drawTextCentered("Choosh", y) + lineSpacing
     y = y + self:drawTextCentered("James Daniels", y) + lineSpacing -- helped get me the playdate
-    y = y + self:drawTextCentered("Richard Lems", y) + lineSpacing
     y = y + self:drawTextCentered("@Labeardi", y) + sectionSpacing
 
 
