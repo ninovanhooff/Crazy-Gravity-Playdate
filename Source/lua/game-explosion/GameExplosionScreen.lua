@@ -19,7 +19,10 @@ function GameExplosionScreen:init(calcPlane, calcGameCam)
 end
 
 function GameExplosionScreen:update()
-    if not inputManager:isInputJustPressed(InputManager.actionThrottle) and explosion and explosion:update() then
+    if inputManager:isInputJustPressed(InputManager.actionThrottle) and explosion then
+        explosion:fastForward()
+    end
+    if explosion and explosion:update() then
         self.calcPlane() -- keep updating plane as a ghost target for camera
         self.calcGameCam()
         for _,item in ipairs(specialT) do

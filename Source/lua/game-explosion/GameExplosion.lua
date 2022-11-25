@@ -19,6 +19,7 @@ local planePos <const> = planePos
 local camPos <const> = camPos
 local frameRate <const> = frameRate
 local duration <const> = frameRate * 2
+local fadeOutStartTime <const> = duration - frameRate
 local shardDrag
 
 class('GameExplosion').extends()
@@ -125,11 +126,17 @@ function GameExplosion:update()
     return self.timer < duration
 end
 
+function GameExplosion:fastForward()
+    if self.timer < fadeOutStartTime  then
+        self.timer = fadeOutStartTime
+    end
+end
+
 function GameExplosion:render()
     renderShards(self)
     renderBlasts(self)
     -- gradually fade out the game after 1 second of explosion
-    if self.timer > frameRate then
+    if self.timer > fadeOutStartTime then
         gfx.setDitherPattern(1.2-((self.timer-frameRate)/frameRate), gfx.image.kDitherTypeDiagonalLine) -- invert alpha due to bug in SDK
         gfx.fillRect(0,0, screenWidth, self.scrimHeight)
     end
