@@ -3,6 +3,7 @@ import "lua/util"
 local run <const> = playdate.file.run
 
 local requiredPaths <const> = {}
+local printT <const> = printT
 
 --- @param sourcePath path relative to source directory
 function require(sourcePath)
@@ -49,16 +50,16 @@ local function executePendingNavigators()
         local newPos = find(backStack, activeScreen)
         if activeScreen and newPos and newPos ~= #backStack then
             -- the activeScreen was moved from the top of the stack to another position
-            print("Pausing screen", activeScreen.className, activeScreen)
+            printT("Pausing screen", activeScreen.className, activeScreen)
             activeScreen:pause()
         end
         if #backStack < 1 then
-            print("ERROR: No active screen, adding Start Screen")
+            printT("ERROR: No active screen, adding Start Screen")
             require "lua/start/startScreen"
             table.insert(backStack, StartScreen())
         end
         activeScreen = backStack[#backStack]
-        print("Resuming screen", activeScreen.className, activeScreen)
+        printT("Resuming screen", activeScreen.className, activeScreen)
         playdate.setCollectsGarbage(true) -- prevent permanently disabled GC by previous Screen
         activeScreen:resume()
     end
@@ -68,14 +69,14 @@ function pushScreen(newScreen)
     table.insert(
         pendingNavigators,
         function()
-            print("Adding to backstack", newScreen.className, newScreen)
+            printT("Adding to backstack", newScreen.className, newScreen)
             table.insert(backStack, newScreen)
         end
     )
 end
 
 local function popScreenImmediately()
-    print("Popping off backstack:", activeScreen.className, activeScreen)
+    printT("Popping off backstack:", activeScreen.className, activeScreen)
     table.remove(backStack)
     activeScreen:destroy()
 end
@@ -88,7 +89,7 @@ function clearNavigationStack()
     table.insert(
         pendingNavigators,
         function()
-            print("Clearing navigationStack", activeScreen.className, activeScreen)
+            printT("Clearing navigationStack", activeScreen.className, activeScreen)
             while #backStack > 0 do
                 activeScreen = backStack[#backStack]
                 popScreenImmediately()
@@ -139,7 +140,7 @@ function playdate.debugDraw()
 end
 
 function playdate.keyPressed(key)
-    print("Pressed " .. key .. " key")
+    printT("Pressed " .. key .. " key")
     if key == "r" then
         Debug = false
     end
