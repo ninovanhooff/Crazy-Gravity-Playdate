@@ -20,6 +20,7 @@ local camPos <const> = camPos
 local frameRate <const> = frameRate
 local duration <const> = frameRate * 2
 local fadeOutStartTime <const> = duration - frameRate
+local fastForwardTime <const> = fadeOutStartTime + 10
 local shardDrag
 
 class('GameExplosion').extends()
@@ -127,8 +128,8 @@ function GameExplosion:update()
 end
 
 function GameExplosion:fastForward()
-    if self.timer < fadeOutStartTime  then
-        self.timer = fadeOutStartTime
+    if self.timer < fastForwardTime  then
+        self.timer = fastForwardTime
     end
 end
 
