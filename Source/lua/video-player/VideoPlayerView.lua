@@ -12,14 +12,10 @@ function VideoPlayerView:init(viewModel)
 end
 
 function VideoPlayerView:resume()
-    playdate.display.setRefreshRate(self.viewModel.framerate)
-    playdate.setAutoLockDisabled(true)
     self.viewModel:resume()
 end
 
 function VideoPlayerView:pause()
-    playdate.display.setRefreshRate(frameRate)
-    playdate.setAutoLockDisabled(false)
     self.viewModel:pause()
 end
 

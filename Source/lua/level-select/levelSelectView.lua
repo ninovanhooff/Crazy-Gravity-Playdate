@@ -13,7 +13,6 @@ local defaultFont <const> = gfx.getFont()
 local monoFont <const> = monoFont
 local hudIcons <const> = sprite -- hud icons are placed at origin of sprite
 local thumbs <const> = gfx.imagetable.new("images/level-thumbs/level-thumbs")
-local banners <const> = gfx.imagetable.new("images/level-banners/level-banners")
 local console <const> = gfx.image.new("images/level-select/console")
 local dPad <const> = gfx.imagetable.new("images/level-select/d_pad")
 local aButton <const> = gfx.imagetable.new("images/level-select/a_button")
@@ -165,13 +164,6 @@ local function renderDetailScreen(info)
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     gfx.drawTextAligned(levelNumString(levelNumber) .. ": " .. info.title, contentCenterX, 12, kTextAlignment.center)
 
-    -- banner
-    if banners[levelNumber] then
-        gfx.setImageDrawMode(gfx.kDrawModeCopy)
-        banners[levelNumber]:draw(216, 36)
-        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    end
-
     gfx.popContext()
 end
 
@@ -181,7 +173,6 @@ function LevelSelectView:render()
     if self.initialRender then
         gfx.clear(gfx.kColorWhite)
         renderDetailScreen(viewModel:selectedOption())
-        self.initialRender = false
     end
 
     if listView:getSelectedRow() ~= viewModel.selectedIdx then
@@ -195,7 +186,7 @@ function LevelSelectView:render()
     end
 
     local challengeChanged = self.lastSelectedChallengeIdx ~= viewModel.selectedChallengeIdx
-    if challengeChanged then
+    if challengeChanged or self.initialRender then
         challengeListView:scrollToCell(1,1, viewModel.selectedChallengeIdx)
     end
 
@@ -240,5 +231,10 @@ function LevelSelectView:render()
     else self.lockExplosion = nil
     end
 
+    if viewModel.videoPlayerView and not viewModel.videoViewModel.finished then
+        viewModel.videoPlayerView:render(viewModel.videoViewModel)
+    end
+
     self.lastSelectedChallengeIdx = viewModel.selectedChallengeIdx
+    self.initialRender = false
 end

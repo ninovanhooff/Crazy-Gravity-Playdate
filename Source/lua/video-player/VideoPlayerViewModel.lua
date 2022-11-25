@@ -15,6 +15,22 @@ function VideoPlayerViewModel:shouldApplyVcrFilter()
     return false
 end
 
+function VideoPlayerViewModel:resume()
+    playdate.display.setRefreshRate(self.framerate)
+    playdate.setAutoLockDisabled(true)
+    VideoPlayerViewModel.super.resume(self)
+end
+
+function VideoPlayerViewModel:pause()
+    playdate.display.setRefreshRate(frameRate)
+    playdate.setAutoLockDisabled(false)
+    VideoPlayerViewModel.super.pause(self)
+end
+
+function VideoPlayerViewModel:destroy()
+    self:pause()
+end
+
 function VideoPlayerViewModel:onVideoFinished()
     VideoPlayerViewModel.super.onVideoFinished(self)
     popScreen() -- remove self

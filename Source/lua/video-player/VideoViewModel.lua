@@ -1,3 +1,4 @@
+import "VideoTimebase"
 local round <const> = round
 local gfx <const> = playdate.graphics
 local snd = playdate.sound
@@ -5,7 +6,7 @@ local snd = playdate.sound
 
 class("VideoViewModel").extends()
 
-function VideoViewModel:init(basePath)
+function VideoViewModel:init(basePath, loop)
     self.basePath = basePath
     self.finished = false
     print("Loading video", basePath)
@@ -17,8 +18,12 @@ function VideoViewModel:init(basePath)
     self.frameCount = self.video:getFrameCount()
     print("video size", width, height, "frameRate", self.framerate, "frameCount", self.frameCount)
 
-    self.audio, self.loaderr = snd.fileplayer.new(basePath)
-    print("audio", self.audio)
+    local audio = snd.fileplayer.new(basePath)
+    print("audio", audio)
+    self.timebase = audio
+        and FilePlayerTimebase(audio, loop)
+        or TimerTimebase(self.frameCount / self.framerate, loop)
+
 
     self.metadata, self.loaderr = json.decodeFile(basePath .. ".json")
     if self.loaderr then
@@ -34,15 +39,15 @@ function VideoViewModel:init(basePath)
 end
 
 function VideoViewModel:currentFrame()
-    return round(self.audio:getOffset() * self.framerate)
+    return round(self.timebase:getOffset() * self.framerate)
 end
 
 function VideoViewModel:shouldApplyVcrFilter()
     if not self.vcrFilterEnabled then
         return false
     end
-    local currentFrame = self:currentFrame()
-    return currentFrame < 3 or currentFrame > self.frameCount - 3
+    local currentOffset = self.timebase:getOffset()
+    return currentOffset < 0.1 or currentOffset > self.timebase:durationSeconds() - 0.1
 end
 
 function VideoViewModel:getCurrentMetaData(metaData)
@@ -50,7 +55,7 @@ function VideoViewModel:getCurrentMetaData(metaData)
         return nil
     end
 
-    local currentTime = self.audio:getOffset()
+    local currentTime = self.timebase:getOffset()
 
     for _,item in ipairs(metaData) do
         if item.start <= currentTime and item["end"] >= currentTime then
@@ -72,7 +77,7 @@ function VideoViewModel:getCurrentSubtitle()
 end
 
 function VideoViewModel:getOffset()
-    return self.audio:getOffset()
+    return self.timebase:getOffset()
 end
 
 function VideoViewModel:onVideoFinished()
@@ -81,24 +86,26 @@ function VideoViewModel:onVideoFinished()
 end
 
 function VideoViewModel:update()
-    if self:currentFrame() >= self.frameCount then
+    if self.timebase:isFinished() then
         self:onVideoFinished()
     end
     return self.finished
 end
 
 function VideoViewModel:pause()
-    musicManager:fade(1.0)  -- restore original music volume
-    self.audio:stop()
+    if self.timebase:isa(FilePlayerTimebase) then
+        musicManager:fade(1.0)  -- restore original music volume
+    end
+    self.timebase:stop()
 end
 
 function VideoViewModel:resume()
-    musicManager:fade(0.3) -- lower music volume for clear dialogue
-    if self.audio ~= nil then
-        self.audio:play()
+    if self.timebase:isa(FilePlayerTimebase)  then
+        musicManager:fade(0.3) -- lower music volume for clear dialogue
     end
+    self.timebase:start()
 end
 
 function VideoViewModel:destroy()
-    self.audio:stop() --todo move fadeout to videoPlayerViewModel
+    self.timebase:stop()
 end

@@ -40,6 +40,18 @@ function LevelSelectViewModel:init()
     self.aButtonImageIdx = 1
 end
 
+function LevelSelectViewModel:startVideo(path)
+    require("lua/video-player/VideoPlayerScreen")
+    if self.videoViewModel then
+        self.videoViewModel:destroy()
+    end
+    self.videoViewModel = VideoViewModel(path, true)
+    self.videoPlayerView = VideoPlayerView(self.videoViewModel)
+    self.videoViewModel.offsetX = 217
+    self.videoViewModel.offsetY = 37
+    self.videoPlayerView:resume()
+end
+
 function LevelSelectViewModel:resume()
     local numLevelsUnlocked = numLevelsUnlocked()
     print("numLevelsUnlocked", numLevelsUnlocked)
@@ -68,6 +80,8 @@ function LevelSelectViewModel:resume()
     --- when pressing the A button to dismiss a gameOverScreen, we don't want to register that press
     --- here again to start a level
     self.aButtonPressedAtLeastOnce = false
+
+    self:startVideo(levelPath(1))
 end
 
 function LevelSelectViewModel:pause()
@@ -83,6 +97,9 @@ end
 
 --- returns true when finished
 function LevelSelectViewModel:update()
+    if self.videoViewModel then
+        self.videoViewModel:update()
+    end
     if justPressed(buttonDown) then
         local function timerCallback()
             if self.selectedIdx < #self.menuOptions and (numLevelsUnlocked() >= self.selectedIdx + 1 or Debug) then

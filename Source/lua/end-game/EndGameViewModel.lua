@@ -177,6 +177,7 @@ function EndGameViewModel:startVideo(path)
     self.videoPlayerView = VideoPlayerView(self.videoViewModel)
     self.videoViewModel.offsetX = 14
     self.videoViewModel.offsetY = 86
+    playdate.display.setRefreshRate(self.videoViewModel.framerate)
     self.videoPlayerView:resume()
 end
 
@@ -391,4 +392,17 @@ function EndGameViewModel:update()
         camPos[2] = floor(self.camOverrideY / tileSize)
         camPos[4] = self.camOverrideY % tileSize
     end
+end
+
+function EndGameViewModel:resume()
+    playdate.setAutoLockDisabled(true)
+end
+
+function EndGameViewModel:pause()
+    playdate.display.setRefreshRate(frameRate)
+    playdate.setAutoLockDisabled(false)
+end
+
+function EndGameViewModel:destroy()
+    self.pause()
 end
