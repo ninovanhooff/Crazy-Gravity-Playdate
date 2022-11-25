@@ -125,6 +125,9 @@ function playdate.update()
     executePendingNavigators()
     activeScreen:update()
     gfx.popContext()
+    if Debug then
+        playdate.drawFPS(0,0)
+    end
     updateBlinkers()
     updateTimers()
 end
