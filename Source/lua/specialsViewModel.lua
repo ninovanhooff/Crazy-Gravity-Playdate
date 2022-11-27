@@ -268,9 +268,9 @@ function CalcPlatform(item)
 end
 
 function CalcBlower(item)
-    if not flying then return end
-
     soundManager:addSoundForItem(item)
+
+    if not flying then return end
 
     if item.direction==1 then --up
         if UnitCollision(item.x,item.y,6,item.distance,true) then
@@ -296,9 +296,9 @@ function CalcBlower(item)
 end
 
 function CalcMagnet(item)
-    if not flying then return end
-
     soundManager:addSoundForItem(item)
+
+    if not flying then return end
 
     if item.direction==1 then --up
         if UnitCollision(item.x,item.y,4,item.distance,true) then
