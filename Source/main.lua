@@ -141,10 +141,10 @@ end
 
 function playdate.keyPressed(key)
     printT("Pressed " .. key .. " key")
-    if key == "r" then
-        Debug = false
-    end
-    if key == "e" then
+    if key == "h" then
         Debug = true
+    end
+    if key == "j" then
+        Debug = false
     end
 end
