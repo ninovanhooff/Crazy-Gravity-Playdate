@@ -213,6 +213,7 @@ function CalcTimeStep()
     soundManager:notifySoundCalcEnd()
     if collision and explosion == nil and not Debug then
         print("KABOOM", extras[2])
+        gamePaused = true
         pushScreen(GameExplosionScreen(calcPlane, CalcGameCam))
     end
 end

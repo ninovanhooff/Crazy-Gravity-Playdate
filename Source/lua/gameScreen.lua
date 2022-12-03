@@ -26,7 +26,6 @@ function GameScreen:init(levelPathOrLevelNumber, challengeIdx)
 end
 
 function GameScreen:pause()
-    gamePaused = true
     soundManager:stop()
     if self.backMenuItem then
         menu:removeMenuItem(self.backMenuItem)
