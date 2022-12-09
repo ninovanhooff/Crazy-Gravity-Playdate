@@ -41,7 +41,6 @@ local function drawButton(button)
 end
 
 function RenderStart(viewState)
-    gfx.setBackgroundColor(gfx.kColorWhite)
     bgImg:draw(0,0)
     logoImg:draw(6, 6 - logoHeight + viewState.logoAnimator:currentValue() * logoHeight)
 
