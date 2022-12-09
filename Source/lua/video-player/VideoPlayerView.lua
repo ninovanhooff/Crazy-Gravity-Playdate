@@ -47,10 +47,12 @@ function VideoPlayerView:render()
 
     local subtitle = viewModel:getCurrentSubtitle()
     if subtitle then
-        gfx.setColor(gfx.kColorBlack)
-        gfx.fillRect(subtitleBox)
-        gfx.setImageDrawMode(gfx.kDrawModeInverted)
-        gfx.drawTextInRect(subtitle.text, subtitleRect, nil, "...", kTextAlignment.center)
+        gfx.pushContext()
+            gfx.setColor(gfx.kColorBlack)
+            gfx.fillRect(subtitleBox)
+            gfx.setImageDrawMode(gfx.kDrawModeInverted)
+            gfx.drawTextInRect(subtitle.text, subtitleRect, nil, "...", kTextAlignment.center)
+        gfx.popContext()
     end
 end
 
