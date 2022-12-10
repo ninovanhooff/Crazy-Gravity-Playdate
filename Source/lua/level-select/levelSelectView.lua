@@ -4,7 +4,7 @@
 --- DateTime: 24/04/2022 22:42levelsc
 ---
 
-import "lockExplosion"
+import "lockAnimation"
 
 local gfx <const> = playdate.graphics
 local rect <const> = playdate.geometry.rect
@@ -55,7 +55,7 @@ function LevelSelectView:init(vm)
     self.lastSelectedChallengeIdx = viewModel.selectedChallengeIdx
     if vm.newUnlock then
         local x,y,width, height = listView:getCellBounds(1, vm.newUnlock, 1, listRect.width)
-        self.lockExplosion = LockExplosion(
+        self.lockAnimation = LockAnimation(
             rect.new(x+gutter*2,y+gutter, thumbSize, thumbSize):insetBy(1,1)
         )
     end
@@ -209,7 +209,7 @@ function LevelSelectView:render()
     dPad:getImage(viewModel.dPadImageIdx):draw(223,182)
     aButton:getImage(viewModel.aButtonImageIdx):draw(319,182)
 
-    if listView.needsDisplay or self.lockExplosion then
+    if listView.needsDisplay or self.lockAnimation then
         gfx.setColor(gfx.kColorWhite)
         gfx.fillRect(listRect)
         listView:drawInRect(listRect.x, listRect.y, listRect.width, listRect.height)
@@ -225,10 +225,10 @@ function LevelSelectView:render()
         gfx.clearClipRect()
     end
 
-    local expRunning = self.lockExplosion and self.lockExplosion:update()
+    local expRunning = self.lockAnimation and self.lockAnimation:update()
     if expRunning then
-        self.lockExplosion:render()
-    else self.lockExplosion = nil
+        self.lockAnimation:render()
+    else self.lockAnimation = nil
     end
 
     if viewModel.videoPlayerView and not viewModel.videoViewModel.finished then

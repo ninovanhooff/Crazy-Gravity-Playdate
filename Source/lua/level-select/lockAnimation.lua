@@ -13,7 +13,7 @@ local spriteOffsetX <const>, spriteOffsetY <const> = 0,64
 local duration <const> = frameRate --note time starts at -10
 local shardDrag
 
-class('LockExplosion').extends()
+class('LockAnimation').extends()
 
 --- return cam position as x,y
 local function shakeCam(self)
@@ -32,8 +32,8 @@ local function shakeCam(self)
     return self.camX, self.camY
 end
 
-function LockExplosion:init(thumbRect)
-    LockExplosion.super.init(self)
+function LockAnimation:init(thumbRect)
+    LockAnimation.super.init(self)
     self.thumbRect = thumbRect
     -- initial shard velocity and shake velocity
     self.vX, self.vY = 2,2
@@ -98,7 +98,7 @@ end
 
 --- Updates the explosion
 --- @returns whether the explosion is running
-function LockExplosion:update()
+function LockAnimation:update()
     if self.timer < 0 then -- start delay
         self.camX, self.camY = shakeCam(self)
     else
@@ -111,7 +111,7 @@ function LockExplosion:update()
     return self.timer < duration
 end
 
-function LockExplosion:render()
+function LockAnimation:render()
     gfx.pushContext()
 
     if self.timer < 0 then
