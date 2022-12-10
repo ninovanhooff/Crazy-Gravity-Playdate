@@ -150,8 +150,14 @@ function LevelSelectViewModel:update()
         self:finish()
     end
 
+    -- button state images
     self.aButtonImageIdx = pressed(buttonA) and 2 or 1
-    self.dPadImageIdx = pressed(buttonLeft) and 2 or pressed(buttonRight) and 3 or 1
+    self.dPadImageIdx =
+        pressed(buttonLeft) and 2 or
+        pressed(buttonRight) and 3 or
+        pressed(buttonUp) and 4 or
+        pressed(buttonDown) and 5 or
+        1 -- neutral
 end
 
 function LevelSelectViewModel:selectedOption()
