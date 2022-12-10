@@ -46,6 +46,14 @@ challengeListView.backgroundImage = challengeBg
 
 class("LevelSelectView").extends()
 
+function LevelSelectView:initLockAnimation(idx, type)
+    local x,y = listView:getCellBounds(1, idx, 1, listRect.width)
+    self.lockAnimation = LockAnimation(
+        rect.new(x+gutter*2,y+gutter, thumbSize, thumbSize):insetBy(1,1),
+        type
+    )
+end
+
 function LevelSelectView:init(vm)
 
     LevelSelectView.super.init(self)
@@ -54,12 +62,8 @@ function LevelSelectView:init(vm)
     self.initialRender = true
     self.lastSelectedChallengeIdx = viewModel.selectedChallengeIdx
     if vm.newUnlock then
-        local x,y,width, height = listView:getCellBounds(1, vm.newUnlock, 1, listRect.width)
-        self.lockAnimation = LockAnimation(
-            rect.new(x+gutter*2,y+gutter, thumbSize, thumbSize):insetBy(1,1)
-        )
+        self:initLockAnimation(vm.newUnlock, LockAnimation.type.ShakeAndExplode)
     end
-
 end
 
 function listView:drawCell(_, row, _, selected, x, y, width, height)
@@ -168,6 +172,10 @@ local function renderDetailScreen(info)
 end
 
 function LevelSelectView:render()
+    if viewModel.deniedUnlock then
+        self:initLockAnimation(viewModel.deniedUnlock, LockAnimation.type.ShakeAndDenied)
+        viewModel.deniedUnlock = nil -- handled
+    end
     gfx.setColor(gfx.kColorBlack)
     local needsDetailDisplay = false
     if self.initialRender then
@@ -227,8 +235,11 @@ function LevelSelectView:render()
 
     local expRunning = self.lockAnimation and self.lockAnimation:update()
     if expRunning then
+        gfx.setClipRect(listRect)
         self.lockAnimation:render()
-    else self.lockAnimation = nil
+        gfx.clearClipRect()
+    else
+        self.lockAnimation = nil
     end
 
     if viewModel.videoPlayerView and not viewModel.videoViewModel.finished then

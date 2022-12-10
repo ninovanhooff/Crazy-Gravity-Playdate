@@ -77,6 +77,7 @@ function ResourceLoader:loadSounds(audioStyle, onlyStartAssets)
     ui_cancel = sampleplayer.new("sounds/ui_cancel.wav")
     explode_sound = sampleplayer.new("sounds/explosion.wav")
     unlock_sound = sampleplayer.new("sounds/unlock.wav")
+    unlock_sound_denied = sampleplayer.new("sounds/unlock_denied.wav")
     landing_sound = sampleplayer.new("sounds/landing.wav")
     soundManager:loadGameSounds()
 
@@ -122,9 +123,9 @@ function ResourceLoader:setSoundVolume(volume)
     print("set volume", volume)
     if Sounds then
         setVolume(self, volume,
-            thrust_sound, explode_sound, unlock_sound, pickup_sound, landing_sound, key_sound,
+            thrust_sound, explode_sound, unlock_sound, unlock_sound_denied, pickup_sound, landing_sound, key_sound,
             extra_sounds[1], extra_sounds[2], extra_sounds[3], fuel_sound, dump_sound,
-            swish_sound_reverse
+            swish_sound_reverse, ui_cancel, ui_confirm
         )
     end
 end

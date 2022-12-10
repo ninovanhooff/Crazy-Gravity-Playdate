@@ -59,6 +59,11 @@ function LevelSelectViewModel:resume()
         self.lastUnlocked = numLevelsUnlocked
         self.newUnlock = numLevelsUnlocked
     end
+
+    --- the row index for which the View should start a ShakeAndDenied animation.
+    --- reset to nil by View when handled
+    self.deniedUnlock = nil
+
     for i = 1,numLevels do
         local curOptions = self.menuOptions[i]
         local rawScores = records[i]
@@ -102,7 +107,7 @@ function LevelSelectViewModel:update()
     end
     if justPressed(buttonDown) then
         local function timerCallback()
-            if self.selectedIdx < #self.menuOptions and (numLevelsUnlocked() >= self.selectedIdx + 1 or Debug) then
+            if self.selectedIdx < #self.menuOptions then
                 self.selectedIdx = self.selectedIdx + 1
                 --self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
             end
@@ -127,12 +132,12 @@ function LevelSelectViewModel:update()
     elseif justPressed(buttonA) then
         self.aButtonPressedAtLeastOnce = true
     elseif justReleased(buttonA) and self.aButtonPressedAtLeastOnce then
-        ui_confirm:play()
         currentLevel = self.selectedIdx
         require("lua/gameScreen")
 
         -- start orientation video
         if self.selectedIdx == 1 then
+            ui_confirm:play()
             require "lua/video-player/VideoPlayerScreen"
             pushScreen(VideoPlayerScreen(
                 "video/orientation",
@@ -140,10 +145,13 @@ function LevelSelectViewModel:update()
                     return GameScreen(currentLevel, self.selectedChallengeIdx)
                 end
             ))
-        else
+        elseif numLevelsUnlocked() >= self.selectedIdx or Debug then
+            ui_confirm:play()
             pushScreen(
                 GameScreen(currentLevel, self.selectedChallengeIdx)
             )
+        else
+            self.deniedUnlock = self.selectedIdx
         end
     elseif justPressed(buttonB) then
         ui_cancel:play()

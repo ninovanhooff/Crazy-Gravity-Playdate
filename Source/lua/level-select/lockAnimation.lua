@@ -15,6 +15,8 @@ local shardDrag
 
 class('LockAnimation').extends()
 
+LockAnimation.type = enum({"ShakeAndExplode", "ShakeAndDenied"})
+
 --- return cam position as x,y
 local function shakeCam(self)
     if random() > 0.4 then
@@ -32,9 +34,10 @@ local function shakeCam(self)
     return self.camX, self.camY
 end
 
-function LockAnimation:init(thumbRect)
+function LockAnimation:init(thumbRect, type)
     LockAnimation.super.init(self)
     self.thumbRect = thumbRect
+    self.type = type
     -- initial shard velocity and shake velocity
     self.vX, self.vY = 2,2
     self.camX, self.camY = 0,0
@@ -46,7 +49,8 @@ function LockAnimation:init(thumbRect)
     shardDrag = (1 + drag) * 0.55
     
     self.blastShards = {}
-    self.timer = -10 -- start delay
+    --- When < 0 shake, else explode
+    self.explosionTimer = -10
     self.shards = {}
 
     for x = 0, shardingDim-1 do
@@ -99,22 +103,28 @@ end
 --- Updates the explosion
 --- @returns whether the explosion is running
 function LockAnimation:update()
-    if self.timer < 0 then -- start delay
+    if self.explosionTimer < 0 then
         self.camX, self.camY = shakeCam(self)
     else
-        if self.timer == 0 and Sounds then
-            unlock_sound:playAt(0, 1-(self.timer/duration))
+        if self.explosionTimer == 0 and Sounds then
+            unlock_sound:play()
         end
         forShards(self, updateShard)
     end
-    self.timer = self.timer + 1
-    return self.timer < duration
+    self.explosionTimer = self.explosionTimer + 1
+
+    if self.explosionTimer == 0 and self.type == LockAnimation.type.ShakeAndDenied then
+        unlock_sound_denied:play()
+        return false
+    end
+
+    return self.explosionTimer < duration
 end
 
 function LockAnimation:render()
     gfx.pushContext()
 
-    if self.timer < 0 then
+    if self.explosionTimer < 0 then
         -- fully hide the thumb and draw a lock over it
         gfx.setColor(gfx.kColorWhite)
         gfx.fillRect(self.thumbRect)
@@ -122,7 +132,7 @@ function LockAnimation:render()
         sprite:draw(self.lockX + self.camX, self.lockY + self.camY, unFlipped, spriteOffsetX, spriteOffsetY, lockSize, lockSize)
     else
         -- reveal the thumb and draw shards over it
-        gfx.setDitherPattern((self.timer/duration)*3, gfx.image.kDitherTypeBayer8x8) -- invert alpha due to bug in SDK
+        gfx.setDitherPattern((self.explosionTimer/duration)*3, gfx.image.kDitherTypeBayer8x8) -- invert alpha due to bug in SDK
         gfx.fillRect(self.thumbRect)
         gfx.setImageDrawMode(gfx.kDrawModeNXOR)
         renderShards(self)
