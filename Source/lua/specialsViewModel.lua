@@ -270,7 +270,7 @@ end
 function CalcBlower(item)
     soundManager:addSoundForItem(item)
 
-    if not flying then return end
+    if (not flying) or explosion then return end
 
     if item.direction==1 then --up
         if UnitCollision(item.x,item.y,6,item.distance,true) then
@@ -298,7 +298,7 @@ end
 function CalcMagnet(item)
     soundManager:addSoundForItem(item)
 
-    if not flying then return end
+    if (not flying) or explosion then return end
 
     if item.direction==1 then --up
         if UnitCollision(item.x,item.y,4,item.distance,true) then
@@ -381,7 +381,8 @@ function CalcCannon(item)
 end
 
 function CalcRod(item)
-    if item.pos1+item.pos2>=item.distance*8-24 then
+    local currentGapTooSmall = item.pos1+item.pos2>item.distance*8-24-item.gapSize
+    if currentGapTooSmall then
         item.d1=-1
         item.speed1 = random(item.speedMin,item.speedMax)
         item.nextChangeFrame = frameCounter + random(rodsChangeTimeoutMin, rodsChangeTimeoutMax)
@@ -394,6 +395,7 @@ function CalcRod(item)
         item.speed1 = random(item.speedMin,item.speedMax)
         item.nextChangeFrame = frameCounter + random(rodsChangeTimeoutMin, rodsChangeTimeoutMax)
     end
+
     if item.fixdGap == 1 then
         if item.pos2<2 then
             item.d1 = -1
@@ -401,7 +403,7 @@ function CalcRod(item)
         end
         item.speed2=item.speed1
         item.d2=-item.d1
-    elseif item.pos1+item.pos2>=item.distance*8-24 then
+    elseif currentGapTooSmall then
         item.d2=-1
         item.speed2 = random(item.speedMin,item.speedMax)
         item.nextChangeFrame = frameCounter + random(rodsChangeTimeoutMin, rodsChangeTimeoutMax)

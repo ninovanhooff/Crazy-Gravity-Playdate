@@ -52,7 +52,7 @@ function GameHUD:challengeViewState()
     local currentValue, iconIdx = "", 4
     if self.selectedChallenge == 1 then
         -- elapsed time
-        currentValue = floor(frameCounter/frameRate)
+        currentValue = ceil(frameCounter/frameRate)
         iconIdx = 4
     elseif self.selectedChallenge == 2 then
         -- fuel

@@ -124,7 +124,7 @@ function CreditsView:createCreditsImage()
     y = y + self:drawTextCentered("Mike Brown", y) + lineSpacing -- sprite work
     y = y + self:drawTextCentered("Count Moriarty", y) + lineSpacing
     y = y + self:drawTextCentered("Richard Lems", y) + lineSpacing
-    y = y + self:drawTextCentered("Casey Gatti", y) + lineSpacing
+    y = y + self:drawTextCentered("Casey Gatti", y) + sectionSpacing
 
     y = y + self:drawTextCentered("Audio", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Arjan Terpstra", y) + lineSpacing
@@ -138,7 +138,7 @@ function CreditsView:createCreditsImage()
     y = y + self:drawTextCentered({"Launch Director", "Gary Williams"}, y) + sectionSpacing
 
     y = y + self:drawTextCentered("Testers", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered("@Guv__Bubbs - @professir - @Rebecca - @fnc12", y) + lineSpacing
+    y = y + self:drawTextCentered("@Guv__Bubbs - @professir - @Rebecca - @fnc12", y) + sectionSpacing
 
     y = y + self:drawTextCentered("Thanks", y, screenCenterX, true) + lineSpacing
     y = y + self:drawTextCentered("Matt Septhon", y) + lineSpacing
