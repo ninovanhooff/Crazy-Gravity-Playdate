@@ -80,7 +80,7 @@ function LevelSelectViewModel:resume()
             end
         end
         curOptions.achievements = achievements
-        curOptions.unlocked = numLevelsUnlocked >= i
+        curOptions.unlocked = Debug or numLevelsUnlocked >= i
     end
     --- when pressing the A button to dismiss a gameOverScreen, we don't want to register that press
     --- here again to start a level
