@@ -48,7 +48,7 @@ function VideoViewModel:shouldApplyVcrFilter()
         return false
     end
     local currentOffset = self.timebase:getOffset()
-    return currentOffset < 0.1 or currentOffset > self.timebase:durationSeconds() - 0.1
+    return currentOffset < 0.05 or currentOffset > self.timebase:durationSeconds() - 0.05
 end
 
 function VideoViewModel:getCurrentMetaData(metaData)
