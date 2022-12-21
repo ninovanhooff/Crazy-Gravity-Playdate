@@ -16,6 +16,7 @@ local buttonRight <const> = playdate.kButtonRight
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
 
+local clamp <const> = clamp
 local ceil <const> = math.ceil
 
 class("LevelSelectViewModel").extends()
@@ -44,6 +45,10 @@ function LevelSelectViewModel:startVideo(path)
     require("lua/video-player/VideoPlayerScreen")
     if self.videoViewModel then
         self.videoViewModel:destroy()
+    end
+    if not playdate.file.exists(path .. ".pdv") then
+        print("ERR could not load video")
+        return
     end
     self.videoViewModel = VideoViewModel(path, true)
     self.videoPlayerView = VideoPlayerView(self.videoViewModel)
@@ -86,7 +91,7 @@ function LevelSelectViewModel:resume()
     --- here again to start a level
     self.aButtonPressedAtLeastOnce = false
 
-    self:startVideo(levelPath(1))
+    self:startVideo(levelPath(self.selectedIdx))
 end
 
 function LevelSelectViewModel:pause()
@@ -100,6 +105,12 @@ function LevelSelectViewModel:finish()
     popScreen()
 end
 
+function LevelSelectViewModel:moveSelection(offset)
+    self.selectedIdx = clamp(self.selectedIdx + offset, 1, #self.menuOptions)
+    --self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
+    self:startVideo(levelPath(self.selectedIdx))
+end
+
 --- returns true when finished
 function LevelSelectViewModel:update()
     if self.videoViewModel then
@@ -107,18 +118,12 @@ function LevelSelectViewModel:update()
     end
     if justPressed(buttonDown) then
         local function timerCallback()
-            if self.selectedIdx < #self.menuOptions then
-                self.selectedIdx = self.selectedIdx + 1
-                --self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
-            end
+            self:moveSelection(1)
         end
         self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
     elseif justPressed(buttonUp) then
         local function timerCallback()
-            if self.selectedIdx > 1 then
-                self.selectedIdx = self.selectedIdx - 1
-                --self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
-            end
+            self:moveSelection(-1)
         end
         self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
     elseif justReleased(buttonDown | buttonUp) then
