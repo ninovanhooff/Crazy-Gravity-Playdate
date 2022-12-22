@@ -11,7 +11,7 @@ function SpeedHoldCamController:init(maxHistoryLength, integralThreshold, label,
     self.label = label
     self.speedHold = speedHold
 
-    self.lastTarget = nil
+    self.lastAvgTarget = nil
     self.lastError = 0
     self.speed = 0
     self.history = {}
@@ -26,7 +26,8 @@ end
 function SpeedHoldCamController:update(value, target)
     if LockCamera then return value end
 
-    local error <const> = target - value
+    local avgTarget <const> = ((self.lastAvgTarget or target)*2 + target) /3
+    local error <const> = avgTarget - value
     local absError <const> = abs(error)
     local result = value
 
@@ -39,30 +40,30 @@ function SpeedHoldCamController:update(value, target)
 
     local allowedError = 12
     local errorSpeed = error - self.lastError
-    local targetSpeed = target - (self.lastTarget or target)
+    local targetSpeed = avgTarget - (self.lastAvgTarget or avgTarget)
 
-    if self.lastTarget and self.lastTarget == target then
+    if self.lastAvgTarget and abs(self.lastAvgTarget - avgTarget) < 0.1 then
         -- crawl mode, useful when target is stationary. otherwise, camera could come to a stop way off center
         if abs(error) > speedStep then
             result = result + sign(error) * speedStep
         end
         self.speed = 0
         print(self.label, "CRAWL")
-    elseif absError > allowedError then
+    elseif absError > allowedError and sign(errorSpeed) == sign(error) then
         --self:setSpeed(self.speed + sign(error)*speedStep)
         self:setSpeed((self.speed  + targetSpeed)*0.5 + sign(error))
         print(self.label, "SPEEDSTEP", self.speed)
     elseif absError <= allowedError then
         -- we are within allowed error range. Let's keep it that way
         -- by matching the target speed as close as possible
-        self:setSpeed(targetSpeed)
+        self:setSpeed(targetSpeed, true)
         print(self.label, "MATCH", absError, allowedError, errorSpeed )
     end
 
     result = result + self.speed
 
     self.updateCount = self.updateCount + 1
-    self.lastTarget = target
+    self.lastAvgTarget = avgTarget
     self.lastError = error
     return result
 end

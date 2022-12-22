@@ -28,7 +28,7 @@ local planePos <const> = planePos
 local camPos <const> = camPos
 local camControllerX, camControllerY
 local planeSpeedXCamMultiplier <const> = 0.02
-local planeSpeedYCamMultiplier <const> = 0.03
+local planeSpeedYCamMultiplier <const> = 0.02
 local planeRotationCamMultiplier <const> = 0.05
 local gameHUD <const> = gameHUD
 local soundManager <const> = soundManager
@@ -228,7 +228,7 @@ function ResetPlane()
     camPos[1], camPos[2], camPos[3], camPos[4] = checkpoint.x+floor(checkpoint.w*0.5)-halfWidthTiles,checkpoint.y-halfHeightTiles, 0,0 --x,y,subx,suby
     vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
     camControllerX = SpeedHoldCamController(12, 12 * 25, "CamX", 6)
-    camControllerY = SpeedHoldCamController(12, 12 * 17, "CamY", 4)
+    camControllerY = SpeedHoldCamController(12, 12 * 17, "CamY", 6)
     CalcGameCam()
     flying = false
     CalcPlaneColCoords()
