@@ -13,8 +13,9 @@ function boolToNum(bool)
     if bool then return 1 else return 0 end
 end
 
+--- returns -1, 1, or 0 depending on whether x is negative, positive, or 0
 function sign(x)
-    return x < 0 and -1 or 1
+    return (x < 0 and -1) or (x > 0 and 1) or 0
 end
 
 function round(x, increment)

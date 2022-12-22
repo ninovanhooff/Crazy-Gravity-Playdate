@@ -8,6 +8,7 @@ class('CamController').extends()
 
 local abs <const> = math.abs
 local speedStep <const> = 2
+local sign <const> = sign
 
 function CamController:init(maxHistoryLength, integralThreshold)
     self.maxHistoryLength = maxHistoryLength

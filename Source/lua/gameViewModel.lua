@@ -4,7 +4,7 @@
 --- DateTime: 10/04/2022 12:50
 ---
 
-import "CamController"
+import "SpeedHoldCamController"
 import "game-over/GameOverScreen"
 import "game-explosion/GameExplosionScreen"
 
@@ -27,7 +27,7 @@ local halfGameHeightPixels <const> = gameHeightTiles * tileSize * 0.5
 local planePos <const> = planePos
 local camPos <const> = camPos
 local camControllerX, camControllerY
-local planeSpeedXCamMultiplier <const> = 0.05
+local planeSpeedXCamMultiplier <const> = 0.02
 local planeSpeedYCamMultiplier <const> = 0.03
 local planeRotationCamMultiplier <const> = 0.05
 local gameHUD <const> = gameHUD
@@ -227,8 +227,8 @@ function ResetPlane()
     -- when using y = checkpoint.y-halfHeightTiles+1, no initial camera movement would occur
     camPos[1], camPos[2], camPos[3], camPos[4] = checkpoint.x+floor(checkpoint.w*0.5)-halfWidthTiles,checkpoint.y-halfHeightTiles, 0,0 --x,y,subx,suby
     vx,vy,planeRot,thrust = 0,0,18,0 -- thrust only 0 or 1; use thrustPower to adjust.
-    camControllerX = CamController(12, 12 * 25)
-    camControllerY = CamController(12, 12 * 17)
+    camControllerX = SpeedHoldCamController(12, 12 * 25, "CamX", 6)
+    camControllerY = SpeedHoldCamController(12, 12 * 17, "CamY", 4)
     CalcGameCam()
     flying = false
     CalcPlaneColCoords()
