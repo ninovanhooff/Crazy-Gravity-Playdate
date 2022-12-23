@@ -135,5 +135,7 @@ function ResourceLoader:setMusicVolume(volume)
     musicManager:setVolume(volume)
     if volume == 0.0 then
         musicManager:stop()
+    else
+        musicManager:start()
     end
 end
