@@ -4,6 +4,7 @@ local abs <const> = math.abs
 local sign <const> = sign
 local roundToNearest <const> = roundToNearest
 local speedStep <const> = 2
+local avgFactor <const> = 2
 
 function SpeedHoldCamController:init(maxHistoryLength, integralThreshold, label, speedHold) -- todo unused integral
     self.maxHistoryLength = maxHistoryLength
@@ -26,7 +27,7 @@ end
 function SpeedHoldCamController:update(value, target)
     if LockCamera then return value end
 
-    local avgTarget <const> = ((self.lastAvgTarget or target)*2 + target) /3
+    local avgTarget <const> = ((self.lastAvgTarget or target)*avgFactor + target) / (avgFactor + 1)
     local error <const> = avgTarget - value
     local absError <const> = abs(error)
     local result = value
