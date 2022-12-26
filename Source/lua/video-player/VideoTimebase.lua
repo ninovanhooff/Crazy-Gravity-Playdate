@@ -79,5 +79,5 @@ function TimerTimebase:durationSeconds()
 end
 
 function TimerTimebase:isFinished()
-    return self.timer.value >= self.timer.endValue
+    return self.timer.value >= self.timer.endValue and not self.timer.repeats
 end
