@@ -69,7 +69,7 @@ function EndGameViewModel:init()
     camPos[2] = 210
     planePos[1] = 59
     planePos[2] = 224
-    planePos[3] = 4
+    planePos[3] = 0
     planePos[4] = 4
     planeRot = 18
     self.planePosX = planePos[1]*tileSize + planePos[3]
