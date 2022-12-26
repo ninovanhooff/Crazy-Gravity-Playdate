@@ -367,10 +367,6 @@ function optionsNS.Options:apply(onlyStartAssets)
     if lives then
         InitialLives = LIVES_VALS[lives]
     end
-    local framerateIdx = self:read(SPEED_KEY)
-    if framerateIdx then
-        playdate.display.setRefreshRate(SPEED_VALS[framerateIdx])
-    end
 
     --- number of frames to disable rotation after each rotation step.
     --- ie. 2 means after each frame with rotation, 2 frames follow without rotation in the same direction
@@ -431,6 +427,11 @@ function optionsNS.Options:set(key, value)
         self.userOptions[key] = { value }
         self:markDirty()
     end
+end
+
+function optionsNS.Options:getGameFps()
+    local frameRateIdx = self:read(SPEED_KEY)
+    return SPEED_VALS[frameRateIdx]
 end
 
 function optionsNS.Options:isDirty()

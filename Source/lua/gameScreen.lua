@@ -12,6 +12,7 @@ local calcTimeStep <const> = CalcTimeStep
 local processInputs <const> = ProcessInputs
 local renderGame <const> = RenderGame
 local renderGameDebug <const> = RenderGameDebug
+local options <const> = GetOptions()
 
 colorT = {"red","green","blue","yellow"}
 sumT = {0,8,24}
@@ -26,6 +27,7 @@ function GameScreen:init(levelPathOrLevelNumber, challengeIdx)
 end
 
 function GameScreen:pause()
+    playdate.display.setRefreshRate(frameRate)
     soundManager:stop()
     if self.backMenuItem then
         menu:removeMenuItem(self.backMenuItem)
@@ -46,6 +48,8 @@ function GameScreen:destroy()
 end
 
 function GameScreen:resume()
+    playdate.display.setRefreshRate(options:getGameFps())
+
     -- NOT setting gamePaused to false; requires button press
     self.settingsMenuItem = menu:addMenuItem("Settings", function()
         require "lua/settings/SettingsScreen"

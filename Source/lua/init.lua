@@ -29,7 +29,10 @@ gameBgColor = gfx.kColorBlack
 gameFgColor = gfx.kColorWhite
 gameWidthTiles = math.ceil(screenWidth / tileSize)
 gameHeightTiles = math.ceil(hudY / tileSize)
+--- The frameRate for menu screens and the timebase for game logic. Game may run slower, see gameSpeed
 frameRate = 30
+--- The amount of frames per second the game runs at. When frameRate is 30 and gameFps is 15, the game runs at half speed
+gameFps = frameRate
 outBufSize = 1024
 currentLevel = 1
 extras = {0,0,0} -- See GameViewModel:ResetGame()
