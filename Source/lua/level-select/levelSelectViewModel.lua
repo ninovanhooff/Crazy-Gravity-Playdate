@@ -42,7 +42,6 @@ function LevelSelectViewModel:init()
 end
 
 function LevelSelectViewModel:startVideo(path)
-    require("lua/video-player/VideoPlayerScreen")
     if self.videoViewModel then
         self.videoViewModel:destroy()
     end
@@ -90,7 +89,7 @@ function LevelSelectViewModel:resume()
     --- when pressing the A button to dismiss a gameOverScreen, we don't want to register that press
     --- here again to start a level
     self.aButtonPressedAtLeastOnce = false
-
+    require("lua/video-player/VideoPlayerScreen")
     self:startVideo(levelPath(self.selectedIdx))
 end
 
