@@ -101,7 +101,7 @@ function RenderGame(disableHUD)
         gameHUD:render(tilesRendered >= 50)
     end
 
-    if tilesRendered <= 50 and not disableHUD then
+    if tilesRendered <= 50 then
         -- Garbage Collect in frames which are not CPU-intensive
         playdate.setCollectsGarbage(true)
     else
