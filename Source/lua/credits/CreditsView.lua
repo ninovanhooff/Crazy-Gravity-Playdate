@@ -6,7 +6,7 @@ local tileSize <const> = tileSize
 local unFlipped <const> = gfx.kImageUnflipped
 local logoImg <const> = gfx.image.new("images/logo.png")
 local startBGImg <const> = gfx.image.new("images/start_background")
-local logoWidth, logoHeight <const> = logoImg:getSize()
+local qrContentText <const> = "https://bit.ly/pd-ge"
 local screenCenterX = screenWidth/2
 local lineSpacing <const> = 2
 local imageSpacing <const> = 8
@@ -129,6 +129,7 @@ function CreditsView:buildCreditsYielding()
     local x,y = screenCenterX, 300
 
     y = y + self:drawTextCentered("Thanks for playing", y) + imageSpacing
+    local logoWidth, logoHeight <const> = logoImg:getSize()
     logoImg:draw(screenCenterX - logoWidth/2, y)
     y = y + logoHeight + imageSpacing
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
@@ -150,4 +151,14 @@ function CreditsView:buildCreditsYielding()
         y = self:drawCreditsSection(y, item)
         coroutine.yield("CreditsSection " .. item.header)
     end
+
+    local qrImage <const> = gfx.image.new("images/credits-qr.png")
+    coroutine.yield("Load QR code")
+
+    y = y + self:drawTextCentered("Please leave a comment or review", y) + imageSpacing
+    local qrImageWidth, qrImageHeight <const> = qrImage:getSize()
+    qrImage:draw(screenCenterX - qrImageWidth/2, y)
+    y = y + qrImageHeight + imageSpacing
+    y = y + self:drawTextCentered(qrContentText, y) + imageSpacing
+
 end
