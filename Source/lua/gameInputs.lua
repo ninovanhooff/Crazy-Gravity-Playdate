@@ -12,12 +12,6 @@ local buttonState = 0
 local inputManager = inputManager
 local throttle <const> = Input.actionThrottle
 local selfRight <const> = Input.actionSelfRight
-local left <const> = Input.actionLeft
-local right <const> = Input.actionRight
-
-
---- counter for the current rotation timeout. positive is clockwise timeout, negative is ccw timeout
-local rotationTimeout = 0
 
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
@@ -45,32 +39,9 @@ function ProcessInputs()
     end
 
     -- rotation
-    if inputManager:isInputPressed(left) then
-        if rotationTimeout > 0 then
-            -- cancel clockwise rotation timeout
-            rotationTimeout = 0
-        end
-        if flying and rotationTimeout == 0 then
-            planeRot = planeRot - 1
-            if planeRot<0 then
-                planeRot = 23
-            end
-            rotationTimeout = -rotationDelay -- negative for left rotation
-        else
-            rotationTimeout = rotationTimeout + 1
-        end
-    elseif inputManager:isInputPressed(right) then
-        if rotationTimeout < 0 then
-            -- cancel counter-clockwise rotation timeout
-            rotationTimeout = 0
-        end
-        if flying and rotationTimeout == 0 then
-            planeRot = planeRot + 1
-            planeRot = planeRot % 24
-            rotationTimeout = rotationDelay
-        else
-            rotationTimeout = rotationTimeout - 1
-        end
+    local rotationInput = inputManager:rotationInput(planeRot)
+    if rotationInput and flying then
+        planeRot = rotationInput
     elseif inputManager:isInputPressed(selfRight) then
             if planeRot~=18 then
                 if planeRot>18 or planeRot<6 then
@@ -80,9 +51,9 @@ function ProcessInputs()
                 end
             end
             if planeRot<0 then planeRot = 23 end
-            rotationTimeout = 0
+            inputManager:resetRotationTimeout()
     else
-        rotationTimeout = 0
+        inputManager:resetRotationTimeout()
     end
 end
 

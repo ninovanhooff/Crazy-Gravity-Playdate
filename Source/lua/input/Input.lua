@@ -19,6 +19,13 @@ function Input:isInputPressed(action)
     return false
 end
 
+function Input:resetRotationTimeout() end
+
+--- returns new rotation given current rotation, or nil if no change
+function Input:rotationInput(currentRotation)
+    return nil
+end
+
 function Input:isInputJustPressed(action)
     return false
 end

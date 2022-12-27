@@ -32,9 +32,7 @@ import "lua/init"
 local navigator <const> = import "lua/navigator"
 local currentTime <const> = playdate.sound.getCurrentTime
 local targetFrameTime <const> = 1/frameRate
-
-
-
+local inputManager <const> = inputManager
 local gfx <const> = playdate.graphics
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
 local updateTimers <const> = playdate.timer.updateTimers
@@ -77,6 +75,7 @@ function playdate.update()
     end
     updateBlinkers()
     updateTimers()
+    inputManager:update() -- detect crank docking state
     if Debug then
         local frameTime = (currentTime() - frameStart)
         if frameTime > targetFrameTime then
