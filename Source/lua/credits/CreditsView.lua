@@ -155,10 +155,12 @@ function CreditsView:buildCreditsYielding()
     local qrImage <const> = gfx.image.new("images/credits-qr.png")
     coroutine.yield("Load QR code")
 
-    y = y + self:drawTextCentered("Please leave a comment or review", y) + imageSpacing
+    local qrCenterX <const> = screenCenterX + 8*tileSize
+    y = y + 6*tileSize
+    y = y + self:drawTextCentered("Please leave a comment or review", y, qrCenterX) + imageSpacing
     local qrImageWidth, qrImageHeight <const> = qrImage:getSize()
-    qrImage:draw(screenCenterX - qrImageWidth/2, y)
+    qrImage:draw(qrCenterX - qrImageWidth/2, y)
     y = y + qrImageHeight + imageSpacing
-    y = y + self:drawTextCentered(qrContentText, y) + imageSpacing
+    y = y + self:drawTextCentered(qrContentText, y, qrCenterX) + imageSpacing
 
 end
