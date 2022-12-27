@@ -1,4 +1,4 @@
-
+local credits <const> = import "Credits"
 
 local floor <const> = math.floor
 local gfx <const> = playdate.graphics
@@ -20,12 +20,21 @@ function CreditsView:init()
     sample("Create credits Image", function()
         self:createCreditsImage()
     end, 1)
+    self.creditsBuilder = coroutine.create(self.buildCreditsYielding)
     --playdate.simulator.writeToFile(self.creditsImage, "~/PlaydateProjects/GravityExpressEditor/Source/images/credits_bg.png")
 end
 
 function CreditsView:render(viewModel)
     gfx.clear(gfx.kColorBlack)
     local creditsY = -((camPos[2]-1)*tileSize) - camPos[4]
+
+    if coroutine.status(self.creditsBuilder) ~= "dead" then
+        gfx.pushContext(self.creditsImage)
+        gfx.setColor(gfx.kColorWhite)
+        local _, message = coroutine.resume(self.creditsBuilder, self)
+        if message then printT(message) end
+        gfx.popContext()
+    end
 
     --- the active game area, excluding the HUD
     gfx.setScreenClipRect(0,0, screenWidth, hudY)
@@ -56,6 +65,7 @@ function CreditsView:drawTextCentered(text, y, x, underline)
 
     local origDrawMode = gfx.getImageDrawMode()
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
+    print("drawTextCentered", text)
     if textLeft then
         gfx.drawTextAligned(textLeft, x - 10, y, kTextAlignment.right)
     end
@@ -82,21 +92,40 @@ function CreditsView:createCreditsImage()
     local screenWidth <const> = screenWidth
     local height <const> = levelProps.sizeY * tileSize
     self.creditsImage = gfx.image.new(screenWidth,height)
-    gfx.pushContext(self.creditsImage)
+end
 
-    gfx.setColor(gfx.kColorWhite)
-    gfx.drawLine(1,height-1, screenWidth, height-1) -- debug line indicating end of image
+function CreditsView:drawCreditsSection(y, section)
+    y = y + self:drawTextCentered(section.header, y, screenCenterX, true) + lineSpacing
+    local numLines = #section.lines
+    for i, item in ipairs(section.lines) do
+        y = y + self:drawTextCentered(item, y)
+        if i < numLines then
+            y = y + lineSpacing
+        else
+            y = y + sectionSpacing
+        end
+    end
+    return y
+end
+
+function CreditsView:buildCreditsYielding()
+    local screenWidth <const> = screenWidth
+    local height <const> = levelProps.sizeY * tileSize
+
+    -- debug line indicating end of image
+    gfx.drawLine(1,height-1, screenWidth, height-1)
 
     -- draw stars
     local random <const>  = math.random
     for _ = 1, 500 do
         gfx.drawPixel(random(1, screenWidth), random(1, height))
     end
+    coroutine.yield("stars")
 
     -- position bottom of startScreen above hudY,
     -- subtract 1x tileSize to compensate for 1-based cam pos
     startBGImg:draw(0, height - screenHeight - tileSize)
-
+    coroutine.yield("startBG")
 
     local x,y = screenCenterX, 300
 
@@ -104,7 +133,8 @@ function CreditsView:createCreditsImage()
     logoImg:draw(screenCenterX - logoWidth/2, y)
     y = y + logoHeight + imageSpacing
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
-    y = y + self:drawTextCentered("A game by Nino van Hooff", y) + sectionSpacing
+    y = y + self:drawTextCentered("A game by Nino van Hooff", y) + sectionSpacing * 2
+    coroutine.yield("Thanks for playing")
 
     y = y + self:drawTextCentered("Based on", y) + imageSpacing
     sprite:draw(
@@ -114,38 +144,11 @@ function CreditsView:createCreditsImage()
         60,60
     )
     y = y + 60 + imageSpacing
-    y = y + self:drawTextCentered("by Axel Meierhofer", y) + sectionSpacing
+    y = y + self:drawTextCentered("by Axel Meierhofer", y) + sectionSpacing * 2
+    coroutine.yield("Based on Gravity Express")
 
-    y = y + self:drawTextCentered("Programming", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered({"Game", "Nino van Hooff"}, y) + lineSpacing
-    y = y + self:drawTextCentered({"Settings", "Matt Septhon"}, y) + sectionSpacing
-
-    y = y + self:drawTextCentered("Art", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered("Mike Brown", y) + lineSpacing -- sprite work
-    y = y + self:drawTextCentered("Count Moriarty", y) + lineSpacing
-    y = y + self:drawTextCentered("Richard Lems", y) + lineSpacing
-    y = y + self:drawTextCentered("Casey Gatti", y) + sectionSpacing
-
-    y = y + self:drawTextCentered("Audio", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered("Arjan Terpstra", y) + lineSpacing
-    y = y + self:drawTextCentered("Freesound.org", y) + sectionSpacing
-
-    y = y + self:drawTextCentered("Script", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered("Magnum Kramer", y) + sectionSpacing
-
-    y = y + self:drawTextCentered("Starring", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered({"CEO", "Jodi Hutton"}, y) + lineSpacing
-    y = y + self:drawTextCentered({"Launch Director", "Gary Williams"}, y) + sectionSpacing
-
-    y = y + self:drawTextCentered("Testers", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered("@Guv__Bubbs - @professir - @Rebecca - @fnc12", y) + sectionSpacing
-
-    y = y + self:drawTextCentered("Thanks", y, screenCenterX, true) + lineSpacing
-    y = y + self:drawTextCentered("Matt Septhon", y) + lineSpacing
-    y = y + self:drawTextCentered("Choosh", y) + lineSpacing
-    y = y + self:drawTextCentered("James Daniels", y) + lineSpacing -- helped get me the playdate
-    y = y + self:drawTextCentered("@Labeardi", y) + sectionSpacing
-
-
-    gfx.popContext()
+    for _,item in ipairs(credits) do
+        y = self:drawCreditsSection(y, item)
+        coroutine.yield("CreditsSection " .. item.header)
+    end
 end
