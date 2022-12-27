@@ -29,74 +29,16 @@ import "lua/screen"
 import "lua/enum"
 import "lua/level"
 import "lua/init"
+local navigator <const> = import "lua/navigator"
+
 
 local gfx <const> = playdate.graphics
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
 local updateTimers <const> = playdate.timer.updateTimers
 
-local pendingNavigators = {}
-local backStack = {}
-local activeScreen
-
 -- note: GC might still be turned off temporarily in gameView
 playdate.setMinimumGCTime(2)
 
-local function executePendingNavigators()
-    if #pendingNavigators > 0 then
-        for _, navigator in ipairs(pendingNavigators) do
-            navigator()
-        end
-        pendingNavigators = {}
-        local newPos = find(backStack, activeScreen)
-        if activeScreen and newPos and newPos ~= #backStack then
-            -- the activeScreen was moved from the top of the stack to another position
-            printT("Pausing screen", activeScreen.className, activeScreen)
-            activeScreen:pause()
-        end
-        if #backStack < 1 then
-            printT("ERROR: No active screen, adding Start Screen")
-            require "lua/start/startScreen"
-            table.insert(backStack, StartScreen())
-        end
-        activeScreen = backStack[#backStack]
-        printT("Resuming screen", activeScreen.className, activeScreen)
-        playdate.setCollectsGarbage(true) -- prevent permanently disabled GC by previous Screen
-        activeScreen:resume()
-    end
-end
-
-function pushScreen(newScreen)
-    table.insert(
-        pendingNavigators,
-        function()
-            printT("Adding to backstack", newScreen.className, newScreen)
-            table.insert(backStack, newScreen)
-        end
-    )
-end
-
-local function popScreenImmediately()
-    printT("Popping off backstack:", activeScreen.className, activeScreen)
-    table.remove(backStack)
-    activeScreen:destroy()
-end
-
-function popScreen()
-    table.insert(pendingNavigators, popScreenImmediately)
-end
-
-function clearNavigationStack()
-    table.insert(
-        pendingNavigators,
-        function()
-            printT("Clearing navigationStack", activeScreen.className, activeScreen)
-            while #backStack > 0 do
-                activeScreen = backStack[#backStack]
-                popScreenImmediately()
-            end
-        end
-    )
-end
 
 require "lua/start/startScreen"
 pushScreen(StartScreen())
@@ -123,8 +65,8 @@ end
 
 function playdate.update()
     gfx.pushContext() --make sure we start the frame with a clean gfx state.
-    executePendingNavigators()
-    activeScreen:update()
+    navigator:executePendingNavigators()
+    navigator:updateActiveScreen()
     gfx.popContext()
     if Debug then
         playdate.drawFPS(0,0)
@@ -135,7 +77,7 @@ end
 
 function playdate.debugDraw()
     if Debug then
-        activeScreen:debugDraw()
+        navigator:debugDraw()
     end
 end
 
