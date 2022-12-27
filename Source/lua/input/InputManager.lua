@@ -7,13 +7,9 @@
 
 import "Input"
 import "ButtonInput"
+import "CrankInput"
 
 class('InputManager').extends(Input)
-
-InputManager.actionLeft = 1
-InputManager.actionRight = 2
-InputManager.actionThrottle = 3
-InputManager.actionSelfRight = 4
 
 function InputManager:init()
     if inputManager ~= nil then
@@ -21,6 +17,7 @@ function InputManager:init()
     end
     InputManager.super.init(self)
     self.inputs = {}
+    self.inputs.crank = CrankInput()
 end
 
 -- global Singleton
@@ -34,7 +31,7 @@ end
 
 --- call-through to all input-managers for a specific function like isInputJustPressed
 --- @param func function eg. isInputJustPressed
---- @param action number eg. InputManager.actionThrottle
+--- @param action number eg. Input.actionThrottle
 local function delegateActionFunction(self, func, action)
     for _, input in pairs(self.inputs) do
         local result = func(input, action)

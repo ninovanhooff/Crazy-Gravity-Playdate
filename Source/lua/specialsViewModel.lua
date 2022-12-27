@@ -129,13 +129,13 @@ function CalcPlatform(item)
 
     if landedAt ~= item then
         if planeRot ~= 18 and vy > 0 and item ~= prevLandedAt and not options:read(selfRightTipShownKey) and approxRectCollision(item.x,item.y, item.w, item.h) then
-            local buttonMappingString = inputManager:mappingString(InputManager.actionSelfRight)
+            local buttonMappingString = inputManager:mappingString(Input.actionSelfRight)
             local tooltip = { text= buttonMappingString .. ": Self-right" }
             local planeX <const> = floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3])
             local planeY <const> = floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4])
 
             renderTooltip(tooltip, planeX + 12, planeY + 40)
-            while not inputManager:isInputPressed(InputManager.actionSelfRight) do
+            while not inputManager:isInputPressed(Input.actionSelfRight) do
                 coroutine.yield()
             end
             options:set(selfRightTipShownKey, true)
@@ -240,9 +240,9 @@ function CalcPlatform(item)
         end
 
         if fuel < 1 and not collision and not (item.pType == 3 and item.amnt > 0) then
-            local buttonMappingString = inputManager:mappingString(InputManager.actionSelfRight)
+            local buttonMappingString = inputManager:mappingString(Input.actionSelfRight)
             item.tooltip = { text= "Out of fuel! " .. buttonMappingString .. ": Self-destruct" }
-            if inputManager:isInputPressed(InputManager.actionSelfRight) then
+            if inputManager:isInputPressed(Input.actionSelfRight) then
                 collision = CollisionReason.SelfDestruct
                 gamePaused = false
                 return true
