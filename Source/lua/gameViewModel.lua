@@ -211,7 +211,7 @@ function CalcTimeStep()
         end
     end
     soundManager:notifySoundCalcEnd()
-    if collision and explosion == nil and not Debug then
+    if collision and explosion == nil and not Debug and not levelProps.collisionDisabled then
         print("KABOOM", extras[2])
         gamePaused = true
         pushScreen(GameExplosionScreen(calcPlane, CalcGameCam))
