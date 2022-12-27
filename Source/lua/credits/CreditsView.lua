@@ -65,7 +65,6 @@ function CreditsView:drawTextCentered(text, y, x, underline)
 
     local origDrawMode = gfx.getImageDrawMode()
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
-    print("drawTextCentered", text)
     if textLeft then
         gfx.drawTextAligned(textLeft, x - 10, y, kTextAlignment.right)
     end
