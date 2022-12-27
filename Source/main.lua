@@ -30,6 +30,9 @@ import "lua/enum"
 import "lua/level"
 import "lua/init"
 local navigator <const> = import "lua/navigator"
+local currentTime <const> = playdate.sound.getCurrentTime
+local targetFrameTime <const> = 1/frameRate
+
 
 
 local gfx <const> = playdate.graphics
@@ -64,6 +67,7 @@ end
 --pushScreen(GameScreen(levelPath(1), 1))
 
 function playdate.update()
+    local frameStart = currentTime()
     gfx.pushContext() --make sure we start the frame with a clean gfx state.
     navigator:executePendingNavigators()
     navigator:updateActiveScreen()
@@ -73,6 +77,12 @@ function playdate.update()
     end
     updateBlinkers()
     updateTimers()
+    if Debug then
+        local frameTime = (currentTime() - frameStart)
+        if frameTime > targetFrameTime then
+            print("FRAMETIME", frameTime*1000)
+        end
+    end
 end
 
 function playdate.debugDraw()
