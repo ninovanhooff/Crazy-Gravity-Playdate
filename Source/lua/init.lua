@@ -12,7 +12,7 @@ import "records"
 import "levelSuggestion"
 import "challenges"
 
-if playdate.isSimulator then
+if playdate.isSimulator and playdate.file.exists("lua/unittests.pdz") then
     require "lua/unittests"
 end
 

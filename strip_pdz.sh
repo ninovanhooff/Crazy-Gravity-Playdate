@@ -21,4 +21,11 @@ grep -r '^import' . | while read -r line ; do
   fi
 done
 
+unitTestsPath="$pdxDir/lua/unittests.pdz"
+if [ -f "$unitTestsPath" ] ; then
+    echo "DELETE $unitTestsPath"
+    rm "$unitTestsPath"
+fi
+
+# Remove empty directories
 find "$pdxDir" -type d -empty -delete
