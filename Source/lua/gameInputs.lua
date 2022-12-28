@@ -40,7 +40,7 @@ function ProcessInputs()
 
     -- rotation
     local rotationInput = inputManager:rotationInput(planeRot)
-    if rotationInput and flying then
+    if rotationInput and flying and not steeringDisabled then
         planeRot = rotationInput
     elseif inputManager:isInputPressed(selfRight) then
             if planeRot~=18 then

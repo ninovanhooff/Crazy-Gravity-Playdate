@@ -332,6 +332,7 @@ function CalcRotator(item)
             or (item.direction==2 and UnitCollision(item.x,item.y+8,5,item.distance,true))
             or (item.direction==3 and UnitCollision(item.x,item.y,item.distance,5,true))
             or (item.direction==4 and UnitCollision(item.x+8,item.y,item.distance,5,true)) then
+        steeringDisabled = true
         if frameCounter%3==1 then
             if item.rotates==1 then -- left
                 planeRot = planeRot - 1
@@ -342,8 +343,6 @@ function CalcRotator(item)
                 planeRot = planeRot + 1
                 planeRot = planeRot % 24
             end
-            printf(planeRot)
-            --planeRot = random(planeRot,0) -- refactor: no clue why this line was here, but it crashes due to invalid range
         end
     end
 end

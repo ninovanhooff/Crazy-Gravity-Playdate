@@ -203,6 +203,7 @@ function CalcTimeStep()
     local screenCenterX = camPos[1] + halfWidthTiles
     local screenCenterY = camPos[2] + halfHeightTiles
     soundManager:notifySoundCalcStart()
+    steeringDisabled = false
     for _,item in ipairs(specialT) do
         -- only calculate when item max half a screen out of view
         -- using gameWidthTiles for both dimensions because sound calculations need to happen for both directions equally
