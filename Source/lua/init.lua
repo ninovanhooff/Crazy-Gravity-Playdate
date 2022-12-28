@@ -31,6 +31,7 @@ gameWidthTiles = math.ceil(screenWidth / tileSize)
 gameHeightTiles = math.ceil(hudY / tileSize)
 --- The frameRate for menu screens and the timebase for game logic. Game may run slower, see gameSpeed
 frameRate = 30
+playdate.display.setRefreshRate(frameRate)
 --- The amount of frames per second the game runs at. When frameRate is 30 and gameFps is 15, the game runs at half speed
 gameFps = frameRate
 outBufSize = 1024
