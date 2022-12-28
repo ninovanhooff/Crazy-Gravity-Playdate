@@ -5,6 +5,7 @@
 ---
 
 local random <const> = math.random
+local clampPlaneRotation <const> = clampPlaneRotation
 local thrust_sound <const> = thrust_sound
 local getButtonState <const> = playdate.getButtonState
 local buttonState = 0
@@ -50,7 +51,7 @@ function ProcessInputs()
                     planeRot = planeRot+1
                 end
             end
-            if planeRot<0 then planeRot = 23 end
+            planeRot = clampPlaneRotation(planeRot)
             inputManager:resetRotationTimeout()
     else
         inputManager:resetRotationTimeout()

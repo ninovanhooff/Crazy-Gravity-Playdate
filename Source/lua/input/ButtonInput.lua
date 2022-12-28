@@ -3,6 +3,7 @@
 --- Created by ninovanhooff.
 --- DateTime: 10/07/2022 17:19
 ---
+local clampPlaneRotation <const> = clampPlaneRotation
 
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
@@ -56,10 +57,7 @@ function ButtonInput:rotationInput(currentRotation)
         or nil
     if change then
         if self.rotationTimeout == 0 then
-            local rotation = (currentRotation + change) % 24
-            if rotation < 0 then
-                rotation = rotation + 24
-            end
+            local rotation = clampPlaneRotation(currentRotation + change)
             self.rotationTimeout = change * rotationDelay
             return rotation
         else

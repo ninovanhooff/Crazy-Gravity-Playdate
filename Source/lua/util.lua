@@ -17,6 +17,7 @@ function sign(x)
     return x < 0 and -1 or 1
 end
 
+-- todo are round and roundToNearest equivalent?
 function round(x, increment)
     if increment then return round(x / increment) * increment end
     return x >= 0 and floor(x + .5) or ceil(x - .5)
@@ -45,6 +46,22 @@ function luaMod(first, second)
         return second - 1
     end
     return max(1, first % second)
+end
+
+--- calculate the shortest distance to reach destRotation from startRotation
+--- assumes a circle with 24 angles, so that angle 0 == angle 24 and the maximum angle is 23
+--- example: smallestPlaneRotation(23, 1) => -2
+function smallestPlaneRotation(destRotation, startRotation)
+    return ((destRotation - startRotation) + 12) % 24 - 12
+end
+
+function clampPlaneRotation(rotation)
+    local modded = rotation % 24
+    if modded < 0 then
+        return modded + 24
+    else
+         return modded
+    end
 end
 
 -- ### START Lume functions

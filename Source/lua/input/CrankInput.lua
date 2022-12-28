@@ -1,4 +1,7 @@
 local getCrankPosition <const> = playdate.getCrankPosition
+local sign <const> = sign
+local smallestPlaneRotation <const> = smallestPlaneRotation
+local clampPlaneRotation <const> = clampPlaneRotation
 
 class("CrankInput").extends(Input)
 
@@ -20,6 +23,8 @@ function CrankInput:rotationInput(currentRotation)
     if crankRotation == currentRotation then
         return nil
     else
-        return crankRotation
+        local newRotation = currentRotation
+            + sign(smallestPlaneRotation(crankRotation, currentRotation))
+        return clampPlaneRotation(newRotation)
     end
 end

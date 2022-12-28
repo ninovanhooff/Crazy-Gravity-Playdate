@@ -6,11 +6,10 @@
 
 
 local random <const> = math.random
+local clampPlaneRotation <const> = clampPlaneRotation
 local inputManager <const> = inputManager
 local throttle <const> = Input.actionThrottle
 local selfRight <const> = Input.actionSelfRight
-local left <const> = Input.actionLeft
-local right <const> = Input.actionRight
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 local screenWidth <const> = screenWidth
@@ -71,7 +70,7 @@ function PlanePhysicsViewModel:processInputs()
                     self.planeRot = self.planeRot+1
                 end
             end
-            if self.planeRot<0 then self.planeRot = 23 end
+            self.planeRot = clampPlaneRotation(self.planeRot)
             inputManager:resetRotationTimeout()
     end
 end
