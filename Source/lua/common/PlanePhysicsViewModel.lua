@@ -7,10 +7,10 @@
 
 local random <const> = math.random
 local inputManager <const> = inputManager
-local throttle <const> = InputManager.actionThrottle
-local selfRight <const> = InputManager.actionSelfRight
-local left <const> = InputManager.actionLeft
-local right <const> = InputManager.actionRight
+local throttle <const> = Input.actionThrottle
+local selfRight <const> = Input.actionSelfRight
+local left <const> = Input.actionLeft
+local right <const> = Input.actionRight
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 local screenWidth <const> = screenWidth

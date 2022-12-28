@@ -10,10 +10,10 @@ local getButtonState <const> = playdate.getButtonState
 local buttonState = 0
 
 local inputManager = inputManager
-local throttle <const> = InputManager.actionThrottle
-local selfRight <const> = InputManager.actionSelfRight
-local left <const> = InputManager.actionLeft
-local right <const> = InputManager.actionRight
+local throttle <const> = Input.actionThrottle
+local selfRight <const> = Input.actionSelfRight
+local left <const> = Input.actionLeft
+local right <const> = Input.actionRight
 
 
 --- counter for the current rotation timeout. positive is clockwise timeout, negative is ccw timeout

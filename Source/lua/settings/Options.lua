@@ -310,10 +310,10 @@ end
 
 function optionsNS.Options:createButtonMapping()
     return {
-        [InputManager.actionLeft] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
-        [InputManager.actionRight] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
-        [InputManager.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_KEY)].keys,
-        [InputManager.actionSelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
+        [Input.actionLeft] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
+        [Input.actionRight] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
+        [Input.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_KEY)].keys,
+        [Input.actionSelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
     }
 end
 
