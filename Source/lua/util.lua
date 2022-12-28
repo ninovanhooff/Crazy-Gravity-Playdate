@@ -39,12 +39,9 @@ end
 
 --- 1-based mod, where the result is 1 where it would be 0 for the regular mod operation
 --- useful for cycling through 1-based indexes like table indexes
---- Usage example: luaMod(levelNumber, #levels+1) would give a 1-based level index that is always a valid index for the `levels` table
+--- Usage example: luaMod(levelNumber, #levels) would give a 1-based level index that is always a valid index for the `levels` table
 function luaMod(first, second)
-    if first == 0 then
-        return second - 1
-    end
-    return max(1, first % second)
+    return (first - 1) % second + 1
 end
 
 -- ### START Lume functions
