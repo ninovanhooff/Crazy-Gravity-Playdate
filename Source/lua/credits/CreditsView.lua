@@ -1,6 +1,5 @@
 local credits <const> = import "Credits"
 
-local floor <const> = math.floor
 local gfx <const> = playdate.graphics
 local tileSize <const> = tileSize
 local unFlipped <const> = gfx.kImageUnflipped
@@ -145,7 +144,7 @@ function CreditsView:buildCreditsYielding()
     )
     y = y + 60 + imageSpacing
     y = y + self:drawTextCentered("by Axel Meierhofer", y) + sectionSpacing * 2
-    coroutine.yield("Based on Gravity Express")
+    coroutine.yield("Based on Crazy Gravity")
 
     for _,item in ipairs(credits) do
         y = self:drawCreditsSection(y, item)

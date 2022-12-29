@@ -141,8 +141,8 @@ function LevelSelectViewModel:update()
         currentLevel = self.selectedIdx
         require("lua/gameScreen")
 
-        -- start orientation video
         if self.selectedIdx == 1 then
+            -- start orientation video
             ui_confirm:play()
             require "lua/video-player/VideoPlayerScreen"
             pushScreen(VideoPlayerScreen(

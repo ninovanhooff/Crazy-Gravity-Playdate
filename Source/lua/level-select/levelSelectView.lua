@@ -55,7 +55,6 @@ function LevelSelectView:initLockAnimation(idx, type)
 end
 
 function LevelSelectView:init(vm)
-
     LevelSelectView.super.init(self)
     viewModel = vm
     listView:setNumberOfRows(#vm.menuOptions)

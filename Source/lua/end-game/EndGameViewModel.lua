@@ -18,8 +18,8 @@ local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_s
 
 local conveyorBeltPlayer = snd.sampleplayer.new("sounds/conveyor_belt")
 
-rocketEngineStart = snd.sampleplayer.new("sounds/rocket_engine_start")
-rocketEngineLoop = snd.sampleplayer.new("sounds/rocket_engine_loop")
+local rocketEngineStart <const> = snd.sampleplayer.new("sounds/rocket_engine_start")
+local rocketEngineLoopSamplePlayer <const> = snd.sampleplayer.new("sounds/rocket_engine_loop")
 local barrierPlayer = soundManager.sounds.barrier.player
 assert(barrierPlayer)
 
@@ -33,7 +33,6 @@ local abs <const> = math.abs
 local clamp <const> = clamp
 local musicManager <const> = musicManager
 
-print("Setting calcTimeStep in EndGameVM")
 local match <const> = match
 local calcTimeStep <const> = CalcTimeStep
 local tileSize <const> = tileSize
@@ -106,11 +105,11 @@ end
 function EndGameViewModel:updateEngineVolume()
     local rocketShipScreenY = floor(self.planePosY - 7*tileSize - camPos[2]*tileSize-camPos[4])
     local engineVolume = clamp(1-((rocketShipScreenY-50) / 250), 0, 1)
-    rocketEngineLoop:setVolume(engineVolume)
+    rocketEngineLoopSamplePlayer:setVolume(engineVolume)
 end
 
 function EndGameViewModel:initState(state)
-    print("init state", state.name)
+    print("init EndGame state", state.name)
     if state == states.LoadPlane then
         self.planeAnimator = gfx.animator.new(loadPlaneDurationMs, self.planePosX, targetPlanePosX)
         self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -545, 0)
@@ -134,8 +133,8 @@ function EndGameViewModel:initState(state)
         self.exhaustLoopOffsetY = 106
         self.camOverrideY = camPos[2]*tileSize+camPos[4]
         rocketEngineStart:setFinishCallback(function()
-            rocketEngineLoop:setVolume(0.5)
-            rocketEngineLoop:play(0)
+            rocketEngineLoopSamplePlayer:setVolume(0.5)
+            rocketEngineLoopSamplePlayer:play(0)
         end)
         rocketEngineStart:play()
     elseif state == states.OpenAirlock then
@@ -160,7 +159,8 @@ function EndGameViewModel:onEnded()
         {
             ["loop"] = self.rocketExhaustLoop,
             ["offsetX"] = self.exhaustLoopOffsetX,
-            ["offsetY"] = self.exhaustLoopOffsetY
+            ["offsetY"] = self.exhaustLoopOffsetY,
+            ["audioPlayer"] = rocketEngineLoopSamplePlayer
         }
     ))
 end
@@ -231,6 +231,7 @@ function EndGameViewModel:DirectorLaunchInitiatedUpdate()
     -- music track contains countdown which reaches 0 at t = 7s
     elseif self:getLaunchTimeOffset() >= -7 and not musicManager:isPlaying() then
         -- this moment is too epic not to play music.
+        -- Therefore we play it at at least 20% volume; even if music is turned off in Settings
         -- This volume is not reset during the current run, but
         -- I'd say that's okay in this occasion.
         musicManager:setVolume(math.max(0.2, musicManager.volume))
@@ -379,6 +380,7 @@ function EndGameViewModel:update()
         self.videoViewModel:update()
     end
     stateUpdaters[self.state](self)
+    local planePos <const> = planePos
     planePos[1] = floor(self.planePosX / tileSize)
     planePos[2] = floor(self.planePosY / tileSize)
     planePos[3] = self.planePosX % tileSize
@@ -394,7 +396,6 @@ function EndGameViewModel:update()
 end
 
 function EndGameViewModel:resume()
-    printT("endgameVM resume")
     musicManager:fade(0)
     self.platform.arrows = false
 end

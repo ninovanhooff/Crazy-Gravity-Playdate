@@ -18,7 +18,7 @@ local resourceLoader <const> = ResourceLoader()
 
 --- NOTES Nino
 -- KEY_REPEAT and KEY_REPEAT_INITIAL not defined
--- drawRectSwitch is unused
+-- removed unused drawRectSwitch
 -- added fixes to show menu on arbitrary x position
 -- added missing imports CoreLibs/object and ui
 -- added Options.super.init(self)
@@ -79,7 +79,7 @@ local SELF_RIGHT_KEY <const> = "selfRightMapping"
 
 local gameOptions = {
     -- name (str): option's display name in menu
-    -- key (str): indentifier for the option in the userOptions table
+    -- key (str): identifier for the option in the userOptions table
         -- if key is not provided, lowercase name is used as the key
     -- values (table): table of possible values. if boolean table, will draw as toggle switch
     -- default (num): index of value that should be set as default
@@ -539,43 +539,6 @@ end
 function optionsNS.Options:selectNextRow()
     self.previewMode = false
     self.menu:selectNextRow(true)
-end
-
---------- STATIC METHODS ---------
-function optionsNS.Options.drawRectSwitch(y, val, selected)
-    local x <const> = 158
-    local y <const> = y
-
-    local r <const> = 5
-    local rx <const> = x+9
-    local ry <const> = y+7
-    local rw <const> = 20
-    local rh <const> = r*2
-
-    local cxoff <const> = x+9
-    local cxon <const> = x+rw
-    local cy <const> = y+7
-
-    gfx.pushContext()
-    gfx.setLineWidth(2)
-    gfx.setColor(selected and gfx.kColorWhite or gfx.kColorBlack)
-
-    if val then
-        gfx.setDitherPattern(0.5)
-        gfx.fillRect(rx,ry,rw,rh)
-
-        gfx.setColor(selected and gfx.kColorWhite or gfx.kColorBlack)
-        gfx.drawRect(rx,ry,rw,rh)
-        gfx.fillRect(cxon,cy,(r*2)-1,rh)
-        -- gfx.drawRect(cxon,cy-3,1,6)
-    else
-        gfx.drawRect(rx,ry,rw,rh)
-        gfx.fillRect(cxoff,cy,r*2+1,rh)
-        -- gfx.setColor(f and gfx.kColorBlack or gfx.kColorWhite)
-        -- gfx.fillRect(cxoff+1,cy+1,(r*2)-2,rh-2)
-    end
-
-    gfx.popContext()
 end
 
 function optionsNS.Options.drawRoundSwitch(x, y, val, selected)
