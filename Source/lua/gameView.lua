@@ -97,7 +97,6 @@ function RenderGame(disableHUD)
     gfx.clearClipRect()
     if tilesRendered <= 80 and not disableHUD then
         -- only render HUD if we have render budget for it
-        -- todo only update changed HUD parts (or only challenge target based on tilesRendered)
         gameHUD:render(tilesRendered >= 50)
     end
 

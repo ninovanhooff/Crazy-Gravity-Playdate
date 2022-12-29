@@ -176,20 +176,6 @@ function convertInterval(cgInterval)
     return cgInterval / (20 / frameRate)
 end
 
-function RUS(capt) -- refactor: aRe yoU Sure dialog
-    local RUSresult = MenuBR(capt,{{"Answer",1,{"No","Yes"},val=1}})
-    if not RUSresult then return false end
-    if RUSresult[1].val==1 then return false else return true end
-end
-
-function Show_SCE_ErrorDialog(msg,options)
-    print("TODO show error dialog for" .. message)
-end
-
-function msg(display, text, msgdlg_args)
-    print("TODO display message:" .. text)
-end
-
 function table.sum(tbl)
     local sum = 0
     for i,item in pairs(tbl) do
