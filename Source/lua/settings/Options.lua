@@ -353,7 +353,6 @@ function optionsNS.Options:apply(onlyStartAssets)
     end
 
     local inverted = self:read(INVERT_KEY)
-    print("set inverted:", inverted)
     playdate.display.setInverted(inverted)
     local pattern = self:read(PATTERN_KEY)
     if PATTERN_VALS[pattern] == "default" then
@@ -361,7 +360,6 @@ function optionsNS.Options:apply(onlyStartAssets)
     else
         brickPatternOverride = pattern+2 -- first brick pattern is 3 ("red"), while first key index = 1
     end
-    print("set brickPatternOverride", brickPatternOverride)
 
     local lives = self:read(LIVES_KEY)
     if lives then

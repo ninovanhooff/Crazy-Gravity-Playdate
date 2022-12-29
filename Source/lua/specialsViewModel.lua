@@ -157,7 +157,6 @@ function CalcPlatform(item)
             collision = false
             vx,vy=0,0
             planePos[4]=4
-            printf("LANDED AT", item)
             landedTimer = 0
             landedAt = item
         end
@@ -225,7 +224,6 @@ function CalcPlatform(item)
                     item.amnt = item.amnt -1
                     if Sounds then extra_sounds[item.type]:play() end
                 elseif item.pType==5 then -- key
-                    printf("KEY",item.color)
                     keys[item.color]=true
                     item.amnt = item.amnt -1
                     gameHUD:onChanged(4)
@@ -342,7 +340,6 @@ function CalcRotator(item)
                 planeRot = planeRot + 1
                 planeRot = planeRot % 24
             end
-            printf(planeRot)
             --planeRot = random(planeRot,0) -- refactor: no clue why this line was here, but it crashes due to invalid range
         end
     end

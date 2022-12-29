@@ -97,6 +97,5 @@ function levelSongPath(_levelNumber)
     if levelNumber == numLevels then
         return "music/the-countdown.mp3"
     end
-    print("music for level ", levelNumber, #levelBgmPaths, luaMod(levelNumber,#levelBgmPaths+1))
     return levelBgmPaths[luaMod(levelNumber,#levelBgmPaths)]
 end

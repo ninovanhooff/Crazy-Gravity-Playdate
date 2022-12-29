@@ -92,7 +92,6 @@ function playdate.debugDraw()
 end
 
 function playdate.keyPressed(key)
-    printT("Pressed " .. key .. " key")
     if key == "h" then
         Debug = true
     end

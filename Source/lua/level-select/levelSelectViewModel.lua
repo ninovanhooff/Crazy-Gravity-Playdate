@@ -58,7 +58,6 @@ end
 
 function LevelSelectViewModel:resume()
     local numLevelsUnlocked = numLevelsUnlocked()
-    print("numLevelsUnlocked", numLevelsUnlocked)
     if self.lastUnlocked ~= numLevelsUnlocked then
         self.lastUnlocked = numLevelsUnlocked
         self.newUnlock = numLevelsUnlocked

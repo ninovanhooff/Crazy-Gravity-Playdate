@@ -222,6 +222,5 @@ end
 --- Notify the GameHud that the count of one of the stats has changed.
 --- @param itemId number @ 1: turbo, 2: lives, 3:cargo, 4: key
 function GameHUD:onChanged(itemId)
-    printf("#extras", #extras, "extratype", itemId, "#hudBlinkers", hudBlinkers)
     hudBlinkers[itemId]:start()
 end

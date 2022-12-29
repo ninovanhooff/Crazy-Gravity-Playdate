@@ -31,7 +31,6 @@ function CreditsView:render(viewModel)
         gfx.pushContext(self.creditsImage)
         gfx.setColor(gfx.kColorWhite)
         local _, message = coroutine.resume(self.creditsBuilder, self)
-        if message then printT(message) end
         gfx.popContext()
     end
 

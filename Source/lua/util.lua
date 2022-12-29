@@ -100,12 +100,6 @@ end
 
 -- ### END Lume functions
 
-function IncrementStringNumber(str)
-    printf("incr",str)
-    num = tonumber(str) +1
-    return string.format("%0.2d",num)
-end
-
 function printf(...)
     local arg = {...}
     if Debug then
@@ -124,11 +118,6 @@ function Trunc_Zeros(num,precision)
     local result = numString:gsub("%.?0+$","",1)
     --printf(result)
     return result
-end
-
-function Error_Handler(err)
-    print(debug.traceback(err,2))
-    return err
 end
 
 function inspect(tbl)
