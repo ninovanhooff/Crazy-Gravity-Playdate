@@ -97,11 +97,13 @@ function LevelSelectViewModel:pause()
     self.newUnlock = nil
 end
 
-function LevelSelectViewModel:finish()
+function LevelSelectViewModel:destroy()
     if self.keyTimer then
         self.keyTimer:remove()
     end
-    popScreen()
+    if self.videoViewModel then
+        self.videoViewModel:destroy()
+    end
 end
 
 function LevelSelectViewModel:moveSelection(offset)
@@ -159,7 +161,7 @@ function LevelSelectViewModel:update()
         end
     elseif justPressed(buttonB) then
         ui_cancel:play()
-        self:finish()
+        popScreen()
     end
 
     -- button state images

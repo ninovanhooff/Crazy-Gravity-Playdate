@@ -109,4 +109,5 @@ end
 
 function VideoViewModel:destroy()
     self.timebase:stop()
+    self.timebase:destroy()
 end
