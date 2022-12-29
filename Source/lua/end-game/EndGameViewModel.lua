@@ -9,6 +9,7 @@ local monitorEasing <const> = playdate.easingFunctions.inOutCubic
 local soundManager <const> = soundManager
 local monitorDuration <const> = 600
 local getCurrentTime <const> = snd.getCurrentTime
+local pressed <const> = playdate.buttonIsPressed
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
 local loop <const> = gfx.animation.loop
@@ -270,7 +271,10 @@ end
 function EndGameViewModel:OpenAirlockUpdate()
     if self.openAirlockState == openAirlockStates.WaitForCrank then
         if playdate.isCrankDocked() then
-            if not self.crankIndicatorStarted then
+            if justPressed(playdate.kButtonA | playdate.kButtonB) then
+                -- going for button control.
+                self.openAirlockState = openAirlockStates.Charge
+            elseif not self.crankIndicatorStarted then
                 crankIndicator:start()
                 self.crankIndicatorStarted = true
             else
@@ -287,9 +291,9 @@ function EndGameViewModel:OpenAirlockUpdate()
     elseif self.openAirlockState == openAirlockStates.Charge then
         self.batteryProgress = self.batteryProgress * 0.993
         local changeDirection = 0 -- 1 for close, -1 for open
-        if getCrankChange() > 5 then
+        if getCrankChange() > 5 or pressed(playdate.kButtonB) then
             changeDirection = 1
-        elseif getCrankChange() < -5 then
+        elseif getCrankChange() < -5 or pressed(playdate.kButtonA) then
             changeDirection = -1
         end
         self.crankFrame = self.crankFrame + changeDirection

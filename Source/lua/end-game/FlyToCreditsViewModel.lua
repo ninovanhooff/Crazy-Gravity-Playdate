@@ -16,7 +16,6 @@ function FlyToCreditsViewModel:init(loopSpecs)
     self.rocketShipHeight = 0 -- set by View
     self.bgType = FlyToCreditsViewModel.bgTypes.surface
     self.swish_sound = playdate.sound.sampleplayer.new("sounds/hollow-swish-airy-short.wav")
-
 end
 
 function FlyToCreditsViewModel:update()
@@ -47,8 +46,8 @@ function FlyToCreditsViewModel:update()
     else
         self.rocketShipY = self.planeY - planeOffset
     end
-    if self.bgType == FlyToCreditsViewModel.bgTypes.asteroids and self.planeY < 150 and rocketEngineLoop:isPlaying() then
-        rocketEngineLoop:stop()
+    if self.bgType == FlyToCreditsViewModel.bgTypes.asteroids and self.planeY < 150 and self.exhaustLoopSpecs then
+        self.exhaustLoopSpecs.audioPlayer:stop()
         rocketEngineStop:play()
         self.exhaustLoopSpecs = nil
     end
