@@ -104,7 +104,7 @@ function ApproxSpecialCollision(item)
     return approxRectCollision(item.x, item.y, item.w, item.h)
 end
 
-local checkpointWaitingLabels <const> = {"Back so soon?", "Papers, please", "Who are you?", "You look familiar"}
+local checkpointWaitingLabels <const> = {"Back so soon?", "Papers, please", "You look familiar"}
 local checkpointDoneLabels  <const> = {"Let's go!", "Safe and sound!", "Keep going!", "Nice!", "See ya!", "You can do it!"}
 
 function CalcPlatform(item)
