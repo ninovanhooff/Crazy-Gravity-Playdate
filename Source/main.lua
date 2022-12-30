@@ -46,25 +46,11 @@ playdate.setMinimumGCTime(2)
 require "lua/start/startScreen"
 pushScreen(StartScreen())
 
-
 if playdate.file.exists("levels/temp.pdz") then
     GetOptions():apply() -- load all sounds required for game
     require "lua/gameScreen"
     pushScreen(GameScreen("levels/temp", 1))
 end
-
---require("lua/end-game/EndGameScreen") -- imports and FlyTo ScreditsScreen CreditsScreen
---pushScreen(FlyToCreditsScreen())
-
---require("lua/video-player/VideoPlayerScreen")
---pushScreen(VideoPlayerScreen(
---    "video/congratulations",
---    function()
---        return EndGameScreen()
---    end
---))
---pushScreen(LevelSelectScreen())
---pushScreen(GameScreen(levelPath(1), 1))
 
 function playdate.update()
     local frameStart = currentTime()

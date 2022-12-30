@@ -11,17 +11,27 @@ local function test(expected, actual, description)
     end
 end
 
-test(0, roundToNearest(0,2), "roundToNearest(0,2)")
-test(2, roundToNearest(1.2,2), "roundToNearest(1.2,2)")
-test(2, roundToNearest(2,2), "roundToNearest(2,2)")
-test(2, roundToNearest(2.1,2), "roundToNearest(2.1,2)")
-test(4, roundToNearest(3,2), "roundToNearest(3,2)")
-test(4, roundToNearest(3.1,2), "roundToNearest(3.1,2)")
-test(-2, roundToNearest(-1.2,2), "roundToNearest(1.2,2)")
-test(-2, roundToNearest(-2,2), "roundToNearest(2,2)")
-test(-2, roundToNearest(-2.1,2), "roundToNearest(2.1,2)")
-test(-2, roundToNearest(-3,2), "roundToNearest(3,2)")
-test(-4, roundToNearest(-3.1,2), "roundToNearest(3.1,2)")
+local round <const> = round
+local function roundTest(expected, number, increment)
+    test(expected, round(number, increment), table.concat({"round", number, increment}, ", "))
+end
+
+roundTest(0, 0,2)
+roundTest(0, 0.1,2)
+roundTest(0, 0.1,1)
+roundTest(0, 0.1) -- default for increment is 1
+roundTest(2, 1.2,2)
+roundTest(2, 2,2)
+roundTest(2, 2.1,2)
+roundTest(4, 3,2)
+roundTest(4, 3.1,2)
+roundTest(-2, -1.2,2)
+roundTest(-2, -2,2)
+roundTest(-2, -2.1,2)
+roundTest(-2, -3,2)
+roundTest(-4, -3.1,2)
+roundTest(-3, -3.1,1)
+roundTest(-3, -3.1)
 
 test(1, luaMod(1, 3), "luaMod(1,3)")
 test(2, luaMod(2, 3), "luaMod(2,3)")

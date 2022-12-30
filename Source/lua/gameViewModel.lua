@@ -23,7 +23,7 @@ local halfHeightTiles <const> = math.ceil(gameHeightTiles*0.5)
 local gameWidthPixels <const> = screenWidth
 local gameHeightPixels <const> = gameHeightTiles * tileSize
 local halfGameWidthPixels <const> = gameWidthPixels * 0.5
-local halfGameHeightPixels <const> = gameHeightTiles * tileSize * 0.5
+local halfGameHeightPixels <const> = gameHeightPixels * 0.5
 local planePos <const> = planePos
 local camPos <const> = camPos
 local camControllerX, camControllerY
@@ -134,7 +134,7 @@ local function CalcGameCam()
 end
 
 local function calcPlane()
-    vx = vx*drag -- thrust?
+    vx = vx*drag -- thrust is added in gameInputs
     vy = (vy+gravity)*drag
     planePos[3] = planePos[3] + vx
     planePos[4] = planePos[4] + vy

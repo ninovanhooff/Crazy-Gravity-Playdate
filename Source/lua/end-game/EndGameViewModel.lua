@@ -30,6 +30,7 @@ assert(clickSamplePlayer)
 local getCrankChange <const> = playdate.getCrankChange
 local floor <const> = math.floor
 local abs <const> = math.abs
+local round <const> = round
 local clamp <const> = clamp
 local musicManager <const> = musicManager
 
@@ -253,7 +254,7 @@ function EndGameViewModel:LiftOffUpdate()
         if self.liftOffSpeed < 4 then
             self.liftOffCamSpeed = 2
         else
-            self.liftOffCamSpeed = roundToNearest(self.liftOffSpeed, 2) + 2
+            self.liftOffCamSpeed = round(self.liftOffSpeed, 2) + 2
         end
         self.camOverrideY = self.camOverrideY - self.liftOffCamSpeed
         self.camOverrideY = clamp(self.camOverrideY, airlockCamOverrideY,  self.camOverrideY)

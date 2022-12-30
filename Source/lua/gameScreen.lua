@@ -49,7 +49,6 @@ end
 function GameScreen:resume()
     playdate.display.setRefreshRate(options:getGameFps())
 
-    -- NOT setting gamePaused to false; requires button press
     self.settingsMenuItem = menu:addMenuItem("Settings", function()
         require "lua/settings/SettingsScreen"
         pushScreen(SettingsScreen())

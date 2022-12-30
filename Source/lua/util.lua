@@ -6,7 +6,6 @@
 
 local floor <const> = math.floor
 local ceil <const> = math.ceil
-local max <const> = math.max
 local currentTime <const> = playdate.sound.getCurrentTime
 
 function boolToNum(bool)
@@ -17,16 +16,11 @@ function sign(x)
     return x < 0 and -1 or 1
 end
 
-function round(x, increment)
-    if increment then return round(x / increment) * increment end
-    return x >= 0 and floor(x + .5) or ceil(x - .5)
-end
-
-
---- round to the nearest multiple of mult
+--- round to the nearest multiple of increment
 --- ie to nearest 2: 1 -> 0, 2.1 -> 2, 2.6 -> 2, 3.1 -> 4, -1.1 -> -2
-function roundToNearest(num, mult)
-    return floor(num / mult + 0.5) * mult
+function round(num, increment)
+    local increment = increment or 1
+    return floor(num / increment + 0.5) * increment
 end
 
 function clamp(x, min, max)
