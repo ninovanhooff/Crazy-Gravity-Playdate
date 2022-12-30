@@ -72,6 +72,17 @@ function navigatorNS.Navigator:updateActiveScreen()
     activeScreen:update()
 end
 
+
+function navigatorNS.Navigator:pause()
+    printT("Pausing screen", activeScreen.className, activeScreen)
+    activeScreen:pause()
+end
+
+function navigatorNS.Navigator:resume()
+    printT("Resuming screen", activeScreen.className, activeScreen)
+    activeScreen:resume()
+end
+
 function navigatorNS.Navigator:debugDraw()
     activeScreen:debugDraw()
 end

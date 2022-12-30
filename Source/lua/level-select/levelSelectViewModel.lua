@@ -6,6 +6,7 @@
 
 local numChallenges <const> = numChallenges
 local levelNames <const> = levelNames
+local keyRepeatTimer <const> = playdate.timer.keyRepeatTimer
 local pressed <const> = playdate.buttonIsPressed
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
@@ -94,12 +95,14 @@ end
 
 function LevelSelectViewModel:pause()
     self.newUnlock = nil
+    if self.keyTimer then
+        self.keyTimer:remove()
+        self.keyTimer = nil
+    end
 end
 
 function LevelSelectViewModel:destroy()
-    if self.keyTimer then
-        self.keyTimer:remove()
-    end
+    self:pause()
     if self.videoViewModel then
         self.videoViewModel:destroy()
     end
@@ -120,12 +123,12 @@ function LevelSelectViewModel:update()
         local function timerCallback()
             self:moveSelection(1)
         end
-        self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
+        self.keyTimer = keyRepeatTimer(timerCallback)
     elseif justPressed(buttonUp) then
         local function timerCallback()
             self:moveSelection(-1)
         end
-        self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
+        self.keyTimer = keyRepeatTimer(timerCallback)
     elseif justReleased(buttonDown | buttonUp) then
         if self.keyTimer then
             self.keyTimer:remove()

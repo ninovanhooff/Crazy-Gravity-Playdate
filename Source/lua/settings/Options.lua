@@ -151,6 +151,7 @@ function optionsNS.Options:init()
     self.dirty = false
     self.visible = false 
     self.previewMode = false
+    self.keyTimerRemover = self:createKeyTimerRemover()
 
     self:menuInit()
     self:userOptionsInit()
@@ -205,19 +206,18 @@ function optionsNS.Options:init()
 
     end
 
-    self.keyTimer = {}
     self.controls = {
         -- move
         leftButtonDown = function() self:toggleCurrentOption(-1) end,
         rightButtonDown = function() self:toggleCurrentOption(1) end,
         upButtonDown = function()
-            self.keyTimer['U'] = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectPreviousRow() end)
+            self.keyTimer = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectPreviousRow() end)
         end,
-        upButtonUp = function() if self.keyTimer['U'] then self.keyTimer['U']:remove() end end,
+        upButtonUp = self.keyTimerRemover,
         downButtonDown = function()
-            self.keyTimer['D'] = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectNextRow() end)
+            self.keyTimer = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectNextRow() end)
         end,
-        downButtonUp = function() if self.keyTimer['D'] then self.keyTimer['D']:remove() end end,
+        downButtonUp = self.keyTimerRemover,
     
         -- action
         AButtonDown = function() self:toggleCurrentOption(1, true) end,
@@ -226,6 +226,15 @@ function optionsNS.Options:init()
         -- cranked = function(change, acceleratedChange) end,
     }
 
+end
+
+function optionsNS.Options:createKeyTimerRemover()
+    return function()
+        if self.keyTimer then
+            self.keyTimer:remove()
+            self.keyTimer = nil
+        end
+    end
 end
 
 function optionsNS.Options:menuInit()
@@ -302,6 +311,7 @@ end
 ---and saves the values to disk
 function optionsNS.Options:hide()
     self.visible = false
+    self.keyTimerRemover()
     self:saveUserOptions()
     playdate.inputHandlers.pop()
     self:apply()

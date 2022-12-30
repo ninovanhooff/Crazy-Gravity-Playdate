@@ -1,5 +1,6 @@
 import "lua/util"
 
+local playdate <const> = playdate
 local run <const> = playdate.file.run
 
 local requiredPaths <const> = {}
@@ -70,6 +71,11 @@ function playdate.update()
         end
     end
 end
+
+function playdate.gameWillPause()  navigator:pause() end
+function playdate.deviceWillLock() navigator:pause() end
+function playdate.gameWillResume() navigator:resume() end
+function playdate.deviceDidUnlock() navigator:resume() end
 
 function playdate.debugDraw()
     if Debug then
