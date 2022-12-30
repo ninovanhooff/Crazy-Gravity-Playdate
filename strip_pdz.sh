@@ -5,6 +5,13 @@ sourceDir="$1"
 pdxPath="$2"
 pdxDir="$invokeDir/$pdxPath"
 
+function removeIfExists() {
+    if [ -f "$1" ] ; then
+        echo "DELETE $1"
+        rm "$1"
+    fi
+}
+
 cd "$sourceDir" || exit
 
 grep -r '^import' . | while read -r line ; do
@@ -15,17 +22,16 @@ grep -r '^import' . | while read -r line ; do
   pdzName=$(echo "$pdzName" | sed -r 's/(.*).lua$/\1/') || "$pdzName" # strip .lua if found
   # echo "pdzName $pdzName"
   pdzPath="$invokeDir/$pdxPath/$matchDirPath/$pdzName.pdz"
-  if [ -f "$pdzPath" ] ; then # file may not exist when it was deleted in the same run. imports for the same file may be found in multiple source files
-      echo "DELETE $pdzPath"
-      rm "$pdzPath"
-  fi
+  # file may not exist when it was deleted in the same run. imports for the same file may be found in multiple source files
+  removeIfExists "$pdzPath"
 done
 
 unitTestsPath="$pdxDir/lua/unittests.pdz"
-if [ -f "$unitTestsPath" ] ; then
-    echo "DELETE $unitTestsPath"
-    rm "$unitTestsPath"
-fi
+removeIfExists "$unitTestsPath"
+
+# temp level files created by GravityExpressLevelEditor
+removeIfExists "$pdxDir/levels/temp.bin"
+removeIfExists "$pdxDir/levels/temp.pdz"
 
 # Remove empty directories
 find "$pdxDir" -type d -empty -delete
