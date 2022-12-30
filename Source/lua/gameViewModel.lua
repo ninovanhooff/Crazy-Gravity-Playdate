@@ -303,7 +303,6 @@ function ResetGame()
     extras = {0,InitialLives or levelProps.lives or 9,1} -- turbo, lives, cargo
     frameCounter = 0
     gamePaused = true
-    editorMode = false
     sample("init BricksView", function()
         bricksView = BricksView()
     end, 1)

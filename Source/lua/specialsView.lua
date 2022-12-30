@@ -11,7 +11,6 @@ local floor <const> = math.floor
 local fmod <const> = math.fmod
 local gfx <const> = playdate.graphics
 local sprite = _G["sprite"]
-local editorMode = editorMode
 local tileSize <const> = tileSize
 local gameWidthPixels <const> = screenWidth
 local gameHeightPixels <const> = gameHeightTiles*tileSize
@@ -107,27 +106,15 @@ function RenderBlower(item, scrX, scrY)
     if item.direction==1 then
         sprite:draw(scrX, scrY+item.distance*8+16, unFlipped, 320+(frameCounter%3)*48, 142-(item.grating-1)*48, 48, 48) -- body
         sprite:draw(scrX, scrY+item.distance*8, unFlipped, 380, 372+(item.direction-1)*16, 48, 16)
-        if editorMode then
-            pgeDrawRectoutline(scrX,scrY,48,item.distance*8,white)
-        end
     elseif item.direction==2 then
         sprite:draw(scrX, scrY, unFlipped, 320+(frameCounter%3)*48, 142-(item.grating-1)*48, 48, 48) -- body
         sprite:draw(scrX, scrY+48, unFlipped, 380, 372+(item.direction-1)*16, 48, 16)
-        if editorMode then
-            pgeDrawRectoutline(scrX,scrY+64,48,item.distance*8,white)
-        end
     elseif item.direction==3 then
         sprite:draw(scrX+item.distance*8+16, scrY, unFlipped, 320+(frameCounter%3)*48, 142-(item.grating-1)*48, 48, 48) -- body
         sprite:draw(scrX+item.distance*8, scrY, unFlipped, 464+(item.direction-3)*16, 94, 16, 48)
-        if editorMode then
-            pgeDrawRectoutline(scrX,scrY,item.distance*8,48,white)
-        end
     elseif item.direction==4 then
         sprite:draw(scrX, scrY, unFlipped, 320+(frameCounter%3)*48, 142-(item.grating-1)*48, 48, 48) -- body
         sprite:draw(scrX+48, scrY, unFlipped, 464+(item.direction-3)*16, 94, 16, 48)
-        if editorMode then
-            pgeDrawRectoutline(scrX+64,scrY,item.distance*8,48,white)
-        end
     end
 end
 
@@ -135,19 +122,15 @@ function RenderMagnet(item, scrX, scrY)
     if item.direction==1 then
         sprite:draw(scrX, scrY+item.distance*8+16, unFlipped, 0, 234, 32, 32) -- body
         sprite:draw(scrX, scrY+item.distance*8, unFlipped, 0+loopAnim(3,2)*32, 282, 32, 16)
-        if editorMode then pgeDrawRectoutline(scrX,scrY,32,item.distance*8,white) end
     elseif item.direction==2 then
         sprite:draw(scrX, scrY, unFlipped, 0, 234, 32, 32) -- body
         sprite:draw(scrX, scrY+32, unFlipped, 0+loopAnim(3,2)*32, 266, 32, 16)
-        if editorMode then pgeDrawRectoutline(scrX,scrY+32+16,32,item.distance*8,white) end
     elseif item.direction==3 then
         sprite:draw(scrX+item.distance*8+16, scrY, unFlipped, 0, 234, 32, 32) -- body
         sprite:draw(scrX+item.distance*8, scrY, unFlipped, 79+loopAnim(3,2)*16, 234, 16, 32)
-        if editorMode then pgeDrawRectoutline(scrX,scrY,item.distance*8,32,white) end
     elseif item.direction==4 then
         sprite:draw(scrX, scrY, unFlipped, 0, 234, 32, 32) -- body
         sprite:draw(scrX+32, scrY, unFlipped, 32+loopAnim(3,2)*16, 234, 16, 32)
-        if editorMode then pgeDrawRectoutline(scrX+32+16,scrY,item.distance*8,32,white) end
     end
 end
 
@@ -155,19 +138,15 @@ function RenderRotator(item, scrX, scrY)
     if item.direction==1 then
         sprite:draw(scrX, scrY+item.distance*8+24, unFlipped, 0+loopAnim(8,2)*40, 96+(item.rotates-1)*40, 40, 40)
         sprite:draw(scrX, scrY+item.distance*8, unFlipped, 320+(item.rotates-1)*80, 190, 40, 24)
-        if editorMode then pgeDrawRectoutline(scrX,scrY,40,item.distance*8,white) end
     elseif item.direction==2 then
         sprite:draw(scrX, scrY, unFlipped, 0+loopAnim(8,2)*40, 96+(item.rotates-1)*40, 40, 40) -- body
         sprite:draw(scrX, scrY+40, unFlipped, 363+(item.rotates-1)*80, 190, 40, 24) -- nozzle
-        if editorMode then pgeDrawRectoutline(scrX,scrY+40+24,40,item.distance*8,white) end
     elseif item.direction==3 then
         sprite:draw(scrX+item.distance*8+24, scrY, unFlipped, 0+loopAnim(8,2)*40, 96+(item.rotates-1)*40, 40, 40)
         sprite:draw(scrX+item.distance*8, scrY, unFlipped, (item.rotates-1)*48, 298, 24, 40)
-        if editorMode then pgeDrawRectoutline(scrX,scrY,item.distance*8,40,white) end
     elseif item.direction==4 then
         sprite:draw(scrX, scrY, unFlipped, 0+loopAnim(8,2)*40, 96+(item.rotates-1)*40, 40, 40)
         sprite:draw(scrX+40, scrY, unFlipped, 24+(item.rotates-1)*48, 298, 24, 40)
-        if editorMode then pgeDrawRectoutline(scrX+40+24,scrY,item.distance*8,40,white) end
     end
 end
 
@@ -228,17 +207,13 @@ end
 function RenderRod(item, scrX, scrY)
     local skip = 20
     if item.direction==2 then -- vertical
-        if editorMode then
-            pgeDrawRectoutline(scrX,scrY+24,24,item.distance*8,white)
-        end
+
         sprite:draw(scrX+2, scrY+item.distance*8, unFlipped, 4+loopAnim(2,skip)*28, 460, 20, 24) -- bottom
         sprite:draw(scrX+2, scrY, unFlipped, 32-loopAnim(2,skip)*28, 464, 20, 24) -- top
         sprite:draw(scrX+6, scrY+24, unFlipped, 500, 512-item.pos1, 12, item.pos1) -- top rod
         sprite:draw(scrX+6, scrY+item.distance*8-item.pos2, unFlipped, 500, 204, 12, item.pos2) -- bottom rod
     elseif item.direction==1 then -- horizontal
-        if editorMode then
-            pgeDrawRectoutline(scrX+24,scrY,item.distance*8,24,white)
-        end
+
         sprite:draw(scrX, scrY+2, unFlipped, 4+loopAnim(2,skip)*28, 464, 24, 20) -- left
         sprite:draw(scrX+item.distance*8, scrY+2, unFlipped, 28-loopAnim(2,skip)*28, 464, 24, 20) -- right
         sprite:draw(scrX+24, scrY+6, unFlipped, 472-item.pos1, 80, item.pos1, 12) -- left rod
@@ -308,9 +283,7 @@ function RenderBarrier(item, scrX, scrY)
         if item.endStone==1 then
             sprite:draw(scrX+8, scrY, unFlipped, 128, 234, 32, 16)
         end
-        if editorMode then
-            pgeDrawRectoutline(scrX+24-item.actW*4,scrY+pixDist-4-item.distance*4+8-item.actH*4,item.actW*8,item.actH*8,yellow)
-        end
+
         colorCoords = {6,item.distance*8+6}
     elseif item.direction==2 then -- down
         sprite:draw(scrX, scrY, unFlipped, 96, 310, 48, 36) -- body
@@ -318,9 +291,7 @@ function RenderBarrier(item, scrX, scrY)
         if item.endStone==1 then
             sprite:draw(scrX+8, scrY+32+item.distance*8-16, unFlipped, 128, 254, 32, 16)
         end
-        if editorMode then
-            pgeDrawRectoutline(scrX+24-item.actW*4,scrY+36+item.distance*4-8-item.actH*4,item.actW*8,item.actH*8,yellow)
-        end
+
         colorCoords = {22,6}
     elseif item.direction==3 then -- left
         sprite:draw(scrX+pixDist-4, scrY, unFlipped, 428, 214, 36, 48) -- body
@@ -328,9 +299,7 @@ function RenderBarrier(item, scrX, scrY)
         if item.endStone==1 then
             sprite:draw(scrX, scrY+8, unFlipped, 352, 214, 16, 32)
         end
-        if editorMode then
-            pgeDrawRectoutline(scrX+pixDist-4-item.distance*4-item.actW*4,scrY+24-item.actH*4,item.actW*8,item.actH*8,yellow)
-        end
+
         colorCoords={item.distance*8+6,22}
     else -- right
         sprite:draw(scrX, scrY, unFlipped, 392, 214, 36, 48) -- body
@@ -338,12 +307,10 @@ function RenderBarrier(item, scrX, scrY)
         if item.endStone==1 then
             sprite:draw(scrX+32+item.distance*8-16, scrY+8, unFlipped, 372, 214, 16, 32)
         end
-        if editorMode then
-            pgeDrawRectoutline(scrX+36+item.distance*4-item.actW*4-8,scrY+24-item.actH*4,item.actW*8,item.actH*8,yellow)
-        end
+
         colorCoords = {6,6}
     end
-    if item.activated or editorMode then -- plane in range
+    if item.activated then -- plane in range
         for j,jtem in ipairs(colorT) do
             if item[jtem]==1 then -- required
                 if keys[j] or frameCounter%20<10 then -- have key, else blink
