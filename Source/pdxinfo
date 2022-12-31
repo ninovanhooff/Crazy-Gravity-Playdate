@@ -6,3 +6,4 @@ version=1.0
 buildNumber=100
 imagePath=SystemAssets
 launchSoundPath=sounds/hollow-swish-airy-short.wav
+contentWarning=This game's inputs change when docking / undocking the crank to adapt to your style and ability.
