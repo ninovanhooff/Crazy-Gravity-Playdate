@@ -9,6 +9,7 @@ local monitorEasing <const> = playdate.easingFunctions.inOutCubic
 local soundManager <const> = soundManager
 local monitorDuration <const> = 600
 local getCurrentTime <const> = snd.getCurrentTime
+local pressed <const> = playdate.buttonIsPressed
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
 local loop <const> = gfx.animation.loop
@@ -17,8 +18,8 @@ local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_s
 
 local conveyorBeltPlayer = snd.sampleplayer.new("sounds/conveyor_belt")
 
-rocketEngineStart = snd.sampleplayer.new("sounds/rocket_engine_start")
-rocketEngineLoop = snd.sampleplayer.new("sounds/rocket_engine_loop")
+local rocketEngineStart <const> = snd.sampleplayer.new("sounds/rocket_engine_start")
+local rocketEngineLoopSamplePlayer <const> = snd.sampleplayer.new("sounds/rocket_engine_loop")
 local barrierPlayer = soundManager.sounds.barrier.player
 assert(barrierPlayer)
 
@@ -29,10 +30,10 @@ assert(clickSamplePlayer)
 local getCrankChange <const> = playdate.getCrankChange
 local floor <const> = math.floor
 local abs <const> = math.abs
+local round <const> = round
 local clamp <const> = clamp
 local musicManager <const> = musicManager
 
-print("Setting calcTimeStep in EndGameVM")
 local match <const> = match
 local calcTimeStep <const> = CalcTimeStep
 local tileSize <const> = tileSize
@@ -105,12 +106,11 @@ end
 function EndGameViewModel:updateEngineVolume()
     local rocketShipScreenY = floor(self.planePosY - 7*tileSize - camPos[2]*tileSize-camPos[4])
     local engineVolume = clamp(1-((rocketShipScreenY-50) / 250), 0, 1)
-    printT(rocketShipScreenY, engineVolume)
-    rocketEngineLoop:setVolume(engineVolume)
+    rocketEngineLoopSamplePlayer:setVolume(engineVolume)
 end
 
 function EndGameViewModel:initState(state)
-    print("init state", state.name)
+    print("init EndGame state", state.name)
     if state == states.LoadPlane then
         self.planeAnimator = gfx.animator.new(loadPlaneDurationMs, self.planePosX, targetPlanePosX)
         self.controlRoomAnimator = gfx.animator.new(loadPlaneDurationMs, -545, 0)
@@ -134,8 +134,8 @@ function EndGameViewModel:initState(state)
         self.exhaustLoopOffsetY = 106
         self.camOverrideY = camPos[2]*tileSize+camPos[4]
         rocketEngineStart:setFinishCallback(function()
-            rocketEngineLoop:setVolume(0.5)
-            rocketEngineLoop:play(0)
+            rocketEngineLoopSamplePlayer:setVolume(0.5)
+            rocketEngineLoopSamplePlayer:play(0)
         end)
         rocketEngineStart:play()
     elseif state == states.OpenAirlock then
@@ -143,7 +143,7 @@ function EndGameViewModel:initState(state)
         self.batteryMonitorAnimator = animator.new(monitorDuration, 0, 1, monitorEasing)
         self.openAirlockState = openAirlockStates.WaitForCrank
     elseif state == states.FlyAway then
-        self:startVideo("video/director_airlock_clear")
+        self:startVideo("video/director_airlock_clear_2")
         self.liftOffSpeed = 4
         self.planePosY = (gameHeightTiles + 20) * tileSize -- a little outside frame, so it doesn't appear immediately when airlock is opened
     end
@@ -160,7 +160,8 @@ function EndGameViewModel:onEnded()
         {
             ["loop"] = self.rocketExhaustLoop,
             ["offsetX"] = self.exhaustLoopOffsetX,
-            ["offsetY"] = self.exhaustLoopOffsetY
+            ["offsetY"] = self.exhaustLoopOffsetY,
+            ["audioPlayer"] = rocketEngineLoopSamplePlayer
         }
     ))
 end
@@ -231,6 +232,7 @@ function EndGameViewModel:DirectorLaunchInitiatedUpdate()
     -- music track contains countdown which reaches 0 at t = 7s
     elseif self:getLaunchTimeOffset() >= -7 and not musicManager:isPlaying() then
         -- this moment is too epic not to play music.
+        -- Therefore we play it at at least 20% volume; even if music is turned off in Settings
         -- This volume is not reset during the current run, but
         -- I'd say that's okay in this occasion.
         musicManager:setVolume(math.max(0.2, musicManager.volume))
@@ -252,7 +254,7 @@ function EndGameViewModel:LiftOffUpdate()
         if self.liftOffSpeed < 4 then
             self.liftOffCamSpeed = 2
         else
-            self.liftOffCamSpeed = roundToNearest(self.liftOffSpeed, 2) + 2
+            self.liftOffCamSpeed = round(self.liftOffSpeed, 2) + 2
         end
         self.camOverrideY = self.camOverrideY - self.liftOffCamSpeed
         self.camOverrideY = clamp(self.camOverrideY, airlockCamOverrideY,  self.camOverrideY)
@@ -271,7 +273,10 @@ end
 function EndGameViewModel:OpenAirlockUpdate()
     if self.openAirlockState == openAirlockStates.WaitForCrank then
         if playdate.isCrankDocked() then
-            if not self.crankIndicatorStarted then
+            if justPressed(playdate.kButtonA | playdate.kButtonB) then
+                -- going for button control.
+                self.openAirlockState = openAirlockStates.Charge
+            elseif not self.crankIndicatorStarted then
                 crankIndicator:start()
                 self.crankIndicatorStarted = true
             else
@@ -288,9 +293,9 @@ function EndGameViewModel:OpenAirlockUpdate()
     elseif self.openAirlockState == openAirlockStates.Charge then
         self.batteryProgress = self.batteryProgress * 0.993
         local changeDirection = 0 -- 1 for close, -1 for open
-        if getCrankChange() > 5 then
+        if getCrankChange() > 5 or pressed(playdate.kButtonB) then
             changeDirection = 1
-        elseif getCrankChange() < -5 then
+        elseif getCrankChange() < -5 or pressed(playdate.kButtonA) then
             changeDirection = -1
         end
         self.crankFrame = self.crankFrame + changeDirection
@@ -376,6 +381,7 @@ function EndGameViewModel:update()
         self.videoViewModel:update()
     end
     stateUpdaters[self.state](self)
+    local planePos <const> = planePos
     planePos[1] = floor(self.planePosX / tileSize)
     planePos[2] = floor(self.planePosY / tileSize)
     planePos[3] = self.planePosX % tileSize
@@ -391,7 +397,6 @@ function EndGameViewModel:update()
 end
 
 function EndGameViewModel:resume()
-    printT("endgameVM resume")
     musicManager:fade(0)
     self.platform.arrows = false
 end

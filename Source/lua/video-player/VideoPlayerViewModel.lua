@@ -1,5 +1,3 @@
-
-
 local justPressed <const> = playdate.buttonJustPressed
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB

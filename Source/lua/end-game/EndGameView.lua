@@ -1,7 +1,3 @@
-
-
-
-
 local gfx <const> = playdate.graphics
 local floor <const> = math.floor
 local abs <const> = math.abs

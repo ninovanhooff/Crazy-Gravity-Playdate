@@ -5,6 +5,7 @@
 ---
 
 import "MusicManager"
+import "SoundManager"
 import "input/InputManager"
 import "settings/physicsSettings"
 import "settings/options"
@@ -12,7 +13,7 @@ import "records"
 import "levelSuggestion"
 import "challenges"
 
-if playdate.isSimulator then
+if playdate.isSimulator and playdate.file.exists("lua/unittests.pdz") then
     require "lua/unittests"
 end
 
@@ -21,27 +22,24 @@ local gfx = playdate.graphics
 math.randomseed(playdate.getSecondsSinceEpoch())
 pi = 3.141592654
 Sounds = true
-screenWidth = playdate.display.getWidth()
-screenHeight = playdate.display.getHeight()
+screenWidth, screenHeight = playdate.display.getSize()
 hudY = 224
 tileSize = 8 -- refactor: probably hardcoded in a lot of places
 gameBgColor = gfx.kColorBlack
 gameFgColor = gfx.kColorWhite
 gameWidthTiles = math.ceil(screenWidth / tileSize)
 gameHeightTiles = math.ceil(hudY / tileSize)
---- The frameRate for menu screens and the timebase for game logic. Game may run slower, see gameSpeed
+--- The frameRate for menu screens and the timebase for game logic. Game may run slower, see gameFps
 frameRate = 30
+playdate.display.setRefreshRate(frameRate)
 --- The amount of frames per second the game runs at. When frameRate is 30 and gameFps is 15, the game runs at half speed
 gameFps = frameRate
-outBufSize = 1024
 currentLevel = 1
 extras = {0,0,0} -- See GameViewModel:ResetGame()
 planePos = {}
 planeSize = 24
 camPos = {}
 
--- requires gameWidthTiles
-import "SoundManager"
 
 
 sinThrustT= {}
@@ -63,7 +61,5 @@ gfx.setFont( originalSystemFont, playdate.graphics.font.kVariantItalic )
 gfx.setFont(playdate.graphics.getSystemFont(playdate.graphics.font.kVariantBold))
 monoFont = gfx.font.new("fonts/Roobert/Roobert-9-Mono-Condensed")
 smallFont = gfx.font.new("fonts/Roobert/Roobert-10-Bold")
-dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50") -- todo rename to dotFont50
-printT("Before start options apply")
+dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
 GetOptions():apply(true)
-printT("After start options apply")

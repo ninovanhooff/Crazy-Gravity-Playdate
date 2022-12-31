@@ -1,5 +1,6 @@
 local getCrankPosition <const> = playdate.getCrankPosition
 local sign <const> = sign
+local round <const> = round
 local smallestPlaneRotation <const> = smallestPlaneRotation
 local clampPlaneRotation <const> = clampPlaneRotation
 
@@ -10,7 +11,7 @@ function CrankInput:init()
 end
 
 local function getCrankPlaneRotation()
-    local position = roundToNearest(getCrankPosition() / 15, 1) -- 15: 360 degrees / 24 plane angles
+    local position = round(getCrankPosition() / 15) -- 15: 360 degrees / 24 plane angles
     if position == 24 then
         position = 0
     end

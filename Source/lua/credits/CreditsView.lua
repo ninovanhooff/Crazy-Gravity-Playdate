@@ -1,6 +1,5 @@
 local credits <const> = import "Credits"
 
-local floor <const> = math.floor
 local gfx <const> = playdate.graphics
 local tileSize <const> = tileSize
 local unFlipped <const> = gfx.kImageUnflipped
@@ -32,7 +31,6 @@ function CreditsView:render(viewModel)
         gfx.pushContext(self.creditsImage)
         gfx.setColor(gfx.kColorWhite)
         local _, message = coroutine.resume(self.creditsBuilder, self)
-        if message then printT(message) end
         gfx.popContext()
     end
 
@@ -145,7 +143,7 @@ function CreditsView:buildCreditsYielding()
     )
     y = y + 60 + imageSpacing
     y = y + self:drawTextCentered("by Axel Meierhofer", y) + sectionSpacing * 2
-    coroutine.yield("Based on Gravity Express")
+    coroutine.yield("Based on Crazy Gravity")
 
     for _,item in ipairs(credits) do
         y = self:drawCreditsSection(y, item)
@@ -157,7 +155,7 @@ function CreditsView:buildCreditsYielding()
 
     local qrCenterX <const> = screenCenterX + 8*tileSize
     y = y + 6*tileSize
-    y = y + self:drawTextCentered("Please leave a comment or review", y, qrCenterX) + imageSpacing
+    y = y + self:drawTextCentered("Please leave me a comment :-)", y, qrCenterX) + imageSpacing
     local qrImageWidth, qrImageHeight <const> = qrImage:getSize()
     qrImage:draw(qrCenterX - qrImageWidth/2, y)
     y = y + qrImageHeight + imageSpacing

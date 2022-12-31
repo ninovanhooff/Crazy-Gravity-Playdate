@@ -44,8 +44,6 @@ function RenderStart(viewState)
     bgImg:draw(0,0)
     logoImg:draw(6, 6 - logoHeight + viewState.logoAnimator:currentValue() * logoHeight)
 
-    --inspect(viewState)
-
     -- button
     for _, button in pairs(viewState.buttons) do
         drawButton(button)

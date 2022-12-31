@@ -28,7 +28,7 @@ function VideoViewModel:init(basePath, loop)
 
     self.metadata, self.loaderr = json.decodeFile(basePath .. ".json")
     if self.loaderr then
-        print(self.loaderr)
+        print("No video metadata:", self.loaderr)
     else
         self.cards = self.metadata.cards
         self.subtitles = self.metadata.subtitles
@@ -109,4 +109,5 @@ end
 
 function VideoViewModel:destroy()
     self.timebase:stop()
+    self.timebase:destroy()
 end

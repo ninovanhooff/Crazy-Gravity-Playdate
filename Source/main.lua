@@ -1,5 +1,6 @@
 import "lua/util"
 
+local playdate <const> = playdate
 local run <const> = playdate.file.run
 
 local requiredPaths <const> = {}
@@ -44,25 +45,11 @@ playdate.setMinimumGCTime(2)
 require "lua/start/startScreen"
 pushScreen(StartScreen())
 
-
 if playdate.file.exists("levels/temp.pdz") then
     GetOptions():apply() -- load all sounds required for game
     require "lua/gameScreen"
     pushScreen(GameScreen("levels/temp", 1))
 end
-
---require("lua/end-game/EndGameScreen") -- imports and FlyTo ScreditsScreen CreditsScreen
---pushScreen(FlyToCreditsScreen())
-
---require("lua/video-player/VideoPlayerScreen")
---pushScreen(VideoPlayerScreen(
---    "video/congratulations",
---    function()
---        return EndGameScreen()
---    end
---))
---pushScreen(LevelSelectScreen())
---pushScreen(GameScreen(levelPath(1), 1))
 
 function playdate.update()
     local frameStart = currentTime()
@@ -84,6 +71,11 @@ function playdate.update()
     end
 end
 
+function playdate.gameWillPause()  navigator:gameWillPause() end
+function playdate.deviceWillLock() navigator:gameWillPause() end
+function playdate.gameWillResume() navigator:gameWillResume() end
+function playdate.deviceDidUnlock() navigator:gameWillResume() end
+
 function playdate.debugDraw()
     if Debug then
         navigator:debugDraw()
@@ -91,7 +83,6 @@ function playdate.debugDraw()
 end
 
 function playdate.keyPressed(key)
-    printT("Pressed " .. key .. " key")
     if key == "h" then
         Debug = true
     end

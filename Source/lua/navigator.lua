@@ -72,6 +72,17 @@ function navigatorNS.Navigator:updateActiveScreen()
     activeScreen:update()
 end
 
+
+function navigatorNS.Navigator:gameWillPause()
+    printT("GameWillPause screen", activeScreen.className, activeScreen)
+    activeScreen:gameWillPause()
+end
+
+function navigatorNS.Navigator:gameWillResume()
+    printT("GameWillResume screen", activeScreen.className, activeScreen)
+    activeScreen:gameWillResume()
+end
+
 function navigatorNS.Navigator:debugDraw()
     activeScreen:debugDraw()
 end
