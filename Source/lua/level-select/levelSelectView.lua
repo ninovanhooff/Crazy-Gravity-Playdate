@@ -12,7 +12,7 @@ local unFlipped <const> = gfx.kImageUnflipped
 local defaultFont <const> = gfx.getFont()
 local monoFont <const> = monoFont
 local hudIcons <const> = sprite -- hud icons are placed at origin of sprite
-local thumbs <const> = gfx.imagetable.new("images/level_thumbs")
+local thumbs <const> = gfx.imagetable.new("images/level-select/level_thumbs")
 local console <const> = gfx.image.new("images/level-select/console")
 local dPad <const> = gfx.imagetable.new("images/level-select/d_pad")
 local aButton <const> = gfx.imagetable.new("images/level-select/a_button")
@@ -55,7 +55,6 @@ function LevelSelectView:initLockAnimation(idx, type)
 end
 
 function LevelSelectView:init(vm)
-
     LevelSelectView.super.init(self)
     viewModel = vm
     listView:setNumberOfRows(#vm.menuOptions)

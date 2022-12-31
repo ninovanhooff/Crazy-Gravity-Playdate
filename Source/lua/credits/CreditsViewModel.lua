@@ -1,5 +1,6 @@
-
 require "lua/start/startScreen"
+local ProcessInputs <const> = ProcessInputs
+local CalcTimeStep <const> = CalcTimeStep
 
 local tileSize <const> = tileSize
 
@@ -26,9 +27,6 @@ function CreditsViewModel:init()
     -- this combination of gravity and drag slows down the plane very slowly
     gravity = 0.01
     drag = 0.98
-
-    --self.planeX, self.planeY = 106, screenHeight - 10
-    --self.creditsY = 100
 end
 
 function CreditsViewModel:update()

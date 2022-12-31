@@ -6,6 +6,7 @@
 
 local numChallenges <const> = numChallenges
 local levelNames <const> = levelNames
+local keyRepeatTimer <const> = playdate.timer.keyRepeatTimer
 local pressed <const> = playdate.buttonIsPressed
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
@@ -39,10 +40,20 @@ function LevelSelectViewModel:init()
     self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
     self.dPadImageIdx = 1
     self.aButtonImageIdx = 1
+    self.keyTimer = nil
+    self.keyTimerRemover = self:createKeyTimerRemover()
+end
+
+function LevelSelectViewModel:createKeyTimerRemover()
+    return function()
+        if self.keyTimer then
+            self.keyTimer:remove()
+            self.keyTimer = nil
+        end
+    end
 end
 
 function LevelSelectViewModel:startVideo(path)
-    require("lua/video-player/VideoPlayerScreen")
     if self.videoViewModel then
         self.videoViewModel:destroy()
     end
@@ -59,7 +70,6 @@ end
 
 function LevelSelectViewModel:resume()
     local numLevelsUnlocked = numLevelsUnlocked()
-    print("numLevelsUnlocked", numLevelsUnlocked)
     if self.lastUnlocked ~= numLevelsUnlocked then
         self.lastUnlocked = numLevelsUnlocked
         self.newUnlock = numLevelsUnlocked
@@ -90,19 +100,24 @@ function LevelSelectViewModel:resume()
     --- when pressing the A button to dismiss a gameOverScreen, we don't want to register that press
     --- here again to start a level
     self.aButtonPressedAtLeastOnce = false
-
+    require("lua/video-player/VideoPlayerScreen")
     self:startVideo(levelPath(self.selectedIdx))
 end
 
 function LevelSelectViewModel:pause()
     self.newUnlock = nil
+    self:keyTimerRemover()
 end
 
-function LevelSelectViewModel:finish()
-    if self.keyTimer then
-        self.keyTimer:remove()
+function LevelSelectViewModel:gameWillPause()
+    self:keyTimerRemover()
+end
+
+function LevelSelectViewModel:destroy()
+    self:pause()
+    if self.videoViewModel then
+        self.videoViewModel:destroy()
     end
-    popScreen()
 end
 
 function LevelSelectViewModel:moveSelection(offset)
@@ -120,16 +135,14 @@ function LevelSelectViewModel:update()
         local function timerCallback()
             self:moveSelection(1)
         end
-        self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
+        self.keyTimer = keyRepeatTimer(timerCallback)
     elseif justPressed(buttonUp) then
         local function timerCallback()
             self:moveSelection(-1)
         end
-        self.keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
+        self.keyTimer = keyRepeatTimer(timerCallback)
     elseif justReleased(buttonDown | buttonUp) then
-        if self.keyTimer then
-            self.keyTimer:remove()
-        end
+        self:keyTimerRemover()
     elseif justPressed(buttonLeft) then
         self.selectedChallengeIdx = clamp(self.selectedChallengeIdx -1, 1, numChallenges)
     elseif justPressed(buttonRight) then
@@ -140,8 +153,8 @@ function LevelSelectViewModel:update()
         currentLevel = self.selectedIdx
         require("lua/gameScreen")
 
-        -- start orientation video
         if self.selectedIdx == 1 then
+            -- start orientation video
             ui_confirm:play()
             require "lua/video-player/VideoPlayerScreen"
             pushScreen(VideoPlayerScreen(
@@ -160,7 +173,7 @@ function LevelSelectViewModel:update()
         end
     elseif justPressed(buttonB) then
         ui_cancel:play()
-        self:finish()
+        popScreen()
     end
 
     -- button state images

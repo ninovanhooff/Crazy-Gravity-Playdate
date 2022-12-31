@@ -19,6 +19,7 @@ end
 
 function VideoTimebase:start() end
 function VideoTimebase:stop() end
+function VideoTimebase:destroy() end
 
 ---- FilePlayerTimebase
 class("FilePlayerTimebase").extends(VideoTimebase)
@@ -49,13 +50,16 @@ function FilePlayerTimebase:isFinished()
     return self.player:getOffset() >= self.player:getLength()
 end
 
+function FilePlayerTimebase:destroy()
+    self:stop()
+end
+
 ---- TimerTimebase
 class("TimerTimebase").extends(VideoTimebase)
 
 function TimerTimebase:init(durationSeconds, repeats)
     TimerTimebase.super.init(self)
     self.timer = timer.new(durationSeconds*1000, 0, durationSeconds)
-    self.timer.discardOnCompletion = false
     self.timer.repeats = repeats
     self.timer:pause() -- do not auto-start
 end
@@ -79,5 +83,9 @@ function TimerTimebase:durationSeconds()
 end
 
 function TimerTimebase:isFinished()
-    return self.timer.value >= self.timer.endValue
+    return self.timer.value >= self.timer.endValue and not self.timer.repeats
+end
+
+function TimerTimebase:destroy()
+    self.timer:remove()
 end

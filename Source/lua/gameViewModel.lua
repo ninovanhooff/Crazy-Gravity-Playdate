@@ -23,7 +23,7 @@ local halfHeightTiles <const> = math.ceil(gameHeightTiles*0.5)
 local gameWidthPixels <const> = screenWidth
 local gameHeightPixels <const> = gameHeightTiles * tileSize
 local halfGameWidthPixels <const> = gameWidthPixels * 0.5
-local halfGameHeightPixels <const> = gameHeightTiles * tileSize * 0.5
+local halfGameHeightPixels <const> = gameHeightPixels * 0.5
 local planePos <const> = planePos
 local camPos <const> = camPos
 local camControllerX, camControllerY
@@ -134,7 +134,7 @@ local function CalcGameCam()
 end
 
 local function calcPlane()
-    vx = vx*drag -- thrust?
+    vx = vx*drag -- thrust is added in gameInputs
     vy = (vy+gravity)*drag
     planePos[3] = planePos[3] + vx
     planePos[4] = planePos[4] + vy
@@ -211,7 +211,7 @@ function CalcTimeStep()
         end
     end
     soundManager:notifySoundCalcEnd()
-    if collision and explosion == nil and not Debug then
+    if collision and explosion == nil and not Debug and not levelProps.collisionDisabled then
         print("KABOOM", extras[2])
         gamePaused = true
         pushScreen(GameExplosionScreen(calcPlane, CalcGameCam))
@@ -303,7 +303,6 @@ function ResetGame()
     extras = {0,InitialLives or levelProps.lives or 9,1} -- turbo, lives, cargo
     frameCounter = 0
     gamePaused = true
-    editorMode = false
     sample("init BricksView", function()
         bricksView = BricksView()
     end, 1)

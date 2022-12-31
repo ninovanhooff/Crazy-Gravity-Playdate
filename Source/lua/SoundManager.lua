@@ -100,7 +100,7 @@ function SoundManager:soundForSpecial(item)
     elseif item.sType == 10 then -- magnet
         return self.sounds.magnet
     else
-        --error("no sound for", item.sType)
+        return nil -- many specials are silent
     end
 end
 

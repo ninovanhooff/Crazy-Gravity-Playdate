@@ -4,9 +4,12 @@
 --- DateTime: 10/07/2022 17:34
 ---
 
-
-
 class('Input').extends()
+
+Input.actionLeft = 1
+Input.actionRight = 2
+Input.actionThrottle = 3
+Input.actionSelfRight = 4
 
 function Input:init()
     Input.super.init(self)

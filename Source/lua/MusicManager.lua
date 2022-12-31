@@ -51,8 +51,14 @@ function MusicManager:stop()
     self:cancelFade()
     if self.player then
         self.player:stop()
-        self.player = nil
-        self.currentPath = nil
+    end
+end
+
+--- start a previously stopped song
+--- does nothing when no song is loaded
+function MusicManager:start()
+    if self.player then
+        self.player:play(0)
     end
 end
 

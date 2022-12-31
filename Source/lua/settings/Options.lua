@@ -18,7 +18,7 @@ local resourceLoader <const> = ResourceLoader()
 
 --- NOTES Nino
 -- KEY_REPEAT and KEY_REPEAT_INITIAL not defined
--- drawRectSwitch is unused
+-- removed unused drawRectSwitch
 -- added fixes to show menu on arbitrary x position
 -- added missing imports CoreLibs/object and ui
 -- added Options.super.init(self)
@@ -79,7 +79,7 @@ local SELF_RIGHT_KEY <const> = "selfRightMapping"
 
 local gameOptions = {
     -- name (str): option's display name in menu
-    -- key (str): indentifier for the option in the userOptions table
+    -- key (str): identifier for the option in the userOptions table
         -- if key is not provided, lowercase name is used as the key
     -- values (table): table of possible values. if boolean table, will draw as toggle switch
     -- default (num): index of value that should be set as default
@@ -151,6 +151,7 @@ function optionsNS.Options:init()
     self.dirty = false
     self.visible = false 
     self.previewMode = false
+    self.keyTimerRemover = self:createKeyTimerRemover()
 
     self:menuInit()
     self:userOptionsInit()
@@ -205,27 +206,35 @@ function optionsNS.Options:init()
 
     end
 
-    self.keyTimer = {}
     self.controls = {
         -- move
         leftButtonDown = function() self:toggleCurrentOption(-1) end,
         rightButtonDown = function() self:toggleCurrentOption(1) end,
         upButtonDown = function()
-            self.keyTimer['U'] = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectPreviousRow() end)
+            self.keyTimer = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectPreviousRow() end)
         end,
-        upButtonUp = function() if self.keyTimer['U'] then self.keyTimer['U']:remove() end end,
+        upButtonUp = self.keyTimerRemover,
         downButtonDown = function()
-            self.keyTimer['D'] = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectNextRow() end)
+            self.keyTimer = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectNextRow() end)
         end,
-        downButtonUp = function() if self.keyTimer['D'] then self.keyTimer['D']:remove() end end,
+        downButtonUp = self.keyTimerRemover,
     
         -- action
         AButtonDown = function() self:toggleCurrentOption(1, true) end,
-        BButtonDown = function() self:hide() end,
+        BButtonDown = function() self:pause() end,
         -- turn with crank
         -- cranked = function(change, acceleratedChange) end,
     }
 
+end
+
+function optionsNS.Options:createKeyTimerRemover()
+    return function()
+        if self.keyTimer then
+            self.keyTimer:remove()
+            self.keyTimer = nil
+        end
+    end
 end
 
 function optionsNS.Options:menuInit()
@@ -292,7 +301,7 @@ function optionsNS.Options:loadUserOptions()
     return playdate.datastore.read('settings')
 end
 
-function optionsNS.Options:show()
+function optionsNS.Options:resume()
     self.visible = true
     self.previewMode = false
     playdate.inputHandlers.push(self.controls, true)
@@ -300,20 +309,25 @@ end
 
 --- Prevents drawMenu() from drawing anything
 ---and saves the values to disk
-function optionsNS.Options:hide()
+function optionsNS.Options:pause()
     self.visible = false
+    self.keyTimerRemover()
     self:saveUserOptions()
     playdate.inputHandlers.pop()
     self:apply()
     self:markClean()
 end
 
+function optionsNS.Options:gameWillPause()
+    self.keyTimerRemover()
+end
+
 function optionsNS.Options:createButtonMapping()
     return {
-        [InputManager.actionLeft] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
-        [InputManager.actionRight] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
-        [InputManager.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_KEY)].keys,
-        [InputManager.actionSelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
+        [Input.actionLeft] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
+        [Input.actionRight] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
+        [Input.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_KEY)].keys,
+        [Input.actionSelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
     }
 end
 
@@ -353,7 +367,6 @@ function optionsNS.Options:apply(onlyStartAssets)
     end
 
     local inverted = self:read(INVERT_KEY)
-    print("set inverted:", inverted)
     playdate.display.setInverted(inverted)
     local pattern = self:read(PATTERN_KEY)
     if PATTERN_VALS[pattern] == "default" then
@@ -361,15 +374,10 @@ function optionsNS.Options:apply(onlyStartAssets)
     else
         brickPatternOverride = pattern+2 -- first brick pattern is 3 ("red"), while first key index = 1
     end
-    print("set brickPatternOverride", brickPatternOverride)
 
     local lives = self:read(LIVES_KEY)
     if lives then
         InitialLives = LIVES_VALS[lives]
-    end
-    local framerateIdx = self:read(SPEED_KEY)
-    if framerateIdx then
-        playdate.display.setRefreshRate(SPEED_VALS[framerateIdx])
     end
 
     --- number of frames to disable rotation after each rotation step.
@@ -431,6 +439,11 @@ function optionsNS.Options:set(key, value)
         self.userOptions[key] = { value }
         self:markDirty()
     end
+end
+
+function optionsNS.Options:getGameFps()
+    local frameRateIdx = self:read(SPEED_KEY)
+    return SPEED_VALS[frameRateIdx]
 end
 
 function optionsNS.Options:isDirty()
@@ -538,43 +551,6 @@ end
 function optionsNS.Options:selectNextRow()
     self.previewMode = false
     self.menu:selectNextRow(true)
-end
-
---------- STATIC METHODS ---------
-function optionsNS.Options.drawRectSwitch(y, val, selected)
-    local x <const> = 158
-    local y <const> = y
-
-    local r <const> = 5
-    local rx <const> = x+9
-    local ry <const> = y+7
-    local rw <const> = 20
-    local rh <const> = r*2
-
-    local cxoff <const> = x+9
-    local cxon <const> = x+rw
-    local cy <const> = y+7
-
-    gfx.pushContext()
-    gfx.setLineWidth(2)
-    gfx.setColor(selected and gfx.kColorWhite or gfx.kColorBlack)
-
-    if val then
-        gfx.setDitherPattern(0.5)
-        gfx.fillRect(rx,ry,rw,rh)
-
-        gfx.setColor(selected and gfx.kColorWhite or gfx.kColorBlack)
-        gfx.drawRect(rx,ry,rw,rh)
-        gfx.fillRect(cxon,cy,(r*2)-1,rh)
-        -- gfx.drawRect(cxon,cy-3,1,6)
-    else
-        gfx.drawRect(rx,ry,rw,rh)
-        gfx.fillRect(cxoff,cy,r*2+1,rh)
-        -- gfx.setColor(f and gfx.kColorBlack or gfx.kColorWhite)
-        -- gfx.fillRect(cxoff+1,cy+1,(r*2)-2,rh-2)
-    end
-
-    gfx.popContext()
 end
 
 function optionsNS.Options.drawRoundSwitch(x, y, val, selected)

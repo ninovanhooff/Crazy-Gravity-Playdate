@@ -2,7 +2,7 @@ class('SpeedHoldCamController').extends()
 
 local abs <const> = math.abs
 local sign <const> = sign
-local roundToNearest <const> = roundToNearest
+local round <const> = round
 local speedStep <const> = 2
 local avgFactor <const> = 2
 
@@ -72,5 +72,5 @@ end
 function SpeedHoldCamController:setSpeed(newSpeed, force)
     if self.updateCount < self.holdSpeedUntil and not force then return end
     self.holdSpeedUntil = self.updateCount + self.speedHold
-    self.speed = roundToNearest(newSpeed, speedStep)
+    self.speed = round(newSpeed, speedStep)
 end

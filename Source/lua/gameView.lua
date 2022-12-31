@@ -29,8 +29,6 @@ local gameHUD <const> = gameHUD
 local gameClipRect = playdate.geometry.rect.new(0,0, screenWidth, hudY)
 
 local function renderCheckpointBanner()
-    -- font or image? check perf.
-    -- if level cleared, use different textO
     local checkpoint <const> = checkpoint
     if checkpoint and checkpoint.animator then
         local scrX <const> = (checkpoint.x-camPos[1])*8-camPos[3] + checkpoint.w/2*tileSize - checkpointImageW*0.5
@@ -61,7 +59,6 @@ local function drawHomeBaseIndicator(centerX, centerY)
         (homeBase.y + homeBase.h*0.5) - (planePos[2] +1.5),
         (homeBase.x + homeBase.w*0.5) - (planePos[1] +1.5)
     )
-
 
     --print("targeting homeBaseAngleRad", homeBaseAngleRad, "homeBase angle deg", math.deg(homeBaseAngleRad))
 
@@ -97,11 +94,10 @@ function RenderGame(disableHUD)
     gfx.clearClipRect()
     if tilesRendered <= 80 and not disableHUD then
         -- only render HUD if we have render budget for it
-        -- todo only update changed HUD parts (or only challenge target based on tilesRendered)
         gameHUD:render(tilesRendered >= 50)
     end
 
-    if tilesRendered <= 50 and not disableHUD then
+    if tilesRendered <= 50 then
         -- Garbage Collect in frames which are not CPU-intensive
         playdate.setCollectsGarbage(true)
     else
@@ -129,6 +125,10 @@ function RenderGame(disableHUD)
         end
     end
 end
+
+--- ################
+--- Game Debug View
+--- ################
 
 local dXHistory, dYHistory = {}, {}
 local dxHistoryMaxLength, dyHistoryMaxLength = 60, 60

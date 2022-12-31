@@ -17,9 +17,11 @@ function LoadFile(path)
     local levelT
     sample("pdz load", function() levelT = file.run(path) end, 1)
     levelProps = levelT["levelProps"]
+    local levelProps <const> = levelProps
     levelProps.lives = levelProps.lives or 9
     specialT = levelT["specialT"]
     brickT = {}
+    local brickT <const> = brickT
     local format = levelProps.packFormat
     local packSize = string.packsize(format)
     local packSizeOffset = packSize-1
@@ -30,6 +32,9 @@ function LoadFile(path)
             -- idx*5-4: each tile entry is 5 bytes long,
             -- for idx 1 we should start reading at pos 1. So, 1*packSize-packSizeOffset = 1
             return {unpack(format, tbl["compressed"], idx*packSize-packSizeOffset)}
+        end,
+        __len = function(tbl)
+            return #tbl["compressed"]/packSize
         end
     }
 
@@ -39,7 +44,7 @@ function LoadFile(path)
     end
 
 
-    printf("loaded dim",#brickT,#brickT[1])
+    printf("loaded dim",#brickT, #brickT[1])
     printf("loaded #specials:", #specialT)
 
     return true
@@ -97,6 +102,5 @@ function levelSongPath(_levelNumber)
     if levelNumber == numLevels then
         return "music/the-countdown.mp3"
     end
-    print("music for level ", levelNumber, #levelBgmPaths, luaMod(levelNumber,#levelBgmPaths+1))
-    return levelBgmPaths[luaMod(levelNumber,#levelBgmPaths+1)]
+    return levelBgmPaths[luaMod(levelNumber,#levelBgmPaths)]
 end

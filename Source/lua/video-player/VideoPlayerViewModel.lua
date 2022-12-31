@@ -1,5 +1,3 @@
-
-
 local justPressed <const> = playdate.buttonJustPressed
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
@@ -16,13 +14,14 @@ function VideoPlayerViewModel:shouldApplyVcrFilter()
 end
 
 function VideoPlayerViewModel:resume()
+    self.originalRefreshRate = playdate.display.getRefreshRate()
     playdate.display.setRefreshRate(self.framerate)
     playdate.setAutoLockDisabled(true)
     VideoPlayerViewModel.super.resume(self)
 end
 
 function VideoPlayerViewModel:pause()
-    playdate.display.setRefreshRate(frameRate)
+    playdate.display.setRefreshRate(self.originalRefreshRate)
     playdate.setAutoLockDisabled(false)
     VideoPlayerViewModel.super.pause(self)
 end

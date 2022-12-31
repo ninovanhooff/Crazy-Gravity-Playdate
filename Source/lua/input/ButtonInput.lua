@@ -27,6 +27,7 @@ local justPressed <const> = playdate.buttonJustPressed
 
 
 function ButtonInput:init(mapping)
+    ButtonInput.super.init(self)
     self.mapping = mapping
 end
 

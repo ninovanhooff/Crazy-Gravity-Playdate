@@ -22,7 +22,6 @@ function ResourceLoader:loadBG(newBG)
         return
     end
 
-    print("Changing background to ", newBG)
     gameBgColor = newBG
     gameFgColor = (newBG == gfx.kColorBlack and gfx.kColorWhite) or gfx.kColorBlack
     local tooltips <const> = Tooltips
@@ -32,7 +31,6 @@ function ResourceLoader:loadBG(newBG)
 end
 
 function ResourceLoader:loadGraphicsStyle(graphicsStyle, onlyStartAssets)
-    print("graphicsStyle", graphicsStyle)
     if self.graphicsStyle == graphicsStyle then
         printf("graphicsStyle already applied")
         return
@@ -59,7 +57,6 @@ function ResourceLoader:loadGraphicsStyle(graphicsStyle, onlyStartAssets)
 end
 
 function ResourceLoader:loadSounds(audioStyle, onlyStartAssets)
-    print("audioStyle", audioStyle)
     -- common sounds
     if not thrust_sound then
         thrust_sound = sampleplayer.new("sounds/thrust.wav")
@@ -120,7 +117,6 @@ function ResourceLoader:setSoundVolume(volume)
     soundManager:setVolume(volume)
     local extra_sounds = extra_sounds or {}
     Sounds = volume > 0.0
-    print("set volume", volume)
     if Sounds then
         setVolume(self, volume,
             thrust_sound, explode_sound, unlock_sound, unlock_sound_denied, pickup_sound, landing_sound, key_sound,
@@ -135,5 +131,7 @@ function ResourceLoader:setMusicVolume(volume)
     musicManager:setVolume(volume)
     if volume == 0.0 then
         musicManager:stop()
+    else
+        musicManager:start()
     end
 end

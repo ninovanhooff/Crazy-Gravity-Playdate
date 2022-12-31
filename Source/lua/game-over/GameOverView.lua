@@ -1,6 +1,3 @@
-
-
-
 local gfx <const> = playdate.graphics
 local unFlipped <const> = gfx.kImageUnflipped
 local sprite <const> = sprite
@@ -12,7 +9,6 @@ local dialogPadding <const> = 14
 local buttonSize <const>, buttonSpacing <const> = 56, 14
 local buttonY = dialogRect.bottom - dialogPadding - buttonSize
 local titleFont = gfx.font.new("fonts/abduction2002bold-20")
-
 
 class("GameOverView").extends()
 

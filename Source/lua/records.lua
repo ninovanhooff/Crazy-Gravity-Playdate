@@ -6,6 +6,7 @@
 
 local datastoreKey <const> = "records"
 
+--- Used when the level is skipped by the user
 SKIPPED_RECORD = {9999, 9999, 9999}
 
 records = playdate.datastore.read(datastoreKey)
