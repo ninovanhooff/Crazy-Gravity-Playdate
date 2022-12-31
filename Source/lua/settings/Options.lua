@@ -221,7 +221,7 @@ function optionsNS.Options:init()
     
         -- action
         AButtonDown = function() self:toggleCurrentOption(1, true) end,
-        BButtonDown = function() self:hide() end,
+        BButtonDown = function() self:pause() end,
         -- turn with crank
         -- cranked = function(change, acceleratedChange) end,
     }
@@ -301,7 +301,7 @@ function optionsNS.Options:loadUserOptions()
     return playdate.datastore.read('settings')
 end
 
-function optionsNS.Options:show()
+function optionsNS.Options:resume()
     self.visible = true
     self.previewMode = false
     playdate.inputHandlers.push(self.controls, true)
@@ -309,13 +309,17 @@ end
 
 --- Prevents drawMenu() from drawing anything
 ---and saves the values to disk
-function optionsNS.Options:hide()
+function optionsNS.Options:pause()
     self.visible = false
     self.keyTimerRemover()
     self:saveUserOptions()
     playdate.inputHandlers.pop()
     self:apply()
     self:markClean()
+end
+
+function optionsNS.Options:gameWillPause()
+    self.keyTimerRemover()
 end
 
 function optionsNS.Options:createButtonMapping()

@@ -24,11 +24,15 @@ function SettingsScreen:update()
 end
 
 function SettingsScreen:pause()
-    self.options:hide()
+    self.options:pause()
     settingsViewModel:pause()
 end
 
 function SettingsScreen:resume()
-    self.options:show()
+    self.options:resume()
     settingsViewModel:resume()
+end
+
+function SettingsScreen:gameWillPause()
+    self.options:gameWillPause()
 end

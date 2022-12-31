@@ -20,6 +20,16 @@ function Screen:resume()
     -- no-op, implemented in subclasses
 end
 
+--- Called when eg. the system menu appears or the device is locked
+function Screen:gameWillPause()
+    -- no-op, implemented in subclasses
+end
+
+--- Called when eg. the system menu disappears or the device is unlocked
+function Screen:gameWillResume()
+    -- no-op, implemented in subclasses
+end
+
 --- Called when this screen is popped off the stack. It will never be resumed,
 --- So this is a good place for freeing up RAM, cleanup, etc.
 function Screen:destroy()

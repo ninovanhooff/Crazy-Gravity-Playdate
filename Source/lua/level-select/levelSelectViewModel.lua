@@ -40,6 +40,17 @@ function LevelSelectViewModel:init()
     self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
     self.dPadImageIdx = 1
     self.aButtonImageIdx = 1
+    self.keyTimer = nil
+    self.keyTimerRemover = self:createKeyTimerRemover()
+end
+
+function LevelSelectViewModel:createKeyTimerRemover()
+    return function()
+        if self.keyTimer then
+            self.keyTimer:remove()
+            self.keyTimer = nil
+        end
+    end
 end
 
 function LevelSelectViewModel:startVideo(path)
@@ -95,10 +106,11 @@ end
 
 function LevelSelectViewModel:pause()
     self.newUnlock = nil
-    if self.keyTimer then
-        self.keyTimer:remove()
-        self.keyTimer = nil
-    end
+    self:keyTimerRemover()
+end
+
+function LevelSelectViewModel:gameWillPause()
+    self:keyTimerRemover()
 end
 
 function LevelSelectViewModel:destroy()
@@ -130,9 +142,7 @@ function LevelSelectViewModel:update()
         end
         self.keyTimer = keyRepeatTimer(timerCallback)
     elseif justReleased(buttonDown | buttonUp) then
-        if self.keyTimer then
-            self.keyTimer:remove()
-        end
+        self:keyTimerRemover()
     elseif justPressed(buttonLeft) then
         self.selectedChallengeIdx = clamp(self.selectedChallengeIdx -1, 1, numChallenges)
     elseif justPressed(buttonRight) then
