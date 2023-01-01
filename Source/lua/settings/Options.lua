@@ -88,7 +88,7 @@ local gameOptions = {
     {
         header = 'Gameplay',
         options = {
-            { name='Debug', key='debug', values=toggleVals, default=1},
+            --{ name='Debug', key='debug', values=toggleVals, default=1},
             { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
             { name='Lives', key=LIVES_KEY, values= LIVES_VALS, default=2},
             { name='Game speed', key=SPEED_KEY, values= SPEED_VALS, default=4},
