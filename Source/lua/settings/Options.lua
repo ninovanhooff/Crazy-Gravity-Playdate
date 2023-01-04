@@ -60,7 +60,13 @@ local BLOWER_MAGNET_VALS <const> = {
     {label="Medium", value = 0.2},
     {label="Strong", value = 0.4},
 }
-
+local GRAVITY_DRAG_KEY <const> = "gravityAndDrag"
+local GRAVITY_DRAG_VALS <const> = {
+    {label="Space", value = { gravity=0.00, drag=0.99 }},
+    {label="Moon", value = { gravity=0.07, drag=0.9662 }},
+    {label="Earth", value = { gravity=0.167, drag=0.96 }},
+    {label="Upside Down", value = { gravity=-0.167, drag=0.96 }},
+}
 local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
 local AUDIO_VOLUME_VALS <const> = { "off", 10, 20, 30, 40 , 50 , 60 , 70, 80, 90, 100 }
@@ -102,8 +108,14 @@ local gameOptions = {
             { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
             { name='Lives', key=LIVES_KEY, values= LIVES_VALS, default=2},
             { name='Game speed', key=SPEED_KEY, values= SPEED_VALS, default=4},
-            { name='Blower', key=BLOWER_STRENGTH_KEY, values= BLOWER_MAGNET_VALS, default=2},
-            { name='Magnet', key=MAGNET_STRENGTH_KEY, values= BLOWER_MAGNET_VALS, default=2},
+        }
+    },
+    {
+        header = 'Physics',
+        options = {
+            { name='Physics', key=GRAVITY_DRAG_KEY, values=GRAVITY_DRAG_VALS, default=3},
+            { name='Blowers', key=BLOWER_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
+            { name='Magnets', key=MAGNET_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
         }
     },
     {
@@ -343,6 +355,25 @@ function optionsNS.Options:createButtonMapping()
     }
 end
 
+function optionsNS.Options:applyPhysics()
+    local blower = self:read(BLOWER_STRENGTH_KEY)
+    if blower then
+        blowerStrength = BLOWER_MAGNET_VALS[blower].value
+    end
+    local magnet = self:read(MAGNET_STRENGTH_KEY)
+    if magnet then
+        magnetStrength = BLOWER_MAGNET_VALS[magnet].value
+    end
+
+    local gravityAndDrag = self:read(GRAVITY_DRAG_KEY)
+    if gravityAndDrag then
+        local vals = GRAVITY_DRAG_VALS[gravityAndDrag].value
+        gravity = vals.gravity
+        drag = vals.drag
+    end
+end
+
+
 --- Game code uses many globals to read options. Set them here based on current values
 function optionsNS.Options:apply(onlyStartAssets)
     Debug = self:read(DEBUG_KEY)
@@ -392,14 +423,7 @@ function optionsNS.Options:apply(onlyStartAssets)
         InitialLives = LIVES_VALS[lives]
     end
     
-    local blower = self:read(BLOWER_STRENGTH_KEY)
-    if blower then
-        blowerStrength = BLOWER_MAGNET_VALS[blower].value
-    end
-    local magnet = self:read(MAGNET_STRENGTH_KEY)
-    if magnet then
-        magnetStrength = BLOWER_MAGNET_VALS[magnet].value
-    end
+    self:applyPhysics()
 
     --- number of frames to disable rotation after each rotation step.
     --- ie. 2 means after each frame with rotation, 2 frames follow without rotation in the same direction

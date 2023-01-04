@@ -20,11 +20,10 @@ function CreditsViewModel:init()
     setCamPosTopLeft()
     flying = true
     vy = -4
-    self.origGravity = gravity
-    self.origDrag = drag
     self.initialMoveUp = true
 
-    -- this combination of gravity and drag slows down the plane very slowly
+    -- Initial setting that slows down the plane very slowly.
+    -- see update() for regular values during play
     gravity = 0.01
     drag = 0.98
 end
@@ -62,6 +61,5 @@ function CreditsViewModel:resume()
 end
 
 function CreditsViewModel:destroy()
-    drag = self.origDrag
-    gravity = self.origGravity
+    GetOptions():applyPhysics()
 end
