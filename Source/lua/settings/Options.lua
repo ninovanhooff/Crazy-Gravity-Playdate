@@ -118,12 +118,11 @@ local gameOptions = {
         }
     },
     {
-        header = 'Physics',
+        header = 'Audio',
         options = {
-            { name='Physics', key=GRAVITY_DRAG_KEY, values=GRAVITY_DRAG_VALS, default=3},
-            { name='Landing', key=LANDING_TOLERANCE_KEY, values=LANDING_TOLERANCE_VALS, default=2},
-            { name='Blowers', key=BLOWER_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
-            { name='Magnets', key=MAGNET_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
+            { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
+            { name='Sound Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
+            { name='Music Volume', key= MUSIC_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=6},
         }
     },
     {
@@ -136,20 +135,21 @@ local gameOptions = {
         }
     },
     {
-        header = 'Audio',
-        options = {
-            { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
-            { name='Sound Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
-            { name='Music Volume', key= MUSIC_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=6},
-        }
-    },
-    {
         header = 'Button mapping',
         options = {
             { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
             { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
             { name='Throttle', key= THROTTLE_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 7 or 5)},
             { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
+        }
+    },
+    {
+        header = 'Physics',
+        options = {
+            { name='Physics', key=GRAVITY_DRAG_KEY, values=GRAVITY_DRAG_VALS, default=3},
+            { name='Landing', key=LANDING_TOLERANCE_KEY, values=LANDING_TOLERANCE_VALS, default=2},
+            { name='Blowers', key=BLOWER_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
+            { name='Magnets', key=MAGNET_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
         }
     },
     {
