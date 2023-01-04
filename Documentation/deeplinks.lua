@@ -4,6 +4,9 @@
 
 GetOptions():apply() -- load all sounds required for game
 
+require("lua/settings/SettingsScreen")
+pushScreen(SettingsScreen())
+
 require "lua/level-select/LevelSelectScreen"
 pushScreen(LevelSelectScreen())
 

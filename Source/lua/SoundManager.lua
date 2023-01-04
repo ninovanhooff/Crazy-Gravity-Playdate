@@ -95,7 +95,7 @@ end
 function SoundManager:soundForSpecial(item)
     if item.sType == 14 or item.sType == 15 then -- barrier or 1way
         return self.sounds.barrier
-    elseif item.sType == 9 or item.sType == 11 then -- fan or rotator
+    elseif item.sType == 9 or item.sType == 11 then -- blower or rotator
         return self.sounds.blower
     elseif item.sType == 10 then -- magnet
         return self.sounds.magnet
