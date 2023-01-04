@@ -67,6 +67,13 @@ local GRAVITY_DRAG_VALS <const> = {
     {label="Earth", value = { gravity=0.167, drag=0.96 }},
     {label="Upside Down", value = { gravity=-0.167, drag=0.96 }},
 }
+local LANDING_TOLERANCE_KEY <const> = "landingTolerance"
+local LANDING_TOLERANCE_VALS <const> = {
+    {label="Easy", value = { x=10, y=10 }},
+    {label="Medium", value = { x=1.25, y=4.5 }},
+    {label="Hard", value = { x=1.25, y=2.5 }},
+}
+
 local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
 local AUDIO_VOLUME_VALS <const> = { "off", 10, 20, 30, 40 , 50 , 60 , 70, 80, 90, 100 }
@@ -114,6 +121,7 @@ local gameOptions = {
         header = 'Physics',
         options = {
             { name='Physics', key=GRAVITY_DRAG_KEY, values=GRAVITY_DRAG_VALS, default=3},
+            { name='Landing', key=LANDING_TOLERANCE_KEY, values=LANDING_TOLERANCE_VALS, default=2},
             { name='Blowers', key=BLOWER_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
             { name='Magnets', key=MAGNET_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
         }
@@ -370,6 +378,13 @@ function optionsNS.Options:applyPhysics()
         local vals = GRAVITY_DRAG_VALS[gravityAndDrag].value
         gravity = vals.gravity
         drag = vals.drag
+    end
+
+    local landingTol = self:read(LANDING_TOLERANCE_KEY)
+    if landingTol then
+        local vals = LANDING_TOLERANCE_VALS[landingTol].value
+        landingTolerance[1] = vals.x
+        landingTolerance[2] = vals.y
     end
 end
 
