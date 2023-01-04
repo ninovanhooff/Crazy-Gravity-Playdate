@@ -51,6 +51,16 @@ local ROTATION_DELAY_VALS <const> = {
     {label="Medium", value = 1},
     {label="Fast", value = 0}
  }
+
+-- physics
+local MAGNET_STRENGTH_KEY <const> = "magnetStrength"
+local BLOWER_STRENGTH_KEY <const> = "blowerStrength"
+local BLOWER_MAGNET_VALS <const> = {
+    {label="Weak", value = 0.1},
+    {label="Medium", value = 0.2},
+    {label="Strong", value = 0.4},
+}
+
 local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
 local AUDIO_VOLUME_VALS <const> = { "off", 10, 20, 30, 40 , 50 , 60 , 70, 80, 90, 100 }
@@ -92,6 +102,8 @@ local gameOptions = {
             { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
             { name='Lives', key=LIVES_KEY, values= LIVES_VALS, default=2},
             { name='Game speed', key=SPEED_KEY, values= SPEED_VALS, default=4},
+            { name='Blower', key=BLOWER_STRENGTH_KEY, values= BLOWER_MAGNET_VALS, default=2},
+            { name='Magnet', key=MAGNET_STRENGTH_KEY, values= BLOWER_MAGNET_VALS, default=2},
         }
     },
     {
@@ -378,6 +390,15 @@ function optionsNS.Options:apply(onlyStartAssets)
     local lives = self:read(LIVES_KEY)
     if lives then
         InitialLives = LIVES_VALS[lives]
+    end
+    
+    local blower = self:read(BLOWER_STRENGTH_KEY)
+    if blower then
+        blowerStrength = BLOWER_MAGNET_VALS[blower].value
+    end
+    local magnet = self:read(MAGNET_STRENGTH_KEY)
+    if magnet then
+        magnetStrength = BLOWER_MAGNET_VALS[magnet].value
     end
 
     --- number of frames to disable rotation after each rotation step.
