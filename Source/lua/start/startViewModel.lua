@@ -5,25 +5,30 @@ local lineSegment <const> = playdate.geometry.lineSegment
 local enterEasing <const> = playdate.easingFunctions.inOutCubic
 local enterDuration <const> = 300
 --- time between start of button enter animations
-local enterButtonTimeGap <const> = 20
+local enterButtonTimeGap <const> = 100
 
 local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, end
 buttonTimer.discardOnCompletion = false
 buttonTimer:pause()  -- disable auto start
 
 local screenWidth <const> = screenWidth
-local buttonStartAlign <const> = 240
-local buttonStartY <const> = 28
-local buttonSpacingV <const> = 80
-local buttonWidth <const> = 100
-local buttonHeight <const> = 24
+local buttonHeight <const> = 48
 
 local function updateViewState(self)
-    self.viewState.buttonProgress = buttonTimer.value
-    self.viewState.planeRot = self.planeRot
-    self.viewState.planeX, self.viewState.planeY = self.planeX, self.planeY
-    self.viewState.thrust = self.thrust
-    return self.viewState
+    local viewState <const> = self.viewState
+    viewState.planeRot = self.planeRot
+    viewState.planeX, viewState.planeY = self.planeX, self.planeY
+    viewState.thrust = self.thrust
+    viewState.planeTooltip = nil
+    for _, item in ipairs(viewState.buttons) do
+        if item.progress > 0 then
+            viewState.planeTooltip = {text=item.text, progress = item.progress}
+            break
+        end
+    end
+
+
+    return viewState
 end
 
 class("StartViewModel").extends(PlanePhysicsViewModel)
@@ -46,22 +51,9 @@ local function createLogoEnterAnimator()
     return animator.new(enterDuration, 0, 1, enterEasing)
 end
 
---- create a GameScreen for the level and challenge the player is most likely to want to play next
-function StartViewModel:quickStartScreen()
-    self:loadFullResources()
-    require "lua/gameScreen"
-    local selectLevelNum, challengeIdx = nextUnfinishedLevel()
-    local levelPath = levelPath(selectLevelNum)
-    gameHUD.selectedChallenge = challengeIdx
-    gameHUD.challengeTarget = getChallengesForPath(levelPath)[challengeIdx]
-    currentLevel = selectLevelNum
-    return GameScreen(levelPath, challengeIdx)
-end
-
 --- param buttonIdx: 0-based
-local function createButtonEnterAnimator(buttonIdx)
-    local y = buttonStartY + buttonIdx*buttonSpacingV
-    local segment = lineSegment.new(screenWidth, y, buttonStartAlign, y)
+local function createButtonEnterAnimator(buttonIdx, x, y)
+    local segment = lineSegment.new(screenWidth, y, x, y)
     return animator.new(enterDuration, segment, enterEasing, enterButtonTimeGap*buttonIdx)
 end
 
@@ -73,8 +65,9 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
     self.viewState.logoAnimator = createLogoEnterAnimator()
     self.viewState.buttons = {
         {
-            text = "Campaign",
-            w = buttonWidth, h = buttonHeight,
+            text = "Start",
+            pType = 1,
+            w = 128, h = buttonHeight,
             progress = 0.0,
             onClickScreen = function()
                 ui_confirm:play()
@@ -82,28 +75,19 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
                 self:loadFullResources()
                 return LevelSelectScreen()
             end,
-            animator = createButtonEnterAnimator(0)
-        },
-        {
-            text = "Quick Start",
-            w = buttonWidth, h = buttonHeight,
-            progress = 0.0,
-            onClickScreen = function()
-                ui_confirm:play()
-                return self:quickStartScreen()
-            end,
-            animator = createButtonEnterAnimator(1)
+            animator = createButtonEnterAnimator(0, 195, 140)
         },
         {
             text = "Settings",
-            w = buttonWidth, h = buttonHeight,
+            pType = 2,
+            w = 96, h = buttonHeight,
             progress = 0.0,
             onClickScreen = function()
                 ui_confirm:play()
                 require "lua/settings/SettingsScreen"
                 return SettingsScreen()
             end,
-            animator = createButtonEnterAnimator(2)
+            animator = createButtonEnterAnimator(1, 260,50)
         }
     }
     updateViewState(self)

@@ -4,6 +4,7 @@
 --- DateTime: 11/03/2022 16:59
 ---
 
+-- tooltips imported at the bottom, requires font
 import "MusicManager"
 import "SoundManager"
 import "input/InputManager"
@@ -62,4 +63,7 @@ gfx.setFont(playdate.graphics.getSystemFont(playdate.graphics.font.kVariantBold)
 monoFont = gfx.font.new("fonts/Roobert/Roobert-9-Mono-Condensed")
 smallFont = gfx.font.new("fonts/Roobert/Roobert-10-Bold")
 dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
+
+import "common/tooltip"
+
 GetOptions():apply(true)

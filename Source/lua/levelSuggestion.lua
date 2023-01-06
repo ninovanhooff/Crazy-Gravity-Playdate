@@ -27,24 +27,3 @@ function firstUnCompletedChallenge(levelNum)
     -- this code is probably only reached when the player has completed the game
     return nil
 end
-
---- returns level number, challenge
-function nextUnfinishedLevel()
-    local unlockedIdx = numLevelsUnlocked()
-    if unlockedIdx <= numLevels then
-        local nextChallenge = firstUnCompletedChallenge(unlockedIdx)
-        if nextChallenge then
-            return unlockedIdx, nextChallenge
-        end
-    end
-
-    for i = 1, numLevels do
-        local nextChallenge = firstUnCompletedChallenge(i)
-        if nextChallenge then
-            return i, nextChallenge
-        end
-    end
-
-    -- all levels unlocked and no remaining challenges
-    return 1,1
-end
