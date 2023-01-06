@@ -23,7 +23,8 @@ local gameHUD <const> = gameHUD
 local tileSize <const> = tileSize
 local planePos <const> = planePos
 local clamp <const> = clamp
-local renderTooltip <const> = Tooltips.renderTooltip
+local renderSelfRightTooltip <const> = RenderSelfRightTooltip
+local inputManager <const> = inputManager
 local keyGlyphT <const> = {"●", "▲", "◆", "■"}
 
 local barrierSpeed <const> = 2
@@ -112,29 +113,31 @@ function CalcPlatform(item)
         item.tooltip = nil
         return -- out of range
     end
+
     --platform collision
-    local overSpeed = vy > landingTolerance[2] or abs(vx) > landingTolerance[1]
-    if pixelCollision(item.x*8,item.y*8+32,item.w*8,16) then
+    local landingTolerance <const> = landingTolerance
+    local rotationWithinLandingTolerance <const> = abs(planeRot - 18) <= landingTolerance.rotation
+    local overSpeed = vy > landingTolerance.vY or abs(vx) > landingTolerance.vX
+    if not collision and pixelCollision(item.x*8,item.y*8+32,item.w*8,16) then
         if overSpeed then
             collision = CollisionReason.OverSpeed
-        elseif planeRot~=18 then
-            collision = CollisionReason.Other
+        elseif not rotationWithinLandingTolerance then
+            collision = CollisionReason.Rotation
+        else
+            collision = false
         end
     end
-
     -- don't collide on take-off
-    if abs(planeRot - 18) <= 3 and vy<0  then
+    if not collision and abs(planeRot - 18) <= 3 and vy<0  then
         collision = false
     end
 
     if landedAt ~= item then
         if planeRot ~= 18 and vy > 0 and item ~= prevLandedAt and not options:read(selfRightTipShownKey) and approxRectCollision(item.x,item.y, item.w, item.h) then
-            local buttonMappingString = inputManager:mappingString(Input.actionSelfRight)
-            local tooltip = { text= buttonMappingString .. ": Self-right" }
-            local planeX <const> = floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3])
-            local planeY <const> = floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4])
-
-            renderTooltip(tooltip, planeX + 12, planeY + 40)
+            renderSelfRightTooltip(
+                floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3]) + 12,
+                floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4]) + 40
+            )
             while not inputManager:isInputPressed(Input.actionSelfRight) do
                 coroutine.yield()
             end
@@ -146,13 +149,14 @@ function CalcPlatform(item)
         landedTimer = landedTimer + 1
     end
 
-    if flying and planeRot == 18 then -- upright
+    if flying and rotationWithinLandingTolerance then -- upright
         --landing
         if planePos[2]==item.y+1 and planePos[1]>=item.x-2 and planePos[1]<item.x+item.w-1 and planePos[4]>=3 and vy > 0 and not overSpeed then
-            local warnX = 1/(landingTolerance[1] / abs(vx))
-            local warnY = 1/(landingTolerance[2] / vy)
+            local warnX = 1/(landingTolerance.vX / abs(vx))
+            local warnY = 1/(landingTolerance.vY / vy)
             local landingVolume = soundManager.volume * max(warnX, warnY)
             if Sounds then landing_sound:playAt(0, landingVolume) end
+            planeRot = 18
             flying = false
             collision = false
             vx,vy=0,0

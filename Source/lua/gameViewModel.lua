@@ -33,7 +33,7 @@ local planeRotationCamMultiplier <const> = 0.05
 local gameHUD <const> = gameHUD
 local soundManager <const> = soundManager
 
-CollisionReason = enum({"OverSpeed", "SelfDestruct", "Other"})
+CollisionReason = enum({"OverSpeed", "Rotation", "SelfDestruct", "Other"})
 
 --- sine component (y-direction) of plane orientation, ie. positive if plane is pointing up, 0 if pointing left and negative when pointing down
 local camRotY <const> = {}

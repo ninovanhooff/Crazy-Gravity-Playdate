@@ -175,8 +175,8 @@ function GameHUD:renderFull()
     x = x+16+hudGutter
     gfx.drawCircleInRect(x+1,hudY+1, 14,14)
     local speedPattern = gfx.image.kDitherTypeBayer8x8
-    local warnX = 1/(landingTolerance[1] / abs(vx))
-    local warnY = 1/(landingTolerance[2] / vy) -- only downwards movement is dangerous
+    local warnX = 1/(landingTolerance.vX / abs(vx))
+    local warnY = 1/(landingTolerance.vY / vy) -- only downwards movement is dangerous
     local warnAlpha = max(warnX, warnY)
     gfx.setDitherPattern(1-warnAlpha, speedPattern) -- invert alpha due to bug in SDK
     gfx.fillCircleInRect(x+4,hudY+4, 8,8)

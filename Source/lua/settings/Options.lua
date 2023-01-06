@@ -69,9 +69,9 @@ local GRAVITY_DRAG_VALS <const> = {
 }
 local LANDING_TOLERANCE_KEY <const> = "landingTolerance"
 local LANDING_TOLERANCE_VALS <const> = {
-    {label="Easy", value = { x=10, y=10 }},
-    {label="Medium", value = { x=1.25, y=4.5 }},
-    {label="Hard", value = { x=1.25, y=2.5 }},
+    {label="Easy", value = { x=10, y=10, rotation=3 }},
+    {label="Medium", value = { x=1.25, y=4.5, rotation=0 }},
+    {label="Hard", value = { x=1.25, y=2.5, rotation=0 }},
 }
 
 local AUDIO_STYLE_KEY <const> = "audioStyle"
@@ -383,8 +383,9 @@ function optionsNS.Options:applyPhysics()
     local landingTol = self:read(LANDING_TOLERANCE_KEY)
     if landingTol then
         local vals = LANDING_TOLERANCE_VALS[landingTol].value
-        landingTolerance[1] = vals.x
-        landingTolerance[2] = vals.y
+        landingTolerance.vX = vals.x
+        landingTolerance.vY = vals.y
+        landingTolerance.rotation = vals.rotation
     end
 end
 

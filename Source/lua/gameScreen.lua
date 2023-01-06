@@ -1,8 +1,8 @@
 import "common/tooltip"
 import "gameHUD"
 import "specialsView"
-import "specialsViewModel"
 import "gameView"
+import "specialsViewModel"
 import "gameInputs"
 import "gameViewModel"
 
