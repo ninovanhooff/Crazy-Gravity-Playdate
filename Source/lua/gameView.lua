@@ -6,9 +6,11 @@
 
 import "bricksView"
 
+local playdate <const> = playdate
 local gfx <const> = playdate.graphics
 local geometry <const> = playdate.geometry
 local polygon <const> = geometry.polygon
+local setCollectsGarbage <const> = playdate.setCollectsGarbage
 local floor <const> = math.floor
 local min <const> = math.min
 local unFlipped <const> = playdate.graphics.kImageUnflipped
@@ -113,10 +115,10 @@ function RenderGame(disableHUD)
 
     if tilesRendered <= 50 then
         -- Garbage Collect in frames which are not CPU-intensive
-        playdate.setCollectsGarbage(true)
+        setCollectsGarbage(true)
     else
         -- save time on GC
-        playdate.setCollectsGarbage(false)
+        setCollectsGarbage(false)
     end
 
     -- Draw explosion over HUD for extra dramatic effect

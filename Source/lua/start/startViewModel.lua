@@ -1,8 +1,11 @@
 import "lua/common/PlanePhysicsViewModel"
 
+local playdate <const> = playdate
+local setCollectsGarbage <const> = playdate.setCollectsGarbage
+local setRefreshRate <const> = playdate.display.setRefreshRate
 local animator <const> = playdate.graphics.animator
 local lineSegment <const> = playdate.geometry.lineSegment
-local enterEasing <const> = playdate.easingFunctions.inOutCubic
+local enterEasing <const> = playdate.easingFunctions.outCubic
 local enterDuration <const> = 300
 --- time between start of button enter animations
 local enterButtonTimeGap <const> = 100
@@ -35,9 +38,11 @@ class("StartViewModel").extends(PlanePhysicsViewModel)
 
 function StartViewModel:resetPlane(initialPlaneX, initialPlaneY)
     self.flying = true -- always true for StartScreen
-    self.planeX, self.planeY = initialPlaneX or -22, initialPlaneY or 130
+    -- position just outside of screen
+    self.planeX, self.planeY = initialPlaneX or -22, initialPlaneY or 150
     if not initialPlaneX and not initialPlaneY then
-        self.vx,self.vy,self.planeRot,self.thrust = 5,-5,21,0 -- thrust only 0 or 1; use thrustPower to adjust.
+        -- vx,vy set to 0 because the plane only enters the frame after enterDuration
+        self.vx,self.vy,self.planeRot,self.thrust = 0,0,21,0 -- thrust only 0 or 1; use thrustPower to adjust.
     else
         self.vx,self.vy,self.planeRot,self.thrust = vx,vy,planeRot,thrust
     end
@@ -62,8 +67,41 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
     self:resetPlane(initialPlaneX, initialPlaneY)
     self.viewState = {}
     self.shouldPlayEnterSound = true
+
+    -- many of this code should be called onResume, currently timers are already running when
+    -- the VM is created before the StartScreen is shown
+
+    -- set high frameRate for smooth enter transitions
+    setCollectsGarbage(false)
+    setRefreshRate(50)
+
     self.viewState.logoAnimator = createLogoEnterAnimator()
+
+    playdate.timer.performAfterDelay(enterDuration, function()
+        setCollectsGarbage(true)
+        setRefreshRate(GetOptions():getGameFps())
+        -- when no initial positioning is provided,
+        -- throw plane into the scene after enter animation completed
+        if not initialPlaneX then
+            self:resetPlane()
+            self.vx, self.vy = 7.5, -7.5
+        end
+    end)
+
+
     self.viewState.buttons = {
+        {
+            text = "Settings",
+            pType = 2,
+            w = 96, h = buttonHeight,
+            progress = 0.0,
+            onClickScreen = function()
+                ui_confirm:play()
+                require "lua/settings/SettingsScreen"
+                return SettingsScreen()
+            end,
+            animator = createButtonEnterAnimator(0, 260,50)
+        },
         {
             text = "Start",
             pType = 1,
@@ -75,20 +113,8 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
                 self:loadFullResources()
                 return LevelSelectScreen()
             end,
-            animator = createButtonEnterAnimator(0, 195, 140)
+            animator = createButtonEnterAnimator(1, 195, 140)
         },
-        {
-            text = "Settings",
-            pType = 2,
-            w = 96, h = buttonHeight,
-            progress = 0.0,
-            onClickScreen = function()
-                ui_confirm:play()
-                require "lua/settings/SettingsScreen"
-                return SettingsScreen()
-            end,
-            animator = createButtonEnterAnimator(1, 260,50)
-        }
     }
     updateViewState(self)
 end
@@ -136,5 +162,7 @@ function StartViewModel:calcTimeStep()
 end
 
 function StartViewModel:pause()
+    setCollectsGarbage(true) -- overly cautious: navigator guards against this too
+    setRefreshRate(frameRate)
     if Sounds then thrust_sound:stop() end
 end
