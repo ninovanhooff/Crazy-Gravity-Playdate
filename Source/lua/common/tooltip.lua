@@ -10,7 +10,7 @@ Tooltips = {}
 local gfx <const> = playdate.graphics
 
 local toolTipsCache <const> = enum({"WrongWay"})
-local tooltipFont <const> = smallFont
+local tooltipFont <const> = GetResourceLoader():getSmallFont()
 local tooltipHeight <const> = 14
 local tooltipTriangleSize <const> = 8
 local halfTooltipHeight <const> = tooltipHeight/2

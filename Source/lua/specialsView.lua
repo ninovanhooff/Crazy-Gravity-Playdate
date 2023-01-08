@@ -15,8 +15,9 @@ local tileSize <const> = tileSize
 local gameWidthPixels <const> = screenWidth
 local gameHeightPixels <const> = gameHeightTiles*tileSize
 local loopAnim <const> = loopAnim
-local monoFont <const> = monoFont
-local dotFont50 <const> = dotFont
+local resourceLoader <const> = GetResourceLoader()
+local monoFont <const> = resourceLoader:getMonoFont()
+local dotFont50 <const> = resourceLoader:getDotFont()
 local toolTipsCache <const> = Tooltips.toolTipsCache
 local renderTooltip <const> = Tooltips.renderTooltip
 

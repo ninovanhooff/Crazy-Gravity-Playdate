@@ -4,7 +4,7 @@ local cardIcon <const> = gfx.image.new("images/card_info_icon")
 local subtitleBox <const> = playdate.geometry.rect.new(0, 212, 400, 28)
 --- draw area for subtitles
 local subtitleRect <const> = playdate.geometry.rect.new(8, 218, 384, 28)
-local monoFont <const> = monoFont
+local monoFont <const> = GetResourceLoader():getMonoFont()
 
 class("VideoPlayerView").extends()
 

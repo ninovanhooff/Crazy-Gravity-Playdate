@@ -57,12 +57,9 @@ gfx.setColor(gfx.kColorBlack)
 
 -- workaround to use the playdate button glyphs from the system font. Example usage: "_Ⓐ_" will print the expected button symbol
 -- https://devforum.play.date/t/using-glyphs-illustrated-in-designing-for-playdate/3678/7
-local originalSystemFont = playdate.graphics.getSystemFont()
-gfx.setFont( originalSystemFont, playdate.graphics.font.kVariantItalic )
-gfx.setFont(playdate.graphics.getSystemFont(playdate.graphics.font.kVariantBold))
-monoFont = gfx.font.new("fonts/Roobert/Roobert-9-Mono-Condensed")
-smallFont = gfx.font.new("fonts/Roobert/Roobert-10-Bold")
-dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
+local originalSystemFont = gfx.getSystemFont()
+gfx.setFont( originalSystemFont, gfx.font.kVariantItalic )
+gfx.setFont(gfx.getSystemFont(gfx.font.kVariantBold))
 
 import "common/tooltip"
 
