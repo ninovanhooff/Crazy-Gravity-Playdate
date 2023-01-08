@@ -5,17 +5,17 @@ sourceDir="$1"
 pdxPath="$2"
 pdxDir="$invokeDir/$pdxPath"
 
-function removeIfExists() {
-    if [ -f "$1" ] ; then
-        echo "DELETE $1"
-        rm "$1"
-    fi
+removeIfExists() {
+  if [ -f "$1" ] ; then
+      echo "DELETE $1"
+      rm "$1"
+  fi
 }
 
 cd "$sourceDir" || exit
 
+# Find all import statements and delete the corresponding pdz files
 grep -r '^import' . | while read -r line ; do
-  # echo "hello $line"
   matchFilePath=$(echo "$line" | sed -r 's/(.*)\:.*$/\1/')
   matchDirPath=$(echo "$matchFilePath" | sed -r 's/(.*)\/.*.lua$/\1/')
   pdzName=$(echo "$line" | sed -r 's/.*import \"(.*)\"$/\1/')
@@ -26,6 +26,7 @@ grep -r '^import' . | while read -r line ; do
   removeIfExists "$pdzPath"
 done
 
+# make sure we don't ship unit tests
 unitTestsPath="$pdxDir/lua/unittests.pdz"
 removeIfExists "$unitTestsPath"
 
