@@ -14,7 +14,7 @@ local playdate <const> = playdate
 local gfx <const> = playdate.graphics
 local timer <const> = playdate.timer
 local itemHeight <const> = 28
-local resourceLoader <const> = ResourceLoader()
+local resourceLoader <const> = GetResourceLoader()
 
 --- NOTES Nino
 -- KEY_REPEAT and KEY_REPEAT_INITIAL not defined

@@ -10,6 +10,17 @@ local sampleplayer <const> = playdate.sound.sampleplayer
 
 class("ResourceLoader").extends()
 
+-- get or create the global singleton
+function GetResourceLoader()
+    if ResourceLoader.instance then
+        return ResourceLoader.instance
+    else
+        ResourceLoader.instance = ResourceLoader()
+        return ResourceLoader.instance
+    end
+end
+
+
 function ResourceLoader:init()
     ResourceLoader.super.init(self)
     self.soundVolume = 1.0
@@ -101,6 +112,27 @@ function ResourceLoader:loadSounds(audioStyle, onlyStartAssets)
     end
     self:setSoundVolume(self.soundVolume)
     self.audioStyle = audioStyle
+end
+
+function ResourceLoader:getMonoFont()
+    if not ResourceLoader.monoFont then
+        ResourceLoader.monoFont = gfx.font.new("fonts/Roobert/Roobert-9-Mono-Condensed")
+    end
+    return ResourceLoader.monoFont
+end
+
+function ResourceLoader:getDotFont()
+    if not ResourceLoader.dotFont then
+        ResourceLoader.dotFont = gfx.font.new("fonts/Edit Undo/edit-undo.dot-brk-50")
+    end
+    return ResourceLoader.dotFont
+end
+
+function ResourceLoader:getSmallFont()
+    if not ResourceLoader.smallFont then
+        ResourceLoader.smallFont = gfx.font.new("fonts/Roobert/Roobert-10-Bold")
+    end
+    return ResourceLoader.smallFont
 end
 
 local function setVolume(self, volume, ...)
