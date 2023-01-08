@@ -175,7 +175,6 @@ end
 
 function optionsNS.Options:init()
     optionsNS.Options.super.init(self)
-    self.menu = playdate.ui.gridview.new(0, itemHeight)
 
     -- list of available options based on option screen (indexed by section/row for easy selection)
     self.currentOptions = {}
@@ -186,8 +185,37 @@ function optionsNS.Options:init()
     self.previewMode = false
     self.keyTimerRemover = self:createKeyTimerRemover()
 
-    self:menuInit()
     self:userOptionsInit()
+end
+
+function optionsNS.Options:createKeyTimerRemover()
+    return function()
+        if self.keyTimer then
+            self.keyTimer:remove()
+            self.keyTimer = nil
+        end
+    end
+end
+
+function optionsNS.Options:menuInit()
+    self.menu = playdate.ui.gridview.new(0, itemHeight)
+    self.currentOptions = (self.currentOptions == gameOptions) and editorOptions or gameOptions
+
+    local sectionRows = {}
+    local startRow = 0
+    for i, section in ipairs(self.currentOptions) do
+        if section.header then
+            table.insert(sectionRows, #section.options)
+        end
+    end
+
+    self.menu:setCellPadding(0,0,2,2)
+    self.menu:setContentInset(4, 4, 0, 0)
+    self.menu:setSectionHeaderHeight(itemHeight)
+    self.menu:setSectionHeaderPadding(0, 0, 2, 0)
+
+    self.menu:setNumberOfRows(table.unpack(sectionRows))
+    self.menu:setSelectedRow(1)
 
     function self.menu.drawCell(menuSelf, section, row, column, selected, x, y, width, height)
         local right <const> = x + width
@@ -206,7 +234,7 @@ function optionsNS.Options:init()
         -- draw option
         -- gfx.setFont(font)
         local labelWidth, _ = gfx.getTextSize(label)
-        labelWidth = math.min(width, labelWidth) 
+        labelWidth = math.min(width, labelWidth)
         gfx.drawTextInRect(label, x+textPadding, y+textPadding, labelWidth, height, nil, '...', kTextAlignment.left)
 
         -- draw switch as glyph
@@ -232,9 +260,9 @@ function optionsNS.Options:init()
         local textPadding = 5
         local text = '*'..self.currentOptions[section].header:upper()..'*'
         gfx.pushContext()
-            -- gfx.setImageDrawMode(gfx.kDrawModeCopy)
-            --gfx.setFont(font)
-            gfx.drawTextInRect(text, x+textPadding, y+textPadding, width, height, nil, '...', kTextAlignment.center)
+        -- gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        --gfx.setFont(font)
+        gfx.drawTextInRect(text, x+textPadding, y+textPadding, width, height, nil, '...', kTextAlignment.center)
         gfx.popContext()
 
     end
@@ -251,43 +279,13 @@ function optionsNS.Options:init()
             self.keyTimer = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectNextRow() end)
         end,
         downButtonUp = self.keyTimerRemover,
-    
+
         -- action
         AButtonDown = function() self:toggleCurrentOption(1, true) end,
         BButtonDown = function() self:pause() end,
         -- turn with crank
         -- cranked = function(change, acceleratedChange) end,
     }
-
-end
-
-function optionsNS.Options:createKeyTimerRemover()
-    return function()
-        if self.keyTimer then
-            self.keyTimer:remove()
-            self.keyTimer = nil
-        end
-    end
-end
-
-function optionsNS.Options:menuInit()
-    self.currentOptions = (self.currentOptions == gameOptions) and editorOptions or gameOptions
-
-    local sectionRows = {}
-    local startRow = 0
-    for i, section in ipairs(self.currentOptions) do
-        if section.header then
-            table.insert(sectionRows, #section.options)
-        end
-    end
-
-    self.menu:setCellPadding(0,0,2,2)
-    self.menu:setContentInset(4, 4, 0, 0)
-    self.menu:setSectionHeaderHeight(itemHeight)
-    self.menu:setSectionHeaderPadding(0, 0, 2, 0)
-
-    self.menu:setNumberOfRows(table.unpack(sectionRows))
-    self.menu:setSelectedRow(1)
 end
 
 function optionsNS.Options:userOptionsInit()
@@ -335,6 +333,9 @@ function optionsNS.Options:loadUserOptions()
 end
 
 function optionsNS.Options:resume()
+    if not self.menu then
+        self:menuInit()
+    end
     self.visible = true
     self.previewMode = false
     playdate.inputHandlers.push(self.controls, true)
