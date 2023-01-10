@@ -10,9 +10,11 @@ pushScreen(SettingsScreen())
 require "lua/level-select/LevelSelectScreen"
 pushScreen(LevelSelectScreen())
 
+GetOptions():apply() -- load all sounds required for game
+require "lua/gameScreen"
+pushScreen(GameScreen(25,1))
 require("lua/end-game/EndGameScreen") -- imports and FlyTo CreditsScreen CreditsScreen
 pushScreen(FlyToCreditsScreen())
-pushScreen(CreditsScreen())
 
 require("lua/video-player/VideoPlayerScreen")
 pushScreen(VideoPlayerScreen(
