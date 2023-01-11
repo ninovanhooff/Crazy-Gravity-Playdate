@@ -16,6 +16,7 @@ local floor <const> = math.floor
 local min <const> = math.min
 local max <const> = math.max
 local random <const> = math.random
+local pickRandom <const> = pickRandom
 local options <const> = GetOptions()
 local soundManager <const> = soundManager
 local selfRightTipShownKey <const> = Options.SELF_RIGHT_TIP_SHOWN_KEY
@@ -570,8 +571,8 @@ specialCalcT[15] = CalcBarrier
 
 function InitPlatform(item)
     item.origAmnt = item.amnt
-    item.checkpointWaitingLabel = checkpointWaitingLabels[random(1, #checkpointWaitingLabels)]
-    item.checkpointDoneLabel = checkpointDoneLabels[random(1, #checkpointDoneLabels)]
+    item.checkpointWaitingLabel = pickRandom(checkpointWaitingLabels)
+    item.checkpointDoneLabel = pickRandom(checkpointDoneLabels)
 end
 
 function InitCannon(item)

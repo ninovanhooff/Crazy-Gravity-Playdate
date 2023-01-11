@@ -13,6 +13,12 @@ local bgImg <const> = gfx.image.new("images/start_background.png")
 local logoImg <const> = gfx.image.new("images/logo.png")
 local _, logoHeight <const> = logoImg:getSize()
 local renderTooltip <const> = Tooltips.renderTooltip
+local hintPadding <const> = 4
+local doubleHintPadding <const> = hintPadding * 2
+local screenHeight <const> = screenHeight
+local hintFontFamily = {
+    [gfx.font.kVariantNormal] = GetResourceLoader():getSmallFont(),
+}
 
 local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
 
@@ -61,9 +67,18 @@ function RenderStart(viewState)
     bgImg:draw(0,0)
     logoImg:draw(6, 6 - logoHeight + viewState.logoAnimator:currentValue() * logoHeight)
 
-    -- button
+    -- button platforms
     for _, button in pairs(viewState.buttons) do
         drawButton(button)
+    end
+
+    local hintText = viewState.hintText
+    if hintText then
+        local hintW, hintH = gfx.getTextSize(hintText, hintFontFamily)
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
+        gfx.fillRect(hintPadding, screenHeight-doubleHintPadding-hintH, hintW+ doubleHintPadding, hintH + doubleHintPadding)
+        gfx.drawText(hintText, hintPadding, screenHeight-hintPadding-hintH, hintFontFamily)
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
 
     -- plane

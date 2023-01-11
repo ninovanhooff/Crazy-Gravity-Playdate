@@ -5,6 +5,7 @@
 ---
 
 local floor <const> = math.floor
+local random <const> = math.random
 local currentTime <const> = playdate.sound.getCurrentTime
 
 function boolToNum(bool)
@@ -35,6 +36,10 @@ end
 --- Usage example: luaMod(levelNumber, #levels) would give a 1-based level index that is always a valid index for the `levels` table
 function luaMod(first, second)
     return (first - 1) % second + 1
+end
+
+function pickRandom(tbl)
+    return tbl[random(1, #tbl)]
 end
 
 -- ### START Lume functions

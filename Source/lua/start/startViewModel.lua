@@ -1,6 +1,9 @@
 import "lua/common/PlanePhysicsViewModel"
 
 local playdate <const> = playdate
+local gfx <const> = playdate.graphics
+local currentTime <const> = playdate.sound.getCurrentTime
+local pickRandom <const> = pickRandom
 local setCollectsGarbage <const> = playdate.setCollectsGarbage
 local setRefreshRate <const> = playdate.display.setRefreshRate
 local animator <const> = playdate.graphics.animator
@@ -9,6 +12,8 @@ local enterEasing <const> = playdate.easingFunctions.outCubic
 local enterDuration <const> = 300
 --- time between start of button enter animations
 local enterButtonTimeGap <const> = 100
+--- seconds
+local hintDelay < const> = 6
 
 local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, end
 buttonTimer.discardOnCompletion = false
@@ -32,6 +37,61 @@ local function updateViewState(self)
 
 
     return viewState
+end
+
+local function getChallengesHint()
+    local challengesUnlocked = 0
+    for levelNum, levelRecords in ipairs(records) do
+        local challenges = getChallengesForPath(levelPath(levelNum))
+        for challengeIdx, score in ipairs(challenges) do
+            if levelRecords[challengeIdx] <= score then
+                -- challenge completed
+                challengesUnlocked = challengesUnlocked + 1
+            end
+        end
+    end
+
+    return string.format("Achievements unlocked: %d / 75", challengesUnlocked)
+end
+
+print("hint", getChallengesHint())
+
+local function getHintText()
+    if #records > numLevels/2 then
+        return getChallengesHint()
+    end
+
+    local candidates = {
+        getChallengesHint(),
+        "Button mapping can be adjusted in Settings"
+    }
+
+    if gameBgColor ~= gfx.kColorWhite then
+        table.insert(candidates, "Low visibility?\nSet background to White in Settings")
+    end
+    if gameBgColor ~= gfx.kColorClear then
+        table.insert(candidates, "Nostalgic for Win95?\nTry background Trippy in Settings")
+    end
+    if #records > 1 and rotationDelay > 1 then
+        table.insert(candidates, "Feeling confident?\nSet turn speed to medium in Settings")
+    end
+    if InitialLives < 12 then
+        table.insert(candidates, "Having a hard time?\nGive yourself some extra lives in Settings")
+    end
+    if blowerStrength > 0.1 then
+        table.insert(candidates, "Bad hair day?\nLower blower strength in Settings")
+    end
+    if magnetStrength > 0.1 then
+        table.insert(candidates, "Fatal attraction?\nLower magnet strength in Settings")
+    end
+    if frameRate == 30 then
+        table.insert(candidates, "Not a pro gamer?\nLower the game speed in Settings")
+    end
+    if GetResourceLoader().graphicsStyle~="classic" then
+        table.insert(candidates, "Did you play Crazy Gravity?\nTry style Classic in Settings")
+    end
+
+    return pickRandom(candidates)
 end
 
 class("StartViewModel").extends(PlanePhysicsViewModel)
@@ -70,6 +130,8 @@ function StartViewModel:init(initialPlaneX, initialPlaneY)
 
     -- many of this code should be called onResume, currently timers are already running when
     -- the VM is created before the StartScreen is shown
+
+    self.startTime = currentTime()
 
     -- set high frameRate for smooth enter transitions
     setCollectsGarbage(false)
@@ -158,6 +220,9 @@ function StartViewModel:calcTimeStep()
     self:processInputs()
     self:calcPlane()
     self:calcButtonCollision()
+    if not self.viewState.hintText and currentTime() > self.startTime + hintDelay then
+        self.viewState.hintText = getHintText()
+    end
     return updateViewState(self)
 end
 
