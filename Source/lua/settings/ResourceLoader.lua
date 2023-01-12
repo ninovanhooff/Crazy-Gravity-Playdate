@@ -135,6 +135,13 @@ function ResourceLoader:getSmallFont()
     return ResourceLoader.smallFont
 end
 
+function ResourceLoader:getLcdFont()
+    if not ResourceLoader.lcdFont then
+        ResourceLoader.lcdFont = gfx.font.new("fonts/digital-7-mono/digital-7-mono-20")
+    end
+    return ResourceLoader.lcdFont
+end
+
 local function setVolume(self, volume, ...)
     self.soundVolume = volume
     for _,item in ipairs({ ... }) do
