@@ -272,10 +272,12 @@ function optionsNS.Options:menuInit()
         leftButtonDown = function() self:toggleCurrentOption(-1) end,
         rightButtonDown = function() self:toggleCurrentOption(1) end,
         upButtonDown = function()
+            self.keyTimerRemover()
             self.keyTimer = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectPreviousRow() end)
         end,
         upButtonUp = self.keyTimerRemover,
         downButtonDown = function()
+            self.keyTimerRemover()
             self.keyTimer = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectNextRow() end)
         end,
         downButtonUp = self.keyTimerRemover,
