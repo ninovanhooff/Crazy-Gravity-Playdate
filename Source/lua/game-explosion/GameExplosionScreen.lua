@@ -2,6 +2,7 @@ import "GameExplosion"
 
 local menu <const> = playdate.getSystemMenu()
 local gameHUD <const> = gameHUD
+local renderSelfRightTooltip <const> = RenderSelfRightTooltip
 
 class("GameExplosionScreen").extends(Screen)
 
@@ -31,6 +32,8 @@ function GameExplosionScreen:update()
         RenderGame()
         if collision == CollisionReason.OverSpeed then
             gameHUD:renderOverSpeedTooltip()
+        elseif collision == CollisionReason.Rotation then
+            renderSelfRightTooltip()
         end
     else
         popScreen()

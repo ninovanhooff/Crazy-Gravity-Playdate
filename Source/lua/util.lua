@@ -5,7 +5,7 @@
 ---
 
 local floor <const> = math.floor
-local ceil <const> = math.ceil
+local random <const> = math.random
 local currentTime <const> = playdate.sound.getCurrentTime
 
 function boolToNum(bool)
@@ -36,6 +36,10 @@ end
 --- Usage example: luaMod(levelNumber, #levels) would give a 1-based level index that is always a valid index for the `levels` table
 function luaMod(first, second)
     return (first - 1) % second + 1
+end
+
+function pickRandom(tbl)
+    return tbl[random(1, #tbl)]
 end
 
 --- calculate the shortest distance to reach destRotation from startRotation
@@ -122,50 +126,16 @@ function printT(...)
     print(currentTime(), table.unpack(arg))
 end
 
-function Trunc_Zeros(num,precision)
-    local precision = precision or 2
-    local numString = string.format("%0."..precision.."f",num)
-    local result = numString:gsub("%.?0+$","",1)
-    --printf(result)
-    return result
-end
-
 function inspect(tbl)
     for i,item in pairs(tbl) do
         print(i,item)
     end
 end
 
-function count(tbl)
-    local cnt = 0
-    for i,item in pairs(tbl) do
-        cnt = cnt + 1
-    end
-    return cnt
-end
-
 function loopAnim(frames,skip)
     return floor((frameCounter % (frames*skip))*(1/skip))
 end
 
-
-function deepcopy(object)
-    local lookup_table = {}
-    local function _copy(object)
-        if type(object) ~= "table" then
-            return object
-        elseif lookup_table[object] then
-            return lookup_table[object]
-        end
-        local new_table = {}
-        lookup_table[object] = new_table
-        for index, value in pairs(object) do
-            new_table[_copy(index)] = _copy(value)
-        end
-        return setmetatable(new_table, getmetatable(object))
-    end
-    return _copy(object)
-end
 
 function convertSpeed(cgSpeed)
     return cgSpeed * (20 / frameRate)
@@ -175,6 +145,7 @@ function convertInterval(cgInterval)
     return cgInterval / (20 / frameRate)
 end
 
+--- sums HASHED entries
 function table.sum(tbl)
     local sum = 0
     for i,item in pairs(tbl) do

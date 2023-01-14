@@ -9,7 +9,7 @@ local airlockCrank <const> = gfx.imagetable.new("images/launch_control_crank")
 local launchButton <const> = gfx.imagetable.new("images/launch_control_button")
 local batteryMonitorImg <const> = gfx.image.new("images/launch_control_battery_monitor")
 local batteryMonitorWidth <const> = batteryMonitorImg:getSize()
-local lcdFont <const> = gfx.font.new("fonts/digital-7-mono-20")
+local lcdFont <const> = GetResourceLoader():getLcdFont()
 
 local rocketShipX <const> = 175
 local tileSize <const> = tileSize
@@ -100,7 +100,7 @@ function EndGameView:render(viewModel)
     local launchTimeOffset = viewModel:getLaunchTimeOffset()
     if launchTimeOffset then
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
-        local signString = launchTimeOffset > 0 and "+" or "-"
+        local signString = launchTimeOffset > 0 and "+" or "−"
         local minutes = floor(abs(launchTimeOffset)/60)
         local seconds = floor(abs(launchTimeOffset)%60)
         local text = string.format(

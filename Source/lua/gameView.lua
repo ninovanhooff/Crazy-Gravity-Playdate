@@ -6,19 +6,25 @@
 
 import "bricksView"
 
+local playdate <const> = playdate
 local gfx <const> = playdate.graphics
 local geometry <const> = playdate.geometry
 local polygon <const> = geometry.polygon
+local setCollectsGarbage <const> = playdate.setCollectsGarbage
 local floor <const> = math.floor
 local min <const> = math.min
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local planePos <const> = planePos
 local camPos <const> = camPos
 local specialRenders <const> = specialRenders
-local screenWidth <const> = screenWidth
+local renderTooltip <const> = Tooltips.renderTooltip
+local inputManager <const> = inputManager
 local gameWidthTiles <const> = gameWidthTiles
 local gameHeightTiles <const> = gameHeightTiles
+local gameWidthPixels <const> = screenWidth
 local gameHeightPixels <const> = gameHeightTiles * tileSize
+local halfGameWidthPixels <const> = gameWidthPixels * 0.5
+local halfGameHeightPixels <const> = gameHeightPixels * 0.5
 local tileSize <const> = tileSize
 local checkpointImage <const> = gfx.image.new("images/checkpoint_banner.png")
 local checkpointImageW <const>, checkpointImageH <const> = checkpointImage:getSize()
@@ -26,14 +32,14 @@ local checkpointImageW <const>, checkpointImageH <const> = checkpointImage:getSi
 local gameHUD <const> = gameHUD
 
 --- the active game area, excluding the HUD
-local gameClipRect = playdate.geometry.rect.new(0,0, screenWidth, hudY)
+local gameClipRect = playdate.geometry.rect.new(0,0, gameWidthPixels, hudY)
 
 local function renderCheckpointBanner()
     local checkpoint <const> = checkpoint
     if checkpoint and checkpoint.animator then
         local scrX <const> = (checkpoint.x-camPos[1])*8-camPos[3] + checkpoint.w/2*tileSize - checkpointImageW*0.5
         local scrY <const> = (checkpoint.y-camPos[2])*8-camPos[4] + checkpoint.animator:currentValue()
-        if scrX < -checkpointImageW or scrX > screenWidth or scrY < -checkpointImageH or scrY > gameHeightPixels then
+        if scrX < -checkpointImageW or scrX > gameWidthPixels or scrY < -checkpointImageH or scrY > gameHeightPixels then
             return
         end
         gfx.setScreenClipRect(0,0, gameClipRect.width, min(scrY + 32, gameClipRect.height))
@@ -77,6 +83,16 @@ local function drawHomeBaseIndicator(centerX, centerY)
     gfx.drawPolygon(targetingPolygon)
 end
 
+function RenderSelfRightTooltip(anchorX, anchorY)
+    local buttonMappingString = inputManager:mappingString(Input.actionSelfRight)
+    local tooltip = { text= buttonMappingString .. ": Self-right" }
+    renderTooltip(
+        tooltip,
+        anchorX or halfGameWidthPixels,
+        anchorY or halfGameHeightPixels
+    )
+end
+
 function RenderGame(disableHUD)
     gfx.setScreenClipRect(gameClipRect)
 
@@ -99,10 +115,10 @@ function RenderGame(disableHUD)
 
     if tilesRendered <= 50 then
         -- Garbage Collect in frames which are not CPU-intensive
-        playdate.setCollectsGarbage(true)
+        setCollectsGarbage(true)
     else
         -- save time on GC
-        playdate.setCollectsGarbage(false)
+        setCollectsGarbage(false)
     end
 
     -- Draw explosion over HUD for extra dramatic effect
@@ -148,9 +164,6 @@ function RenderGameDebug()
     
     
     -- Camera debug
-    local gameWidthPixels <const> = screenWidth
-    local halfGameWidthPixels <const> = gameWidthPixels * 0.5
-    local halfGameHeightPixels <const> = gameHeightTiles * tileSize * 0.5
     local crossHairSize = 10
     -- game center crosshair
     --gfx.setDitherPattern(0.5, gfx.image.kDitherTypeDiagonalLine) -- invert alpha due to bug in SDK

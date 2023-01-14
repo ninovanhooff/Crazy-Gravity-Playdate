@@ -14,7 +14,7 @@ local playdate <const> = playdate
 local gfx <const> = playdate.graphics
 local timer <const> = playdate.timer
 local itemHeight <const> = 28
-local resourceLoader <const> = ResourceLoader()
+local resourceLoader <const> = GetResourceLoader()
 
 --- NOTES Nino
 -- KEY_REPEAT and KEY_REPEAT_INITIAL not defined
@@ -51,6 +51,30 @@ local ROTATION_DELAY_VALS <const> = {
     {label="Medium", value = 1},
     {label="Fast", value = 0}
  }
+
+-- physics
+local MAGNET_STRENGTH_KEY <const> = "magnetStrength"
+local BLOWER_STRENGTH_KEY <const> = "blowerStrength"
+local BLOWER_MAGNET_VALS <const> = {
+    {label="Weak", value = 0.1},
+    {label="Medium", value = 0.2},
+    {label="Strong", value = 0.4},
+}
+local GRAVITY_DRAG_KEY <const> = "gravityAndDrag"
+local GRAVITY_DRAG_VALS <const> = {
+    {label="Space", value = { gravity=0.00, drag=0.99 }},
+    {label="Moon", value = { gravity=0.07, drag=0.9662 }},
+    {label="Earth", value = { gravity=0.167, drag=0.96 }},
+    {label="Upside Down", value = { gravity=-0.167, drag=0.96 }},
+}
+local LANDING_TOLERANCE_KEY <const> = "landingTolerance"
+local LANDING_TOLERANCE_VALS <const> = {
+    -- max supported rotation tolerance: 23-18=5. Otherwise rotation rolls over to 24==0
+    {label="Easy", value = { x=10, y=10, rotation=4 }},
+    {label="Medium", value = { x=2.0, y=4.5, rotation=2 }},
+    {label="Hard", value = { x=1.25, y=2.5, rotation=0 }},
+}
+
 local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
 local AUDIO_VOLUME_VALS <const> = { "off", 10, 20, 30, 40 , 50 , 60 , 70, 80, 90, 100 }
@@ -88,10 +112,18 @@ local gameOptions = {
     {
         header = 'Gameplay',
         options = {
-            { name='Debug', key='debug', values=toggleVals, default=1},
+            --{ name='Debug', key='debug', values=toggleVals, default=1},
             { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
             { name='Lives', key=LIVES_KEY, values= LIVES_VALS, default=2},
             { name='Game speed', key=SPEED_KEY, values= SPEED_VALS, default=4},
+        }
+    },
+    {
+        header = 'Audio',
+        options = {
+            { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
+            { name='Sound Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
+            { name='Music Volume', key= MUSIC_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=6},
         }
     },
     {
@@ -104,20 +136,21 @@ local gameOptions = {
         }
     },
     {
-        header = 'Audio',
-        options = {
-            { name='Style', key= AUDIO_STYLE_KEY, values= STYLE_VALS, default=1},
-            { name='Sound Volume', key= AUDIO_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=11},
-            { name='Music Volume', key= MUSIC_VOLUME_KEY, values= AUDIO_VOLUME_VALS, default=6},
-        }
-    },
-    {
         header = 'Button mapping',
         options = {
             { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
             { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
             { name='Throttle', key= THROTTLE_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 7 or 5)},
             { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
+        }
+    },
+    {
+        header = 'Physics',
+        options = {
+            { name='Physics', key=GRAVITY_DRAG_KEY, values=GRAVITY_DRAG_VALS, default=3},
+            { name='Landing', key=LANDING_TOLERANCE_KEY, values=LANDING_TOLERANCE_VALS, default=2},
+            { name='Blowers', key=BLOWER_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
+            { name='Magnets', key=MAGNET_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
         }
     },
     {
@@ -142,7 +175,6 @@ end
 
 function optionsNS.Options:init()
     optionsNS.Options.super.init(self)
-    self.menu = playdate.ui.gridview.new(0, itemHeight)
 
     -- list of available options based on option screen (indexed by section/row for easy selection)
     self.currentOptions = {}
@@ -153,8 +185,37 @@ function optionsNS.Options:init()
     self.previewMode = false
     self.keyTimerRemover = self:createKeyTimerRemover()
 
-    self:menuInit()
     self:userOptionsInit()
+end
+
+function optionsNS.Options:createKeyTimerRemover()
+    return function()
+        if self.keyTimer then
+            self.keyTimer:remove()
+            self.keyTimer = nil
+        end
+    end
+end
+
+function optionsNS.Options:menuInit()
+    self.menu = playdate.ui.gridview.new(0, itemHeight)
+    self.currentOptions = (self.currentOptions == gameOptions) and editorOptions or gameOptions
+
+    local sectionRows = {}
+    local startRow = 0
+    for i, section in ipairs(self.currentOptions) do
+        if section.header then
+            table.insert(sectionRows, #section.options)
+        end
+    end
+
+    self.menu:setCellPadding(0,0,2,2)
+    self.menu:setContentInset(4, 4, 0, 0)
+    self.menu:setSectionHeaderHeight(itemHeight)
+    self.menu:setSectionHeaderPadding(0, 0, 2, 0)
+
+    self.menu:setNumberOfRows(table.unpack(sectionRows))
+    self.menu:setSelectedRow(1)
 
     function self.menu.drawCell(menuSelf, section, row, column, selected, x, y, width, height)
         local right <const> = x + width
@@ -173,7 +234,7 @@ function optionsNS.Options:init()
         -- draw option
         -- gfx.setFont(font)
         local labelWidth, _ = gfx.getTextSize(label)
-        labelWidth = math.min(width, labelWidth) 
+        labelWidth = math.min(width, labelWidth)
         gfx.drawTextInRect(label, x+textPadding, y+textPadding, labelWidth, height, nil, '...', kTextAlignment.left)
 
         -- draw switch as glyph
@@ -199,9 +260,9 @@ function optionsNS.Options:init()
         local textPadding = 5
         local text = '*'..self.currentOptions[section].header:upper()..'*'
         gfx.pushContext()
-            -- gfx.setImageDrawMode(gfx.kDrawModeCopy)
-            --gfx.setFont(font)
-            gfx.drawTextInRect(text, x+textPadding, y+textPadding, width, height, nil, '...', kTextAlignment.center)
+        -- gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        --gfx.setFont(font)
+        gfx.drawTextInRect(text, x+textPadding, y+textPadding, width, height, nil, '...', kTextAlignment.center)
         gfx.popContext()
 
     end
@@ -218,43 +279,13 @@ function optionsNS.Options:init()
             self.keyTimer = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectNextRow() end)
         end,
         downButtonUp = self.keyTimerRemover,
-    
+
         -- action
         AButtonDown = function() self:toggleCurrentOption(1, true) end,
         BButtonDown = function() self:pause() end,
         -- turn with crank
         -- cranked = function(change, acceleratedChange) end,
     }
-
-end
-
-function optionsNS.Options:createKeyTimerRemover()
-    return function()
-        if self.keyTimer then
-            self.keyTimer:remove()
-            self.keyTimer = nil
-        end
-    end
-end
-
-function optionsNS.Options:menuInit()
-    self.currentOptions = (self.currentOptions == gameOptions) and editorOptions or gameOptions
-
-    local sectionRows = {}
-    local startRow = 0
-    for i, section in ipairs(self.currentOptions) do
-        if section.header then
-            table.insert(sectionRows, #section.options)
-        end
-    end
-
-    self.menu:setCellPadding(0,0,2,2)
-    self.menu:setContentInset(4, 4, 0, 0)
-    self.menu:setSectionHeaderHeight(itemHeight)
-    self.menu:setSectionHeaderPadding(0, 0, 2, 0)
-
-    self.menu:setNumberOfRows(table.unpack(sectionRows))
-    self.menu:setSelectedRow(1)
 end
 
 function optionsNS.Options:userOptionsInit()
@@ -302,6 +333,9 @@ function optionsNS.Options:loadUserOptions()
 end
 
 function optionsNS.Options:resume()
+    if not self.menu then
+        self:menuInit()
+    end
     self.visible = true
     self.previewMode = false
     playdate.inputHandlers.push(self.controls, true)
@@ -330,6 +364,33 @@ function optionsNS.Options:createButtonMapping()
         [Input.actionSelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
     }
 end
+
+function optionsNS.Options:applyPhysics()
+    local blower = self:read(BLOWER_STRENGTH_KEY)
+    if blower then
+        blowerStrength = BLOWER_MAGNET_VALS[blower].value
+    end
+    local magnet = self:read(MAGNET_STRENGTH_KEY)
+    if magnet then
+        magnetStrength = BLOWER_MAGNET_VALS[magnet].value
+    end
+
+    local gravityAndDrag = self:read(GRAVITY_DRAG_KEY)
+    if gravityAndDrag then
+        local vals = GRAVITY_DRAG_VALS[gravityAndDrag].value
+        gravity = vals.gravity
+        drag = vals.drag
+    end
+
+    local landingTol = self:read(LANDING_TOLERANCE_KEY)
+    if landingTol then
+        local vals = LANDING_TOLERANCE_VALS[landingTol].value
+        landingTolerance.vX = vals.x
+        landingTolerance.vY = vals.y
+        landingTolerance.rotation = vals.rotation
+    end
+end
+
 
 --- Game code uses many globals to read options. Set them here based on current values
 function optionsNS.Options:apply(onlyStartAssets)
@@ -379,6 +440,8 @@ function optionsNS.Options:apply(onlyStartAssets)
     if lives then
         InitialLives = LIVES_VALS[lives]
     end
+    
+    self:applyPhysics()
 
     --- number of frames to disable rotation after each rotation step.
     --- ie. 2 means after each frame with rotation, 2 frames follow without rotation in the same direction

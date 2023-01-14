@@ -18,6 +18,8 @@
 --    {"Defaults",1,{"yes","no"},val=2}
 --}
 
+--- most of these values are overwritten in Options
+--- They exist here more as a guard to make sure they are defined
 burnRate = 5 -- amount of fuel each frame
 gravity,drag = 0.167, 0.96 --add,mult per frame!!
 landingTolerance = {1.25,4.5} -- max vx,vy

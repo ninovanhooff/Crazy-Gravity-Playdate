@@ -3,12 +3,6 @@
 --- Created by ninovanhooff.
 --- DateTime: 07/08/2022 22:52
 ---
-local file <const> = playdate.file
-numLevels = 0
-while file.exists(levelPath(numLevels+1) .. ".pdz") do numLevels = numLevels + 1 end
-if numLevels == 0 then
-    error("no levels")
-end
 
 --- returns challenge index in [challenges] to attempt next. Returns nil if all challenges were achieved
 function firstUnCompletedChallenge(levelNum)
@@ -26,25 +20,4 @@ function firstUnCompletedChallenge(levelNum)
 
     -- this code is probably only reached when the player has completed the game
     return nil
-end
-
---- returns level number, challenge
-function nextUnfinishedLevel()
-    local unlockedIdx = numLevelsUnlocked()
-    if unlockedIdx <= numLevels then
-        local nextChallenge = firstUnCompletedChallenge(unlockedIdx)
-        if nextChallenge then
-            return unlockedIdx, nextChallenge
-        end
-    end
-
-    for i = 1, numLevels do
-        local nextChallenge = firstUnCompletedChallenge(i)
-        if nextChallenge then
-            return i, nextChallenge
-        end
-    end
-
-    -- all levels unlocked and no remaining challenges
-    return 1,1
 end

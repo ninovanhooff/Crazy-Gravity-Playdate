@@ -4,5 +4,7 @@ sourceDir=Source
 pdxName="$(cat Source/pdxinfo | grep name | cut -d "=" -f 2- | sed '/^$/d;s/[[:blank:]]//g').pdx"
 
 pdc -q "$sourceDir" "$pdxName" || exit
-./strip_pdz.sh "$sourceDir" "$pdxName"
-open $pdxName
+if [[ $1 == STRIP ]] ; then
+  ./strip_pdz.sh "$sourceDir" "$pdxName"
+fi
+open "$pdxName"

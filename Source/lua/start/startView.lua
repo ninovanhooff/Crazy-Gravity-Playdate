@@ -6,34 +6,57 @@
 
 local gfx <const> = playdate.graphics
 local defaultFont <const> = gfx.getFont()
+local sprite <const> = sprite
+local unFlipped <const> = gfx.kImageUnflipped
 local floor <const> = math.floor
 local bgImg <const> = gfx.image.new("images/start_background.png")
 local logoImg <const> = gfx.image.new("images/logo.png")
 local _, logoHeight <const> = logoImg:getSize()
-local buttonTextHalfHeight <const> = defaultFont:getHeight()*0.5
+local renderTooltip <const> = Tooltips.renderTooltip
+local hintPadding <const> = 4
+local doubleHintPadding <const> = hintPadding * 2
+local screenHeight <const> = screenHeight
+local hintFontFamily = {
+    [gfx.font.kVariantNormal] = GetResourceLoader():getSmallFont(),
+}
+
+local pltfrmCoordT = {{224,178},{192,194},{0,216},{0,194},{0,178}}
+
+local function drawPlatform(scrX, scrY, pType, wTiles)
+    -- generic
+    local barY = pType*6+264
+    local pltfrmY = scrY+32
+    sprite:draw(scrX, pltfrmY, unFlipped, pltfrmCoordT[(wTiles -8)*0.25][1], pltfrmCoordT[(wTiles -8)*0.25][2], wTiles*8, 16) -- platform
+    sprite:draw(scrX+6, pltfrmY+5, unFlipped, 392, barY, 26, 6)--left end colored bar
+    for j= 1,(wTiles-8)*0.25 do
+        sprite:draw(scrX+j*32, pltfrmY+5, unFlipped, 416, barY, 32, 6)--middle tiling colored bar
+    end
+    sprite:draw(scrX+32+(wTiles-8)*8, pltfrmY+5, unFlipped, 450, barY, 25, 6)--right end colored bar
+
+    --arrows
+    if pType==1 then
+        sprite:draw(scrX, scrY, unFlipped, 313,414,24, 32, 0, 150)
+        sprite:draw(scrX+(wTiles-3)*8, scrY, unFlipped, 313,446,24, 32, 0, 150)
+    end
+end
 
 local function drawButton(button)
     gfx.pushContext()
     local x,y = button.animator:currentValue():unpack()
-    local w,h = button.w, button.h
+    local w, h = button.w, button.h
     local text, progress = button.text, button.progress
-    local fillHeight = progress * h
-    local buttonRadius = h * 0.5
-    local halfw = w * 0.5
+    local halfW = w * 0.5
 
-    gfx.setColor(gfx.kColorWhite)
-    gfx.setLineWidth(3)
-    gfx.drawRoundRect(x, y, w, h, buttonRadius)
-    gfx.setClipRect(x, y + h - fillHeight,w,h)
-    gfx.fillRoundRect(x,y,w,h,buttonRadius)
-    gfx.clearClipRect()
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(x,y,w,h)
+    drawPlatform(x,y, button.pType, w/8)
 
     gfx.pushContext()
         gfx.setImageDrawMode(gfx.kDrawModeNXOR)
         defaultFont:drawText(
             text,
-            x + halfw - defaultFont:getTextWidth(text)*0.5,
-            y + h*0.5-buttonTextHalfHeight + 1 -- +1 for baseline tweak
+            x + halfW - defaultFont:getTextWidth(text)*0.5,
+            y + 10
         )
     gfx.popContext()
 
@@ -44,9 +67,18 @@ function RenderStart(viewState)
     bgImg:draw(0,0)
     logoImg:draw(6, 6 - logoHeight + viewState.logoAnimator:currentValue() * logoHeight)
 
-    -- button
+    -- button platforms
     for _, button in pairs(viewState.buttons) do
         drawButton(button)
+    end
+
+    local hintText = viewState.hintText
+    if hintText then
+        local hintW, hintH = gfx.getTextSize(hintText, hintFontFamily)
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite) --text color
+        gfx.fillRect(hintPadding, screenHeight-doubleHintPadding-hintH, hintW+ doubleHintPadding, hintH + doubleHintPadding)
+        gfx.drawText(hintText, hintPadding, screenHeight-hintPadding-hintH, hintFontFamily)
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
 
     -- plane
@@ -56,4 +88,13 @@ function RenderStart(viewState)
         viewState.planeRot%16*23, 391+(boolToNum(viewState.planeRot>15)*2-viewState.thrust)*23,
         23, 23
     )
+
+    if viewState.planeTooltip then
+        renderTooltip(
+            viewState.planeTooltip,
+            viewState.planeX + 12,
+            viewState.planeY - 10
+        )
+    end
+
 end

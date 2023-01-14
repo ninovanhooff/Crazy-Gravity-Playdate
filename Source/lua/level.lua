@@ -8,6 +8,7 @@ local file <const> = playdate.file
 local unpack <const> = string.unpack
 local luaMod <const> = luaMod
 
+numLevels = 25
 
 function LoadFile(path)
     printf("loading ".. path)
