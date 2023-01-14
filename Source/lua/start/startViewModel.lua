@@ -1,4 +1,4 @@
-import "lua/common/PlanePhysicsViewModel"
+import "../common/PlanePhysicsViewModel.lua"
 
 local playdate <const> = playdate
 local gfx <const> = playdate.graphics
