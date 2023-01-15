@@ -51,7 +51,6 @@ function ButtonInput:resetRotationTimeout()
 end
 
 function ButtonInput:rotationInput(currentRotation)
-    print(self.rotationTimeout)
     local change =  self:isInputPressed(actionLeft) and -1
         or self:isInputPressed(actionRight) and 1
         or nil

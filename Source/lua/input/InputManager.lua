@@ -3,6 +3,7 @@ import "ButtonInput"
 import "CrankInput"
 
 local isCrankDocked <const> = playdate.isCrankDocked
+local options <const> = GetOptions()
 
 class('InputManager').extends(Input)
 
@@ -18,8 +19,10 @@ function InputManager:update()
     local docked = isCrankDocked()
     if docked and self.inputs.crank then
         self.inputs.crank = nil
+        self:setButtonMapping(options:createButtonMapping(docked))
     elseif not docked and not self.inputs.crank then
         self.inputs.crank = CrankInput()
+        self:setButtonMapping(options:createButtonMapping(docked))
     end
 end
 

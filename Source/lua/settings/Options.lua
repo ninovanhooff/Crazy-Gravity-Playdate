@@ -15,6 +15,7 @@ local gfx <const> = playdate.graphics
 local timer <const> = playdate.timer
 local itemHeight <const> = 28
 local resourceLoader <const> = GetResourceLoader()
+local isCrankDocked <const> = playdate.isCrankDocked
 
 --- NOTES Nino
 -- KEY_REPEAT and KEY_REPEAT_INITIAL not defined
@@ -98,7 +99,8 @@ local BUTTON_VALS <const> = {
 }
 local TURN_LEFT_KEY <const> = "turnLeftMapping"
 local TURN_RIGHT_KEY <const> = "turnRightMapping"
-local THROTTLE_KEY <const> = "throttleMapping"
+local THROTTLE_BUTTONS_KEY <const> = "throttleMapping"
+local THROTTLE_CRANK_KEY <const> = "throttleCrankMapping"
 local SELF_RIGHT_KEY <const> = "selfRightMapping"
 
 local gameOptions = {
@@ -136,14 +138,20 @@ local gameOptions = {
         }
     },
     {
-        header = 'Button mapping',
+        header = 'Button mapping (No Crank)',
         options = {
             { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
             { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
             { name='Point up', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
-            { name='Throttle', key= THROTTLE_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 7 or 5)},
+            { name='Throttle', key= THROTTLE_BUTTONS_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 7 or 5)},
         }
     },
+    {
+        header = 'Button mapping (Crank)',
+        options = {
+            { name='Throttle', key= THROTTLE_CRANK_KEY, values= BUTTON_VALS, default= 6},
+        }
+},
     {
         header = 'Physics',
         options = {
@@ -358,13 +366,20 @@ function optionsNS.Options:gameWillPause()
     self.keyTimerRemover()
 end
 
-function optionsNS.Options:createButtonMapping()
-    return {
-        [Input.actionLeft] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
-        [Input.actionRight] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
-        [Input.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_KEY)].keys,
-        [Input.actionSelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
-    }
+function optionsNS.Options:createButtonMapping(isCrankDocked)
+    print("Create button mapping docked", isCrankDocked)
+    if isCrankDocked then
+        return {
+            [Input.actionLeft] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
+            [Input.actionRight] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
+            [Input.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_BUTTONS_KEY)].keys,
+            [Input.actionSelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
+        }
+    else
+        return {
+            [Input.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_CRANK_KEY)].keys,
+        }
+    end
 end
 
 function optionsNS.Options:applyPhysics()
@@ -449,7 +464,7 @@ function optionsNS.Options:apply(onlyStartAssets)
     --- ie. 2 means after each frame with rotation, 2 frames follow without rotation in the same direction
     rotationDelay = ROTATION_DELAY_VALS[self:read(ROTATION_DELAY_KEY)].value
 
-    inputManager:setButtonMapping(self:createButtonMapping())
+    inputManager:setButtonMapping(self:createButtonMapping(isCrankDocked()))
 
     if bricksView then
         bricksView = BricksView()
