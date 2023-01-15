@@ -138,7 +138,7 @@ local gameOptions = {
         }
     },
     {
-        header = 'Button mapping (No Crank)',
+        header = 'Button input',
         options = {
             { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
             { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
@@ -147,9 +147,9 @@ local gameOptions = {
         }
     },
     {
-        header = 'Button mapping (Crank)',
+        header = 'Crank input',
         options = {
-            { name='Throttle', key= THROTTLE_CRANK_KEY, values= BUTTON_VALS, default= 6},
+            { name='Throttle', key= THROTTLE_CRANK_KEY, values= BUTTON_VALS, default= 14},
         }
 },
     {
