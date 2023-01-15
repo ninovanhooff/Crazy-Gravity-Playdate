@@ -6,10 +6,12 @@
 
 class('Input').extends()
 
+-- Values must be powers of 2 for bitmasking purposes
+Input.actionNone = 0
 Input.actionLeft = 1
 Input.actionRight = 2
-Input.actionThrottle = 3
-Input.actionSelfRight = 4
+Input.actionThrottle = 4
+Input.actionSelfRight = 8
 
 function Input:init()
     Input.super.init(self)

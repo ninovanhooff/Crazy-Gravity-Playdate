@@ -71,6 +71,9 @@ end
 
 function ButtonInput:mappingString(action)
     local buttonMask = self.mapping[action]
+    if not buttonMask then
+        return nil
+    end
     local buttonSymbols = {}
     for button, glyph in pairs(buttonGlyphs) do
         if buttonMask & button ~= 0 then
