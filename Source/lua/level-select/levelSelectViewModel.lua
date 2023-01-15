@@ -135,11 +135,13 @@ function LevelSelectViewModel:update()
         local function timerCallback()
             self:moveSelection(1)
         end
+        self.keyTimerRemover()
         self.keyTimer = keyRepeatTimer(timerCallback)
     elseif justPressed(buttonUp) then
         local function timerCallback()
             self:moveSelection(-1)
         end
+        self.keyTimerRemover()
         self.keyTimer = keyRepeatTimer(timerCallback)
     elseif justReleased(buttonDown | buttonUp) then
         self:keyTimerRemover()

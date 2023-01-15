@@ -193,7 +193,7 @@ function CalcTimeStep()
 
     -- brick collision
     CalcPlaneColCoords()
-    for i=1,5,2 do
+    for i=1,5,2 do -- for every pair of coordinates in colT
         if brickT[colBT[i]][colBT[i+1]][1]>1 then
             --print("collision",i,colBT[i],colBT[i+1])
             collision = true

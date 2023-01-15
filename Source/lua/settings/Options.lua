@@ -140,8 +140,8 @@ local gameOptions = {
         options = {
             { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
             { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
+            { name='Point up', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
             { name='Throttle', key= THROTTLE_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 7 or 5)},
-            { name='Self-right', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
         }
     },
     {
@@ -272,10 +272,12 @@ function optionsNS.Options:menuInit()
         leftButtonDown = function() self:toggleCurrentOption(-1) end,
         rightButtonDown = function() self:toggleCurrentOption(1) end,
         upButtonDown = function()
+            self.keyTimerRemover()
             self.keyTimer = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectPreviousRow() end)
         end,
         upButtonUp = self.keyTimerRemover,
         downButtonDown = function()
+            self.keyTimerRemover()
             self.keyTimer = timer.keyRepeatTimerWithDelay(KEY_REPEAT_INITIAL, KEY_REPEAT, function() self:selectNextRow() end)
         end,
         downButtonUp = self.keyTimerRemover,
