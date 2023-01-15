@@ -85,7 +85,7 @@ end
 
 function RenderSelfRightTooltip(anchorX, anchorY)
     local buttonMappingString = inputManager:mappingString(Input.actionSelfRight)
-    local tooltip = { text= buttonMappingString .. ": Self-right" }
+    local tooltip = { text= buttonMappingString .. ": Point up" }
     renderTooltip(
         tooltip,
         anchorX or halfGameWidthPixels,
