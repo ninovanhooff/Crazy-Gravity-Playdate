@@ -7,6 +7,7 @@
 local numChallenges <const> = numChallenges
 local levelNames <const> = levelNames
 local keyRepeatTimer <const> = playdate.timer.keyRepeatTimer
+local getCrankTicks <const> = playdate.getCrankTicks
 local pressed <const> = playdate.buttonIsPressed
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
@@ -121,6 +122,8 @@ function LevelSelectViewModel:destroy()
 end
 
 function LevelSelectViewModel:moveSelection(offset)
+    if offset == 0 then return end
+
     self.selectedIdx = clamp(self.selectedIdx + offset, 1, #self.menuOptions)
     --self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
     self:startVideo(levelPath(self.selectedIdx))
@@ -131,6 +134,9 @@ function LevelSelectViewModel:update()
     if self.videoViewModel then
         self.videoViewModel:update()
     end
+
+    self:moveSelection(getCrankTicks(5))
+
     if justPressed(buttonDown) then
         local function timerCallback()
             self:moveSelection(1)

@@ -37,6 +37,7 @@ local listRect <const> = playdate.geometry.rect.new(gutter, 0, 174, 240)
 local detailRect <const> = playdate.geometry.rect.new(400-238, 0, 238, 240)
 local listView = playdate.ui.gridview.new(0, thumbSize + 2* gutter)
 listView:setCellPadding(0, 0, gutter, gutter) -- left, right , top, bottom
+listView:setScrollDuration(200)
 
 local challengeRect <const> = playdate.geometry.rect.new(217, 98, 164, 71)
 local challengeListView = playdate.ui.gridview.new(challengeRect.width, challengeRect.height)
