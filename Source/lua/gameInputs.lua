@@ -3,12 +3,11 @@
 --- Created by ninovanhooff.
 --- DateTime: 13/03/2022 00:13
 ---
+require "lua/tutorial/TakeOffLandingScreen"
 
 local random <const> = math.random
 local clampPlaneRotation <const> = clampPlaneRotation
 local thrust_sound <const> = thrust_sound
-local getButtonState <const> = playdate.getButtonState
-local buttonState = 0
 
 local inputManager = inputManager
 local throttle <const> = Input.actionThrottle
@@ -18,7 +17,11 @@ local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 
 function ProcessInputs()
-    buttonState = getButtonState()
+    if landedAt and inputManager:isTakeOffBlocked() then
+        pushScreen(TakeOffLandingScreen())
+        return
+    end
+
     -- thrust
     if (inputManager:isInputPressed(throttle) and fuel > 0) then
         if Sounds and thrust == 0 then thrust_sound:play(0, 0.98 + random() * 0.04) end

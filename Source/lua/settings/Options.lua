@@ -3,11 +3,6 @@ import "ResourceLoader"
 --- internal namespace used to hide the class from external instantiation. Use GetOptions() to retrieve the global singleton
 local optionsNS <const> = {}
 
-
-Options = {
-    SELF_RIGHT_TIP_SHOWN_KEY = "selfRightTipShown"
-}
-
 class('Options' , {}, optionsNS).extends()
 
 local playdate <const> = playdate
@@ -75,6 +70,7 @@ local LANDING_TOLERANCE_VALS <const> = {
     {label="Medium", value = { x=2.0, y=4.5, rotation=2 }},
     {label="Hard", value = { x=1.25, y=2.5, rotation=0 }},
 }
+local SELF_RIGHT_TIP_SHOWN_KEY <const> = "selfRightTipShown"
 
 local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
@@ -164,7 +160,7 @@ local gameOptions = {
     {
         -- HIDDEN Options set by game logic only
         options = {
-            { key= Options.SELF_RIGHT_TIP_SHOWN_KEY, values= toggleVals, default=1},
+            { key= SELF_RIGHT_TIP_SHOWN_KEY, values= toggleVals, default=1},
         }
     },
 }
@@ -524,6 +520,15 @@ end
 function optionsNS.Options:getGameFps()
     local frameRateIdx = self:read(SPEED_KEY)
     return SPEED_VALS[frameRateIdx]
+end
+
+
+function optionsNS.Options:getSelfRightTipShown()
+    return self:read(SELF_RIGHT_TIP_SHOWN_KEY)
+end
+
+function optionsNS.Options:setSelfRightTipShown(shown)
+    self:set(SELF_RIGHT_TIP_SHOWN_KEY, shown)
 end
 
 function optionsNS.Options:isDirty()

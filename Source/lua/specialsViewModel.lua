@@ -3,8 +3,8 @@
 --- Created by ninovanhooff.
 --- DateTime: 03/04/2022 16:59
 ---
-
 import "game-over/GameOverScreen"
+require "lua/tutorial/TakeOffLandingScreen"
 
 local animator <const> = playdate.graphics.animator
 local checkpointEasing <const> = playdate.easingFunctions.outBack
@@ -19,12 +19,10 @@ local random <const> = math.random
 local pickRandom <const> = pickRandom
 local options <const> = GetOptions()
 local soundManager <const> = soundManager
-local selfRightTipShownKey <const> = Options.SELF_RIGHT_TIP_SHOWN_KEY
 local gameHUD <const> = gameHUD
 local tileSize <const> = tileSize
 local planePos <const> = planePos
 local clamp <const> = clamp
-local renderSelfRightTooltip <const> = RenderSelfRightTooltip
 local inputManager <const> = inputManager
 local keyGlyphT <const> = {"●", "▲", "◆", "■"}
 
@@ -151,16 +149,8 @@ function CalcPlatform(item)
     end
 
     if landedAt ~= item then
-        if planeRot ~= 18 and vy > 0 and item ~= prevLandedAt and not options:read(selfRightTipShownKey) and approxRectCollision(item.x,item.y, item.w, item.h) then
-            renderSelfRightTooltip(
-                floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3]) + 12,
-                floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4]) + 40
-            )
-            while not inputManager:isInputPressed(Input.actionSelfRight) do
-                coroutine.yield()
-            end
-            options:set(selfRightTipShownKey, true)
-            options:saveUserOptions()
+        if planeRot ~= 18 and vy > 0 and item ~= prevLandedAt and not options:getSelfRightTipShown() and approxRectCollision(item.x,item.y, item.w, item.h) then
+            pushScreen(TakeOffLandingScreen())
         end
         item.tooltip = nil
     else

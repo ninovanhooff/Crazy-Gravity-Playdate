@@ -31,3 +31,9 @@ end
 function Input:isInputJustPressed(action)
     return false
 end
+
+--- returns true when the input is not in take-off position.
+--- eg. when crank is pointed downwards
+function Input:isTakeOffBlocked()
+    return false
+end

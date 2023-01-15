@@ -72,6 +72,12 @@ function InputManager:isInputJustPressed(action)
     end)
 end
 
+function InputManager:isTakeOffBlocked()
+    return delegateActionFunction(self, function(input)
+        return input:isTakeOffBlocked()
+    end)
+end
+
 --- Describe the mapping for action. eg "⬆/Ⓑ" when the user can press either d-pad up or B-button to trigger action
 function InputManager:mappingString(action)
     return delegateActionFunction(self, function(input)

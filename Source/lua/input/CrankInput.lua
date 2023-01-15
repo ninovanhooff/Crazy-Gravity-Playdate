@@ -1,4 +1,5 @@
 local getCrankPosition <const> = playdate.getCrankPosition
+local abs <const> = math.abs
 local sign <const> = sign
 local round <const> = round
 local smallestPlaneRotation <const> = smallestPlaneRotation
@@ -46,4 +47,8 @@ function CrankInput:mappingString(action)
     else
         return nil
     end
+end
+
+function CrankInput:isTakeOffBlocked()
+    return abs(smallestPlaneRotation(18, getCrankPlaneRotation())) > landingTolerance.rotation
 end
