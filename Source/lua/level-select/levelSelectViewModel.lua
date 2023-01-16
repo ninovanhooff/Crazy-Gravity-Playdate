@@ -4,8 +4,7 @@
 --- DateTime: 29/04/2022 11:20
 ---
 
-local numChallenges <const> = numChallenges
-local levelNames <const> = levelNames
+local playdate <const> = playdate
 local keyRepeatTimer <const> = playdate.timer.keyRepeatTimer
 local getCrankTicks <const> = playdate.getCrankTicks
 local pressed <const> = playdate.buttonIsPressed
@@ -17,9 +16,17 @@ local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
+local resourceLoader <const> = GetResourceLoader()
+local scrollUpSound <const> = resourceLoader:getSound("sounds/ui_scroll_down.wav")
+local scrollDownSound <const> = resourceLoader:getSound("sounds/ui_scroll_up.wav")
+local scrollDenialSound <const> = resourceLoader:getSound("sounds/ui_scroll_denial.wav")
 
+local sign <const> = sign
 local clamp <const> = clamp
 local ceil <const> = math.ceil
+
+local numChallenges <const> = numChallenges
+local levelNames <const> = levelNames
 
 class("LevelSelectViewModel").extends()
 
@@ -124,8 +131,19 @@ end
 function LevelSelectViewModel:moveSelection(offset)
     if offset == 0 then return end
 
-    self.selectedIdx = clamp(self.selectedIdx + offset, 1, #self.menuOptions)
+    local oldSelectedIdx = self.selectedIdx
+    self.selectedIdx = clamp(oldSelectedIdx + offset, 1, #self.menuOptions)
     --self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
+
+    local changeSign = sign(self.selectedIdx - oldSelectedIdx)
+    if changeSign == 1 then
+        scrollDownSound:play()
+    elseif changeSign == 0 then
+        scrollDenialSound:play()
+    elseif changeSign == -1 then
+        scrollUpSound:play()
+    end
+
     self:startVideo(levelPath(self.selectedIdx))
 end
 

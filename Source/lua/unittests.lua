@@ -68,5 +68,11 @@ clampPlaneRotationTest(23,-1)
 clampPlaneRotationTest(14,-10)
 clampPlaneRotationTest(2,50)
 
+test(1, sign(42), "sign(42)")
+test(0, sign(0), "sign(0)")
+test(-1, sign(-42), "sign(-42)")
+test(1, sign(0.1), "sign(0.1)")
+test(-1, sign(-0.1), "sign(-0.1)")
+
 
 print "----TESTS OK"

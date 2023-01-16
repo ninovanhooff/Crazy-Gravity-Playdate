@@ -10,6 +10,9 @@ local sampleplayer <const> = playdate.sound.sampleplayer
 
 class("ResourceLoader").extends()
 
+--- use ResourceLoader:getSound(path)
+local cachedSamplePlayers <const> = {}
+
 -- get or create the global singleton
 function GetResourceLoader()
     if ResourceLoader.instance then
@@ -142,6 +145,13 @@ function ResourceLoader:getLcdFont()
     return ResourceLoader.lcdFont
 end
 
+function ResourceLoader:getSound(pathWithExtension)
+    if not cachedSamplePlayers[pathWithExtension] then
+        cachedSamplePlayers[pathWithExtension] = sampleplayer.new(pathWithExtension)
+    end
+    return cachedSamplePlayers[pathWithExtension]
+end
+
 local function setVolume(self, volume, ...)
     self.soundVolume = volume
     for _,item in ipairs({ ... }) do
@@ -153,6 +163,9 @@ end
 
 --- volume range 0.0-1.0
 function ResourceLoader:setSoundVolume(volume)
+    for _,item in pairs(cachedSamplePlayers) do
+        item:setVolume(volume)
+    end
     soundManager:setVolume(volume)
     local extra_sounds = extra_sounds or {}
     Sounds = volume > 0.0
