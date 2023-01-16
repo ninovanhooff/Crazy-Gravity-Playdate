@@ -95,7 +95,7 @@ end
 
 
 --- return index of value in table t; or nil
-function find(t, value)
+function findIndexOf(t, value)
     local iter = getiter(t)
     for k, v in iter(t) do
         if v == value then return k end

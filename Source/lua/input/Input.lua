@@ -12,6 +12,7 @@ Input.actionLeft = 1
 Input.actionRight = 2
 Input.actionThrottle = 4
 Input.actionSelfRight = 8
+Input.actionSelfDestruct = 16
 
 function Input:init()
     Input.super.init(self)

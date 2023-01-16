@@ -370,10 +370,12 @@ function optionsNS.Options:createButtonMapping(isCrankDocked)
             [Input.actionRight] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
             [Input.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_BUTTONS_KEY)].keys,
             [Input.actionSelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
+            [Input.actionSelfDestruct] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
         }
     else
         return {
             [Input.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_CRANK_KEY)].keys,
+            [Input.actionSelfDestruct] = playdate.kButtonA,
         }
     end
 end

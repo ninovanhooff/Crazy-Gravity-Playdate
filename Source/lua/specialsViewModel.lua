@@ -249,10 +249,14 @@ function CalcPlatform(item)
             handled = true
         end
 
-        if fuel < 1 and not collision and not (item.pType == 3 and item.amnt > 0) then
-            local buttonMappingString = inputManager:mappingString(Input.actionSelfRight)
+        if fuel < 1 and
+            not collision and
+            -- don't offer self destruct when action in progress, such as refuel
+            not (item.tooltip and item.tooltip.progress)
+        then
+            local buttonMappingString = inputManager:mappingString(Input.actionSelfDestruct)
             item.tooltip = { text= "Out of fuel! " .. buttonMappingString .. ": Self-destruct" }
-            if inputManager:isInputPressed(Input.actionSelfRight) then
+            if inputManager:isInputPressed(Input.actionSelfDestruct) then
                 collision = CollisionReason.SelfDestruct
                 gamePaused = false
                 return true
