@@ -24,3 +24,6 @@ pushScreen(VideoPlayerScreen(
         --return EndGameScreen()
     end
 ))
+
+require "lua/tutorial/ButtonMappingDialog"
+pushScreen(ButtonMappingDialog())
