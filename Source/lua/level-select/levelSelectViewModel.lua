@@ -23,6 +23,7 @@ local scrollDenialSound <const> = resourceLoader:getSound("sounds/ui_scroll_deni
 
 local sign <const> = sign
 local clamp <const> = clamp
+local abs <const> = math.abs
 local ceil <const> = math.ceil
 
 local numChallenges <const> = numChallenges
@@ -44,6 +45,7 @@ function LevelSelectViewModel:init()
             -- scores added on resume
         }
     end
+    self.listOffset = 0 -- vertical position, for bumper effect
     self.selectedIdx = numLevelsUnlocked()
     self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
     self.dPadImageIdx = 1
@@ -140,6 +142,11 @@ function LevelSelectViewModel:moveSelection(offset)
         scrollDownSound:play()
     elseif changeSign == 0 then
         scrollDenialSound:play()
+        if self.selectedIdx == 1 then
+            self.listOffset = 4
+        elseif self.selectedIdx == #self.menuOptions then
+            self.listOffset = -4
+        end
     elseif changeSign == -1 then
         scrollUpSound:play()
     end
@@ -149,6 +156,13 @@ end
 
 --- returns true when finished
 function LevelSelectViewModel:update()
+    -- clear bmpers by overdraw
+    if abs(self.listOffset) > 1 then
+        self.listOffset = self.listOffset/2
+    else
+        self.listOffset = 0
+    end
+
     if self.videoViewModel then
         self.videoViewModel:update()
     end
