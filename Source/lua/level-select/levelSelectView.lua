@@ -217,7 +217,6 @@ function LevelSelectView:render()
     dPad:getImage(viewModel.dPadImageIdx):draw(223,182)
     aButton:getImage(viewModel.aButtonImageIdx):draw(319,182)
 
-    print(viewModel.listOffset)
     if listView.needsDisplay or self.lockAnimation or viewModel.listOffset ~= 0 then
         local offsetRect = listRect:offsetBy(0,viewModel.listOffset)
         gfx.setColor(gfx.kColorWhite)
