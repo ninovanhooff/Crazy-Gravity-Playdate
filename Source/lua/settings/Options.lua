@@ -111,7 +111,6 @@ local gameOptions = {
         header = 'Gameplay',
         options = {
             --{ name='Debug', key='debug', values=toggleVals, default=1},
-            { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
             { name='Lives', key=LIVES_KEY, values= LIVES_VALS, default=2},
             { name='Game speed', key=SPEED_KEY, values= SPEED_VALS, default=4},
         }
@@ -136,6 +135,7 @@ local gameOptions = {
     {
         header = 'Button input',
         options = {
+            { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
             { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
             { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
             { name='Point up', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
