@@ -93,7 +93,7 @@ local levelBgmPaths = {
     "music/StrangeStuff.mp3",
     "music/Escape_Gravity_Express.mp3",
     "music/Upbeat.mp3",
-    "music/scifiNights.mp3",
+    "music/RefractiveDX.mp3",
     "music/AUTO.mp3",
     "music/HomeStretch.mp3",
 }
