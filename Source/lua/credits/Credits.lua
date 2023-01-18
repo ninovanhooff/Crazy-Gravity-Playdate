@@ -48,7 +48,7 @@ return {
             {"AUTO", "Danya Vodovoz" },
             {"Upbeat", "Aries Beats" },
             {"Home Stretch", "Gunnar Olsen" },
-            {"ScifiNight Hugejams", "@Choosh" },
+            {"HotTank", "@Choosh" },
             {"Strange Stuff", "Matt Harris" },
             {"Smooth and Cool", "Nico Staf" },
             {"The Countdown", "Aries Beats" },
