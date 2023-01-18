@@ -145,7 +145,7 @@ local gameOptions = {
     {
         header = 'Crank input',
         options = {
-            { name='Throttle', key= THROTTLE_CRANK_KEY, values= BUTTON_VALS, default= 14},
+            { name='Throttle', key= THROTTLE_CRANK_KEY, values= BUTTON_VALS, default= 8},
         }
 },
     {
