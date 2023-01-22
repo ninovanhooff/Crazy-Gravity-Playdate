@@ -13,7 +13,7 @@ local enterDuration <const> = 300
 --- time between start of button enter animations
 local enterButtonTimeGap <const> = 100
 --- seconds
-local hintDelay < const> = 6
+local hintDelay < const> = 1
 
 local buttonTimer <const> = playdate.timer.new(1500, 0, 1) -- duration, start, end
 buttonTimer.discardOnCompletion = false
