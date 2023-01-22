@@ -72,7 +72,7 @@ local function getHintText()
     if gameBgColor ~= gfx.kColorClear then
         table.insert(candidates, "Nostalgic for Win95?\nTry background Trippy in Settings")
     end
-    if #records > 1 and rotationDelay > 1 then
+    if #records > 1 and rotationDelay > 1 then -- rotationDelay > 1 means that the current setting must be "slow"
         table.insert(candidates, "Feeling confident?\nSet turn speed to medium in Settings")
     end
     if InitialLives < 12 then
