@@ -33,7 +33,8 @@ local planeRotationCamMultiplier <const> = 0.05
 local gameHUD <const> = gameHUD
 local soundManager <const> = soundManager
 
-CollisionReason = enum({"OverSpeed", "Rotation", "SelfDestruct", "Other"})
+-- BrickT: collision with a tile in the tilemap "BrickT" that is marked collidable. Includes static parts of Specials
+CollisionReason = enum({"BrickT", "Specials", "OverSpeed", "Rotation", "SelfDestruct"})
 
 --- sine component (y-direction) of plane orientation, ie. positive if plane is pointing up, 0 if pointing left and negative when pointing down
 local camRotY <const> = {}
@@ -196,7 +197,7 @@ function CalcTimeStep()
     for i=1,5,2 do -- for every pair of coordinates in colT
         if brickT[colBT[i]][colBT[i+1]][1]>1 then
             --print("collision",i,colBT[i],colBT[i+1])
-            collision = true
+            collision = CollisionReason.BrickT
         end
     end
 
@@ -212,7 +213,10 @@ function CalcTimeStep()
     end
     soundManager:notifySoundCalcEnd()
     if collision and explosion == nil and not Debug and not levelProps.collisionDisabled then
-        print("KABOOM", extras[2])
+        print("KABOOM", "lives", extras[2])
+        if type(collision) == "table" then -- collision might be nil. For extra safety we ues type check (in legacy code, collision could be a bool as well)
+            print("collision reason", collision.name)
+        end
         gamePaused = true
         pushScreen(GameExplosionScreen(calcPlane, CalcGameCam))
     end
@@ -232,7 +236,7 @@ function ResetPlane()
     CalcGameCam()
     flying = false
     CalcPlaneColCoords()
-    collision = false
+    collision = nil
     fuel = levelProps.fuel
     landedTimer,landedAt, prevLandedAt = 0, checkpoint, checkpoint
 end

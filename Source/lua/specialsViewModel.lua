@@ -38,7 +38,7 @@ local function UnitCollision(x,y,w,h,testMode)
     --printf(x,y,w,h)
     for i=1,5,2 do
         if colBT[i]>=x and colBT[i]<x+w and colBT[i+1]>=y and colBT[i+1]<y+h then
-            if not testMode then collision = true end
+            if not testMode then collision = CollisionReason.Specials end
             return true
         end
     end
@@ -58,7 +58,7 @@ local function pixelCollision(x, y, w, h) -- needs work?
     local colT <const> = colT
     for i=1,9,2 do
         if leftX+colT[i]>x and leftX+colT[i]<=x+w and topY+colT[i+1]>=y and topY+colT[i+1]<=y+h then -- -1
-            collision = true
+            collision = CollisionReason.Specials
             return true
         end
     end
@@ -142,12 +142,12 @@ function CalcPlatform(item)
         elseif not rotationWithinLandingTolerance then
             collision = CollisionReason.Rotation
         else
-            collision = false
+            collision = nil
         end
     end
     -- don't collide on take-off
     if not collision and abs(planeRot - 18) <= 3 and vy<0  then
-        collision = false
+        collision = nil
     end
 
     if landedAt ~= item then
@@ -176,7 +176,7 @@ function CalcPlatform(item)
             if Sounds then landing_sound:playAt(0, landingVolume) end
             planeRot = 18
             flying = false
-            collision = false
+            collision = nil
             vx,vy=0,0
             planePos[4]=4
             landedTimer = 0
