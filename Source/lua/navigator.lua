@@ -2,6 +2,11 @@ local pendingNavigators = {}
 local backStack = {}
 local activeScreen
 
+--- Usage:
+--- local navigator <const> = import "lua/navigator"
+--- <setup navigation stack by using one or more pushScreen calls>
+--- navigator:start()  -- must be called at the end of main.lua to ensure proper navigation state
+
 local function popScreenImmediately()
     printT("Popping off backstack:", activeScreen.className, activeScreen)
     table.remove(backStack)
@@ -44,6 +49,29 @@ function navigatorNS.Navigator:init()
     navigatorNS.Navigator.super.init(self)
 end
 
+function navigatorNS.Navigator:start()
+    if #pendingNavigators > 0 then
+        self:executePendingNavigators()
+    else
+        self:resumeActiveScreen()
+    end
+end
+
+--- Ensure that the backstack is non-empty and resumes the the screen at the top of the backstack
+--- If the backstack is empty, a StartScreen will be inserted and an error logged
+function navigatorNS.Navigator:resumeActiveScreen()
+    if #backStack < 1 then
+        printT("ERROR: No active screen, adding Start Screen")
+        require "lua/start/startScreen"
+        table.insert(backStack, StartScreen())
+    end
+
+    activeScreen = backStack[#backStack]
+    printT("Resuming screen", activeScreen.className, activeScreen)
+    playdate.setCollectsGarbage(true) -- prevent permanently disabled GC by previous Screen
+    activeScreen:resume()
+end
+
 function navigatorNS.Navigator:executePendingNavigators()
     if #pendingNavigators > 0 then
         for _, navigator in ipairs(pendingNavigators) do
@@ -56,15 +84,8 @@ function navigatorNS.Navigator:executePendingNavigators()
             printT("Pausing screen", activeScreen.className, activeScreen)
             activeScreen:pause()
         end
-        if #backStack < 1 then
-            printT("ERROR: No active screen, adding Start Screen")
-            require "lua/start/startScreen"
-            table.insert(backStack, StartScreen())
-        end
-        activeScreen = backStack[#backStack]
-        printT("Resuming screen", activeScreen.className, activeScreen)
-        playdate.setCollectsGarbage(true) -- prevent permanently disabled GC by previous Screen
-        activeScreen:resume()
+
+        self:resumeActiveScreen()
     end
 end
 

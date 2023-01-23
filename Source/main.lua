@@ -43,16 +43,6 @@ local updateTimers <const> = playdate.timer.updateTimers
 -- note: GC might still be turned off temporarily in gameView
 playdate.setMinimumGCTime(2)
 
-
-require "lua/start/startScreen"
-pushScreen(StartScreen())
-
-if playdate.file.exists("levels/temp.pdz") then
-    GetOptions():apply() -- load all sounds required for game
-    require "lua/gameScreen"
-    pushScreen(GameScreen("levels/temp", 1))
-end
-
 function playdate.update()
     local frameStart = currentTime()
     gfx.pushContext() --make sure we start the frame with a clean gfx state.
@@ -91,3 +81,17 @@ function playdate.keyPressed(key)
         Debug = false
     end
 end
+
+-- Setup Navigation
+
+require "lua/start/startScreen"
+pushScreen(StartScreen())
+
+if playdate.file.exists("levels/temp.pdz") then
+    GetOptions():apply() -- load all sounds required for game
+    require "lua/gameScreen"
+    pushScreen(GameScreen("levels/temp", 1))
+end
+
+-- should remain last line to ensure activeScreen and proper navigation structure
+navigator:start()
