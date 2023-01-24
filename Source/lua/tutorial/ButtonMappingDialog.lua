@@ -2,7 +2,7 @@ local playdate <const> = playdate
 local gfx <const> = playdate.graphics
 local polygon <const> = playdate.geometry.polygon
 local playdateImage <const> = gfx.image.new("images/playdate_front")
-local dialogRect <const> = playdate.geometry.rect.new(50, 25, 280, 190)
+local dialogRect <const> = playdate.geometry.rect.new(50, 30, 280, 180)
 local dialogCenter <const> = dialogRect:centerPoint()
 local dialogPadding <const> = 14
 local titleFont = gfx.getFont()
@@ -39,13 +39,10 @@ function ButtonMappingDialog:resume()
     playdateImage:draw(imgX, y)
 
     gfx.setLineWidth(2)
-    smallFont:drawTextAligned("Throttle", imgX - 10, y+35, kTextAlignment.right)
-    smallFont:drawTextAligned("Up", imgX - 10, y+52, kTextAlignment.right)
-    smallFont:drawTextAligned("Left", imgX - 10, y+69, kTextAlignment.right)
-    smallFont:drawTextAligned("Down", imgX - 10, y+85, kTextAlignment.right)
+    smallFont:drawTextAligned("Throttle", imgX - 10, y+50, kTextAlignment.right)
     local poly = polygon.new(
-        imgX -5, y + 38,
-        imgX + 35, y + 38,
+        imgX -5, y + 58,
+        imgX + 35, y + 58,
         imgX + 35, y + 75
     )
     gfx.drawPolygon(poly)
