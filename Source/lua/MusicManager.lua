@@ -23,6 +23,7 @@ end
 
 function MusicManager:cancelFade()
     if self.fadeTimer then
+        self.fadeTimer:timerEndedCallback()
         self.fadeTimer:remove()
         self.fadeTimer = nil
     end
@@ -40,6 +41,10 @@ function MusicManager:play(path)
         if self.player then
             self.player:setStopOnUnderrun(false)
             self.player:setVolume(self.volume)
+            -- it's fine to start playback even if volume is 0,because playing at volume 0
+            -- does not seem to have cpu impact. probably sdk is smart enough not to play it.
+            -- this makes our state management easier; ie. we don't have to start / stop the song
+            -- on volume change
             self.player:play(0)
             self.currentPath = path
         end
@@ -86,9 +91,6 @@ function MusicManager:fade(volumeMultiplier)
         fadeTimer.timerEndedCallback = function()
             if targetVolume == 0.0  then
                 currentPlayer:stop()
-                if self.player == currentPlayer then
-                    self:stop()
-                end
             end
         end
     end

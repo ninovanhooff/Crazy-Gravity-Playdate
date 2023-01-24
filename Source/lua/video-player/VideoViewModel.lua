@@ -87,7 +87,7 @@ function VideoViewModel:onVideoFinished()
 end
 
 function VideoViewModel:update()
-    if self.timebase:isFinished() then
+    if self.timebase:isFinished() and not self.finished then
         self:onVideoFinished()
     end
     return self.finished
