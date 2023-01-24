@@ -155,7 +155,7 @@ function CreditsView:buildCreditsYielding()
 
     local qrCenterX <const> = screenCenterX + 8*tileSize
     y = y + 6*tileSize
-    y = y + self:drawTextCentered("Please leave me a comment :-)", y, qrCenterX) + imageSpacing
+    y = y + self:drawTextCentered("Please leave me a rating :-)", y, qrCenterX) + imageSpacing
     local qrImageWidth, qrImageHeight <const> = qrImage:getSize()
     qrImage:draw(qrCenterX - qrImageWidth/2, y)
     y = y + qrImageHeight + imageSpacing
