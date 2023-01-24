@@ -43,12 +43,6 @@ function ButtonMappingDialog:resume()
     smallFont:drawTextAligned("Up", imgX - 10, y+52, kTextAlignment.right)
     smallFont:drawTextAligned("Left", imgX - 10, y+69, kTextAlignment.right)
     smallFont:drawTextAligned("Down", imgX - 10, y+85, kTextAlignment.right)
-
-    smallFont:drawText("Steering", imgX + 130, y+20)
-    smallFont:drawText("A", imgX + 130, y+52)
-    smallFont:drawText("Throttle", imgX + 130, y+69)
-
-    --gfx.setColor(gfx.kColorXOR)
     local poly = polygon.new(
         imgX -5, y + 38,
         imgX + 35, y + 38,
@@ -56,7 +50,8 @@ function ButtonMappingDialog:resume()
     )
     gfx.drawPolygon(poly)
 
-
+    smallFont:drawText("Steering", imgX + 130, y+20)
+    smallFont:drawText("Throttle", imgX + 130, y+60)
 
 end
 
