@@ -78,7 +78,7 @@ function navigatorNS.Navigator:executePendingNavigators()
             navigator()
         end
         pendingNavigators = {}
-        local newPos = find(backStack, activeScreen)
+        local newPos = findIndexOf(backStack, activeScreen)
         if activeScreen and newPos and newPos ~= #backStack then
             -- the activeScreen was moved from the top of the stack to another position
             printT("Pausing screen", activeScreen.className, activeScreen)

@@ -2,14 +2,15 @@ import "gameHUD"
 import "specialsView"
 import "gameView"
 import "specialsViewModel"
-import "gameInputs"
 import "gameViewModel"
+import "gameInputs"
 
 local menu <const> = playdate.getSystemMenu()
 local calcTimeStep <const> = CalcTimeStep
 local processInputs <const> = ProcessInputs
 local renderGame <const> = RenderGame
 local renderGameDebug <const> = RenderGameDebug
+local isThrottleJustPressed <const> = isThrottleJustPressed
 local options <const> = GetOptions()
 
 colorT = {"red","green","blue","yellow"}
@@ -62,8 +63,10 @@ function GameScreen:resume()
 end
 
 function GameScreen:update()
-    if not gamePaused or isThrottleJustPressed() then
+    if isThrottleJustPressed() then
         gamePaused = false
+    end
+    if not gamePaused then
         processInputs()
         calcTimeStep()
     end

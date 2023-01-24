@@ -12,8 +12,9 @@ function boolToNum(bool)
     if bool then return 1 else return 0 end
 end
 
+--- returns -1, 1, or 0 depending on whether x is negative, positive, or 0
 function sign(x)
-    return x < 0 and -1 or 1
+    return (x < 0 and -1) or (x > 0 and 1) or 0
 end
 
 --- round to the nearest multiple of increment
@@ -40,6 +41,22 @@ end
 
 function pickRandom(tbl)
     return tbl[random(1, #tbl)]
+end
+
+--- calculate the shortest distance to reach destRotation from startRotation
+--- assumes a circle with 24 angles, so that angle 0 == angle 24 and the maximum angle is 23
+--- example: smallestPlaneRotation(23, 1) => -2
+function smallestPlaneRotation(destRotation, startRotation)
+    return ((destRotation - startRotation) + 12) % 24 - 12
+end
+
+function clampPlaneRotation(rotation)
+    local modded = rotation % 24
+    if modded < 0 then
+        return modded + 24
+    else
+         return modded
+    end
 end
 
 -- ### START Lume functions
@@ -79,7 +96,7 @@ end
 
 
 --- return index of value in table t; or nil
-function find(t, value)
+function findIndexOf(t, value)
     local iter = getiter(t)
     for k, v in iter(t) do
         if v == value then return k end

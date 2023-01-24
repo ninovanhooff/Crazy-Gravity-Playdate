@@ -6,10 +6,13 @@
 
 class('Input').extends()
 
+-- Values must be powers of 2 for bitmasking purposes
+Input.actionNone = 0
 Input.actionLeft = 1
 Input.actionRight = 2
-Input.actionThrottle = 3
-Input.actionSelfRight = 4
+Input.actionThrottle = 4
+Input.actionSelfRight = 8
+Input.actionSelfDestruct = 16
 
 function Input:init()
     Input.super.init(self)
@@ -19,6 +22,19 @@ function Input:isInputPressed(action)
     return false
 end
 
+function Input:resetRotationTimeout() end
+
+--- returns new rotation given current rotation, or nil if no change
+function Input:rotationInput(currentRotation)
+    return nil
+end
+
 function Input:isInputJustPressed(action)
+    return false
+end
+
+--- returns true when the input is not in take-off position.
+--- eg. when crank is pointed downwards
+function Input:isTakeOffBlocked()
     return false
 end

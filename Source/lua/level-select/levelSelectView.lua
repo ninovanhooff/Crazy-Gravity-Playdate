@@ -37,6 +37,7 @@ local listRect <const> = playdate.geometry.rect.new(gutter, 0, 174, 240)
 local detailRect <const> = playdate.geometry.rect.new(400-238, 0, 238, 240)
 local listView = playdate.ui.gridview.new(0, thumbSize + 2* gutter)
 listView:setCellPadding(0, 0, gutter, gutter) -- left, right , top, bottom
+listView:setScrollDuration(200)
 
 local challengeRect <const> = playdate.geometry.rect.new(217, 98, 164, 71)
 local challengeListView = playdate.ui.gridview.new(challengeRect.width, challengeRect.height)
@@ -216,15 +217,16 @@ function LevelSelectView:render()
     dPad:getImage(viewModel.dPadImageIdx):draw(223,182)
     aButton:getImage(viewModel.aButtonImageIdx):draw(319,182)
 
-    if listView.needsDisplay or self.lockAnimation then
+    if listView.needsDisplay or self.lockAnimation or viewModel.listOffset ~= 0 then
+        local offsetRect = listRect:offsetBy(0,viewModel.listOffset)
         gfx.setColor(gfx.kColorWhite)
-        gfx.fillRect(listRect)
-        listView:drawInRect(listRect.x, listRect.y, listRect.width, listRect.height)
+        gfx.fillRect(offsetRect)
+        listView:drawInRect(offsetRect.x, offsetRect.y, offsetRect.width, offsetRect.height)
 
         -- connector between list and console
         gfx.setColor(gfx.kColorWhite)
         gfx.fillRect(178,0,10,400)
-        local _,y,_, height = listView:getCellBounds(1, viewModel.selectedIdx, 1, listRect.width)
+        local _,y,_, height = listView:getCellBounds(1, viewModel.selectedIdx, 1, offsetRect.width)
         connector:draw(178, y + height/2 - 9)
         -- redraw part of the console that occludes the list
         gfx.setClipRect(detailRect.x, detailRect.y, 40, 240)

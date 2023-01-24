@@ -6,11 +6,10 @@
 
 
 local random <const> = math.random
+local clampPlaneRotation <const> = clampPlaneRotation
 local inputManager <const> = inputManager
 local throttle <const> = Input.actionThrottle
 local selfRight <const> = Input.actionSelfRight
-local left <const> = Input.actionLeft
-local right <const> = Input.actionRight
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 local screenWidth <const> = screenWidth
@@ -25,8 +24,6 @@ function PlanePhysicsViewModel:init()
     self.flying = true -- always true for StartScreen
     self.planeX, self.planeY = 100,100
     self.vx,self.vy,self.planeRot,self.thrust = 0,0,18,0
-    --- counter for the current rotation timeout. positive is clockwise timeout, negative is ccw timeout
-    self.rotationTimeout = 0
 end
 
 function PlanePhysicsViewModel:calcPlane()
@@ -62,32 +59,9 @@ function PlanePhysicsViewModel:processInputs()
     end
 
     -- rotation
-    if inputManager:isInputPressed(left) then
-        if self.rotationTimeout > 0 then
-            -- cancel clockwise rotation timeout
-            self.rotationTimeout = 0
-        end
-        if self.flying  and self.rotationTimeout == 0 then
-            self.planeRot = self.planeRot - 1
-            if self.planeRot<0 then
-                self.planeRot = 23
-            end
-            self.rotationTimeout = -rotationDelay -- negative for left rotation
-        else
-            self.rotationTimeout = self.rotationTimeout + 1
-        end
-    elseif inputManager:isInputPressed(right) then
-        if self.rotationTimeout < 0 then
-            -- cancel counter-clockwise rotation timeout
-            self.rotationTimeout = 0
-        end
-        if self.flying and self.rotationTimeout == 0 then
-            self.planeRot = self.planeRot + 1
-            self.planeRot = self.planeRot % 24
-            self.rotationTimeout = rotationDelay
-        else
-            self.rotationTimeout = self.rotationTimeout - 1
-        end
+    local rotationInput = inputManager:rotationInput(self.planeRot)
+    if rotationInput then
+        self.planeRot = rotationInput
     elseif inputManager:isInputPressed(selfRight) then
             if self.planeRot~=18 then
                 if self.planeRot>18 or self.planeRot<6 then
@@ -96,9 +70,7 @@ function PlanePhysicsViewModel:processInputs()
                     self.planeRot = self.planeRot+1
                 end
             end
-            if self.planeRot<0 then self.planeRot = 23 end
-            self.rotationTimeout = 0
-    else
-        self.rotationTimeout = 0
+            self.planeRot = clampPlaneRotation(self.planeRot)
+            inputManager:resetRotationTimeout()
     end
 end

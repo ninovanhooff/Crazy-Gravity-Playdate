@@ -4,9 +4,9 @@
 --- DateTime: 29/04/2022 11:20
 ---
 
-local numChallenges <const> = numChallenges
-local levelNames <const> = levelNames
+local playdate <const> = playdate
 local keyRepeatTimer <const> = playdate.timer.keyRepeatTimer
+local getCrankTicks <const> = playdate.getCrankTicks
 local pressed <const> = playdate.buttonIsPressed
 local justPressed <const> = playdate.buttonJustPressed
 local justReleased <const> = playdate.buttonJustReleased
@@ -16,9 +16,18 @@ local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
+local resourceLoader <const> = GetResourceLoader()
+local scrollUpSound <const> = resourceLoader:getSound("sounds/ui_scroll_down.wav")
+local scrollDownSound <const> = resourceLoader:getSound("sounds/ui_scroll_up.wav")
+local scrollDenialSound <const> = resourceLoader:getSound("sounds/ui_scroll_denial.wav")
 
+local sign <const> = sign
 local clamp <const> = clamp
+local abs <const> = math.abs
 local ceil <const> = math.ceil
+
+local numChallenges <const> = numChallenges
+local levelNames <const> = levelNames
 
 class("LevelSelectViewModel").extends()
 
@@ -36,6 +45,7 @@ function LevelSelectViewModel:init()
             -- scores added on resume
         }
     end
+    self.listOffset = 0 -- vertical position, for bumper effect
     self.selectedIdx = numLevelsUnlocked()
     self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
     self.dPadImageIdx = 1
@@ -121,16 +131,44 @@ function LevelSelectViewModel:destroy()
 end
 
 function LevelSelectViewModel:moveSelection(offset)
-    self.selectedIdx = clamp(self.selectedIdx + offset, 1, #self.menuOptions)
+    if offset == 0 then return end
+
+    local oldSelectedIdx = self.selectedIdx
+    self.selectedIdx = clamp(oldSelectedIdx + offset, 1, #self.menuOptions)
     --self.selectedChallengeIdx = firstUnCompletedChallenge(self.selectedIdx) or 1
+
+    local changeSign = sign(self.selectedIdx - oldSelectedIdx)
+    if changeSign == 1 then
+        scrollDownSound:play()
+    elseif changeSign == 0 then
+        scrollDenialSound:play()
+        if self.selectedIdx == 1 then
+            self.listOffset = 4
+        elseif self.selectedIdx == #self.menuOptions then
+            self.listOffset = -4
+        end
+    elseif changeSign == -1 then
+        scrollUpSound:play()
+    end
+
     self:startVideo(levelPath(self.selectedIdx))
 end
 
 --- returns true when finished
 function LevelSelectViewModel:update()
+    -- clear bmpers by overdraw
+    if abs(self.listOffset) > 1 then
+        self.listOffset = self.listOffset/2
+    else
+        self.listOffset = 0
+    end
+
     if self.videoViewModel then
         self.videoViewModel:update()
     end
+
+    self:moveSelection(getCrankTicks(5))
+
     if justPressed(buttonDown) then
         local function timerCallback()
             self:moveSelection(1)

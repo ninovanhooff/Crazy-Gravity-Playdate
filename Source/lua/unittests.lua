@@ -44,4 +44,35 @@ test(7, luaMod(7, 7), "luaMod(8,8)")
 test(1, luaMod(8, 7), "luaMod(9,8)")
 
 
+local smallestPlaneRotation <const> = smallestPlaneRotation
+local function smallestRotationTest(destRotation, startRotation, expected)
+    test(expected, smallestPlaneRotation(destRotation,startRotation), table.concat({ "smallestRotation", destRotation, startRotation }, ", " ))
+end
+
+smallestRotationTest(6,5, 1)
+smallestRotationTest(5,6, -1)
+smallestRotationTest(23, 0 , -1)
+smallestRotationTest(0,23, 1)
+smallestRotationTest(1, 23, 2)
+smallestRotationTest(23, 1, -2)
+smallestRotationTest(0, 12, -12) -- equal distance, result sign doesn't matter
+
+local clampPlaneRotation <const> = clampPlaneRotation
+local function clampPlaneRotationTest(expected, rotation)
+    test(expected, clampPlaneRotation(rotation), "clampPlaneRotation ", rotation)
+end
+
+clampPlaneRotationTest(0,0)
+clampPlaneRotationTest(1,1)
+clampPlaneRotationTest(23,-1)
+clampPlaneRotationTest(14,-10)
+clampPlaneRotationTest(2,50)
+
+test(1, sign(42), "sign(42)")
+test(0, sign(0), "sign(0)")
+test(-1, sign(-42), "sign(-42)")
+test(1, sign(0.1), "sign(0.1)")
+test(-1, sign(-0.1), "sign(-0.1)")
+
+
 print "----TESTS OK"

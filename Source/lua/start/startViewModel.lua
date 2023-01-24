@@ -54,8 +54,6 @@ local function getChallengesHint()
     return string.format("Achievements unlocked: %d / 75", challengesUnlocked)
 end
 
-print("hint", getChallengesHint())
-
 local function getHintText()
     if #records > numLevels/2 then
         return getChallengesHint()
