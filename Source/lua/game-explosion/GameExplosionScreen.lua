@@ -60,10 +60,6 @@ function GameExplosionScreen:pause()
     end
 end
 
-function GameExplosionScreen:destroy()
-    self:pause()
-end
-
 function GameExplosionScreen:resume()
     self.settingsMenuItem = menu:addMenuItem("Settings", function()
         require "lua/settings/SettingsScreen"
@@ -74,7 +70,11 @@ function GameExplosionScreen:resume()
         popScreen() -- remove gameScreen
     end)
     self.restartMenuItem = menu:addMenuItem("Restart level", function()
-        popScreen() -- remove explosion
+        popScreen() -- remove self
         ResetGame()
     end)
+end
+
+function GameExplosionScreen:destroy()
+    self:pause()
 end
