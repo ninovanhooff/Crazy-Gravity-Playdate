@@ -1,14 +1,21 @@
 # Gravity Express
 
 This game is based on [Crazy Gravity for Playstation Portable](https://www.gamebrew.org/wiki/Crazy_Gravity_Portable_PSP), which in turn
-is based on [the PC version](https://www.xlmsoft.de/crazygravity.php) by Axel Meierhöfer.
-He gave written permission to use the sounds and graphics of the original game.
+is based on [the PC version](https://www.xlmsoft.de/crazygravity.php) by Axel Meierhöfer. \
+Axel Meierhöfer gave written permission to use the sounds and graphics of the original game.
+
+Note that you may run the project and use the start and level select screens, but levels are not included in this project.
+
+To support the project, buy [the game on Itch.io](https://ninovanhooff.itch.io/gravity-express).
 
 ## Development
 
-### Level format
-Bundled level files are in lua table format and will be compiled to lua bytecode.
-Available as pdz at runtime, which can be loaded with file.run()
+This repository gives an insight in how a playdate game with multiple screens could be set up. 
+All level files are in a private repository though. If you want to have access to the level files too,
+please support this project by buying the game on Itch.io and copy the `levels` folder into the 
+`Source` directory of this project
+
+Devlog with many technical explainers can be found here: [Devlog](https://devforum.play.date/t/gravity-express/4310)
 
 ## Credits
 Nino - Programming
