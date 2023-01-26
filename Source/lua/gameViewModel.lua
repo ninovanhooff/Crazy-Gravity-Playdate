@@ -317,11 +317,11 @@ function DecreaseLife()
     livesLost = livesLost + 1
     if extras[2]==1 then
         numGameOvers = numGameOvers + 1
-        local config = (numGameOvers < 2 and
-            GAME_OVER_CONFIGS.GAME_OVER_NO_SKIP or
-            GAME_OVER_CONFIGS.GAME_OVER_MAY_SKIP
+        local gameOverConfig = (numGameOvers * InitialLives > 12  and
+            GAME_OVER_CONFIGS.GAME_OVER_MAY_SKIP or
+            GAME_OVER_CONFIGS.GAME_OVER_NO_SKIP
         )
-        pushScreen(GameOverScreen(config))
+        pushScreen(GameOverScreen(gameOverConfig))
     else
         extras[2] = extras[2]-1 -- decrease life
         gameHUD:onChanged(2) -- update life counter in HUD
