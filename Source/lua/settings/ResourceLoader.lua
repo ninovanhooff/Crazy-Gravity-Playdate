@@ -153,7 +153,6 @@ function ResourceLoader:getSound(pathWithExtension)
 end
 
 local function setVolume(self, volume, ...)
-    self.soundVolume = volume
     for _,item in ipairs({ ... }) do
         if item then
             item:setVolume(volume)
@@ -163,6 +162,7 @@ end
 
 --- volume range 0.0-1.0
 function ResourceLoader:setSoundVolume(volume)
+    self.soundVolume = volume
     for _,item in pairs(cachedSamplePlayers) do
         item:setVolume(volume)
     end

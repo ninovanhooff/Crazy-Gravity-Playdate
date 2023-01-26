@@ -6,6 +6,7 @@ local shardSize <const> = 24 / shardingDim -- plane is 24px in both dimensions
 local gfx <const> = playdate.graphics
 local random <const> = math.random
 local unFlipped <const> = playdate.graphics.kImageUnflipped
+local resourceLoader <const> = GetResourceLoader()
 local tileSize <const> = tileSize
 local planePos <const> = planePos
 local camPos <const> = camPos
@@ -107,7 +108,7 @@ end
 --- return whether the explosion is done
 function GameExplosion:update()
     if self.blastFrame == 0 and Sounds then
-        explode_sound:playAt(0, 1-(self.timer/duration))
+        explode_sound:playAt(0, (1-(self.timer/duration)) * resourceLoader.soundVolume)
    end
     self.camX, self.camY = getCam()
     forShards(self, updateShard)
