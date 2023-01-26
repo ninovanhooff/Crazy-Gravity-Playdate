@@ -19,7 +19,7 @@ function VideoViewModel:init(basePath, loop)
     self.video:getContext() -- todo remove after fix: sdk 1.13.0-beta6 crash workaround: https://devforum.play.date/t/firmware-1-13-0-beta6-crash-video-getcontext-is-broken/9557/2
     print("video size", width, height, "frameRate", self.framerate, "frameCount", self.frameCount)
 
-    local audio = snd.fileplayer.new(basePath)
+    self.audio = snd.fileplayer.new(basePath)
     print("audio", audio)
     self.timebase = audio
         and FilePlayerTimebase(audio, loop)
@@ -79,6 +79,14 @@ end
 
 function VideoViewModel:getOffset()
     return self.timebase:getOffset()
+end
+
+function VideoViewModel:setVolume(vol)
+    if self.audio then
+        self.audio:setVolume(vol)
+    else
+        print("WARN tried to set volume on video without audio track")
+    end
 end
 
 function VideoViewModel:onVideoFinished()

@@ -17,16 +17,16 @@ function VideoPlayerScreen:update()
 end
 
 function VideoPlayerScreen:pause()
-    self.videoPlayerViewModel:pause()
     self.videoPlayerView:pause()
+    -- view calls through to VM
+end
+
+function VideoPlayerScreen:resume()
+    self.videoPlayerView:resume()
+    -- view calls through to VM
 end
 
 function VideoPlayerScreen:destroy()
     self.videoPlayerViewModel:destroy()
     self.videoPlayerView:destroy()
-end
-
-function VideoPlayerScreen:resume()
-    self.videoPlayerViewModel:resume()
-    self.videoPlayerView:resume()
 end

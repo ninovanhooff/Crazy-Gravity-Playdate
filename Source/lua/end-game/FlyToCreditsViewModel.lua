@@ -3,7 +3,7 @@ import "../credits/CreditsScreen.lua"
 local tileSize <const> = tileSize
 local planeOffset <const> = 7 * tileSize
 
-local rocketEngineStop = playdate.sound.sampleplayer.new("sounds/rocket_engine_stop")
+local rocketEngineStop = GetResourceLoader():getSound("sounds/rocket_engine_stop")
 
 class("FlyToCreditsViewModel").extends()
 
@@ -15,7 +15,7 @@ function FlyToCreditsViewModel:init(loopSpecs)
     self:resetRocketShip()
     self.rocketShipHeight = 0 -- set by View
     self.bgType = FlyToCreditsViewModel.bgTypes.surface
-    self.swish_sound = playdate.sound.sampleplayer.new("sounds/hollow-swish-airy-short.wav")
+    self.swish_sound = GetResourceLoader():getSound("sounds/hollow-swish-airy-short.wav")
 end
 
 function FlyToCreditsViewModel:update()

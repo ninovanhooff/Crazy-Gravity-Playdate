@@ -1,6 +1,7 @@
 local justPressed <const> = playdate.buttonJustPressed
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
+local resourceLoader <const> = GetResourceLoader()
 
 class("VideoPlayerViewModel").extends(VideoViewModel)
 
@@ -17,6 +18,7 @@ function VideoPlayerViewModel:resume()
     self.originalRefreshRate = playdate.display.getRefreshRate()
     playdate.display.setRefreshRate(self.framerate)
     playdate.setAutoLockDisabled(true)
+    VideoPlayerViewModel.super.setVolume(self, resourceLoader.soundVolume)
     VideoPlayerViewModel.super.resume(self)
 end
 

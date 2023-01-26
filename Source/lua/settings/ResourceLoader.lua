@@ -73,45 +73,45 @@ end
 function ResourceLoader:loadSounds(audioStyle, onlyStartAssets)
     -- common sounds
     if not thrust_sound then
-        thrust_sound = sampleplayer.new("sounds/thrust.wav")
+        thrust_sound = self:getSound("sounds/thrust.wav")
     end
     if not swish_sound_reverse then
-        swish_sound_reverse = sampleplayer.new("sounds/hollow-swish-airy-short-reverse.wav")
+        swish_sound_reverse = self:getSound("sounds/hollow-swish-airy-short-reverse.wav")
     end
 
-    ui_confirm = sampleplayer.new("sounds/ui_confirm.wav")
+    ui_confirm = self:getSound("sounds/ui_confirm.wav")
 
     if onlyStartAssets then
         return
     end
 
-    ui_cancel = sampleplayer.new("sounds/ui_cancel.wav")
-    explode_sound = sampleplayer.new("sounds/explosion.wav")
-    unlock_sound = sampleplayer.new("sounds/unlock.wav")
-    unlock_sound_denied = sampleplayer.new("sounds/unlock_denied.wav")
-    landing_sound = sampleplayer.new("sounds/landing.wav")
+    ui_cancel = self:getSound("sounds/ui_cancel.wav")
+    explode_sound = self:getSound("sounds/explosion.wav")
+    unlock_sound = self:getSound("sounds/unlock.wav")
+    unlock_sound_denied = self:getSound("sounds/unlock_denied.wav")
+    landing_sound = self:getSound("sounds/landing.wav")
     soundManager:loadGameSounds()
 
     -- style-specific sounds
     if audioStyle == "classic" then
-        pickup_sound = sampleplayer.new("sounds/classic/pickup.wav")
-        key_sound = sampleplayer.new("sounds/classic/key.wav")
-        local extras_player = sampleplayer.new(playdate.sound.sample.new("sounds/classic/extra.wav"))
+        pickup_sound = self:getSound("sounds/classic/pickup.wav")
+        key_sound = self:getSound("sounds/classic/key.wav")
+        local extras_player = self:getSound("sounds/classic/extra.wav")
         extra_sounds = {
             extras_player, extras_player, extras_player
         }
-        fuel_sound = sampleplayer.new("sounds/classic/fuel.wav")
-        dump_sound = sampleplayer.new("sounds/classic/dump.wav")
+        fuel_sound = self:getSound("sounds/classic/fuel.wav")
+        dump_sound = self:getSound("sounds/classic/dump.wav")
     else
-        pickup_sound = sampleplayer.new("sounds/pickup.wav")
-        dump_sound = sampleplayer.new("sounds/dump.wav")
-        key_sound = sampleplayer.new("sounds/key.wav")
+        pickup_sound = self:getSound("sounds/pickup.wav")
+        dump_sound = self:getSound("sounds/dump.wav")
+        key_sound = self:getSound("sounds/key.wav")
         extra_sounds = {
-            sampleplayer.new("sounds/extra_turbo.wav"),
-            sampleplayer.new("sounds/extra_life.wav"),
-            sampleplayer.new("sounds/extra_cargo.wav"),
+            self:getSound("sounds/extra_turbo.wav"),
+            self:getSound("sounds/extra_life.wav"),
+            self:getSound("sounds/extra_cargo.wav"),
         }
-        fuel_sound = sampleplayer.new("sounds/fuel.wav")
+        fuel_sound = self:getSound("sounds/fuel.wav")
     end
     self:setSoundVolume(self.soundVolume)
     self.audioStyle = audioStyle
@@ -148,18 +148,10 @@ end
 function ResourceLoader:getSound(pathWithExtension)
     if not cachedSamplePlayers[pathWithExtension] then
         cachedSamplePlayers[pathWithExtension] = sampleplayer.new(pathWithExtension)
+        cachedSamplePlayers[pathWithExtension]:setVolume(self.soundVolume)
     end
     return cachedSamplePlayers[pathWithExtension]
 end
-
-local function setVolume(self, volume, ...)
-    for _,item in ipairs({ ... }) do
-        if item then
-            item:setVolume(volume)
-        end
-    end
-end
-
 --- volume range 0.0-1.0
 function ResourceLoader:setSoundVolume(volume)
     self.soundVolume = volume
@@ -169,13 +161,6 @@ function ResourceLoader:setSoundVolume(volume)
     soundManager:setVolume(volume)
     local extra_sounds = extra_sounds or {}
     Sounds = volume > 0.0
-    if Sounds then
-        setVolume(self, volume,
-            thrust_sound, explode_sound, unlock_sound, unlock_sound_denied, pickup_sound, landing_sound, key_sound,
-            extra_sounds[1], extra_sounds[2], extra_sounds[3], fuel_sound, dump_sound,
-            swish_sound_reverse, ui_cancel, ui_confirm
-        )
-    end
 end
 
 --- volume range 0.0-1.0. If 0.0, volume is not adjusted, but music is stopped

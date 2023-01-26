@@ -16,15 +16,15 @@ local loop <const> = gfx.animation.loop
 local rocketExhaustBurnImgTable = gfx.imagetable.new("images/rocket_ship_burn")
 local rocketExhaustStartImgTable = gfx.imagetable.new("images/rocket_ship_burn_start")
 
-local conveyorBeltPlayer = snd.sampleplayer.new("sounds/conveyor_belt")
+local resourceLoader <const> = GetResourceLoader()
+local conveyorBeltPlayer = resourceLoader:getSound("sounds/conveyor_belt")
 
-local rocketEngineStart <const> = snd.sampleplayer.new("sounds/rocket_engine_start")
-local rocketEngineLoopSamplePlayer <const> = snd.sampleplayer.new("sounds/rocket_engine_loop")
+local rocketEngineStart <const> = resourceLoader:getSound("sounds/rocket_engine_start")
+local rocketEngineLoopSamplePlayer <const> = resourceLoader:getSound("sounds/rocket_engine_loop")
 local barrierPlayer = soundManager.sounds.barrier.player
 assert(barrierPlayer)
 
-local clickSample = snd.sample.new("sounds/launch_control_click")
-local clickSamplePlayer = snd.sampleplayer.new(clickSample)
+local clickSamplePlayer = resourceLoader:getSound("sounds/launch_control_click")
 assert(clickSamplePlayer)
 
 local getCrankChange <const> = playdate.getCrankChange
@@ -172,6 +172,7 @@ function EndGameViewModel:startVideo(path)
         self.videoViewModel:destroy()
     end
     self.videoViewModel = VideoViewModel(path)
+    self.videoViewModel:setVolume(resourceLoader.soundVolume)
     self.videoPlayerView = VideoPlayerView(self.videoViewModel)
     self.videoViewModel.offsetX = 14
     self.videoViewModel.offsetY = 86
