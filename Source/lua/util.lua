@@ -113,6 +113,14 @@ function match(t, fn)
     return nil
 end
 
+function map(t, fn)
+    fn = iteratee(fn)
+    local iter = getiter(t)
+    local rtn = {}
+    for k, v in iter(t) do rtn[k] = fn(v, k) end
+    return rtn
+end
+
 -- ### END Lume functions
 
 function printf(...)

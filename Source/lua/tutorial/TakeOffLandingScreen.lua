@@ -14,7 +14,7 @@ function TakeOffLandingScreen:init(x, y)
 end
 
 function TakeOffLandingScreen:update()
-    if not inputManager:isTakeOffBlocked(Input.actionSelfRight) then
+    if not inputManager:isTakeOffLandingBlocked(planeRot) then
         options:setSelfRightTipShown(true)
         options:saveUserOptions()
         popScreen()

@@ -97,7 +97,8 @@ local TURN_LEFT_KEY <const> = "turnLeftMapping"
 local TURN_RIGHT_KEY <const> = "turnRightMapping"
 local THROTTLE_BUTTONS_KEY <const> = "throttleMapping"
 local THROTTLE_CRANK_KEY <const> = "throttleCrankMapping"
-local SELF_RIGHT_KEY <const> = "selfRightMapping"
+--- Self-right and self-destruct are always mapped to the same button
+local SELF_RIGHT_AND_DESTRUCT_KEY <const> = "selfRightMapping"
 
 local gameOptions = {
     -- name (str): option's display name in menu
@@ -136,10 +137,11 @@ local gameOptions = {
         header = 'Button input',
         options = {
             { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
-            { name='Turn left', key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
-            { name='Turn right', key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
-            { name='Point up', key= SELF_RIGHT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
-            { name='Throttle', key= THROTTLE_BUTTONS_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 7 or 5)},
+            { name=Actions.Labels[Actions.Left], key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
+
+            { name=Actions.Labels[Actions.Right], key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
+            { name=Actions.Labels[Actions.SelfRight], key= SELF_RIGHT_AND_DESTRUCT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
+            { name=Actions.Labels[Actions.Throttle], key= THROTTLE_BUTTONS_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 7 or 5)},
         }
     },
     {
@@ -366,16 +368,17 @@ function optionsNS.Options:createButtonMapping(isCrankDocked)
     print("Create button mapping docked", isCrankDocked)
     if isCrankDocked then
         return {
-            [Input.actionLeft] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
-            [Input.actionRight] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
-            [Input.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_BUTTONS_KEY)].keys,
-            [Input.actionSelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
-            [Input.actionSelfDestruct] = BUTTON_VALS[self:read(SELF_RIGHT_KEY)].keys,
+            [Actions.Left] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
+            [Actions.Right] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
+            [Actions.Throttle] = BUTTON_VALS[self:read(THROTTLE_BUTTONS_KEY)].keys,
+            [Actions.SelfRight] = BUTTON_VALS[self:read(SELF_RIGHT_AND_DESTRUCT_KEY)].keys,
+            -- Self-right and self-destruct are always mapped to the same button
+            [Actions.SelfDestruct] = BUTTON_VALS[self:read(SELF_RIGHT_AND_DESTRUCT_KEY)].keys,
         }
     else
         return {
-            [Input.actionThrottle] = BUTTON_VALS[self:read(THROTTLE_CRANK_KEY)].keys,
-            [Input.actionSelfDestruct] = playdate.kButtonA,
+            [Actions.Throttle] = BUTTON_VALS[self:read(THROTTLE_CRANK_KEY)].keys,
+            [Actions.SelfDestruct] = playdate.kButtonA,
         }
     end
 end

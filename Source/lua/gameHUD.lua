@@ -4,10 +4,15 @@ local abs <const> = math.abs
 local gfx <const> = playdate.graphics
 local unFlipped <const> = gfx.kImageUnflipped
 local defaultFont = gfx.getFont()
-local monoFont <const> = GetResourceLoader():getMonoFont()
+local resourceLoader <const> = GetResourceLoader()
+local monoFont <const> = resourceLoader:getMonoFont()
+local smallFont <const> = resourceLoader:getSmallFont()
 local renderTooltip <const> = Tooltips.renderTooltip
 local screenWidth <const> = screenWidth
+local inputManager <const> = inputManager
+local currentTime <const> = playdate.sound.getCurrentTime
 local hudY <const> = hudY
+local centerTextCoordinates <const> = playdate.geometry.point.new(screenWidth/2, hudY+1)
 local hudHeight <const> = screenHeight - hudY
 
 local hudIcons = sprite -- hudIcons are placed at origin of the sprite
@@ -59,8 +64,19 @@ function GameHUD:challengeViewState()
     return currentValue, iconIdx
 end
 
+function GameHUD:clear()
+    gfx.setColor(hudBgClr)
+    gfx.fillRect(0,hudY,screenWidth,16)
+    gfx.setColor(hudFgClr)
+end
+
 function GameHUD:render(conservative)
-    if frameCounter == 0 then
+    local secondsSinceInputConfigChange = currentTime() - inputManager.lastDockedChangeTime
+    if secondsSinceInputConfigChange < 1 then
+        self:renderControlsType()
+    elseif secondsSinceInputConfigChange < 4 then
+        self:renderControlsMapping()
+    elseif frameCounter == 0 then
         self:renderStart()
     elseif conservative then
         self:renderChallenge()
@@ -73,11 +89,27 @@ function GameHUD:render(conservative)
     end
 end
 
+function GameHUD:renderCenteredText(text)
+    smallFont:drawTextAligned(
+        text,
+        centerTextCoordinates.x, centerTextCoordinates.y,
+        kTextAlignment.center
+    )
+end
+
+function GameHUD:renderControlsType()
+    self:clear()
+    self:renderCenteredText(inputManager:inputType())
+end
+
+function GameHUD:renderControlsMapping()
+    self:clear()
+    self:renderCenteredText(inputManager:fullMappingString())
+end
+
 --- Render HUD for frame 0, with challenge centered
 function GameHUD:renderStart()
-    gfx.setColor(hudBgClr)
-    gfx.fillRect(0,hudY,screenWidth,16)
-    gfx.setColor(hudFgClr)
+    self:clear()
 
     local font = defaultFont
     local _, iconIdx = self:challengeViewState()

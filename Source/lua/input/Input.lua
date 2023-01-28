@@ -6,14 +6,6 @@
 
 class('Input').extends()
 
--- Values must be powers of 2 for bitmasking purposes
-Input.actionNone = 0
-Input.actionLeft = 1
-Input.actionRight = 2
-Input.actionThrottle = 4
-Input.actionSelfRight = 8
-Input.actionSelfDestruct = 16
-
 function Input:init()
     Input.super.init(self)
 end
@@ -33,8 +25,8 @@ function Input:isInputJustPressed(action)
     return false
 end
 
---- returns true when the input is not in take-off position.
+--- returns true when the input is not in take-off or landing position.
 --- eg. when crank is pointed downwards
-function Input:isTakeOffBlocked()
+function Input:isTakeOffLandingBlocked(currentRotation)
     return false
 end

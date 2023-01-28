@@ -8,8 +8,8 @@
 local random <const> = math.random
 local clampPlaneRotation <const> = clampPlaneRotation
 local inputManager <const> = inputManager
-local throttle <const> = Input.actionThrottle
-local selfRight <const> = Input.actionSelfRight
+local throttle <const> = Actions.Throttle
+local selfRight <const> = Actions.SelfRight
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 local screenWidth <const> = screenWidth

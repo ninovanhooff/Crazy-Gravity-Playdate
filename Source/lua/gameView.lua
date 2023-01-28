@@ -84,8 +84,8 @@ local function drawHomeBaseIndicator(centerX, centerY)
 end
 
 function RenderSelfRightTooltip(anchorX, anchorY)
-    local buttonMappingString = inputManager:mappingString(Input.actionSelfRight)
-    local tooltip = { text= buttonMappingString .. ": Point up" }
+    local buttonMappingString = inputManager:actionMappingString(Actions.SelfRight)
+    local tooltip = { text= buttonMappingString .. ": " .. Actions.Labels[Actions.SelfRight] }
     renderTooltip(
         tooltip,
         anchorX or halfGameWidthPixels,

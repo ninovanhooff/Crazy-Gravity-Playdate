@@ -10,14 +10,14 @@ local clampPlaneRotation <const> = clampPlaneRotation
 local thrust_sound <const> = thrust_sound
 
 local inputManager = inputManager
-local throttle <const> = Input.actionThrottle
-local selfRight <const> = Input.actionSelfRight
+local throttle <const> = Actions.Throttle
+local selfRight <const> = Actions.SelfRight
 
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 
 function ProcessInputs()
-    if landedAt and inputManager:isTakeOffBlocked() then
+    if landedAt and inputManager:isTakeOffLandingBlocked(planeRot) then
         pushScreen(TakeOffLandingScreen())
         return
     end

@@ -20,7 +20,7 @@ function GameExplosionScreen:init(calcPlane, calcGameCam)
 end
 
 function GameExplosionScreen:update()
-    if inputManager:isInputJustPressed(Input.actionThrottle) and explosion then
+    if inputManager:isInputJustPressed(Actions.Throttle) and explosion then
         explosion:fastForward()
     end
     if explosion and explosion:update() then

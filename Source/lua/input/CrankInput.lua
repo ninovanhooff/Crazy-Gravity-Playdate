@@ -5,7 +5,7 @@ local round <const> = round
 local smallestPlaneRotation <const> = smallestPlaneRotation
 local clampPlaneRotation <const> = clampPlaneRotation
 
-local supportedActionsMask <const> = Input.actionLeft | Input.actionRight | Input.actionSelfRight
+local supportedActionsMask <const> = Actions.Left | Actions.Right | Actions.SelfRight
 
 class("CrankInput").extends(Input)
 
@@ -23,7 +23,7 @@ local function getCrankPlaneRotation()
 end
 
 function CrankInput:isInputPressed(action)
-    if action == Input.actionSelfRight then
+    if action == Actions.SelfRight then
         return getCrankPlaneRotation() == 18 -- straight up
     else
         return false -- CrankInput supports rotationInput for steering
@@ -41,7 +41,7 @@ function CrankInput:rotationInput(currentRotation)
     end
 end
 
-function CrankInput:mappingString(action)
+function CrankInput:actionMappingString(action)
     if action & supportedActionsMask ~= 0 then
         return "🎣"
     else
@@ -49,6 +49,6 @@ function CrankInput:mappingString(action)
     end
 end
 
-function CrankInput:isTakeOffBlocked()
+function CrankInput:isTakeOffLandingBlocked(_)
     return abs(smallestPlaneRotation(18, getCrankPlaneRotation())) > landingTolerance.rotation
 end

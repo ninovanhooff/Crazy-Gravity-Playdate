@@ -4,6 +4,7 @@
 --- DateTime: 10/07/2022 17:19
 ---
 local clampPlaneRotation <const> = clampPlaneRotation
+local abs <const> = math.abs
 
 local buttonA <const> = playdate.kButtonA
 local buttonB <const> = playdate.kButtonB
@@ -12,8 +13,8 @@ local buttonDown <const> = playdate.kButtonDown
 local buttonLeft <const> = playdate.kButtonLeft
 local buttonRight <const> = playdate.kButtonRight
 
-local actionLeft <const> = Input.actionLeft
-local actionRight <const> = Input.actionRight
+local actionLeft <const> = Actions.Left
+local actionRight <const> = Actions.Right
 
 local buttonGlyphs <const> = {
     [buttonLeft] = "⬅",
@@ -46,6 +47,17 @@ function ButtonInput:isInputJustPressed(action)
     return justPressed(self.mapping[action])
 end
 
+function Input:isTakeOffLandingBlocked(currentRotation)
+    if not self.mapping[Actions.SelfRight] then
+        return false
+    end
+
+    return (
+        abs(currentRotation - 18) > landingTolerance.rotation
+        and not self:isInputPressed(Actions.SelfRight)
+    )
+end
+
 function ButtonInput:resetRotationTimeout()
     self.rotationTimeout = 0
 end
@@ -69,7 +81,7 @@ function ButtonInput:rotationInput(currentRotation)
     end
 end
 
-function ButtonInput:mappingString(action)
+function ButtonInput:actionMappingString(action)
     local buttonMask = self.mapping[action]
     if not buttonMask then
         return nil

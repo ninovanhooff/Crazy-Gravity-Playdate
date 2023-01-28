@@ -7,6 +7,7 @@
 -- tooltips imported at the bottom, requires font
 import "MusicManager"
 import "SoundManager"
+import "input/actions"
 import "settings/options"
 import "input/InputManager"
 import "settings/physicsSettings"

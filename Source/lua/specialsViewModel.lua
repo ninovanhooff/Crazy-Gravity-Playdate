@@ -149,7 +149,7 @@ function CalcPlatform(item)
     end
 
     if landedAt ~= item then
-        if planeRot ~= 18 and vy > 0 and item ~= prevLandedAt and not options:getSelfRightTipShown() and approxRectCollision(item.x,item.y, item.w, item.h) then
+        if abs(planeRot - 18) > landingTolerance.rotation and vy > 0 and item ~= prevLandedAt and not options:getSelfRightTipShown() and approxRectCollision(item.x,item.y, item.w, item.h) then
             pushScreen(TakeOffLandingScreen())
         end
         item.tooltip = nil
@@ -254,9 +254,9 @@ function CalcPlatform(item)
             -- don't offer self destruct when action in progress, such as refuel
             not (item.tooltip and item.tooltip.progress)
         then
-            local buttonMappingString = inputManager:mappingString(Input.actionSelfDestruct)
-            item.tooltip = { text= "Out of fuel! " .. buttonMappingString .. ": Self-destruct" }
-            if inputManager:isInputPressed(Input.actionSelfDestruct) then
+            local buttonMappingString = inputManager:actionMappingString(Actions.SelfDestruct)
+            item.tooltip = { text= "Out of fuel! " .. buttonMappingString .. ": " .. Actions.Labels[Actions.SelfDestruct] }
+            if inputManager:isInputPressed(Actions.SelfDestruct) then
                 collision = CollisionReason.SelfDestruct
                 gamePaused = false
                 return true
