@@ -14,6 +14,7 @@ local levelSelectView, levelSelectViewModel
 function LevelSelectScreen:init()
     LevelSelectScreen.super.init(self)
     levelSelectViewModel = LevelSelectViewModel()
+    levelSelectView = LevelSelectView(levelSelectViewModel)
 end
 
 function LevelSelectScreen:pause()
@@ -22,7 +23,7 @@ end
 
 function LevelSelectScreen:resume()
     levelSelectViewModel:resume()
-    levelSelectView = LevelSelectView(levelSelectViewModel)
+    levelSelectView:resume()
 end
 
 function LevelSelectScreen:gameWillPause()

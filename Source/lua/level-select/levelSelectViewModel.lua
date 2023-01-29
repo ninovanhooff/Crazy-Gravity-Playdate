@@ -79,6 +79,11 @@ function LevelSelectViewModel:startVideo(path)
 end
 
 function LevelSelectViewModel:resume()
+    if self.shouldUpdateSelectionOnResume then
+        self.selectedIdx = currentLevel
+        self.shouldUpdateSelectionOnResume = false
+    end
+
     local numLevelsUnlocked = numLevelsUnlocked()
     if self.lastUnlocked ~= numLevelsUnlocked then
         self.lastUnlocked = numLevelsUnlocked
@@ -200,11 +205,13 @@ function LevelSelectViewModel:update()
             pushScreen(VideoPlayerScreen(
                 "video/orientation",
                 function()
+                    self.shouldUpdateSelectionOnResume = true
                     return GameScreen(currentLevel, self.selectedChallengeIdx)
                 end
             ))
         elseif numLevelsUnlocked() >= self.selectedIdx or Debug then
             ui_confirm:play()
+            self.shouldUpdateSelectionOnResume = true
             pushScreen(
                 GameScreen(currentLevel, self.selectedChallengeIdx)
             )

@@ -48,22 +48,22 @@ challengeListView.backgroundImage = challengeBg
 class("LevelSelectView").extends()
 
 function LevelSelectView:initLockAnimation(idx, type)
-    local x,y = listView:getCellBounds(1, idx, 1, listRect.width)
+    local _,y = listView:getCellBounds(1, idx, 1, listRect.width)
+    -- not using x here because it's value seems buggy and we only have 1 column
     self.lockAnimation = LockAnimation(
-        rect.new(x+gutter*2,y+gutter, thumbSize, thumbSize):insetBy(1,1),
+        rect.new(gutter*2,y+gutter, thumbSize, thumbSize):insetBy(1,1),
         type
     )
 end
 
 function LevelSelectView:init(vm)
     LevelSelectView.super.init(self)
-    viewModel = vm
-    listView:setNumberOfRows(#vm.menuOptions)
     self.initialRender = true
+    viewModel = vm
+    listView:setNumberOfRows(#viewModel.menuOptions)
+    listView:setSelectedRow(viewModel.selectedIdx)
+    listView:scrollToRow(viewModel.selectedIdx, false)
     self.lastSelectedChallengeIdx = viewModel.selectedChallengeIdx
-    if vm.newUnlock then
-        self:initLockAnimation(vm.newUnlock, LockAnimation.type.ShakeAndExplode)
-    end
 end
 
 function listView:drawCell(_, row, _, selected, x, y, width, height)
@@ -171,6 +171,15 @@ local function renderDetailScreen(info)
     gfx.popContext()
 end
 
+function LevelSelectView:resume()
+    self.initialRender = true
+    if viewModel.newUnlock then
+        listView:setSelectedRow(viewModel.selectedIdx)
+        listView:scrollToRow(viewModel.selectedIdx, false)
+        self:initLockAnimation(viewModel.newUnlock, LockAnimation.type.ShakeAndExplode)
+    end
+end
+
 function LevelSelectView:render()
     if viewModel.deniedUnlock then
         self:initLockAnimation(viewModel.deniedUnlock, LockAnimation.type.ShakeAndDenied)
@@ -217,7 +226,7 @@ function LevelSelectView:render()
     dPad:getImage(viewModel.dPadImageIdx):draw(223,182)
     aButton:getImage(viewModel.aButtonImageIdx):draw(319,182)
 
-    if listView.needsDisplay or self.lockAnimation or viewModel.listOffset ~= 0 then
+    if listView.needsDisplay or self.lockAnimation or self.initialRender or viewModel.listOffset ~= 0 then
         local offsetRect = listRect:offsetBy(0,viewModel.listOffset)
         gfx.setColor(gfx.kColorWhite)
         gfx.fillRect(offsetRect)
