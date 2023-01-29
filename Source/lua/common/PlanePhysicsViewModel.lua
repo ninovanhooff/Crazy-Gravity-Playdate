@@ -10,6 +10,8 @@ local clampPlaneRotation <const> = clampPlaneRotation
 local inputManager <const> = inputManager
 local throttle <const> = Actions.Throttle
 local selfRight <const> = Actions.SelfRight
+local steerLeft <const> = Actions.Left
+local steerRight <const> = Actions.Right
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 local screenWidth <const> = screenWidth
@@ -62,7 +64,10 @@ function PlanePhysicsViewModel:processInputs()
     local rotationInput = inputManager:rotationInput(self.planeRot)
     if rotationInput then
         self.planeRot = rotationInput
-    elseif inputManager:isInputPressed(selfRight) then
+    elseif inputManager:isInputPressed(selfRight)
+        and not inputManager:isInputPressed(steerLeft)
+        and not inputManager:isInputPressed(steerRight)
+    then
             if self.planeRot~=18 then
                 if self.planeRot>18 or self.planeRot<6 then
                     self.planeRot = self.planeRot-1

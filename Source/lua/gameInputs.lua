@@ -12,6 +12,8 @@ local thrust_sound <const> = thrust_sound
 local inputManager = inputManager
 local throttle <const> = Actions.Throttle
 local selfRight <const> = Actions.SelfRight
+local steerLeft <const> = Actions.Left
+local steerRight <const> = Actions.Right
 
 local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
@@ -46,7 +48,10 @@ function ProcessInputs()
     local rotationInput = inputManager:rotationInput(planeRot)
     if rotationInput and flying and not steeringDisabled then
         planeRot = rotationInput
-    elseif inputManager:isInputPressed(selfRight) then
+    elseif inputManager:isInputPressed(selfRight)
+        and not inputManager:isInputPressed(steerLeft)
+        and not inputManager:isInputPressed(steerRight)
+    then
             if planeRot~=18 then
                 if planeRot>18 or planeRot<6 then
                     planeRot = planeRot-1
