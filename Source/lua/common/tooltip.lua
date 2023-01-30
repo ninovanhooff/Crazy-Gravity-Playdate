@@ -47,7 +47,9 @@ function Tooltips.renderTooltip(tooltip, centerX, anchorY)
     end
 
     -- Background
-    gfx.setColor(getToolTipBgColor())
+    local bgColor <const> = tooltip.bgColor or getToolTipBgColor()
+    local fgColor <const> = bgColor == gfx.kColorWhite and gfx.kColorBlack or gfx.kColorWhite
+    gfx.setColor(bgColor)
 
     local x = centerX - w/2
     local y
@@ -63,8 +65,14 @@ function Tooltips.renderTooltip(tooltip, centerX, anchorY)
             centerX + tooltipTriangleSize, anchorY - tooltipTriangleSize
         )
     end
+    -- pill
+    if tooltip.outline then
+        gfx.setColor(fgColor)
+        gfx.drawRoundRect(x-1,y-1, w+2,tooltipHeight+2, 4)
+        gfx.setColor(bgColor)
+    end
     gfx.fillRoundRect(x,y, w,tooltipHeight, 3)
-    gfx.setColor(gameBgColor)
+    gfx.setColor(fgColor)
 
     -- Foreground / content
 

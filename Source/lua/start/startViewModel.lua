@@ -30,7 +30,7 @@ local function updateViewState(self)
     viewState.planeTooltip = nil
     for _, item in ipairs(viewState.buttons) do
         if item.progress > 0 then
-            viewState.planeTooltip = {text=item.text, progress = item.progress}
+            viewState.planeTooltip = {text=item.text, bgColor = gfx.kColorWhite, progress = item.progress}
             break
         end
     end
