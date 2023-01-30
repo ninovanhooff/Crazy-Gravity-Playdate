@@ -20,9 +20,9 @@ function VideoViewModel:init(basePath, loop)
     print("video size", width, height, "frameRate", self.framerate, "frameCount", self.frameCount)
 
     self.audio = snd.fileplayer.new(basePath)
-    print("audio", audio)
-    self.timebase = audio
-        and FilePlayerTimebase(audio, loop)
+    print("audio", self.audio)
+    self.timebase = self.audio
+        and FilePlayerTimebase(self.audio, loop)
         or TimerTimebase(self.frameCount / self.framerate, loop)
 
 
