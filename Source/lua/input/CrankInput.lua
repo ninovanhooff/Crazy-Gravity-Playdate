@@ -22,14 +22,6 @@ local function getCrankPlaneRotation()
     return (position + 18) % 24 -- transform to planeRotation, where 18 is up
 end
 
-function CrankInput:isInputPressed(action)
-    if action == Actions.SelfRight then
-        return getCrankPlaneRotation() == 18 -- straight up
-    else
-        return false -- CrankInput supports rotationInput for steering
-    end
-end
-
 function CrankInput:rotationInput(currentRotation)
     local crankRotation = getCrankPlaneRotation()
     if crankRotation == currentRotation then
