@@ -220,7 +220,7 @@ function LevelSelectViewModel:update()
         end
     elseif justPressed(buttonB) then
         require("lua/level-select/ConfirmScreen")
-        local tooltip = {text="Back", bgColor=playdate.graphics.kColorWhite, outline=true, progress=0}
+        local tooltip = {text="Ⓑ: Back", bgColor=playdate.graphics.kColorWhite, outline=true, progress=0}
         pushScreen(ConfirmScreen(buttonB, tooltip, function()
             ui_cancel:play()
             popScreen()
