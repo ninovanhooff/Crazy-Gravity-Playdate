@@ -4,6 +4,7 @@
 --- DateTime: 03/04/2022 16:59
 ---
 import "game-over/GameOverScreen"
+local getCheckpointLabelsPair = import "checkpointLabels"
 require "lua/tutorial/TakeOffLandingScreen"
 
 local animator <const> = playdate.graphics.animator
@@ -16,7 +17,6 @@ local floor <const> = math.floor
 local min <const> = math.min
 local max <const> = math.max
 local random <const> = math.random
-local pickRandom <const> = pickRandom
 local options <const> = GetOptions()
 local soundManager <const> = soundManager
 local gameHUD <const> = gameHUD
@@ -103,26 +103,6 @@ end
 function ApproxSpecialCollision(item)
     return approxRectCollision(item.x, item.y, item.w, item.h)
 end
-
-local checkpointWaitingLabels <const> = {
-    "Back so soon?", "Back again?", "Papers, please", "You look familiar", "Synthesizing Gravity",
-    "Sit...", "Gimme five!", "Take five!", "Planet Express?", "Lunch order?", "I wanted to say...",
-    "Delivery for ME?", "Pizza? I didn't order...", "What are you doing here?",
-    "Reticulating splines...", "Max confusion!", "Pit stop?", "Brake engaged",
-    "Hold yer horses!", "3,2,1...", "Tired?", "Freeze!", "What now?", "Thrusters deactivated",
-    "Tag!", "Out of ammo?", "Chill pill?", "Thirsty?", "Bedtime?", "Timeout!", "Lowest prices!",
-    "Don't stop believin'", "Fixing your cape?", "No smile?", "Put me in, coach!",
-    "Stop! In the Name of Love", "Gimme now!"
-}
-local checkpointDoneLabels  <const> = {
-    "Let's go!", "Safe and sound!", "Keep going!", "Nice!", "See ya!", "You can do it!",
-    "Good boy!", "And away you go!", "I'm having Turkey", "No hug?", "How nice!",
-    "With chilli, yummy!", "Is that you, Fry?", "Where is Bender?", "Time to go!", "All good!",
-    "Seatbelts on!", "Giddy up!", "Let's jam!", "You've got this!", "Unfreeze!", "Back to work!",
-    "Scram!", "Gotta jet!", "You're it!", "Locked and loaded!", "Stay calm!", "Refreshed!",
-    "One more run!", "Start the clock!", "...are just the beginning", "Hold on to that Feelin'",
-    "Up, up and away!", "Why so serious?", "Ready to play!", "Think it over!", "Lookin' good!"
-}
 
 function CalcPlatform(item)
     if not approxRectCollision(item.x,item.y-3, item.w, item.h) then
@@ -565,8 +545,7 @@ specialCalcT[15] = CalcBarrier
 
 function InitPlatform(item)
     item.origAmnt = item.amnt
-    item.checkpointWaitingLabel = pickRandom(checkpointWaitingLabels)
-    item.checkpointDoneLabel = pickRandom(checkpointDoneLabels)
+    item.checkpointWaitingLabel, item.checkpointDoneLabel = getCheckpointLabelsPair()
 end
 
 function InitCannon(item)
