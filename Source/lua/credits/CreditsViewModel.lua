@@ -19,6 +19,7 @@ function CreditsViewModel:init()
     planePos[3] = 2
     setCamPosTopLeft()
     flying = true
+    landedAt = nil
     vy = -4
     self.initialMoveUp = true
 
