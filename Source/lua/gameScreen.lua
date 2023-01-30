@@ -27,6 +27,7 @@ end
 
 function GameScreen:pause()
     playdate.display.setRefreshRate(frameRate)
+    if Sounds then thrust_sound:stop() end
     soundManager:stop()
     if self.backMenuItem then
         menu:removeMenuItem(self.backMenuItem)
