@@ -152,6 +152,11 @@ function RenderRotator(item, scrX, scrY)
 end
 
 function RenderCannon(item, scrX, scrY)
+    local srcY = gameBgColor == gfx.kColorBlack and 72 or 64
+    local function renderBall(xPos, yPos, bOff)
+        sprite:draw(xPos, yPos, unFlipped, bOff, srcY, 8, 8)
+    end
+
     local pos = (frameCounter %  item.rate) * item.speed
     local bOff = (floor((frameCounter)%72/3))*8 + 240
 
@@ -161,7 +166,7 @@ function RenderCannon(item, scrX, scrY)
         local minYPos = max(yPos - (item.maxPos - pos), 0)
         while yPos > minYPos do -- balls
             if yPos < gameHeightPixels then
-                sprite:draw(xPos, yPos, unFlipped, bOff, 72, 8, 8)
+                renderBall(xPos, yPos, bOff)
             end
             yPos = yPos - item.ballSpacing
         end
@@ -173,7 +178,7 @@ function RenderCannon(item, scrX, scrY)
         local maxYPos = min(yPos + item.maxPos - pos, gameHeightPixels)
         while yPos < maxYPos do -- balls
             if yPos > 0 then
-                sprite:draw(xPos, yPos, unFlipped, bOff, 72, 8, 8)
+                renderBall(xPos, yPos, bOff)
             end
             yPos = yPos + item.ballSpacing
         end
@@ -184,7 +189,7 @@ function RenderCannon(item, scrX, scrY)
         local minXPos = max(xPos - (item.maxPos - pos), 0)
         while xPos > minXPos do
             if xPos < gameWidthPixels then
-                sprite:draw(xPos, scrY+8, unFlipped, bOff, 72, 8, 8)
+                renderBall(xPos, scrY+8, bOff)
             end
             xPos = xPos - item.ballSpacing
         end
@@ -195,7 +200,7 @@ function RenderCannon(item, scrX, scrY)
         local maxXPos = min(xPos + item.maxPos - pos, gameWidthPixels)
         while xPos < maxXPos do -- balls
             if xPos > 0 then
-                sprite:draw(xPos, scrY+8, unFlipped, bOff, 72, 8, 8)
+                renderBall(xPos, scrY+8, bOff)
             end
             xPos = xPos + item.ballSpacing
         end
