@@ -48,7 +48,6 @@ local fixedPairs <const> = {
 
 local fixedPairChance = #fixedPairs / #checkpointWaitingLabels
 if fixedPairChance > 1 then fixedPairChance = 1/fixedPairChance end
-print("fixedpairchance", fixedPairChance)
 
 local function getCheckpointLabelsPair()
     if random() < fixedPairChance then
