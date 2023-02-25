@@ -21,7 +21,7 @@ function InputManager:destroyAccelerometer()
     end
 end
 
---- the inputtype for the current settings an inputs state
+--- the inputType most suitable for the current settings and inputs state
 function InputManager:targetInputType()
     if not isCrankDocked() then
         return CrankInput

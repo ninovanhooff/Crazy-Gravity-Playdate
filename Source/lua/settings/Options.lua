@@ -380,14 +380,21 @@ end
 function optionsNS.Options:createButtonMapping(inputType)
     print("Create button mapping for inputType", inputType.className)
     if inputType == CrankInput then
+        local throttleKeys = BUTTON_VALS[self:read(THROTTLE_CRANK_KEY)].keys
+        -- use A or B; whichever is not used for throttle
+        local selfDestructKey = throttleKeys & playdate.kButtonB ~= 0 and playdate.kButtonA or playdate.kButtonB
         return {
-            [Actions.Throttle] = BUTTON_VALS[self:read(THROTTLE_CRANK_KEY)].keys,
-            [Actions.SelfDestruct] = playdate.kButtonA,
+            [Actions.Throttle] = throttleKeys,
+            [Actions.SelfDestruct] = selfDestructKey
         }
     elseif inputType == AccelerometerInput then
+        local throttleKeys = BUTTON_VALS[self:read(THROTTLE_ACCELEROMETER_KEY)].keys
+        -- use A or B; whichever is not used for throttle
+        local selfDestructKey = throttleKeys & playdate.kButtonB ~= 0 and playdate.kButtonA or playdate.kButtonB
+
         return {
-            [Actions.Throttle] = BUTTON_VALS[self:read(THROTTLE_ACCELEROMETER_KEY)].keys,
-            [Actions.SelfDestruct] = playdate.kButtonA, --todo
+            [Actions.Throttle] = throttleKeys,
+            [Actions.SelfDestruct] = selfDestructKey
         }
     elseif inputType == ButtonInput then
         return {
