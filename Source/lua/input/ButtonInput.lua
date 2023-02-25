@@ -47,7 +47,7 @@ function ButtonInput:isInputJustPressed(action)
     return justPressed(self.mapping[action])
 end
 
-function Input:isTakeOffLandingBlocked(currentRotation)
+function ButtonInput:isTakeOffLandingBlocked(currentRotation)
     if not self.mapping[Actions.SelfRight] then
         return false
     end

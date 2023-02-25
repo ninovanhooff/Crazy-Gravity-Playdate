@@ -1,5 +1,6 @@
 import "Input"
 import "ButtonInput"
+import "AccelerometerInput"
 import "CrankInput"
 
 local isCrankDocked <const> = playdate.isCrankDocked
@@ -9,14 +10,25 @@ local currentTime <const> = playdate.sound.getCurrentTime
 class('InputManager').extends(Input)
 
 function InputManager:setButtonMapping(mapping)
+    print("setButtonMap", mapping)
     self.inputs.button = ButtonInput(mapping)
 end
 
+function InputManager:destroyAccelerometer()
+    if self.inputs.accelerometer then
+        self.inputs.accelerometer:destroy()
+        self.inputs.accelerometer = nil
+    end
+end
+
 function InputManager:configureInputs()
+    print("config inputs")
     local docked <const> = isCrankDocked()
     if docked then
+        self.inputs.accelerometer = AccelerometerInput()
         self.inputs.crank = nil
     else
+        self:destroyAccelerometer()
         self.inputs.crank = CrankInput()
     end
     self:setButtonMapping(
