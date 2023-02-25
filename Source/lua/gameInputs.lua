@@ -19,7 +19,7 @@ local sinThrustT <const> = sinThrustT
 local cosThrustT <const> = cosThrustT
 
 function ProcessInputs()
-    if landedAt and inputManager:isTakeOffLandingBlocked(planeRot) then
+    if landedAt and inputManager:isTakeOffLandingBlocked(planeRot) and inputManager:isInputPressed(Actions.Throttle) then
         pushScreen(TakeOffLandingScreen())
         return
     end
