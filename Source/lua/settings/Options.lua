@@ -97,6 +97,8 @@ local TURN_LEFT_KEY <const> = "turnLeftMapping"
 local TURN_RIGHT_KEY <const> = "turnRightMapping"
 local THROTTLE_BUTTONS_KEY <const> = "throttleMapping"
 local THROTTLE_CRANK_KEY <const> = "throttleCrankMapping"
+local ENABLE_ACCELEROMETER_KEY <const> = "enableAccelerometerKey"
+local THROTTLE_ACCELEROMETER_KEY <const> = "throttleAccelerometerMapping"
 --- Self-right and self-destruct are always mapped to the same button
 local SELF_RIGHT_AND_DESTRUCT_KEY <const> = "selfRightMapping"
 
@@ -145,11 +147,18 @@ local gameOptions = {
         }
     },
     {
+        header = 'Tilt input',
+        options = {
+            { name='Tilt Steering', key= ENABLE_ACCELEROMETER_KEY, values= toggleVals, default= 1},
+            { name='Throttle', key= THROTTLE_ACCELEROMETER_KEY, values= BUTTON_VALS, default= 8},
+        }
+    },
+    {
         header = 'Crank input',
         options = {
             { name='Throttle', key= THROTTLE_CRANK_KEY, values= BUTTON_VALS, default= 8},
         }
-},
+    },
     {
         header = 'Physics',
         options = {
@@ -364,9 +373,23 @@ function optionsNS.Options:gameWillPause()
     self.keyTimerRemover()
 end
 
-function optionsNS.Options:createButtonMapping(isCrankDocked)
-    print("Create button mapping docked", isCrankDocked)
-    if isCrankDocked then
+function optionsNS.Options:isAccelerometerEnabled()
+    return self:read(ENABLE_ACCELEROMETER_KEY)
+end
+
+function optionsNS.Options:createButtonMapping(inputType)
+    print("Create button mapping for inputType", inputType.className)
+    if inputType == CrankInput then
+        return {
+            [Actions.Throttle] = BUTTON_VALS[self:read(THROTTLE_CRANK_KEY)].keys,
+            [Actions.SelfDestruct] = playdate.kButtonA,
+        }
+    elseif inputType == AccelerometerInput then
+        return {
+            [Actions.Throttle] = BUTTON_VALS[self:read(THROTTLE_ACCELEROMETER_KEY)].keys,
+            [Actions.SelfDestruct] = playdate.kButtonA, --todo
+        }
+    elseif inputType == ButtonInput then
         return {
             [Actions.Left] = BUTTON_VALS[self:read(TURN_LEFT_KEY)].keys,
             [Actions.Right] = BUTTON_VALS[self:read(TURN_RIGHT_KEY)].keys,
@@ -376,10 +399,7 @@ function optionsNS.Options:createButtonMapping(isCrankDocked)
             [Actions.SelfDestruct] = BUTTON_VALS[self:read(SELF_RIGHT_AND_DESTRUCT_KEY)].keys,
         }
     else
-        return {
-            [Actions.Throttle] = BUTTON_VALS[self:read(THROTTLE_CRANK_KEY)].keys,
-            [Actions.SelfDestruct] = playdate.kButtonA,
-        }
+        error("cannot create button mapping for inputType" .. inputType.className)
     end
 end
 
@@ -465,7 +485,7 @@ function optionsNS.Options:apply(onlyStartAssets)
     --- ie. 2 means after each frame with rotation, 2 frames follow without rotation in the same direction
     rotationDelay = ROTATION_DELAY_VALS[self:read(ROTATION_DELAY_KEY)].value
 
-    inputManager:setButtonMapping(self:createButtonMapping(isCrankDocked()))
+    inputManager:setButtonMapping(self:createButtonMapping(inputManager:targetInputType()))
 
     if bricksView then
         bricksView = BricksView()

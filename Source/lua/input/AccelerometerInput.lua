@@ -34,7 +34,6 @@ function AccelerometerInput:rotationInput(currentRotation)
     local smoothAccelX = (accelX*proportionalInfluence + self.prevAccelX) / averagingFactor
     local accelerometerRotation = getAccelerometerPlaneRotation(smoothAccelX)
     self.prevAccelX = smoothAccelX
-    print(accelX, accelerometerRotation)
     if accelerometerRotation == currentRotation then
         return nil
     else

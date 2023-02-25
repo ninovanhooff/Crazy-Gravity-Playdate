@@ -21,19 +21,32 @@ function InputManager:destroyAccelerometer()
     end
 end
 
+--- the inputtype for the current settings an inputs state
+function InputManager:targetInputType()
+    if not isCrankDocked() then
+        return CrankInput
+    elseif options:isAccelerometerEnabled() then
+        return AccelerometerInput
+    else
+        return ButtonInput
+    end
+end
+
 function InputManager:configureInputs()
     print("config inputs")
-    local docked <const> = isCrankDocked()
-    if docked then
-        self.inputs.accelerometer = AccelerometerInput()
-        self.inputs.crank = nil
-    else
-        self:destroyAccelerometer()
+    self:destroyAccelerometer()
+
+    local inputType = self:targetInputType()
+    if inputType == CrankInput then
         self.inputs.crank = CrankInput()
+    elseif inputType == AccelerometerInput then
+        self.inputs.crank = nil
+        self.inputs.accelerometer = AccelerometerInput()
     end
     self:setButtonMapping(
-        options:createButtonMapping(docked)
+        options:createButtonMapping(inputType)
     )
+    self.prevInputType = inputType
 end
 
 function InputManager:init()
@@ -42,7 +55,7 @@ function InputManager:init()
     end
     InputManager.super.init(self)
     --- amount of seconds since last dock/undock of the crank. Initial state not considered a change.
-    self.lastDockedChangeTime = -1337.0 -- before epoch time == infinitely long ago
+    self.lastInputTypeChangeTime = -1337.0 -- before epoch time == infinitely long ago
     self.inputs = {}
     self:configureInputs()
 end
@@ -52,10 +65,24 @@ if not inputManager then
     inputManager = InputManager()
 end
 
+function InputManager:inputTypeString()
+    local inputType = self:targetInputType()
+    if inputType == CrankInput then
+        return "Crank Controls"
+    elseif inputType == AccelerometerInput then
+        return "Tilt controls"
+    elseif inputType == ButtonInput then
+        return "Button Controls"
+    else
+        return "Unknown Input Type"
+    end
+end
+
 function InputManager:update()
-    if isCrankDocked() ~= (self.inputs.crank == nil) then
+    local curInputType = self:targetInputType()
+    if curInputType ~= self.prevInputType then
         self:configureInputs()
-        self.lastDockedChangeTime = currentTime()
+        self.lastInputTypeChangeTime = currentTime()
     end
 end
 
@@ -100,14 +127,6 @@ function InputManager:isTakeOffLandingBlocked(currentRotation)
     return delegateActionFunction(self, function(input)
         return input:isTakeOffLandingBlocked(currentRotation)
     end)
-end
-
-function InputManager:inputType()
-    if self.inputs.crank then
-        return "Crank Controls"
-    else
-        return "Button Controls"
-    end
 end
 
 local allDisplayActions <const> = {

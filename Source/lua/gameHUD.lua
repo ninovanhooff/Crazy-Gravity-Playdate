@@ -71,7 +71,7 @@ function GameHUD:clear()
 end
 
 function GameHUD:render(conservative)
-    local secondsSinceInputConfigChange = currentTime() - inputManager.lastDockedChangeTime
+    local secondsSinceInputConfigChange = currentTime() - inputManager.lastInputTypeChangeTime
     if secondsSinceInputConfigChange < 1 then
         self:renderControlsType()
     elseif secondsSinceInputConfigChange < 4 then
@@ -99,7 +99,7 @@ end
 
 function GameHUD:renderControlsType()
     self:clear()
-    self:renderCenteredText(inputManager:inputType())
+    self:renderCenteredText(inputManager:inputTypeString())
 end
 
 function GameHUD:renderControlsMapping()
