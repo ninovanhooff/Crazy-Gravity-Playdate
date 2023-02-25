@@ -3,22 +3,23 @@ local readAccelerometer <const> = playdate.readAccelerometer
 
 local clampPlaneRotation <const> = clampPlaneRotation
 local abs <const> = math.abs
+local sign <const> = sign
+local round <const> = round
 
 local supportedActionsMask <const> = Actions.Left | Actions.Right | Actions.SelfRight
-local activationThreshold <const> = 0.3
+local activationThreshold <const> = 0.6
 
 class("AccelerometerInput").extends(Input)
 
 function AccelerometerInput:init()
     AccelerometerInput.super.init(self)
     playdate.startAccelerometer()
-
-    --- counter for the current rotation timeout. positive is clockwise timeout, negative is ccw timeout
-    self.rotationTimeout = 0
 end
 
-function AccelerometerInput:resetRotationTimeout()
-    self.rotationTimeout = 0
+local function getAccelerometerPlaneRotation(accelX)
+    local position = (accelX / activationThreshold)+1 -- [0, 2] where 1 is straight up
+    position = position * 12 -- [0 .. 24] where 12 is straight up
+    return round((position + 6) % 24) -- transform to planeRotation, where 18 is up
 end
 
 function AccelerometerInput:rotationInput(currentRotation)
@@ -26,24 +27,17 @@ function AccelerometerInput:rotationInput(currentRotation)
     if not accelX then
         return nil
     end
-
-    local change = accelX < -activationThreshold and -1
-        or accelX > activationThreshold and 1
-        or nil
-    if change then
-        if self.rotationTimeout == 0 then
-            local rotation = clampPlaneRotation(currentRotation + change)
-            self.rotationTimeout = change * rotationDelay
-            return rotation
-        else
-            self.rotationTimeout = self.rotationTimeout - change
-            return nil
-        end
-    else
-        self:resetRotationTimeout()
+    local accelerometerRotation = getAccelerometerPlaneRotation(accelX)
+    print(accelX, accelerometerRotation)
+    if accelerometerRotation == currentRotation then
         return nil
+    else
+        local newRotation = currentRotation
+            + sign(smallestPlaneRotation(accelerometerRotation, currentRotation))
+        return clampPlaneRotation(newRotation)
     end
 end
+
 
 function AccelerometerInput:actionMappingString(action)
     if action & supportedActionsMask ~= 0 then
