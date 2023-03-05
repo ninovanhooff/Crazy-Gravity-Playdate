@@ -10,15 +10,9 @@ local gfx <const> = playdate.graphics
 local timer <const> = playdate.timer
 local itemHeight <const> = 28
 local resourceLoader <const> = GetResourceLoader()
-local isCrankDocked <const> = playdate.isCrankDocked
 
---- NOTES Nino
--- KEY_REPEAT and KEY_REPEAT_INITIAL not defined
--- removed unused drawRectSwitch
--- added fixes to show menu on arbitrary x position
--- added missing imports CoreLibs/object and ui
--- added Options.super.init(self)
-
+--- transparent lightgray-1
+local DISABLED_OPTION_PATTERN = { 0x77, 0x77, 0xDD, 0xDD, 0x77, 0x77, 0xDD, 0xDD, 136, 136, 34, 34, 136, 136, 34, 34}
 local KEY_REPEAT_INITIAL = 300
 local KEY_REPEAT = 200
 
@@ -139,8 +133,8 @@ local gameOptions = {
         header = 'Button input',
         options = {
             { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
-            { name=Actions.Labels[Actions.Left], key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3},
 
+            { name=Actions.Labels[Actions.Left], key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3, disabledFunction = function() return true end},
             { name=Actions.Labels[Actions.Right], key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
             { name=Actions.Labels[Actions.SelfRight], key= SELF_RIGHT_AND_DESTRUCT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
             { name=Actions.Labels[Actions.Throttle], key= THROTTLE_BUTTONS_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 7 or 5)},
@@ -266,7 +260,12 @@ function optionsNS.Options:menuInit()
             end
         end
 
-        gfx.popContext()
+        -- dither option if disabled
+        if self:isDisabled(section, row) then
+            gfx.setPattern(DISABLED_OPTION_PATTERN)
+            gfx.fillRect(x,y,width,height)
+            gfx.popContext()
+        end
     end
 
     function self.menu.drawSectionHeader(menuSelf, section, x, y, width, height)
@@ -518,6 +517,17 @@ end
 function optionsNS.Options:getValue(section, row)
     local option = self:getSelectedOption(section, row) 
     return option.values[option.current]
+end
+
+function optionsNS.Options:isDisabled(section, row)
+    local option = self:getSelectedOption(section, row)
+    local key = option.key
+    if key == TURN_LEFT_KEY or key == TURN_RIGHT_KEY then
+        -- accelerometer and button input cannot be combined for turning
+        return self:read(ENABLE_ACCELEROMETER_KEY)
+    else
+        return false
+    end
 end
 
 function optionsNS.Options:read(key, ignoreDirty)
