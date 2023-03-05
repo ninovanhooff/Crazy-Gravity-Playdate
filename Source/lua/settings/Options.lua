@@ -96,6 +96,9 @@ local THROTTLE_ACCELEROMETER_KEY <const> = "throttleAccelerometerMapping"
 --- Self-right and self-destruct are always mapped to the same button
 local SELF_RIGHT_AND_DESTRUCT_KEY <const> = "selfRightMapping"
 
+-- define as const so it can be used in multiple sections
+local tiltSteeringEnabledOption <const> = { name='Tilt Steering', key= ENABLE_ACCELEROMETER_KEY, values= toggleVals, default= 1}
+
 local gameOptions = {
     -- name (str): option's display name in menu
     -- key (str): identifier for the option in the userOptions table
@@ -134,8 +137,10 @@ local gameOptions = {
         options = {
             { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
 
+            tiltSteeringEnabledOption,
             { name=Actions.Labels[Actions.Left], key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3, disabledFunction = function() return true end},
             { name=Actions.Labels[Actions.Right], key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
+
             { name=Actions.Labels[Actions.SelfRight], key= SELF_RIGHT_AND_DESTRUCT_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 10 or 8)},
             { name=Actions.Labels[Actions.Throttle], key= THROTTLE_BUTTONS_KEY, values= BUTTON_VALS, default= (playdate.isSimulator and 7 or 5)},
         }
@@ -143,7 +148,7 @@ local gameOptions = {
     {
         header = 'Tilt input',
         options = {
-            { name='Tilt Steering', key= ENABLE_ACCELEROMETER_KEY, values= toggleVals, default= 1},
+            tiltSteeringEnabledOption,
             { name='Throttle', key= THROTTLE_ACCELEROMETER_KEY, values= BUTTON_VALS, default= 8},
         }
     },
