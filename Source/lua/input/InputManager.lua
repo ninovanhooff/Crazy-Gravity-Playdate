@@ -25,7 +25,7 @@ end
 function InputManager:targetInputType()
     if not isCrankDocked() then
         return CrankInput
-    elseif options:isAccelerometerEnabled() then
+    elseif options:isAccelerometerSteeringEnabled() then
         return AccelerometerInput
     else
         return ButtonInput

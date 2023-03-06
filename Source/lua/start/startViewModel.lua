@@ -4,6 +4,7 @@ local playdate <const> = playdate
 local gfx <const> = playdate.graphics
 local currentTime <const> = playdate.sound.getCurrentTime
 local pickRandom <const> = pickRandom
+local options <const> = GetOptions()
 local setCollectsGarbage <const> = playdate.setCollectsGarbage
 local setRefreshRate <const> = playdate.display.setRefreshRate
 local animator <const> = playdate.graphics.animator
@@ -87,6 +88,10 @@ local function getHintText()
     end
     if GetResourceLoader().graphicsStyle~="classic" then
         table.insert(candidates, "Did you play Crazy Gravity?\nTry style Classic in Settings")
+    end
+    if not options:isAccelerometerSteeringEnabled() then
+        table.insert(candidates, "Steering by tilting the playdate?\nTry Tilt Steering in Settings")
+        table.insert(candidates, "Like 1-button games?\nTry Tilt Steering in Settings")
     end
 
     return pickRandom(candidates)
