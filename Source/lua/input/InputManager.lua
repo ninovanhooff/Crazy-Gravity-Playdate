@@ -41,7 +41,7 @@ function InputManager:configureInputs()
         self.inputs.crank = CrankInput()
     elseif inputType == AccelerometerInput then
         self.inputs.crank = nil
-        self.inputs.accelerometer = AccelerometerInput()
+        self.inputs.accelerometer = AccelerometerInput(options:getAccelerometerSensitivity())
     end
     self:setButtonMapping(
         options:createButtonMapping(inputType)

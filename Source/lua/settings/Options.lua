@@ -33,6 +33,7 @@ local PATTERN_VALS <const> = {"lighter", "light", "dark", "darker", "white", "de
 local INVERT_KEY <const> = "invertDisplay"
 local SPEED_KEY <const> = "gameFps"
 local SPEED_VALS <const> = {15, 20, 25, 30}
+local SENSITIVITY_VALS <const> = {1, 2, 3, 4, 5, 6, 7, 8, 9}
 local LIVES_KEY <const> = "lives"
 local LIVES_VALS <const> = { 6, 9, 12, 18, 90 }
 local ROTATION_DELAY_KEY <const> = "rotationDelay"
@@ -93,6 +94,7 @@ local THROTTLE_BUTTONS_KEY <const> = "throttleMapping"
 local THROTTLE_CRANK_KEY <const> = "throttleCrankMapping"
 local ENABLE_ACCELEROMETER_KEY <const> = "enableAccelerometerKey"
 local THROTTLE_ACCELEROMETER_KEY <const> = "throttleAccelerometerMapping"
+local ACCELEROMETER_SENSITIVITY_KEY <const> = "accelerometerSensitivity"
 --- Self-right and self-destruct are always mapped to the same button
 local SELF_RIGHT_AND_DESTRUCT_KEY <const> = "selfRightMapping"
 
@@ -149,6 +151,7 @@ local gameOptions = {
         header = 'Tilt input',
         options = {
             tiltSteeringEnabledOption,
+            { name='Sensitivity', key= ACCELEROMETER_SENSITIVITY_KEY, values= SENSITIVITY_VALS, default= 5},
             { name='Throttle', key= THROTTLE_ACCELEROMETER_KEY, values= BUTTON_VALS, default= 8},
         }
     },
@@ -496,7 +499,7 @@ function optionsNS.Options:apply(onlyStartAssets)
     --- ie. 2 means after each frame with rotation, 2 frames follow without rotation in the same direction
     rotationDelay = ROTATION_DELAY_VALS[self:read(ROTATION_DELAY_KEY)].value
 
-    inputManager:setButtonMapping(self:createButtonMapping(inputManager:targetInputType()))
+    inputManager:configureInputs()
 
     if bricksView then
         bricksView = BricksView()
@@ -572,6 +575,10 @@ end
 
 function optionsNS.Options:getSelfRightTipShown()
     return self:read(SELF_RIGHT_TIP_SHOWN_KEY)
+end
+
+function optionsNS.Options:getAccelerometerSensitivity()
+    return self:read(ACCELEROMETER_SENSITIVITY_KEY)
 end
 
 function optionsNS.Options:setSelfRightTipShown(shown)
