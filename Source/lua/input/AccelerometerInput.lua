@@ -57,7 +57,7 @@ function AccelerometerInput:isTakeOffLandingBlocked(_)
     if not accelX then
         return false
     end
-    return abs(smallestPlaneRotation(18, getAccelerometerPlaneRotation(accelX)))
+    return abs(smallestPlaneRotation(18, self:getAccelerometerPlaneRotation(accelX)))
         > landingTolerance.rotation
 end
 
