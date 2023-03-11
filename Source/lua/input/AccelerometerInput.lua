@@ -46,7 +46,7 @@ end
 
 function AccelerometerInput:actionMappingString(action)
     if action & supportedActionsMask ~= 0 then
-        return "Tilt"
+        return "↺↻"
     else
         return nil
     end
