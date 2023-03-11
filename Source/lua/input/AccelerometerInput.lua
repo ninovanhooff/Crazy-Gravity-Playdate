@@ -16,8 +16,17 @@ class("AccelerometerInput").extends(Input)
 function AccelerometerInput:init(sensitivity)
     AccelerometerInput.super.init(self)
     playdate.startAccelerometer()
-    self.prevAccelX = 0
+    --- weighted average over multiple frames, smooths sensor noise
+    self.smoothAccelX = 0
     self.accelXLimit = 1.0 - (sensitivity/10)
+end
+
+function AccelerometerInput:update()
+    local accelX = readAccelerometer()
+    if not accelX then
+        return nil
+    end
+    self.smoothAccelX = (accelX*proportionalInfluence + self.smoothAccelX) / averagingFactor
 end
 
 function AccelerometerInput:getAccelerometerPlaneRotation(accelX)
@@ -27,13 +36,8 @@ function AccelerometerInput:getAccelerometerPlaneRotation(accelX)
 end
 
 function AccelerometerInput:rotationInput(currentRotation)
-    local accelX = readAccelerometer()
-    if not accelX then
-        return nil
-    end
-    local smoothAccelX = (accelX*proportionalInfluence + self.prevAccelX) / averagingFactor
+    local smoothAccelX = self.smoothAccelX
     local accelerometerRotation = self:getAccelerometerPlaneRotation(smoothAccelX)
-    self.prevAccelX = smoothAccelX
     if accelerometerRotation == currentRotation then
         return nil
     else
@@ -53,12 +57,12 @@ function AccelerometerInput:actionMappingString(action)
 end
 
 function AccelerometerInput:isTakeOffLandingBlocked(_)
-    local accelX = readAccelerometer()
-    if not accelX then
-        return false
-    end
-    return abs(smallestPlaneRotation(18, self:getAccelerometerPlaneRotation(accelX)))
-        > landingTolerance.rotation
+    return abs(
+        smallestPlaneRotation(
+            18,
+            self:getAccelerometerPlaneRotation(self.smoothAccelX)
+        )
+    ) > landingTolerance.rotation
 end
 
 function AccelerometerInput:destroy()

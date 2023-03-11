@@ -84,6 +84,10 @@ function InputManager:update()
         self:configureInputs()
         self.lastInputTypeChangeTime = currentTime()
     end
+
+    if self.inputs.accelerometer then
+        self.inputs.accelerometer:update()
+    end
 end
 
 --- call-through to all input-managers for a specific function like isInputJustPressed
