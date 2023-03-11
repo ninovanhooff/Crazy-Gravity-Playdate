@@ -43,7 +43,7 @@ local fixedPairs <const> = {
     { "You've got a", "pizza my heart" },
     { "To the window?", "To the wall!" },
     { "Been a while", "Crocodile!" },
-    { "See ya later", "Alligator" }
+    { "See ya later", "Alligator!" }
 }
 
 local fixedPairChance = #fixedPairs / #checkpointWaitingLabels
