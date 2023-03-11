@@ -137,9 +137,9 @@ local gameOptions = {
     {
         header = 'Button input',
         options = {
+            tiltSteeringEnabledOption,
             { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
 
-            tiltSteeringEnabledOption,
             { name=Actions.Labels[Actions.Left], key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3, disabledFunction = function() return true end},
             { name=Actions.Labels[Actions.Right], key= TURN_RIGHT_KEY, values= BUTTON_VALS, default=4},
 
@@ -269,7 +269,7 @@ function optionsNS.Options:menuInit()
         end
 
         -- dither option if disabled
-        if self:isDisabled(section, row) then
+        if not self:isEnabled(section, row) then
             gfx.setPattern(DISABLED_OPTION_PATTERN)
             gfx.fillRect(x,y,width,height)
             gfx.popContext()
@@ -527,14 +527,19 @@ function optionsNS.Options:getValue(section, row)
     return option.values[option.current]
 end
 
-function optionsNS.Options:isDisabled(section, row)
+local accelerometerDepends <const> = { ACCELEROMETER_SENSITIVITY_KEY, THROTTLE_ACCELEROMETER_KEY }
+local buttonDepends <const> = { TURN_LEFT_KEY, TURN_RIGHT_KEY, THROTTLE_BUTTONS_KEY, SELF_RIGHT_AND_DESTRUCT_KEY, ROTATION_DELAY_KEY }
+
+function optionsNS.Options:isEnabled(section, row)
     local option = self:getSelectedOption(section, row)
     local key = option.key
-    if key == TURN_LEFT_KEY or key == TURN_RIGHT_KEY then
+    if findIndexOf(buttonDepends, key) then
         -- accelerometer and button input cannot be combined for turning
+        return not self:read(ENABLE_ACCELEROMETER_KEY)
+    elseif findIndexOf(accelerometerDepends, key) then
         return self:read(ENABLE_ACCELEROMETER_KEY)
     else
-        return false
+        return true
     end
 end
 
