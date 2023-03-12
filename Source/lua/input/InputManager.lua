@@ -59,7 +59,6 @@ function InputManager:init()
     --- amount of seconds since last dock/undock of the crank. Initial state not considered a change.
     self.lastInputTypeChangeTime = -1337.0 -- before epoch time == infinitely long ago
     self.inputs = {}
-    self:configureInputs()
 end
 
 -- global Singleton
