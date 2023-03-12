@@ -14,11 +14,13 @@ function InputManager:setButtonMapping(mapping)
     self.inputs.button = ButtonInput(mapping)
 end
 
-function InputManager:destroyAccelerometer()
+function InputManager:reset()
     if self.inputs.accelerometer then
         self.inputs.accelerometer:destroy()
         self.inputs.accelerometer = nil
     end
+    self.inputs.crank = nil
+    self.inputs.button = nil
 end
 
 --- the inputType most suitable for the current settings and inputs state
@@ -34,7 +36,7 @@ end
 
 function InputManager:configureInputs()
     print("config inputs")
-    self:destroyAccelerometer()
+    self:reset()
 
     local inputType = self:targetInputType()
     if inputType == CrankInput then
