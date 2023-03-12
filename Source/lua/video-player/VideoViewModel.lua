@@ -16,7 +16,6 @@ function VideoViewModel:init(basePath, loop)
     self.offsetY = (screenHeight-height)/2
     self.framerate = self.video:getFrameRate()
     self.frameCount = self.video:getFrameCount()
-    self.video:getContext() -- todo remove after fix: sdk 1.13.0-beta6 crash workaround: https://devforum.play.date/t/firmware-1-13-0-beta6-crash-video-getcontext-is-broken/9557/2
     print("video size", width, height, "frameRate", self.framerate, "frameCount", self.frameCount)
 
     self.audio = snd.fileplayer.new(basePath)
