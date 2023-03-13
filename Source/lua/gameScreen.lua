@@ -1,3 +1,4 @@
+import "drawUtil"
 import "gameHUD"
 import "specialsView"
 import "gameView"
@@ -5,7 +6,13 @@ import "specialsViewModel"
 import "gameViewModel"
 import "gameInputs"
 
+local screenWidth <const> = screenWidth
+local screenHeight <const> = screenHeight
+local ResourceLoader <const> = ResourceLoader
+local cropImage <const> = cropImage
+
 local menu <const> = playdate.getSystemMenu()
+local setMenuImage <const> = playdate.setMenuImage
 local calcTimeStep <const> = CalcTimeStep
 local processInputs <const> = ProcessInputs
 local renderGame <const> = RenderGame
@@ -72,6 +79,30 @@ function GameScreen:update()
         calcTimeStep()
     end
     renderGame()
+end
+
+function GameScreen:gameWillPause()
+    -- todo create lib out of navifator and prevent lockScreen from triggering gameWillPause
+    local minimapImage = ResourceLoader:getImage(levelPath() .. "_minimap")
+    local srcW, srcH = minimapImage:getSize()
+    local xPos, yPos = 0,0
+    if srcW < screenWidth then
+        xPos = (screenWidth - srcW) / 2
+    end
+
+    if srcH < screenHeight then
+        yPos = (screenHeight - srcH) / 2
+    end
+
+    setMenuImage(
+        cropImage(
+            minimapImage,
+            400, 240,
+            0, 0,
+            xPos, yPos
+        ),
+        200
+    )
 end
 
 function GameScreen:debugDraw()

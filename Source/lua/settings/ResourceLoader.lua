@@ -13,6 +13,9 @@ class("ResourceLoader").extends()
 --- use ResourceLoader:getSound(path)
 local cachedSamplePlayers <const> = {}
 
+--- use ResourceLoader:getImage(path)
+local cachedImages <const> = {}
+
 -- get or create the global singleton
 function GetResourceLoader()
     if ResourceLoader.instance then
@@ -152,6 +155,7 @@ function ResourceLoader:getSound(pathWithExtension)
     end
     return cachedSamplePlayers[pathWithExtension]
 end
+
 --- volume range 0.0-1.0
 function ResourceLoader:setSoundVolume(volume)
     self.soundVolume = volume
@@ -170,4 +174,11 @@ function ResourceLoader:setMusicVolume(volume)
     else
         musicManager:start()
     end
+end
+
+function ResourceLoader:getImage(pathWithExtension)
+    if not cachedImages[pathWithExtension] then
+        cachedImages[pathWithExtension] = gfx.image.new(pathWithExtension)
+    end
+    return cachedImages[pathWithExtension]
 end
