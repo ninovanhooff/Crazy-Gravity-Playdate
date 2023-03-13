@@ -95,6 +95,13 @@ function GameScreen:gameWillPause()
         yPos = (screenHeight - srcH) / 2
     end
 
+    local menuImageOffset = 0
+    if srcW < screenWidth then
+        menuImageOffset = 100
+    else
+        menuImageOffset = 200
+    end
+
     setMenuImage(
         cropImage(
             minimapImage,
@@ -102,7 +109,7 @@ function GameScreen:gameWillPause()
             0, 0,
             xPos, yPos
         ),
-        200
+        menuImageOffset
     )
 end
 
