@@ -52,6 +52,7 @@ end
 
 function GameScreen:destroy()
     self:pause()
+    setMenuImage(nil)
 end
 
 function GameScreen:resume()
