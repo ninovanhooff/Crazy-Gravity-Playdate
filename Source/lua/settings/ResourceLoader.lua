@@ -159,7 +159,6 @@ function ResourceLoader:setSoundVolume(volume)
         item:setVolume(volume)
     end
     soundManager:setVolume(volume)
-    local extra_sounds = extra_sounds or {}
     Sounds = volume > 0.0
 end
 
