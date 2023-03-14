@@ -16,6 +16,19 @@ local noFlip <const> = gfx.kImageUnflipped
 return function()
     local planePos <const> = planePos
     local minimapImage = ResourceLoader:getImage(levelPath() .. "_minimap")
+
+    minimapImage:addMask(false)
+    local maskImage = minimapImage:getMaskImage()
+    gfx.pushContext(maskImage)
+    sprite:draw(
+        camPos[1]-7, camPos[2]-6,
+        noFlip,
+        32, 56,
+        60,40
+    )
+    gfx.popContext()
+
+
     local srcW, srcH = minimapImage:getSize()
     local xPos, yPos, srcX, srcY, menuImageOffset = 0,0,0,0,0
 
