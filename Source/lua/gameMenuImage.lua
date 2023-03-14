@@ -40,8 +40,10 @@ return function()
 
     print("rawSrc", srcX, srcY)
 
-    srcX = clamp(srcX, 0, abs(screenWidth - srcW))
-    srcY = clamp(srcY, 0, abs(screenHeight - srcH))
+    srcX = floor(clamp(srcX, 0, abs(screenWidth - srcW)))
+    srcY = floor(clamp(srcY, 0, abs(screenHeight - srcH)))
+    xPos = floor(xPos)
+    yPos = floor(yPos)
 
     print("src", srcX, srcY, srcW, srcH, "pos", xPos, yPos, menuImageOffset)
 
@@ -53,19 +55,14 @@ return function()
     )
 
     gfx.pushContext(croppedImage)
-    gfx.setColor(gfx.kColorXOR)
-    local markerSize = 16
-    --gfx.drawRect(
-    --    xPos-srcX + planePos[1] - markerSize/2,
-    --    yPos-srcY + planePos[2] - markerSize/2,
-    --    markerSize, markerSize
-    --)
-    -- plane
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    local markerSize = 16 -- actually 15, but don't want half pixel coordinates
+
     sprite:draw(
-        xPos-srcX + planePos[1] - markerSize/2,
-        yPos-srcY + planePos[2] - markerSize/2,
+        xPos-srcX + planePos[1] - markerSize/2 + 1,
+        yPos-srcY + planePos[2] - markerSize/2 + 1,
         noFlip,
-        112,0,-- todo create marker sprite (both classic and playdate) and fill spriteX,Y here
+        0,32,
         markerSize, markerSize
     )
     gfx.popContext()
