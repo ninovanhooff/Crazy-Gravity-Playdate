@@ -6,10 +6,7 @@ import "specialsViewModel"
 import "gameViewModel"
 import "gameInputs"
 
-local screenWidth <const> = screenWidth
-local screenHeight <const> = screenHeight
-local ResourceLoader <const> = ResourceLoader
-local cropImage <const> = cropImage
+local setGameMenuImage <const> = import "gameMenuImage"
 
 local menu <const> = playdate.getSystemMenu()
 local setMenuImage <const> = playdate.setMenuImage
@@ -83,34 +80,8 @@ function GameScreen:update()
 end
 
 function GameScreen:gameWillPause()
-    -- todo create lib out of navifator and prevent lockScreen from triggering gameWillPause
-    local minimapImage = ResourceLoader:getImage(levelPath() .. "_minimap")
-    local srcW, srcH = minimapImage:getSize()
-    local xPos, yPos = 0,0
-    if srcW < screenWidth then
-        xPos = (screenWidth - srcW) / 2
-    end
-
-    if srcH < screenHeight then
-        yPos = (screenHeight - srcH) / 2
-    end
-
-    local menuImageOffset = 0
-    if srcW < screenWidth then
-        menuImageOffset = 100
-    else
-        menuImageOffset = 200
-    end
-
-    setMenuImage(
-        cropImage(
-            minimapImage,
-            400, 240,
-            0, 0,
-            xPos, yPos
-        ),
-        menuImageOffset
-    )
+    -- todo create lib out of navigator and prevent lockScreen from triggering gameWillPause
+    setGameMenuImage()
 end
 
 function GameScreen:debugDraw()
