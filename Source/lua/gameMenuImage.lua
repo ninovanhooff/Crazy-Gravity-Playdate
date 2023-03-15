@@ -140,4 +140,6 @@ return function()
         croppedImage,
         menuImageOffset
     )
+
+    routeProps.routeImage:clear(gfx.kColorClear)
 end
