@@ -311,6 +311,11 @@ function ResetGame()
     sample("init BricksView", function()
         bricksView = BricksView()
     end, 1)
+    routeProps = {
+        ["lastPlaneX"] = planePos[1],
+        ["lastPlaneY"] = planePos[2],
+        -- no routeImage, created on first use
+    }
 end
 
 function DecreaseLife()

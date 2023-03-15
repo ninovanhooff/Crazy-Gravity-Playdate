@@ -11,8 +11,10 @@ local gfx <const> = playdate.graphics
 local geometry <const> = playdate.geometry
 local polygon <const> = geometry.polygon
 local setCollectsGarbage <const> = playdate.setCollectsGarbage
+local boolToNum <const> = boolToNum
 local floor <const> = math.floor
 local min <const> = math.min
+local abs <const> = math.abs
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local planePos <const> = planePos
 local camPos <const> = camPos
@@ -30,10 +32,13 @@ local checkpointImage <const> = gfx.image.new("images/checkpoint_banner.png")
 local checkpointImageW <const>, checkpointImageH <const> = checkpointImage:getSize()
 
 local gameHUD <const> = gameHUD
+local renderRoute <const> = RenderRoute
+assert(renderRoute, "renderroute is nil")
 
 --- the active game area, excluding the HUD
 local gameClipRect = playdate.geometry.rect.new(0,0, gameWidthPixels, hudY)
 
+--- returns spent render credits
 local function renderCheckpointBanner()
     local checkpoint <const> = checkpoint
     if checkpoint and checkpoint.animator then
@@ -49,7 +54,10 @@ local function renderCheckpointBanner()
         checkpointImage:draw(scrX, scrY)
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
         gfx.setScreenClipRect(gameClipRect)
+        return 4
     end
+
+    return 0
 end
 
 local targetingArrowTipRadius <const> = 32 -- pixels
@@ -96,7 +104,9 @@ end
 function RenderGame(disableHUD)
     gfx.setScreenClipRect(gameClipRect)
 
-    local tilesRendered = bricksView:render()
+    local levelProps <const> = levelProps
+
+    local renderCost = bricksView:render()
     for _,item in ipairs(specialT) do -- special blocks
         if item.x+item.w>=camPos[1] and item.x<=camPos[1]+gameWidthTiles+1 and item.y+item.h>=camPos[2] and item.y<camPos[2]+gameHeightTiles+1 then
             local scrX,scrY = (item.x-camPos[1])*8-camPos[3],(item.y-camPos[2])*8-camPos[4]
@@ -104,16 +114,16 @@ function RenderGame(disableHUD)
         end
     end
 
-    renderCheckpointBanner()
+    renderCost = renderCost + renderCheckpointBanner()
 
     -- HUD
     gfx.clearClipRect()
-    if tilesRendered <= 80 and not disableHUD then
+    if renderCost <= 80 and not disableHUD then
         -- only render HUD if we have render budget for it
-        gameHUD:render(tilesRendered >= 50)
+        renderCost = renderCost + gameHUD:render(renderCost >= 50)
     end
 
-    if tilesRendered <= 50 then
+    if renderCost <= 50 then
         -- Garbage Collect in frames which are not CPU-intensive
         setCollectsGarbage(true)
     else
@@ -125,6 +135,7 @@ function RenderGame(disableHUD)
     if explosion then
         --explosion
         explosion:render()
+        renderCost = renderCost + 6
     else
         local planeX <const> = floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3])
         local planeY <const> = floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4])
@@ -136,10 +147,21 @@ function RenderGame(disableHUD)
             23, 23
         )
 
+        renderCost = renderCost + 1
+
         if #planeFreight > 0 and not ApproxSpecialCollision(homeBase) and levelProps.numBases == 1 then
             drawHomeBaseIndicator(planeX + 12, planeY + 12) -- center of plane is at origin + 12
+            renderCost = renderCost + 1
+        end
+
+        local routeProps = routeProps
+        -- todo tune thresholds
+        if renderCost <= 60 and (abs(planePos[1] - routeProps.lastPlaneX) > 15 or abs(planePos[2] - routeProps.lastPlaneY) > 12) then
+            renderCost = renderCost + renderRoute()
         end
     end
+
+    print("renderCost", renderCost)
 end
 
 --- ################

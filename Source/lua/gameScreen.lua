@@ -1,12 +1,12 @@
 import "drawUtil"
 import "gameHUD"
 import "specialsView"
+local setGameMenuImage <const> = import "gameMenuImage"
 import "gameView"
 import "specialsViewModel"
 import "gameViewModel"
 import "gameInputs"
 
-local setGameMenuImage <const> = import "gameMenuImage"
 
 local menu <const> = playdate.getSystemMenu()
 local setMenuImage <const> = playdate.setMenuImage

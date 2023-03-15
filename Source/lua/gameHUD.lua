@@ -71,22 +71,30 @@ function GameHUD:clear()
 end
 
 function GameHUD:render(conservative)
+    local renderCost = 0
     local secondsSinceInputConfigChange = currentTime() - inputManager.lastInputTypeChangeTime
     if secondsSinceInputConfigChange < 1 then
         self:renderControlsType()
+        renderCost = renderCost + 2
     elseif secondsSinceInputConfigChange < 4 then
         self:renderControlsMapping()
+        renderCost = renderCost + 2
     elseif frameCounter == 0 then
         self:renderStart()
+        renderCost = renderCost + 2
     elseif conservative then
         self:renderChallenge()
+        renderCost = renderCost + 2
     else
         self:renderFull()
+        renderCost = renderCost + 6
     end
 
     if fuel < GameHUD.lowFuelThreshold and fuelEnabled and frameCounter > 0 then
         self:renderLowFuelTooltip()
+        renderCost = renderCost + 2
     end
+    return renderCost
 end
 
 function GameHUD:renderCenteredText(text)
