@@ -47,7 +47,7 @@ function RenderRoute()
         camPos[1]-7, camPos[2]-6,
         noFlip,
         32, 56,
-        60,40
+        64,40
     )
     gfx.popContext()
 
@@ -63,11 +63,12 @@ function RenderRoute()
     renderCost = renderCost + 4
     return renderCost
 end
+local renderRoute <const> = RenderRoute
 
 
 return function()
+    renderRoute()
     local routeProps <const> = routeProps
-    ensureRouteProps(routeProps)
     local planePos <const> = planePos
     local minimapImage <const> = routeProps.minimapImage
     local srcW, srcH = routeProps.levelSizeX, routeProps.levelSizeY
@@ -109,20 +110,29 @@ return function()
     )
 
     gfx.pushContext(croppedImage)
-    --gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     -- route
     routeProps.routeImage:draw(xPos, yPos, noFlip, srcX, srcY, screenWidth, screenHeight)
 
 
     local markerSize = 16 -- actually 15, but don't want half pixel coordinates
 
-    -- plane marker
+    -- plane border marker
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    local markerX = xPos-srcX + planePos[1] - markerSize/2 + 1
+    local markerY = yPos-srcY + planePos[2] - markerSize/2 + 1
     sprite:draw(
-        xPos-srcX + planePos[1] - markerSize/2 + 1,
-        yPos-srcY + planePos[2] - markerSize/2 + 1,
+        markerX, markerY,
         noFlip,
         0,32,
         markerSize, markerSize
+    )
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    sprite:draw(
+        markerX + 4,
+        markerY + 4,
+        noFlip,
+        16,32,
+        7,7
     )
     gfx.popContext()
 
