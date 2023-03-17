@@ -7,13 +7,13 @@ local levelPath <const> = levelPath
 local cropImage <const> = cropImage
 
 local clamp <const> = clamp
-
 local abs <const> = math.abs
 local floor <const> = math.floor
 local gfx <const> = playdate.graphics
 local noFlip <const> = gfx.kImageUnflipped
-
 local sprite <const> = sprite
+
+local oldRoutePattern <const> = {0x82, 0x10, 0x85, 0x20, 0xA, 0x20, 0x88, 0x22, 125, 239, 122, 223, 245, 223, 119, 221}
 
 local function ensureRouteProps(routeProps)
     if routeProps.initialized then
@@ -38,7 +38,7 @@ end
 
 
 function RenderRoute()
-    print("render route")
+    printT("render route " .. frameCounter)
     local camPos <const> = camPos
     local routeProps <const> = routeProps
     local planePos <const> = planePos
@@ -152,7 +152,9 @@ function SetGameMenuImage()
 
     -- blur previous route
     gfx.pushContext(routeProps.routeMaskImage)
-    gfx.setPattern({0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 170, 85, 170, 85, 170, 85, 170, 85})    gfx.fillRect(0,0,levelW, levelH)
-    gfx.popContext()
+    gfx.setPattern(oldRoutePattern)
+    gfx.fillRect(0,0,levelW, levelH)
+    gfx.popContext()-- routeMaskImage
+
     writeToFile(routeProps.routeMaskImage, tempPath .. "post-route-mask.png")
 end
