@@ -45,7 +45,7 @@ local function renderCheckpointBanner()
         local scrX <const> = (checkpoint.x-camPos[1])*8-camPos[3] + checkpoint.w/2*tileSize - checkpointImageW*0.5
         local scrY <const> = (checkpoint.y-camPos[2])*8-camPos[4] + checkpoint.animator:currentValue()
         if scrX < -checkpointImageW or scrX > gameWidthPixels or scrY < -checkpointImageH or scrY > gameHeightPixels then
-            return
+            return 0
         end
         gfx.setScreenClipRect(0,0, gameClipRect.width, min(scrY + 32, gameClipRect.height))
         if gameBgColor == gfx.kColorBlack then
@@ -155,11 +155,16 @@ function RenderGame(disableHUD)
         end
 
         local routeProps = routeProps
-        -- todo tune thresholds
-        if renderCost <= 60 and (abs(planePos[1] - routeProps.lastPlaneX) > 15 or abs(planePos[2] - routeProps.lastPlaneY) > 12) then
+        if renderCost <= 60 and
+            (
+                abs(planePos[1] - routeProps.lastPlaneX) > 15
+                or abs(planePos[2] - routeProps.lastPlaneY) > 9
+            ) then
             renderCost = renderCost + renderRoute()
         end
     end
+
+    printT("renderCost " .. renderCost)
 end
 
 --- ################
