@@ -48,10 +48,10 @@ function RenderRoute()
     -- fog
     gfx.pushContext(routeProps.minimapMaskImage)
     sprite:draw(
-        camPos[1]-7, camPos[2]-6,
+        camPos[1]+2, camPos[2]-2, -- mask is a bit narrower and a bit taller than camera view
         noFlip,
-        32, 56,
-        64,40
+        32, 32,
+        44,30
     )
     gfx.popContext()
 
