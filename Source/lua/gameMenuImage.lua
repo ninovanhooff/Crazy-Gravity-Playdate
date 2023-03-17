@@ -57,6 +57,7 @@ function RenderRoute()
 
     -- route
     gfx.pushContext(routeProps.routeImage)
+    gfx.setColor(gfx.kColorBlack) -- bugfix: after touching down on checkpoint, gfx color would turn white permanently, across frames, even after pushing context??
     gfx.drawLine(
         routeProps.lastPlaneX, routeProps.lastPlaneY,
         planePos[1], planePos[2]
@@ -146,8 +147,10 @@ function SetGameMenuImage()
         menuImageOffset
     )
 
+    -- todo remove
     local writeToFile <const> = playdate.simulator.writeToFile
     local tempPath = "/Users/ninovanhooff/temp/"
+    writeToFile(routeProps.routeImage, tempPath .. "pre-route.png")
     writeToFile(routeProps.routeMaskImage, tempPath .. "pre-route-mask.png")
 
     -- blur previous route
@@ -156,5 +159,7 @@ function SetGameMenuImage()
     gfx.fillRect(0,0,levelW, levelH)
     gfx.popContext()-- routeMaskImage
 
+    -- todo remove
+    writeToFile(routeProps.routeImage, tempPath .. "post-route.png")
     writeToFile(routeProps.routeMaskImage, tempPath .. "post-route-mask.png")
 end
