@@ -240,6 +240,18 @@ function ResetPlane()
     collision = nil
     fuel = levelProps.fuel
     landedTimer,landedAt, prevLandedAt = 0, checkpoint, checkpoint
+
+    if routeProps then
+        routeProps.lastPlaneX = planePos[1]
+        routeProps.lastPlaneY = planePos[2]
+    else
+        routeProps = {
+            ["lastPlaneX"] = planePos[1],
+            ["lastPlaneY"] = planePos[2],
+            -- copy routeImage, but don't create it
+            ['routeImage'] = routeProps and routeProps.routeImage or nil
+        }
+    end
 end
 
 local function initSpecials()
@@ -290,6 +302,7 @@ end
 function ResetGame()
     checkpoint = homeBase
     checkpoint.animator = nil
+    routeProps = nil
     ResetPlane()
     fuelSpent, livesLost = 0,0
     planeFreight = {} -- type, idx of special where picked up
@@ -311,11 +324,6 @@ function ResetGame()
     sample("init BricksView", function()
         bricksView = BricksView()
     end, 1)
-    routeProps = {
-        ["lastPlaneX"] = planePos[1],
-        ["lastPlaneY"] = planePos[2],
-        -- no routeImage, created on first use
-    }
 end
 
 function DecreaseLife()

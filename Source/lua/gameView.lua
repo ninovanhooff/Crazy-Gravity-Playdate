@@ -160,8 +160,6 @@ function RenderGame(disableHUD)
             renderCost = renderCost + renderRoute()
         end
     end
-
-    print("renderCost", renderCost)
 end
 
 --- ################

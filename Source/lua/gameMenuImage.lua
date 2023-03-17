@@ -22,11 +22,15 @@ local function ensureRouteProps(routeProps)
     print("initializing routeProps")
     local minimapImage = ResourceLoader:getImage(levelPath() .. "_minimap")
     routeProps.levelSizeX, routeProps.levelSizeY = minimapImage:getSize()
+    -- Initially hide minimap by making it transparent
     minimapImage:addMask(false) -- does nothing if it already has a mask
     routeProps.minimapImage = minimapImage
     routeProps.minimapMaskImage = minimapImage:getMaskImage()
 
-    routeProps.routeImage = gfx.image.new(routeProps.levelSizeX, routeProps.levelSizeY)
+    routeProps.routeImage = gfx.image.new(
+        routeProps.levelSizeX, routeProps.levelSizeY
+    )
+    routeProps.routeMaskImage = routeProps.routeImage:getMaskImage()
 
     routeProps.initialized = true
     return 6
@@ -66,41 +70,41 @@ end
 local renderRoute <const> = RenderRoute
 
 
-return function()
+function SetGameMenuImage()
     renderRoute()
     local routeProps <const> = routeProps
     local planePos <const> = planePos
     local minimapImage <const> = routeProps.minimapImage
-    local srcW, srcH = routeProps.levelSizeX, routeProps.levelSizeY
+    local levelW, levelH = routeProps.levelSizeX, routeProps.levelSizeY
     local xPos, yPos, srcX, srcY, menuImageOffset = 0,0,0,0,0
 
-    if srcW <= screenWidth then
-        xPos = (screenWidth - srcW) / 2
+    if levelW <= screenWidth then
+        xPos = (screenWidth - levelW) / 2
     else
-        srcX = planePos[1] - srcW/2
+        srcX = planePos[1] - levelW /2
     end
 
-    if srcW < screenWidth / 2 then
+    if levelW < screenWidth / 2 then
         menuImageOffset = 100
     else
-        menuImageOffset = floor((planePos[1] / srcW) * 200)
+        menuImageOffset = floor((planePos[1] / levelW) * 200)
     end
 
-    if srcH <= screenHeight then
-        yPos = screenHeight/2 - srcH/2
+    if levelH <= screenHeight then
+        yPos = screenHeight/2 - levelH /2
     else
-        srcY = planePos[2] - srcH/2
+        srcY = planePos[2] - levelH /2
         --srcY = (halfHeightTiles - (camPos[2]-1 + halfHeightTiles)) / 2
     end
 
     print("rawSrc", srcX, srcY)
 
-    srcX = floor(clamp(srcX, 0, abs(screenWidth - srcW)))
-    srcY = floor(clamp(srcY, 0, abs(screenHeight - srcH)))
+    srcX = floor(clamp(srcX, 0, abs(screenWidth - levelW)))
+    srcY = floor(clamp(srcY, 0, abs(screenHeight - levelH)))
     xPos = floor(xPos)
     yPos = floor(yPos)
 
-    print("src", srcX, srcY, srcW, srcH, "pos", xPos, yPos, menuImageOffset)
+    print("src", srcX, srcY, levelW, levelH, "pos", xPos, yPos, menuImageOffset)
 
     local croppedImage = cropImage(
         minimapImage,
@@ -126,6 +130,7 @@ return function()
         0,32,
         markerSize, markerSize
     )
+    -- plane
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
     sprite:draw(
         markerX + 4,
@@ -134,12 +139,20 @@ return function()
         16,32,
         7,7
     )
-    gfx.popContext()
+    gfx.popContext() -- croppedImage
 
     setMenuImage(
         croppedImage,
         menuImageOffset
     )
 
-    routeProps.routeImage:clear(gfx.kColorClear)
+    local writeToFile <const> = playdate.simulator.writeToFile
+    local tempPath = "/Users/ninovanhooff/temp/"
+    writeToFile(routeProps.routeMaskImage, tempPath .. "pre-route-mask.png")
+
+    -- blur previous route
+    gfx.pushContext(routeProps.routeMaskImage)
+    gfx.setPattern({0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 170, 85, 170, 85, 170, 85, 170, 85})    gfx.fillRect(0,0,levelW, levelH)
+    gfx.popContext()
+    writeToFile(routeProps.routeMaskImage, tempPath .. "post-route-mask.png")
 end

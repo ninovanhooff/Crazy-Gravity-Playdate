@@ -1,7 +1,7 @@
 import "drawUtil"
 import "gameHUD"
 import "specialsView"
-local setGameMenuImage <const> = import "gameMenuImage"
+import "gameMenuImage"
 import "gameView"
 import "specialsViewModel"
 import "gameViewModel"
@@ -81,7 +81,7 @@ end
 
 function GameScreen:gameWillPause()
     -- todo create lib out of navigator and prevent lockScreen from triggering gameWillPause
-    setGameMenuImage()
+    SetGameMenuImage()
 end
 
 function GameScreen:debugDraw()
