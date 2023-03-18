@@ -118,7 +118,6 @@ function SetGameMenuImage()
     -- route
     routeProps.routeImage:draw(xPos, yPos, noFlip, srcX, srcY, screenWidth, screenHeight)
 
-
     local markerSize = 16 -- actually 15, but don't want half pixel coordinates
 
     -- plane border marker
@@ -147,19 +146,9 @@ function SetGameMenuImage()
         menuImageOffset
     )
 
-    -- todo remove
-    local writeToFile <const> = playdate.simulator.writeToFile
-    local tempPath = "/Users/ninovanhooff/temp/"
-    writeToFile(routeProps.routeImage, tempPath .. "pre-route.png")
-    writeToFile(routeProps.routeMaskImage, tempPath .. "pre-route-mask.png")
-
     -- blur previous route
     gfx.pushContext(routeProps.routeMaskImage)
     gfx.setPattern(oldRoutePattern)
     gfx.fillRect(0,0,levelW, levelH)
     gfx.popContext()-- routeMaskImage
-
-    -- todo remove
-    writeToFile(routeProps.routeImage, tempPath .. "post-route.png")
-    writeToFile(routeProps.routeMaskImage, tempPath .. "post-route-mask.png")
 end
