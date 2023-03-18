@@ -14,10 +14,7 @@ import "settings/physicsSettings"
 import "records"
 import "levelSuggestion"
 import "challenges"
-
-if playdate.isSimulator and playdate.file.exists("lua/unittests.pdz") then
-    require "lua/unittests"
-end
+import "common/tooltip"
 
 local gfx = playdate.graphics
 
@@ -61,7 +58,13 @@ gfx.setColor(gfx.kColorBlack)
 local originalSystemFont = gfx.getSystemFont()
 gfx.setFont( originalSystemFont, gfx.font.kVariantItalic )
 gfx.setFont(gfx.getSystemFont(gfx.font.kVariantBold))
-
-import "common/tooltip"
-
 GetOptions():apply(true)
+
+if playdate.isSimulator and playdate.file.exists("lua/unittests.pdz") then
+    require "lua/unittests"
+end
+
+if false and playdate.isSimulator and playdate.file.exists("lua/gameMiniMapWriter.pdz") then
+    require "lua/gameMiniMapWriter"
+    writeAllMiniMaps()
+end

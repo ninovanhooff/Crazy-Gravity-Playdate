@@ -11,8 +11,6 @@ local luaMod <const> = luaMod
 numLevels = 25
 
 function LoadFile(path)
-    printf("loading ".. path)
-
     levelT, brickT, specialT, levelProps = nil, nil, nil
 
     local levelT
@@ -40,13 +38,14 @@ function LoadFile(path)
     }
 
     local brickFile = file.open(path..".bin")
+    assert(brickFile)
     for x = 1, levelProps.sizeX do
         brickT[x]= setmetatable({compressed = brickFile:read(5*levelProps.sizeY)}, unpackMeta)
     end
 
 
-    printf("loaded dim",#brickT, #brickT[1])
-    printf("loaded #specials:", #specialT)
+    print("loaded dim",#brickT, #brickT[1])
+    print("loaded #specials:", #specialT)
 
     return true
 end
