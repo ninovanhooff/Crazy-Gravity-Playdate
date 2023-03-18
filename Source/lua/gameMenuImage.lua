@@ -19,12 +19,12 @@ local function ensureRouteProps(routeProps)
         return 0
     end
     print("initializing routeProps")
-    local minimapImage = ResourceLoader:getImage(levelPath() .. "_minimap")
-    routeProps.levelSizeX, routeProps.levelSizeY = minimapImage:getSize()
-    -- Initially hide minimap by making it transparent
-    minimapImage:addMask(false) -- does nothing if it already has a mask
-    routeProps.minimapImage = minimapImage
-    routeProps.minimapMaskImage = minimapImage:getMaskImage()
+    local miniMapImage = ResourceLoader:getImage(levelPath() .. "_miniMap")
+    routeProps.levelSizeX, routeProps.levelSizeY = miniMapImage:getSize()
+    -- Initially hide miniMap by making it transparent
+    miniMapImage:addMask(false) -- does nothing if it already has a mask
+    routeProps.miniMapImage = miniMapImage
+    routeProps.miniMapMaskImage = miniMapImage:getMaskImage()
 
     routeProps.routeImage = gfx.image.new(
         routeProps.levelSizeX, routeProps.levelSizeY
@@ -81,7 +81,7 @@ function RenderRoute()
     local renderCost = ensureRouteProps(routeProps)
 
     -- fog
-    gfx.pushContext(routeProps.minimapMaskImage)
+    gfx.pushContext(routeProps.miniMapMaskImage)
     sprite:draw(
         camPos[1]+2, camPos[2]-2, -- mask is a bit narrower and a bit taller than camera view
         noFlip,
@@ -110,7 +110,7 @@ function SetGameMenuImage()
     renderRoute()
     local routeProps <const> = routeProps
     local planePos <const> = planePos
-    local minimapImage <const> = routeProps.minimapImage
+    local miniMapImage <const> = routeProps.miniMapImage
     local levelW, levelH = routeProps.levelSizeX, routeProps.levelSizeY
     local xPos, yPos, srcX, srcY, menuImageOffset = 0,0,0,0,0
 
@@ -144,15 +144,15 @@ function SetGameMenuImage()
     local mapOffsetY = yPos-srcY
 
     print("src", srcX, srcY, levelW, levelH, "pos", xPos, yPos, menuImageOffset)
-    -- create menuImage with map background and masked minimap
+    -- create menuImage with map background and masked miniMap
     local menuImage = gfx.image.new(screenWidth, screenHeight, gfx.kColorBlack)
     -- map background
     gfx.pushContext(menuImage)
     gfx.setPattern({0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0})
     gfx.fillRect(mapOffsetX,mapOffsetY,levelW,levelH)
 
-    -- minimap
-    minimapImage:draw(xPos, yPos, noFlip, srcX, srcY, levelW, levelH)
+    -- miniMap
+    miniMapImage:draw(xPos, yPos, noFlip, srcX, srcY, levelW, levelH)
 
     -- route
     routeProps.routeImage:draw(xPos, yPos, noFlip, srcX, srcY, screenWidth, screenHeight)
