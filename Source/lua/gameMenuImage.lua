@@ -4,7 +4,6 @@ local screenWidth <const> = screenWidth
 local screenHeight <const> = screenHeight
 local ResourceLoader <const> = ResourceLoader
 local levelPath <const> = levelPath
-local cropImage <const> = cropImage
 
 local clamp <const> = clamp
 local abs <const> = math.abs
@@ -34,6 +33,42 @@ local function ensureRouteProps(routeProps)
 
     routeProps.initialized = true
     return 6
+end
+
+local function drawMapBorderCorners(menuImage, mapOffsetX, mapOffsetY, levelW, levelH)
+    local markerSize = 8
+    gfx.pushContext(menuImage)
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    -- top-left
+    sprite:draw(
+        mapOffsetX, mapOffsetY,
+        noFlip,
+        0,48,
+        markerSize, markerSize
+    )
+    --top-right
+    sprite:draw(
+        mapOffsetX + levelW - markerSize, mapOffsetY,
+        noFlip,
+        markerSize,48,
+        markerSize, markerSize
+    )
+    --bottom-left
+    sprite:draw(
+        mapOffsetX, mapOffsetY + levelH - markerSize,
+        noFlip,
+        0,48+markerSize,
+        markerSize, markerSize
+    )
+    print("bottom right", mapOffsetX + levelW - markerSize, mapOffsetY + levelH - markerSize)
+    --bottom-right
+    sprite:draw(
+        mapOffsetX + levelW - markerSize, mapOffsetY + levelH - markerSize,
+        noFlip,
+        markerSize,48+markerSize,
+        markerSize, markerSize
+    )
+    gfx.popContext() -- menuImage
 end
 
 
@@ -104,17 +139,20 @@ function SetGameMenuImage()
     srcY = floor(clamp(srcY, 0, abs(screenHeight - levelH)))
     xPos = floor(xPos)
     yPos = floor(yPos)
+    local mapOffsetX = xPos-srcX
+    local mapOffsetY = yPos-srcY
 
     print("src", srcX, srcY, levelW, levelH, "pos", xPos, yPos, menuImageOffset)
+    -- create menuImage with map background and masked minimap
+    local menuImage = gfx.image.new(screenWidth, screenHeight, gfx.kColorBlack)
+    -- map background
+    gfx.pushContext(menuImage)
+    gfx.setPattern({0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0})
+    gfx.fillRect(mapOffsetX,mapOffsetY,levelW,levelH)
 
-    local croppedImage = cropImage(
-        minimapImage,
-        screenWidth, screenHeight,
-        srcX, srcY,
-        xPos, yPos
-    )
+    -- minimap
+    minimapImage:draw(xPos, yPos, noFlip, srcX, srcY, levelW, levelH)
 
-    gfx.pushContext(croppedImage)
     -- route
     routeProps.routeImage:draw(xPos, yPos, noFlip, srcX, srcY, screenWidth, screenHeight)
 
@@ -122,8 +160,8 @@ function SetGameMenuImage()
 
     -- plane border marker
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    local markerX = xPos-srcX + planePos[1] - markerSize/2 + 1
-    local markerY = yPos-srcY + planePos[2] - markerSize/2 + 1
+    local markerX = mapOffsetX + planePos[1] - markerSize/2 + 1
+    local markerY = mapOffsetY + planePos[2] - markerSize/2 + 1
     sprite:draw(
         markerX, markerY,
         noFlip,
@@ -141,8 +179,10 @@ function SetGameMenuImage()
     )
     gfx.popContext() -- croppedImage
 
+    drawMapBorderCorners(menuImage, mapOffsetX, mapOffsetY, levelW, levelH)
+
     setMenuImage(
-        croppedImage,
+        menuImage,
         menuImageOffset
     )
 
