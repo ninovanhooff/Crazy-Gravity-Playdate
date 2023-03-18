@@ -84,10 +84,10 @@ function RenderRoute()
     -- fog
     gfx.pushContext(routeProps.miniMapMaskImage)
     sprite:draw(
-        camPos[1]+2, camPos[2]-2, -- mask is a bit narrower and a bit taller than camera view
+        camPos[1]-3, camPos[2]-3, -- mask is a bit narrower and a bit taller than camera view
         noFlip,
         32, 32,
-        44,30
+        56,34
     )
     gfx.popContext()
 
@@ -173,7 +173,6 @@ function SetGameMenuImage()
 
     -- plane
     local miniRot = round(planeRot / 6) % 4
-    print("minirot", miniRot)
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
     sprite:draw(
         markerX + 4,
