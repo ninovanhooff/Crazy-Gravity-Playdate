@@ -6,6 +6,7 @@ local ResourceLoader <const> = ResourceLoader
 local levelPath <const> = levelPath
 
 local clamp <const> = clamp
+local round <const> = round
 local abs <const> = math.abs
 local floor <const> = math.floor
 local gfx <const> = playdate.graphics
@@ -169,13 +170,16 @@ function SetGameMenuImage()
         0,32,
         markerSize, markerSize
     )
+
     -- plane
+    local miniRot = round(planeRot / 6) % 4
+    print("minirot", miniRot)
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
     sprite:draw(
         markerX + 4,
         markerY + 4,
         noFlip,
-        16,32,
+        32 + miniRot * 7,88,
         7,7
     )
     gfx.popContext() -- croppedImage
