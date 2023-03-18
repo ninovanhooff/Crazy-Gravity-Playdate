@@ -124,7 +124,7 @@ function SetGameMenuImage()
     if levelW < screenWidth / 2 then
         menuImageOffset = 100
     else
-        menuImageOffset = round(((camPos[1]-1) / (levelW - gameWidthTiles)) * 200)
+        menuImageOffset = floor(((camPos[1]-1) / (levelW - gameWidthTiles)) * 200)
     end
 
     if levelH <= screenHeight then
@@ -136,11 +136,10 @@ function SetGameMenuImage()
 
     print("rawSrc", srcX, srcY)
 
-    -- todo necessary?
-    srcX = round(clamp(srcX, 0, abs(screenWidth - levelW)))
-    srcY = round(clamp(srcY, 0, abs(screenHeight - levelH)))
-    xPos = round(xPos)
-    yPos = round(yPos)
+    srcX = floor(clamp(srcX, 0, abs(screenWidth - levelW)))
+    srcY = floor(clamp(srcY, 0, abs(screenHeight - levelH)))
+    xPos = floor(xPos)
+    yPos = floor(yPos)
     local mapOffsetX = xPos-srcX
     local mapOffsetY = yPos-srcY
 
