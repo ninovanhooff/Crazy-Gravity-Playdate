@@ -328,20 +328,18 @@ function RenderBarrier(item, scrX, scrY)
 
     if item.tooltip then
         local centerX, centerY
-        if not item.wrongWayX then
-            if item.direction == 1 then -- up
-                centerX = (item.w*tileSize)/2
-                centerY = item.distance*8-item.closedPos/2
-            elseif item.direction == 2 then -- down
-                centerX = (item.w*tileSize)/2
-                centerY = 36 + (item.closedPos /2)
-            elseif item.direction == 3 then -- left
-                centerX = -4 + item.distance*8-item.closedPos/2
-                centerY = (item.h*tileSize)/2
-            else -- right
-                centerX = 36 + (item.closedPos /2)
-                centerY = (item.h*tileSize)/2
-            end
+        if item.direction == 1 then -- up
+            centerX = (item.w*tileSize)/2
+            centerY = item.distance*8-item.closedPos/2
+        elseif item.direction == 2 then -- down
+            centerX = (item.w*tileSize)/2
+            centerY = 36 + (item.closedPos /2)
+        elseif item.direction == 3 then -- left
+            centerX = -4 + item.distance*8-item.closedPos/2
+            centerY = (item.h*tileSize)/2
+        else -- right
+            centerX = 36 + (item.closedPos /2)
+            centerY = (item.h*tileSize)/2
         end
         renderTooltip(item.tooltip, scrX + centerX, scrY + centerY)
     end
