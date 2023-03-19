@@ -11,6 +11,7 @@ local abs <const> = math.abs
 local floor <const> = math.floor
 local gfx <const> = playdate.graphics
 local noFlip <const> = gfx.kImageUnflipped
+local textAlignmentCenter <const> = kTextAlignment.center
 local sprite <const> = sprite
 
 local oldRoutePattern <const> = {0x82, 0x10, 0x85, 0x20, 0xA, 0x20, 0x88, 0x22, 125, 239, 122, 223, 245, 223, 119, 221}
@@ -70,6 +71,53 @@ local function drawMapBorderCorners(menuImage, mapOffsetX, mapOffsetY, levelW, l
         markerSize, markerSize
     )
     gfx.popContext() -- menuImage
+end
+
+local function drawMissingBarrierKeys(mapOffsetX, mapOffsetY)
+    local font = ResourceLoader.getMiniMapGlyphsFont()
+    for _,item in ipairs(specialT) do
+        print(item.sType == 15, item.discovered, item.missingKeyGlyphs)
+        if item.sType == 15 and item.discovered and item.missingKeyGlyphs then
+            local offsetX, offsetY = 0,0
+
+            if item.direction == 1 then -- up
+                offsetX = item.w/2
+                if item.endStone == 1 then
+                    offsetY = item.distance/2 - 4 -- good
+                else
+                    offsetY = item.distance/2 - 6 -- good
+                end
+            elseif item.direction == 2 then -- down
+                offsetX = item.w/2
+                if item.endStone == 1 then
+                    offsetY = item.distance/2 - 2 -- good
+                else
+                    offsetY = item.distance/2 - 1 -- good
+                end
+            elseif item.direction == 3 then -- left
+                if item.endStone == 1 then
+                    offsetX = item.distance/2 -- good
+                else
+                    offsetX = item.distance/2 -- good
+                end
+                offsetY = item.h/2 - 5
+            else -- right
+                if item.endStone == 1 then
+                    offsetX = item.distance/2 + 1-- good
+                else
+                    offsetX = item.distance/2 + 1-- good
+                end
+                offsetY = item.h/2 - 5
+            end
+
+            font:drawTextAligned(
+                item.missingKeyGlyphs,
+                mapOffsetX + item.x + offsetX,
+                mapOffsetY + item.y + offsetY,
+                textAlignmentCenter
+            )
+        end
+    end
 end
 
 
@@ -147,13 +195,17 @@ function SetGameMenuImage()
     print("src", srcX, srcY, levelW, levelH, "pos", xPos, yPos, menuImageOffset)
     -- create menuImage with map background and masked miniMap
     local menuImage = gfx.image.new(screenWidth, screenHeight, gfx.kColorBlack)
-    -- map background
     gfx.pushContext(menuImage)
+
+    -- map background
     gfx.setPattern({0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0})
     gfx.fillRect(mapOffsetX,mapOffsetY,levelW,levelH)
 
     -- miniMap
     miniMapImage:draw(xPos, yPos, noFlip, srcX, srcY, levelW, levelH)
+
+    -- barrier keys
+    drawMissingBarrierKeys(mapOffsetX, mapOffsetY, menuImage)
 
     -- route
     routeProps.routeImage:draw(xPos, yPos, noFlip, srcX, srcY, screenWidth, screenHeight)
@@ -181,7 +233,7 @@ function SetGameMenuImage()
         32 + miniRot * 7,88,
         7,7
     )
-    gfx.popContext() -- croppedImage
+    gfx.popContext() -- menuImage
 
     drawMapBorderCorners(menuImage, mapOffsetX, mapOffsetY, levelW, levelH)
 

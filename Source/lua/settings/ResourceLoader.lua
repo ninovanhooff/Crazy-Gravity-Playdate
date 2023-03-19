@@ -148,6 +148,13 @@ function ResourceLoader:getLcdFont()
     return ResourceLoader.lcdFont
 end
 
+function ResourceLoader:getMiniMapGlyphsFont()
+    if not ResourceLoader.miniMapGlyphsFont then
+        ResourceLoader.miniMapGlyphsFont = gfx.font.new("fonts/MiniMap Glyphs/mini-map-glyphs")
+        assert(ResourceLoader.miniMapGlyphsFont)
+    end
+    return ResourceLoader.miniMapGlyphsFont
+end
 function ResourceLoader:getSound(pathWithExtension)
     if not cachedSamplePlayers[pathWithExtension] then
         cachedSamplePlayers[pathWithExtension] = sampleplayer.new(pathWithExtension)

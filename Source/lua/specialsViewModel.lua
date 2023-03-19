@@ -477,7 +477,7 @@ end
 
 function CalcBarrier(item)
     local oldPos <const> = item.pos
-    item.activated = false
+    item.activated = false -- whether player is in activation zone. Might not have keys to open
     item.tooltip = nil
     -- gate collision
     if item.direction==1 then --up
@@ -504,13 +504,13 @@ function CalcBarrier(item)
 
     -- update gate position
     local missingKeyGlyphs = ""
-    if item.activated then
-        for j,jtem in ipairs(colorT) do
-            if item[jtem]==1 and not keys[j] then -- key required but player doesn't have it
-                missingKeyGlyphs = missingKeyGlyphs .. keyGlyphT[j]
-            end
+    for j,jtem in ipairs(colorT) do
+        if item[jtem]==1 and not keys[j] then -- key required but player doesn't have it
+            missingKeyGlyphs = missingKeyGlyphs .. keyGlyphT[j]
         end
     end
+    item.missingKeyGlyphs = #missingKeyGlyphs > 0 and missingKeyGlyphs or nil
+
     if item.activated and #missingKeyGlyphs == 0 then
         item.pos = item.pos - barrierSpeed
     else
@@ -529,6 +529,10 @@ function CalcBarrier(item)
             leftIconIndex = 1,
             text="Missing: " .. missingKeyGlyphs
         }
+    end
+
+    if item.activated then
+        item.discovered = true
     end
 
 end

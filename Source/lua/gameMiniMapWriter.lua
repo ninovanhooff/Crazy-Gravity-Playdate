@@ -119,8 +119,8 @@ local function writeMiniMap(levelNum)
                 end
             end
         end
-    --gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     renderMiniSpecials()
+
     gfx.popContext()
 
     local miniMapPath = sourcePath .. levelPath(levelNum) .. "_miniMap.png"
@@ -131,7 +131,7 @@ end
 function writeAllMiniMaps()
     require "lua/gameScreen"
 
-    for i = 3,25 do
+    for i = 1, numLevels do
         writeMiniMap(i)
     end
 end
