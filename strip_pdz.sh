@@ -30,6 +30,10 @@ done
 unitTestsPath="$pdxDir/lua/unittests.pdz"
 removeIfExists "$unitTestsPath"
 
+# make sure we don't ship pre-render tools
+minimapWriterPath="$pdxDir/lua/gameMiniMapWriter.pdz"
+removeIfExists "$minimapWriterPath"
+
 # temp level files created by GravityExpressLevelEditor
 removeIfExists "$pdxDir/levels/temp.bin"
 removeIfExists "$pdxDir/levels/temp.pdz"
