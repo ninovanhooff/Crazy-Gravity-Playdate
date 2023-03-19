@@ -64,7 +64,7 @@ if playdate.isSimulator and playdate.file.exists("lua/unittests.pdz") then
     require "lua/unittests"
 end
 
-if true and playdate.isSimulator and playdate.file.exists("lua/gameMiniMapWriter.pdz") then
+if false and playdate.isSimulator and playdate.file.exists("lua/gameMiniMapWriter.pdz") then
     require "lua/gameMiniMapWriter"
     writeAllMiniMaps()
 end
