@@ -316,6 +316,8 @@ function ResetGame()
             if item.pType == 2 then -- freight
                 remainingFreight[item.type+1] = remainingFreight[item.type+1]+item.amnt
             end
+        elseif item.sType == 15 then -- barrier
+            CalcBarrier(item) -- reset missingKeyGlyphs
         end
     end
     extras = {0,InitialLives or levelProps.lives or 9,1} -- turbo, lives, cargo
