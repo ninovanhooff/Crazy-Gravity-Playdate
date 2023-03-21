@@ -73,11 +73,13 @@ local function drawMapBorderCorners(menuImage, mapOffsetX, mapOffsetY, levelW, l
     gfx.popContext() -- menuImage
 end
 
-local function drawMissingBarrierKeys(mapOffsetX, mapOffsetY)
+local function drawMissingBarrierKeys(mapOffsetX, mapOffsetY, miniMapMaskImage)
     local font = ResourceLoader.getMiniMapGlyphsFont()
     for _,item in ipairs(specialT) do
-        print(item.sType == 15, item.discovered, item.missingKeyGlyphs)
-        if item.sType == 15 and item.discovered and item.missingKeyGlyphs then
+        local centerX = floor(item.x + item.w/2)-1 -- item is 1-based, imgis 0-based
+        local centerY = floor(item.y + item.h/2)-1
+        --print(item.sType == 15, item.discovered, centerX, centerY, item.missingKeyGlyphs, miniMapMaskImage:sample(centerX, centerY), gfx.kColorWhite, miniMapMaskImage:getSize())
+        if item.sType == 15 and item.missingKeyGlyphs and (item.discovered or miniMapMaskImage:sample(centerX, centerY) == gfx.kColorWhite) then
             local offsetX, offsetY = 0,0
 
             if item.direction == 1 then -- up
@@ -205,7 +207,7 @@ function SetGameMenuImage()
     miniMapImage:draw(xPos, yPos, noFlip, srcX, srcY, levelW, levelH)
 
     -- barrier keys
-    drawMissingBarrierKeys(mapOffsetX, mapOffsetY, menuImage)
+    drawMissingBarrierKeys(mapOffsetX, mapOffsetY, routeProps.miniMapMaskImage)
 
     -- route
     routeProps.routeImage:draw(xPos, yPos, noFlip, srcX, srcY, screenWidth, screenHeight)
