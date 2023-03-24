@@ -128,6 +128,10 @@ function LevelSelectViewModel:gameWillPause()
     self:keyTimerRemover()
 end
 
+function LevelSelectViewModel:deviceWillLock()
+    self:keyTimerRemover()
+end
+
 function LevelSelectViewModel:destroy()
     self:pause()
     if self.videoViewModel then

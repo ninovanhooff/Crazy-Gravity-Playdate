@@ -36,3 +36,7 @@ end
 function SettingsScreen:gameWillPause()
     self.options:gameWillPause()
 end
+
+function SettingsScreen:deviceWillLock()
+    self.options:deviceWillLock()
+end

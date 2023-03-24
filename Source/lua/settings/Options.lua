@@ -380,6 +380,10 @@ function optionsNS.Options:gameWillPause()
     self.keyTimerRemover()
 end
 
+function optionsNS.Options:deviceWillLock()
+    self.keyTimerRemover()
+end
+
 function optionsNS.Options:isAccelerometerSteeringEnabled()
     return self:read(ENABLE_ACCELEROMETER_KEY)
 end

@@ -30,6 +30,10 @@ function LevelSelectScreen:gameWillPause()
     levelSelectViewModel:gameWillPause()
 end
 
+function LevelSelectScreen:deviceWillLock()
+    levelSelectViewModel:deviceWillLock()
+end
+
 function LevelSelectScreen:destroy()
     levelSelectViewModel:destroy()
 end
