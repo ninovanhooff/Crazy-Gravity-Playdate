@@ -67,7 +67,6 @@ function GameScreen:update()
 end
 
 function GameScreen:gameWillPause()
-    -- todo create lib out of navigator and prevent lockScreen from triggering gameWillPause
     SetGameMenuImage()
 end
 

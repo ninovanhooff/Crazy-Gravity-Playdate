@@ -63,7 +63,6 @@ function GameExplosionScreen:resume()
 end
 
 function GameExplosionScreen:gameWillPause()
-    -- todo create lib out of navigator and prevent lockScreen from triggering gameWillPause
     SetGameMenuImage()
 end
 

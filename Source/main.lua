@@ -64,9 +64,9 @@ function playdate.update()
 end
 
 function playdate.gameWillPause()  navigator:gameWillPause() end
-function playdate.deviceWillLock() navigator:gameWillPause() end
+function playdate.deviceWillLock() navigator:deviceWillLock() end
 function playdate.gameWillResume() navigator:gameWillResume() end
-function playdate.deviceDidUnlock() navigator:gameWillResume() end
+function playdate.deviceDidUnlock() navigator:deviceDidUnlock() end
 
 function playdate.debugDraw()
     if Debug then
