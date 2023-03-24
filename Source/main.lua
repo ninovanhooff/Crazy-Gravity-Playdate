@@ -27,17 +27,18 @@ import "CoreLibs/utilities/sampler"
 import "CoreLibs/ui"
 import "CoreLibs/crank"
 import "CoreLibs/graphics"
-import "lua/screen"
 import "lua/enum"
 import "lua/level"
 import "lua/init"
-local navigator <const> = import "lua/navigator"
+import "lua/playdate-navigator/import"
 local currentTime <const> = playdate.sound.getCurrentTime
 local targetFrameTime <const> = 1/frameRate
 local inputManager <const> = inputManager
 local gfx <const> = playdate.graphics
 local updateBlinkers <const> = gfx.animation.blinker.updateAll
 local updateTimers <const> = playdate.timer.updateTimers
+
+local navigator <const> = Navigator(function() return StartScreen() end)
 
 -- note: GC might still be turned off temporarily in gameView
 playdate.setMinimumGCTime(2)
