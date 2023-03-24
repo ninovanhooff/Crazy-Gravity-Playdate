@@ -25,18 +25,13 @@ end
 
 function StartScreen:pause()
     self.viewModel:pause()
-
-    if self.settingsMenuItem then
-        menu:removeMenuItem(self.settingsMenuItem)
-        self.settingsMenuItem = nil
-    end
 end
 
 function StartScreen:resume()
     -- reset state entirely
     self.viewModel = StartViewModel(self.initialPlaneX, self.initialPlaneY)
 
-    self.settingsMenuItem = menu:addMenuItem("Settings", function()
+    menu:addMenuItem("Settings", function()
         require "lua/settings/SettingsScreen"
         pushScreen(SettingsScreen())
     end)

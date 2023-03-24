@@ -32,18 +32,6 @@ function GameScreen:pause()
     playdate.display.setRefreshRate(frameRate)
     if Sounds then thrust_sound:stop() end
     soundManager:stop()
-    if self.backMenuItem then
-        menu:removeMenuItem(self.backMenuItem)
-        self.backMenuItem = nil
-    end
-    if self.settingsMenuItem then
-        menu:removeMenuItem(self.settingsMenuItem)
-        self.settingsMenuItem = nil
-    end
-    if self.restartMenuItem then
-        menu:removeMenuItem(self.restartMenuItem)
-        self.restartMenuItem = nil
-    end
 end
 
 function GameScreen:destroy()
@@ -54,14 +42,14 @@ end
 function GameScreen:resume()
     playdate.display.setRefreshRate(options:getGameFps())
 
-    self.settingsMenuItem = menu:addMenuItem("Settings", function()
+    menu:addMenuItem("Settings", function()
         require "lua/settings/SettingsScreen"
         pushScreen(SettingsScreen())
     end)
-    self.backMenuItem = menu:addMenuItem("Quit level", function()
+    menu:addMenuItem("Quit level", function()
         popScreen()
     end)
-    self.restartMenuItem = menu:addMenuItem("Restart level", function()
+    menu:addMenuItem("Restart level", function()
         ResetGame()
     end)
 
