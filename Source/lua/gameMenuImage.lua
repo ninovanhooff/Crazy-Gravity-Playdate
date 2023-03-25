@@ -1,20 +1,18 @@
 local setMenuImage <const> = playdate.setMenuImage
 
 local screenWidth <const> = screenWidth
-local gameWidthTiles <const> = gameWidthTiles
 local gameHeightTiles <const> = gameHeightTiles
 local visibleMenuWidth <const> = screenWidth / 2
 local screenHeight <const> = screenHeight
 local ResourceLoader <const> = ResourceLoader
 local levelPath <const> = levelPath
-
+local clamp <const> = clamp
 local round <const> = round
 local floor <const> = math.floor
 local gfx <const> = playdate.graphics
 local noFlip <const> = gfx.kImageUnflipped
 local textAlignmentCenter <const> = kTextAlignment.center
 local sprite <const> = sprite
-
 local menuImageOffset <const> = 100
 local blurRoutePattern <const> = { 0x82, 0x10, 0x85, 0x20, 0xA, 0x20, 0x88, 0x22, 125, 239, 122, 223, 245, 223, 119, 221 }
 local mapBackGroundPattern <const> = { 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 }
@@ -39,34 +37,34 @@ local function ensureRouteProps(routeProps)
     return 6
 end
 
-local function drawMapBorderCorners(menuImage, mapOffsetX, mapOffsetY, levelW, levelH)
+local function drawMapBorderCorners(menuImage, mapX, mapY, levelW, levelH)
     local markerSize = 8
     gfx.pushContext(menuImage)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     -- top-left
     sprite:draw(
-        mapOffsetX, mapOffsetY,
+        mapX, mapY,
         noFlip,
         0,48,
         markerSize, markerSize
     )
     --top-right
     sprite:draw(
-        mapOffsetX + levelW - markerSize, mapOffsetY,
+        mapX + levelW - markerSize, mapY,
         noFlip,
         markerSize,48,
         markerSize, markerSize
     )
     --bottom-left
     sprite:draw(
-        mapOffsetX, mapOffsetY + levelH - markerSize,
+        mapX, mapY + levelH - markerSize,
         noFlip,
         0,48+markerSize,
         markerSize, markerSize
     )
     --bottom-right
     sprite:draw(
-        mapOffsetX + levelW - markerSize, mapOffsetY + levelH - markerSize,
+        mapX + levelW - markerSize, mapY + levelH - markerSize,
         noFlip,
         markerSize,48+markerSize,
         markerSize, markerSize
@@ -74,10 +72,10 @@ local function drawMapBorderCorners(menuImage, mapOffsetX, mapOffsetY, levelW, l
     gfx.popContext() -- menuImage
 end
 
-local function drawMissingBarrierKeys(mapOffsetX, mapOffsetY, miniMapMaskImage)
+local function drawMissingBarrierKeys(mapX, mapY, miniMapMaskImage)
     local font = ResourceLoader.getMiniMapGlyphsFont()
     for _,item in ipairs(specialT) do
-        local centerX = floor(item.x + item.w/2)-1 -- item is 1-based, imgis 0-based
+        local centerX = floor(item.x + item.w/2)-1 -- item is 1-based, img is 0-based
         local centerY = floor(item.y + item.h/2)-1
         if item.sType == 15 and item.missingKeyGlyphs and (item.discovered or miniMapMaskImage:sample(centerX, centerY) == gfx.kColorWhite) then
             local offsetX, offsetY = 0,0
@@ -114,8 +112,8 @@ local function drawMissingBarrierKeys(mapOffsetX, mapOffsetY, miniMapMaskImage)
 
             font:drawTextAligned(
                 item.missingKeyGlyphs,
-                mapOffsetX + item.x + offsetX,
-                mapOffsetY + item.y + offsetY,
+                mapX + item.x + offsetX,
+                mapY + item.y + offsetY,
                 textAlignmentCenter
             )
         end
@@ -162,27 +160,27 @@ function SetGameMenuImage()
     local planePos <const> = planePos
     local miniMapImage <const> = routeProps.miniMapImage
     local levelW, levelH = routeProps.levelSizeX, routeProps.levelSizeY
-    local xPos, yPos = 0,0
-    local camPos <const> = camPos
+    local mapX, mapY = 0,0
 
+    -- try to center plane in visible area, while keeping as much of the map on screen as possible
     if levelW < visibleMenuWidth then
-        xPos = (menuImageOffset + visibleMenuWidth/2) - (levelW/2)
+        mapX = (menuImageOffset + visibleMenuWidth/2) - (levelW/2)
     else
         local panningRange = levelW - visibleMenuWidth
-        xPos = menuImageOffset - ((camPos[1]-1) / (levelW - gameWidthTiles)) * panningRange
+        local planeOffX = -planePos[1] + menuImageOffset + visibleMenuWidth/2
+        mapX = clamp(planeOffX, menuImageOffset - panningRange, menuImageOffset)
     end
 
     if levelH <= screenHeight then
-        yPos = screenHeight/2 - levelH/2
+        mapY = screenHeight/2 - levelH/2
     else
         local panningRange = levelH - screenHeight
-        yPos = -((camPos[2]-1) / (levelH - gameHeightTiles)) * panningRange
+        local planeOffY = -planePos[2] + screenHeight/2
+        mapY = clamp(planeOffY, -panningRange, 0)
     end
 
-    xPos = floor(xPos)
-    yPos = floor(yPos)
-    local mapOffsetX = xPos
-    local mapOffsetY = yPos
+    mapX = floor(mapX)
+    mapY = floor(mapY)
 
     -- create menuImage with map background and masked miniMap
     local menuImage = gfx.image.new(screenWidth, screenHeight, gfx.kColorBlack)
@@ -190,23 +188,23 @@ function SetGameMenuImage()
 
     -- map background
     gfx.setPattern(mapBackGroundPattern)
-    gfx.fillRect(mapOffsetX,mapOffsetY,levelW,levelH)
+    gfx.fillRect(mapX,mapY,levelW,levelH)
 
     -- miniMap
-    miniMapImage:draw(xPos, yPos)
+    miniMapImage:draw(mapX, mapY)
 
     -- barrier keys
-    drawMissingBarrierKeys(mapOffsetX, mapOffsetY, routeProps.miniMapMaskImage)
+    drawMissingBarrierKeys(mapX, mapY, routeProps.miniMapMaskImage)
 
     -- route
-    routeProps.routeImage:draw(xPos, yPos)
+    routeProps.routeImage:draw(mapX, mapY)
 
     local markerSize = 16 -- actually 15, but don't want half pixel coordinates
 
     -- plane border marker
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    local markerX = mapOffsetX + planePos[1] - markerSize/2 + 1
-    local markerY = mapOffsetY + planePos[2] - markerSize/2 + 1
+    local markerX = mapX + planePos[1] - markerSize/2 + 1
+    local markerY = mapY + planePos[2] - markerSize/2 + 1
     sprite:draw(
         markerX, markerY,
         noFlip,
@@ -226,7 +224,7 @@ function SetGameMenuImage()
     )
     gfx.popContext() -- menuImage
 
-    drawMapBorderCorners(menuImage, mapOffsetX, mapOffsetY, levelW, levelH)
+    drawMapBorderCorners(menuImage, mapX, mapY, levelW, levelH)
 
     setMenuImage(
         menuImage,
