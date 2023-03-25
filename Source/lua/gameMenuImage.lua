@@ -2,14 +2,13 @@ local setMenuImage <const> = playdate.setMenuImage
 
 local screenWidth <const> = screenWidth
 local gameWidthTiles <const> = gameWidthTiles
+local gameHeightTiles <const> = gameHeightTiles
 local visibleMenuWidth <const> = screenWidth / 2
 local screenHeight <const> = screenHeight
 local ResourceLoader <const> = ResourceLoader
 local levelPath <const> = levelPath
 
-local clamp <const> = clamp
 local round <const> = round
-local abs <const> = math.abs
 local floor <const> = math.floor
 local gfx <const> = playdate.graphics
 local noFlip <const> = gfx.kImageUnflipped
@@ -17,13 +16,13 @@ local textAlignmentCenter <const> = kTextAlignment.center
 local sprite <const> = sprite
 
 local menuImageOffset <const> = 100
-local oldRoutePattern <const> = {0x82, 0x10, 0x85, 0x20, 0xA, 0x20, 0x88, 0x22, 125, 239, 122, 223, 245, 223, 119, 221}
+local blurRoutePattern <const> = { 0x82, 0x10, 0x85, 0x20, 0xA, 0x20, 0x88, 0x22, 125, 239, 122, 223, 245, 223, 119, 221 }
+local mapBackGroundPattern <const> = { 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 }
 
 local function ensureRouteProps(routeProps)
     if routeProps.initialized then
         return 0
     end
-    print("initializing routeProps")
     local miniMapImage = ResourceLoader:getImage(levelPath() .. "_miniMap")
     routeProps.levelSizeX, routeProps.levelSizeY = miniMapImage:getSize()
     -- Initially hide miniMap by making it transparent
@@ -65,7 +64,6 @@ local function drawMapBorderCorners(menuImage, mapOffsetX, mapOffsetY, levelW, l
         0,48+markerSize,
         markerSize, markerSize
     )
-    print("bottom right", mapOffsetX + levelW - markerSize, mapOffsetY + levelH - markerSize)
     --bottom-right
     sprite:draw(
         mapOffsetX + levelW - markerSize, mapOffsetY + levelH - markerSize,
@@ -81,7 +79,6 @@ local function drawMissingBarrierKeys(mapOffsetX, mapOffsetY, miniMapMaskImage)
     for _,item in ipairs(specialT) do
         local centerX = floor(item.x + item.w/2)-1 -- item is 1-based, imgis 0-based
         local centerY = floor(item.y + item.h/2)-1
-        --print(item.sType == 15, item.discovered, centerX, centerY, item.missingKeyGlyphs, miniMapMaskImage:sample(centerX, centerY), gfx.kColorWhite, miniMapMaskImage:getSize())
         if item.sType == 15 and item.missingKeyGlyphs and (item.discovered or miniMapMaskImage:sample(centerX, centerY) == gfx.kColorWhite) then
             local offsetX, offsetY = 0,0
 
@@ -127,7 +124,6 @@ end
 
 
 function RenderRoute()
-    printT("render route " .. frameCounter)
     local camPos <const> = camPos
     local routeProps <const> = routeProps
     local planePos <const> = planePos
@@ -166,7 +162,7 @@ function SetGameMenuImage()
     local planePos <const> = planePos
     local miniMapImage <const> = routeProps.miniMapImage
     local levelW, levelH = routeProps.levelSizeX, routeProps.levelSizeY
-    local xPos, yPos, srcX, srcY = 0,0,0,0
+    local xPos, yPos = 0,0
     local camPos <const> = camPos
 
     if levelW < visibleMenuWidth then
@@ -177,37 +173,33 @@ function SetGameMenuImage()
     end
 
     if levelH <= screenHeight then
-        yPos = screenHeight/2 - levelH /2
+        yPos = screenHeight/2 - levelH/2
     else
-        srcY = planePos[2] - levelH /2
-        --srcY = (halfHeightTiles - (camPos[2]-1 + halfHeightTiles)) / 2
+        local panningRange = levelH - screenHeight
+        yPos = -((camPos[2]-1) / (levelH - gameHeightTiles)) * panningRange
     end
 
-    print("rawSrc", srcY)
-
-    srcY = floor(clamp(srcY, 0, abs(screenHeight - levelH)))
     xPos = floor(xPos)
     yPos = floor(yPos)
-    local mapOffsetX = xPos-srcX
-    local mapOffsetY = yPos-srcY
+    local mapOffsetX = xPos
+    local mapOffsetY = yPos
 
-    print("src", srcX, srcY, levelW, levelH, "pos", xPos, yPos, menuImageOffset)
     -- create menuImage with map background and masked miniMap
     local menuImage = gfx.image.new(screenWidth, screenHeight, gfx.kColorBlack)
     gfx.pushContext(menuImage)
 
     -- map background
-    gfx.setPattern({0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0})
+    gfx.setPattern(mapBackGroundPattern)
     gfx.fillRect(mapOffsetX,mapOffsetY,levelW,levelH)
 
     -- miniMap
-    miniMapImage:draw(xPos, yPos, noFlip, srcX, srcY, levelW, levelH)
+    miniMapImage:draw(xPos, yPos)
 
     -- barrier keys
     drawMissingBarrierKeys(mapOffsetX, mapOffsetY, routeProps.miniMapMaskImage)
 
     -- route
-    routeProps.routeImage:draw(xPos, yPos, noFlip, srcX, srcY, screenWidth, screenHeight)
+    routeProps.routeImage:draw(xPos, yPos)
 
     local markerSize = 16 -- actually 15, but don't want half pixel coordinates
 
@@ -243,7 +235,7 @@ function SetGameMenuImage()
 
     -- blur previous route
     gfx.pushContext(routeProps.routeMaskImage)
-    gfx.setPattern(oldRoutePattern)
+    gfx.setPattern(blurRoutePattern)
     gfx.fillRect(0,0,levelW, levelH)
     gfx.popContext()-- routeMaskImage
 end
