@@ -33,7 +33,6 @@ local checkpointImageW <const>, checkpointImageH <const> = checkpointImage:getSi
 
 local gameHUD <const> = gameHUD
 local renderRoute <const> = RenderRoute
-assert(renderRoute, "renderroute is nil")
 
 --- the active game area, excluding the HUD
 local gameClipRect = playdate.geometry.rect.new(0,0, gameWidthPixels, hudY)
@@ -157,7 +156,7 @@ function RenderGame(disableHUD)
         local routeProps = routeProps
         if renderCost <= 60 and
             (
-                abs(planePos[1] - routeProps.lastPlaneX) > 15
+                abs(planePos[1] - routeProps.lastPlaneX) > 9
                 or abs(planePos[2] - routeProps.lastPlaneY) > 9
             ) then
             renderCost = renderCost + renderRoute()
