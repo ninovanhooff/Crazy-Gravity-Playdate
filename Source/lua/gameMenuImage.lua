@@ -1,6 +1,8 @@
 local setMenuImage <const> = playdate.setMenuImage
 
 local screenWidth <const> = screenWidth
+local gameWidthTiles <const> = gameWidthTiles
+local visibleMenuWidth <const> = screenWidth / 2
 local screenHeight <const> = screenHeight
 local ResourceLoader <const> = ResourceLoader
 local levelPath <const> = levelPath
@@ -14,6 +16,7 @@ local noFlip <const> = gfx.kImageUnflipped
 local textAlignmentCenter <const> = kTextAlignment.center
 local sprite <const> = sprite
 
+local menuImageOffset <const> = 100
 local oldRoutePattern <const> = {0x82, 0x10, 0x85, 0x20, 0xA, 0x20, 0x88, 0x22, 125, 239, 122, 223, 245, 223, 119, 221}
 
 local function ensureRouteProps(routeProps)
@@ -163,19 +166,14 @@ function SetGameMenuImage()
     local planePos <const> = planePos
     local miniMapImage <const> = routeProps.miniMapImage
     local levelW, levelH = routeProps.levelSizeX, routeProps.levelSizeY
-    local xPos, yPos, srcX, srcY, menuImageOffset = 0,0,0,0,0
-
-    if levelW <= screenWidth then
-        xPos = (screenWidth - levelW) / 2
-    else
-        srcX = planePos[1] - levelW /2
-    end
-
+    local xPos, yPos, srcX, srcY = 0,0,0,0
     local camPos <const> = camPos
-    if levelW < screenWidth / 2 then
-        menuImageOffset = 100
+
+    if levelW < visibleMenuWidth then
+        xPos = (menuImageOffset + visibleMenuWidth/2) - (levelW/2)
     else
-        menuImageOffset = floor(((camPos[1]-1) / (levelW - gameWidthTiles)) * 200)
+        local panningRange = levelW - visibleMenuWidth
+        xPos = menuImageOffset - ((camPos[1]-1) / (levelW - gameWidthTiles)) * panningRange
     end
 
     if levelH <= screenHeight then
@@ -185,9 +183,8 @@ function SetGameMenuImage()
         --srcY = (halfHeightTiles - (camPos[2]-1 + halfHeightTiles)) / 2
     end
 
-    print("rawSrc", srcX, srcY)
+    print("rawSrc", srcY)
 
-    srcX = floor(clamp(srcX, 0, abs(screenWidth - levelW)))
     srcY = floor(clamp(srcY, 0, abs(screenHeight - levelH)))
     xPos = floor(xPos)
     yPos = floor(yPos)
