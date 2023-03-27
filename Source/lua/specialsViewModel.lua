@@ -100,6 +100,14 @@ local function updateCheckpoint(platform, suppressCheckpointSound)
     end
 end
 
+local function updateBarriers()
+    for _,item in ipairs(specialT) do
+        if item.sType == 15 then -- barrier
+            CalcBarrier(item) -- update missingKeyGlyphs
+        end
+    end
+end
+
 function ApproxSpecialCollision(item)
     return approxRectCollision(item.x, item.y, item.w, item.h)
 end
@@ -220,6 +228,7 @@ function CalcPlatform(item)
                     item.amnt = item.amnt -1
                     gameHUD:onChanged(4)
                     if Sounds then key_sound:play() end
+                    updateBarriers() -- update missingKeyGlyphs
                 end
             end
 
