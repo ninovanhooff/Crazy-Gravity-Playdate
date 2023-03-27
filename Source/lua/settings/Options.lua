@@ -66,6 +66,7 @@ local LANDING_TOLERANCE_VALS <const> = {
     {label="Hard", value = { x=1.25, y=2.5, rotation=0 }},
 }
 local SELF_RIGHT_TIP_SHOWN_KEY <const> = "selfRightTipShown"
+local ACCELEROMETER_CONTROLS_HINT_SHOWN_KEY <const> = "accelerometerControlsHintShown"
 
 local AUDIO_STYLE_KEY <const> = "audioStyle"
 local AUDIO_VOLUME_KEY <const> = "audioVolume"
@@ -174,6 +175,7 @@ local gameOptions = {
         -- HIDDEN Options set by game logic only
         options = {
             { key= SELF_RIGHT_TIP_SHOWN_KEY, values= toggleVals, default=1},
+            { key= ACCELEROMETER_CONTROLS_HINT_SHOWN_KEY, values= toggleVals, default=1},
         }
     },
 }
@@ -586,12 +588,20 @@ function optionsNS.Options:getSelfRightTipShown()
     return self:read(SELF_RIGHT_TIP_SHOWN_KEY)
 end
 
+function optionsNS.Options:getAccelerometerControlsHintShown()
+    return self:read(ACCELEROMETER_CONTROLS_HINT_SHOWN_KEY)
+end
+
 function optionsNS.Options:getAccelerometerSensitivity()
     return self:read(ACCELEROMETER_SENSITIVITY_KEY)
 end
 
 function optionsNS.Options:setSelfRightTipShown(shown)
     self:set(SELF_RIGHT_TIP_SHOWN_KEY, shown)
+end
+
+function optionsNS.Options:setAccelerometerControlsHintShown(shown)
+    self:set(ACCELEROMETER_CONTROLS_HINT_SHOWN_KEY, shown)
 end
 
 function optionsNS.Options:isDirty()

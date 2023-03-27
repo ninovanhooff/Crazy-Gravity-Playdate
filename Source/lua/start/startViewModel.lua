@@ -56,6 +56,11 @@ local function getChallengesHint()
 end
 
 local function getHintText()
+    if options:isAccelerometerSteeringEnabled() and not options:getAccelerometerControlsHintShown() then
+        options:setAccelerometerControlsHintShown(true)
+        return inputManager:inputTypeString() .. "\n" .. inputManager:fullMappingString()
+    end
+
     if #records > numLevels/2 then
         return getChallengesHint()
     end
