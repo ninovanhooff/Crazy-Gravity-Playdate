@@ -55,10 +55,14 @@ local function getChallengesHint()
     return string.format("Achievements unlocked: %d / 75", challengesUnlocked)
 end
 
+local function getInputHintText()
+    return inputManager:inputTypeString() .. "\n" .. inputManager:fullMappingString()
+end
+
 local function getHintText()
     if options:isAccelerometerSteeringEnabled() and not options:getAccelerometerControlsHintShown() then
         options:setAccelerometerControlsHintShown(true)
-        return inputManager:inputTypeString() .. "\n" .. inputManager:fullMappingString()
+        return getInputHintText()
     end
 
     if #records > numLevels/2 then
@@ -231,6 +235,13 @@ function StartViewModel:calcTimeStep()
     if not self.viewState.hintText and currentTime() > self.startTime + hintDelay then
         self.viewState.hintText = getHintText()
     end
+
+    local secondsSinceInputConfigChange = currentTime() - inputManager.lastInputTypeChangeTime
+    if secondsSinceInputConfigChange < 1 then
+        self.viewState.hintText = getInputHintText()
+    end
+
+
     return updateViewState(self)
 end
 
