@@ -100,7 +100,7 @@ local ACCELEROMETER_SENSITIVITY_KEY <const> = "accelerometerSensitivity"
 local SELF_RIGHT_AND_DESTRUCT_KEY <const> = "selfRightMapping"
 
 -- define as const so it can be used in multiple sections
-local tiltSteeringEnabledOption <const> = { name='Tilt Steering', key= ENABLE_ACCELEROMETER_KEY, values= toggleVals, default= 1}
+local accelerometerEnabledOption <const> = { name='Tilt Steering', key= ENABLE_ACCELEROMETER_KEY, values= toggleVals, default= 2 }
 
 local gameOptions = {
     -- name (str): option's display name in menu
@@ -138,7 +138,7 @@ local gameOptions = {
     {
         header = 'Button input',
         options = {
-            tiltSteeringEnabledOption,
+            accelerometerEnabledOption,
             { name='Turn speed', key=ROTATION_DELAY_KEY, values= ROTATION_DELAY_VALS, default=1},
 
             { name=Actions.Labels[Actions.Left], key= TURN_LEFT_KEY, values= BUTTON_VALS, default=3, disabledFunction = function() return true end},
@@ -151,7 +151,7 @@ local gameOptions = {
     {
         header = 'Tilt input',
         options = {
-            tiltSteeringEnabledOption,
+            accelerometerEnabledOption,
             { name='Sensitivity', key= ACCELEROMETER_SENSITIVITY_KEY, values= SENSITIVITY_VALS, default= 5},
             { name='Throttle', key= THROTTLE_ACCELEROMETER_KEY, values= BUTTON_VALS, default= 8},
         }
