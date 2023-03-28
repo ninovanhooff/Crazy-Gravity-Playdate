@@ -100,7 +100,8 @@ local ACCELEROMETER_SENSITIVITY_KEY <const> = "accelerometerSensitivity"
 local SELF_RIGHT_AND_DESTRUCT_KEY <const> = "selfRightMapping"
 
 -- define as const so it can be used in multiple sections
-local accelerometerEnabledOption <const> = { name='Tilt Steering', key= ENABLE_ACCELEROMETER_KEY, values= toggleVals, default= 2 }
+local tiltDefault = playdate.isSimulator and 1 or 2
+local accelerometerEnabledOption <const> = { name='Tilt Steering', key= ENABLE_ACCELEROMETER_KEY, values= toggleVals, default= tiltDefault }
 
 local gameOptions = {
     -- name (str): option's display name in menu
