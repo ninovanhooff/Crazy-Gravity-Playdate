@@ -118,6 +118,8 @@ function CalcPlatform(item)
         return -- out of range
     end
 
+    planePos.isCloseToPlatform = true
+
     --platform collision
     local landingTolerance <const> = landingTolerance
     local rotationWithinLandingTolerance <const> = abs(planeRot - 18) <= landingTolerance.rotation

@@ -96,10 +96,11 @@ local function drawPlaneRotationIndicator(centerX, centerY)
     gfx.setLineWidth(3)
 
     local rotationToleranceDeg = 15*(landingTolerance.rotation)
+    local rotationToleranceRadius = 20
     if rotationToleranceDeg == 0 then -- 0 would draw a full circle
         rotationToleranceDeg = 7.5
     end
-    gfx.drawArc(centerX, centerY, 20, -rotationToleranceDeg, rotationToleranceDeg)
+    gfx.drawArc(centerX, centerY, rotationToleranceRadius, -rotationToleranceDeg, rotationToleranceDeg)
 
     gfx.setColor(gfx.kColorXOR)
     gfx.setLineWidth(9)
@@ -156,6 +157,7 @@ function RenderGame(disableHUD)
         renderCost = renderCost + 6
     else
         local planeX <const> = floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3])
+        local planeCenterX <const> = planeX + 12
         local planeY <const> = floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4])
         -- plane
         sprite:draw(
@@ -164,15 +166,21 @@ function RenderGame(disableHUD)
             planeRot%16*23, 391+(boolToNum(planeRot>15)*2-thrust)*23,
             23, 23
         )
-
         renderCost = renderCost + 1
 
-        if #planeFreight > 0 and not ApproxSpecialCollision(homeBase) and levelProps.numBases == 1 then
-            drawHomeBaseIndicator(planeX + 12, planeY + 12) -- center of plane is at origin + 12
+        if landedAt and landedAt.tooltip then
+            renderTooltip(landedAt.tooltip, planeCenterX, planeY - 30)
             renderCost = renderCost + 1
         end
 
-        drawPlaneRotationIndicator(planeX + 12, planeY + 12) -- center of plane is at origin + 12
+        if #planeFreight > 0 and not ApproxSpecialCollision(homeBase) and levelProps.numBases == 1 then
+            drawHomeBaseIndicator(planeCenterX, planeY + 12) -- center of plane is at origin + 12
+            renderCost = renderCost + 1
+        end
+
+        if planePos.isCloseToPlatform then
+            drawPlaneRotationIndicator(planeCenterX, planeY + 12) -- center of plane is at origin + 12
+        end
 
         local routeProps = routeProps
         if renderCost <= 60 and

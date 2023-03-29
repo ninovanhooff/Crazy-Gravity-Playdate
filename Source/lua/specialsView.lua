@@ -97,10 +97,6 @@ function RenderPlatform(item, scrX, scrY)
         sprite:draw(scrX+8, pltfrmY-20, unFlipped, 184+(math.floor(frameCounter/2)%7)*16, 398+16*item.color, 16, 16)
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
-
-    if item.tooltip then
-        renderTooltip(item.tooltip, scrX + item.w*4, scrY)
-    end
 end
 
 function RenderBlower(item, scrX, scrY)

@@ -204,6 +204,7 @@ function CalcTimeStep()
     local screenCenterX = camPos[1] + halfWidthTiles
     local screenCenterY = camPos[2] + halfHeightTiles
     soundManager:notifySoundCalcStart()
+    planePos.isCloseToPlatform = false
     steeringDisabled = false
     for _,item in ipairs(specialT) do
         -- only calculate when item max half a screen out of view
