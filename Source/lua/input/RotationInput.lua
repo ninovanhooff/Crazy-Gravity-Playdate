@@ -8,12 +8,21 @@ local supportedActionsMask <const> = Actions.Left | Actions.Right | Actions.Self
 
 class("RotationInput").extends(Input)
 
-function RotationInput:init(getInputRotationDegFun, inputGlyph)
+function RotationInput:init(inputGlyph)
     RotationInput.super.init(self)
-    self.getInputRotationDeg = getInputRotationDegFun
     self.inputGlyph = inputGlyph
 end
 
+-- Get the current rotation value expressed in degrees, 0 is up
+function RotationInput:getInputRotationDeg()
+    -- implemented in sub-classes
+end
+
+function RotationInput:destroy()
+    -- implemented in sub-classes
+end
+
+-- Get the current rotation value expressed in plane rotation, 18 is up
 function RotationInput:getPlaneRotation()
     local position = round(self:getInputRotationDeg() / 15) -- 15: 360 degrees / 24 plane angles
     if position == 24 then
@@ -23,10 +32,6 @@ function RotationInput:getPlaneRotation()
     return (position + 18) % 24 -- transform to planeRotation, where 18 is up
 end
 
---function RotationInput:getInputRotationDeg()
---    -- implemented in sub-classes
---end
---
 function RotationInput:actionMappingString(action)
     if action & supportedActionsMask ~= 0 then
         return self.inputGlyph

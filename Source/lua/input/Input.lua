@@ -21,6 +21,10 @@ function Input:rotationInput(currentRotation)
     return nil
 end
 
+function Input:getInputRotationDeg()
+    return nil
+end
+
 function Input:isInputJustPressed(action)
     return false
 end
@@ -30,3 +34,7 @@ end
 function Input:isTakeOffLandingBlocked(currentRotation)
     return false
 end
+
+function Input:update() end
+
+function Input:destroy() end

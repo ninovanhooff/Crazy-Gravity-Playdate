@@ -16,12 +16,10 @@ function InputManager:setButtonMapping(mapping)
 end
 
 function InputManager:reset()
-    if self.inputs.accelerometer then
-        self.inputs.accelerometer:destroy()
-        self.inputs.accelerometer = nil
+    for k,v in pairs(self.inputs) do
+        v:destroy()
+        self.inputs[k] = nil
     end
-    self.inputs.crank = nil
-    self.inputs.button = nil
 end
 
 --- the inputType most suitable for the current settings and inputs state
@@ -80,18 +78,6 @@ function InputManager:inputTypeString()
     end
 end
 
-function InputManager:update()
-    local curInputType = self:targetInputType()
-    if curInputType ~= self.prevInputType then
-        self:configureInputs()
-        self.lastInputTypeChangeTime = currentTime()
-    end
-
-    if self.inputs.accelerometer then
-        self.inputs.accelerometer:update()
-    end
-end
-
 --- call-through to all input-managers for a specific function like isInputJustPressed
 --- @param func function eg. isInputJustPressed
 --- @param action number eg. Actions.Throttle
@@ -117,9 +103,16 @@ function InputManager:resetRotationTimeout()
     end)
 end
 
+--- returns new rotation given current rotation, or nil if no change
 function InputManager:rotationInput(currentRotation)
     return delegateActionFunction(self, function(input)
         return input:rotationInput(currentRotation)
+    end)
+end
+
+function InputManager:getInputRotationDeg()
+    return delegateActionFunction(self, function(input)
+        return input:getInputRotationDeg()
     end)
 end
 
@@ -132,6 +125,18 @@ end
 function InputManager:isTakeOffLandingBlocked(currentRotation)
     return delegateActionFunction(self, function(input)
         return input:isTakeOffLandingBlocked(currentRotation)
+    end)
+end
+
+function InputManager:update()
+    local curInputType = self:targetInputType()
+    if curInputType ~= self.prevInputType then
+        self:configureInputs()
+        self.lastInputTypeChangeTime = currentTime()
+    end
+
+    delegateActionFunction(self, function(input)
+        input:update()
     end)
 end
 

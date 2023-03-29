@@ -11,10 +11,14 @@ local supportedActionsMask <const> = Actions.Left | Actions.Right | Actions.Self
 local proportionalInfluence <const> = 0.3
 local averagingFactor <const> = 1 + proportionalInfluence
 
-class("AccelerometerInput").extends(Input)
+class("AccelerometerInput").extends(RotationInput)
 
 function AccelerometerInput:init(sensitivity)
-    AccelerometerInput.super.init(self)
+    AccelerometerInput.super.init(
+        self,
+        "↺↻"
+    )
+    print("start accelerometer")
     playdate.startAccelerometer()
     --- weighted average over multiple frames, smooths sensor noise
     self.smoothAccelX = 0
@@ -29,42 +33,12 @@ function AccelerometerInput:update()
     self.smoothAccelX = (accelX*proportionalInfluence + self.smoothAccelX) / averagingFactor
 end
 
-function AccelerometerInput:getAccelerometerPlaneRotation(accelX)
-    local position = (accelX / self.accelXLimit)+1 -- [0, 2] where 1 is straight up
-    position = position * 12 -- [0 .. 24] where 12 is straight up
-    return round((position + 6) % 24) -- transform to planeRotation, where 18 is up
-end
-
-function AccelerometerInput:rotationInput(currentRotation)
-    local smoothAccelX = self.smoothAccelX
-    local accelerometerRotation = self:getAccelerometerPlaneRotation(smoothAccelX)
-    if accelerometerRotation == currentRotation then
-        return nil
-    else
-        local newRotation = currentRotation
-            + sign(smallestPlaneRotation(accelerometerRotation, currentRotation))
-        return clampPlaneRotation(newRotation)
-    end
-end
-
-
-function AccelerometerInput:actionMappingString(action)
-    if action & supportedActionsMask ~= 0 then
-        return "↺↻"
-    else
-        return nil
-    end
-end
-
-function AccelerometerInput:isTakeOffLandingBlocked(_)
-    return abs(
-        smallestPlaneRotation(
-            18,
-            self:getAccelerometerPlaneRotation(self.smoothAccelX)
-        )
-    ) > landingTolerance.rotation
+function AccelerometerInput:getInputRotationDeg()
+    return (self.smoothAccelX / self.accelXLimit)*180 -- [-180, 180] where 0 is straight up
 end
 
 function AccelerometerInput:destroy()
+    AccelerometerInput.super.destroy(self)
+    print("stop accelerometer")
     playdate.stopAccelerometer()
 end
