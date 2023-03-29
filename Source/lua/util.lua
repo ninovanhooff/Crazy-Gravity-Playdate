@@ -50,6 +50,10 @@ function smallestPlaneRotation(destRotation, startRotation)
     return ((destRotation - startRotation) + 12) % 24 - 12
 end
 
+function planeRotationToDeg(rotation)
+    return (90 + (rotation * 15)) % 360
+end
+
 function clampPlaneRotation(rotation)
     local modded = rotation % 24
     if modded < 0 then

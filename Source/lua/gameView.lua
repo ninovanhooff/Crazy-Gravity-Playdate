@@ -18,6 +18,7 @@ local abs <const> = math.abs
 local unFlipped <const> = playdate.graphics.kImageUnflipped
 local planePos <const> = planePos
 local camPos <const> = camPos
+local planeRotationToDeg <const> = planeRotationToDeg
 local specialRenders <const> = specialRenders
 local renderTooltip <const> = Tooltips.renderTooltip
 local inputManager <const> = inputManager
@@ -90,7 +91,7 @@ local function drawHomeBaseIndicator(centerX, centerY)
     gfx.drawPolygon(targetingPolygon)
 end
 
-local function drawPlaneRotationIndicator(centerX, centerY)
+local function drawPlaneRotationIndicator(centerX, centerY, rotationDeg)
     gfx.pushContext()
     gfx.setColor(gameFgColor)
     gfx.setLineWidth(3)
@@ -104,7 +105,6 @@ local function drawPlaneRotationIndicator(centerX, centerY)
 
     gfx.setColor(gfx.kColorXOR)
     gfx.setLineWidth(9)
-    local rotationDeg = inputManager:getInputRotationDeg()
     gfx.drawArc(centerX, centerY, 20, rotationDeg-6, rotationDeg+6)
 
     gfx.popContext()
@@ -156,9 +156,11 @@ function RenderGame(disableHUD)
         explosion:render()
         renderCost = renderCost + 6
     else
+        local planeRot <const> = planeRot
         local planeX <const> = floor((planePos[1]-camPos[1])*8+planePos[3]-camPos[3])
-        local planeCenterX <const> = planeX + 12
         local planeY <const> = floor((planePos[2]-camPos[2])*8+planePos[4]-camPos[4])
+        local planeCenterX <const> = planeX + 12
+        local planeCenterY <const> = planeY + 12
         -- plane
         sprite:draw(
             planeX, planeY,
@@ -168,18 +170,26 @@ function RenderGame(disableHUD)
         )
         renderCost = renderCost + 1
 
+        local shouldDrawPlaneRotationIndicator = #planeFreight > 0 and
+            not ApproxSpecialCollision(homeBase) and
+            levelProps.numBases == 1
         if landedAt and landedAt.tooltip then
-            renderTooltip(landedAt.tooltip, planeCenterX, planeY - 30)
+            local yOffset = shouldDrawPlaneRotationIndicator and -30 or -24
+            renderTooltip(landedAt.tooltip, planeCenterX, planeY + yOffset)
             renderCost = renderCost + 1
         end
 
-        if #planeFreight > 0 and not ApproxSpecialCollision(homeBase) and levelProps.numBases == 1 then
-            drawHomeBaseIndicator(planeCenterX, planeY + 12) -- center of plane is at origin + 12
+        if shouldDrawPlaneRotationIndicator then
+            drawHomeBaseIndicator(planeCenterX, planeCenterY) -- center of plane is at origin + 12
             renderCost = renderCost + 1
         end
 
+        local rotationDeg = inputManager:getInputRotationDeg() or planeRotationToDeg(planeRot)
         if planePos.isCloseToPlatform then
-            drawPlaneRotationIndicator(planeCenterX, planeY + 12) -- center of plane is at origin + 12
+            drawPlaneRotationIndicator(
+                planeCenterX, planeCenterY,
+                rotationDeg
+            )
         end
 
         local routeProps = routeProps

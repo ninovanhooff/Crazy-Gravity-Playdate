@@ -48,7 +48,6 @@ local smallestPlaneRotation <const> = smallestPlaneRotation
 local function smallestRotationTest(destRotation, startRotation, expected)
     test(expected, smallestPlaneRotation(destRotation,startRotation), table.concat({ "smallestRotation", destRotation, startRotation }, ", " ))
 end
-
 smallestRotationTest(6,5, 1)
 smallestRotationTest(5,6, -1)
 smallestRotationTest(23, 0 , -1)
@@ -61,12 +60,22 @@ local clampPlaneRotation <const> = clampPlaneRotation
 local function clampPlaneRotationTest(expected, rotation)
     test(expected, clampPlaneRotation(rotation), "clampPlaneRotation ", rotation)
 end
-
 clampPlaneRotationTest(0,0)
 clampPlaneRotationTest(1,1)
 clampPlaneRotationTest(23,-1)
 clampPlaneRotationTest(14,-10)
 clampPlaneRotationTest(2,50)
+
+local planeRotationToDeg <const> = planeRotationToDeg
+local function planeRotationToDegTest(expected, rot)
+    test(expected, planeRotationToDeg(rot), "planeRotationToDeg", rot)
+end
+
+planeRotationToDegTest(90, 0)
+planeRotationToDegTest(105, 1)
+planeRotationToDegTest(345, 17)
+planeRotationToDegTest(0, 18)
+planeRotationToDegTest(75, 23)
 
 test(1, sign(42), "sign(42)")
 test(0, sign(0), "sign(0)")
