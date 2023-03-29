@@ -90,6 +90,25 @@ local function drawHomeBaseIndicator(centerX, centerY)
     gfx.drawPolygon(targetingPolygon)
 end
 
+local function drawPlaneRotationIndicator(centerX, centerY)
+    gfx.pushContext()
+    gfx.setColor(gameFgColor)
+    gfx.setLineWidth(3)
+
+    local rotationToleranceDeg = 15*(landingTolerance.rotation)
+    if rotationToleranceDeg == 0 then -- 0 would draw a full circle
+        rotationToleranceDeg = 7.5
+    end
+    gfx.drawArc(centerX, centerY, 20, -rotationToleranceDeg, rotationToleranceDeg)
+
+    gfx.setColor(gfx.kColorXOR)
+    gfx.setLineWidth(9)
+    local rotationDeg = playdate.getCrankPosition()
+    gfx.drawArc(centerX, centerY, 20, rotationDeg-6, rotationDeg+6)
+
+    gfx.popContext()
+end
+
 function RenderSelfRightTooltip(anchorX, anchorY)
     local buttonMappingString = inputManager:actionMappingString(Actions.SelfRight)
     local tooltip = { text= buttonMappingString .. ": " .. Actions.Labels[Actions.SelfRight] }
@@ -152,6 +171,8 @@ function RenderGame(disableHUD)
             drawHomeBaseIndicator(planeX + 12, planeY + 12) -- center of plane is at origin + 12
             renderCost = renderCost + 1
         end
+
+        drawPlaneRotationIndicator(planeX + 12, planeY + 12) -- center of plane is at origin + 12
 
         local routeProps = routeProps
         if renderCost <= 60 and
