@@ -14,7 +14,10 @@ function TakeOffLandingScreen:init(x, y)
 end
 
 function TakeOffLandingScreen:update()
-    if not inputManager:isTakeOffLandingBlocked(planeRot) then
+    if inputManager:isTakeOffLandingBlocked(planeRot) then
+        RenderGame()
+        renderSelfRightTooltip(self.x, self.y)
+    else
         options:setSelfRightTipShown(true)
         options:saveUserOptions()
         popScreen()
@@ -26,8 +29,6 @@ function TakeOffLandingScreen:pause()
 end
 
 function TakeOffLandingScreen:resume()
-    renderSelfRightTooltip(self.x,self.y)
-
     menu:addMenuItem("Settings", function()
         require "lua/settings/SettingsScreen"
         popScreen() -- remove self because we cannot restore our drawing state
