@@ -1,4 +1,5 @@
 import "Input"
+import "RotationInput"
 import "ButtonInput"
 import "AccelerometerInput"
 import "CrankInput"
