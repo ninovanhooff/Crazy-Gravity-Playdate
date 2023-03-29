@@ -106,8 +106,6 @@ local function writeMiniMap(levelNum)
     LoadFile(levelPath(levelNum))
     -- save miniMap
     local miniMapImage = gfx.image.new(levelProps.sizeX,levelProps.sizeY, miniMapEmptyColor)
-    print(brickT)
-    print(brickT[1][1])
 
     gfx.pushContext(miniMapImage)
         gfx.setColor(miniMapBricksColor)
