@@ -104,7 +104,7 @@ local function drawPlaneRotationIndicator(centerX, centerY)
 
     gfx.setColor(gfx.kColorXOR)
     gfx.setLineWidth(9)
-    local rotationDeg = playdate.getCrankPosition()
+    local rotationDeg = inputManager:getInputRotationDeg()
     gfx.drawArc(centerX, centerY, 20, rotationDeg-6, rotationDeg+6)
 
     gfx.popContext()
