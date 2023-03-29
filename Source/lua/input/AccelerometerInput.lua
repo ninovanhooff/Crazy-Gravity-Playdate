@@ -1,13 +1,5 @@
 local playdate <const> = playdate
 local readAccelerometer <const> = playdate.readAccelerometer
-
-local smallestPlaneRotation <const> = smallestPlaneRotation
-local clampPlaneRotation <const> = clampPlaneRotation
-local abs <const> = math.abs
-local sign <const> = sign
-local round <const> = round
-
-local supportedActionsMask <const> = Actions.Left | Actions.Right | Actions.SelfRight
 local proportionalInfluence <const> = 0.3
 local averagingFactor <const> = 1 + proportionalInfluence
 
