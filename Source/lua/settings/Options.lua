@@ -63,7 +63,7 @@ local LANDING_TOLERANCE_VALS <const> = {
     -- max supported rotation tolerance: 23-18=5. Otherwise rotation rolls over to 24==0
     {label="Easy", value = { x=10, y=10, rotation=4 }},
     {label="Medium", value = { x=2.0, y=4.5, rotation=2 }},
-    {label="Hard", value = { x=1.25, y=2.5, rotation=0 }},
+    {label="Hard", value = { x=1.25, y=2.5, rotation=1 }},
 }
 local SELF_RIGHT_TIP_SHOWN_KEY <const> = "selfRightTipShown"
 local ACCELEROMETER_CONTROLS_HINT_SHOWN_KEY <const> = "accelerometerControlsHintShown"
