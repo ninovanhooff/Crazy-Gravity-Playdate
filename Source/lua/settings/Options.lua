@@ -167,7 +167,7 @@ local gameOptions = {
         header = 'Physics',
         options = {
             { name='Physics', key=GRAVITY_DRAG_KEY, values=GRAVITY_DRAG_VALS, default=3},
-            { name='Landing', key=LANDING_TOLERANCE_KEY, values=LANDING_TOLERANCE_VALS, default=2},
+            { name='Landing', key=LANDING_TOLERANCE_KEY, values=LANDING_TOLERANCE_VALS, default=1},
             { name='Blowers', key=BLOWER_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
             { name='Magnets', key=MAGNET_STRENGTH_KEY, values=BLOWER_MAGNET_VALS, default=2},
         }
