@@ -38,5 +38,8 @@ removeIfExists "$minimapWriterPath"
 removeIfExists "$pdxDir/levels/temp.bin"
 removeIfExists "$pdxDir/levels/temp.pdz"
 
+removeIfExists "$pdxDir/lua/playdate-navigator/README.md"
+removeIfExists "$pdxDir/levels/README.md"
+
 # Remove empty directories
 find "$pdxDir" -type d -empty -delete
